@@ -41,7 +41,6 @@ final class link extends action {
             'aftersubmit' => $this->get_after_submit(),
             'class' => $this->get_class(),
             'dialogsize' => $this->get_dialog_size(),
-            'uniqid' => uniqid(),
             'disabled' => $this->is_disabled(),
             'legacyformtest' => (bool)$this->legacyformtest,
             'icon' => '',

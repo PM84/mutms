@@ -36,6 +36,7 @@ abstract class manager {
     /**
      * Returns list of candidate types for adding of new notifications.
      *
+     * @param int $instanceid
      * @return array of type names with notificationtype as keys
      */
     abstract public static function get_candidate_types(int $instanceid): array;
@@ -72,8 +73,6 @@ abstract class manager {
 
     /**
      * Returns url of UI that shows all plugin notifications for given instance id.
-     *
-     * See @link static::render_notifications() method.
      *
      * @param int $instanceid
      * @return \moodle_url|null
