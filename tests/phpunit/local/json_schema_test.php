@@ -1,7 +1,10 @@
 <?php
 // This file is part of Additional tools library for Moodle™.
+// phpcs:disable moodle.Files.BoilerplateComment.CommentEndedTooSoon
+// phpcs:disable moodle.Files.LineLength.TooLong
+// phpcs:disable moodle.Commenting.DocblockDescription.Missing
 
-namespace phpunit\local;
+namespace tool_mulib\phpunit\local;
 
 /**
  * JSON schema helper tests.
@@ -15,12 +18,15 @@ namespace phpunit\local;
  *
  * @coversDefaultClass \tool_mulib\local\json_schema
  */
-class json_schema_test extends \advanced_testcase {
+final class json_schema_test extends \advanced_testcase {
     protected function setUp(): void {
         parent::setUp();
         $this->resetAfterTest();
     }
 
+    /**
+     * @covers ::validate
+     */
     public function test_validate(): void {
         $schema = <<<'JSON'
 {
@@ -51,7 +57,7 @@ JSON;
         $data = (object)[
             'somename' => 'abc',
             'someint' => 15,
-            'somedate' => '2020-11-13T23:10:05+02:00'
+            'somedate' => '2020-11-13T23:10:05+02:00',
         ];
         list($valid, $errors) = \tool_mulib\local\json_schema::validate($data, $schema);
         $this->assertTrue($valid);
@@ -60,7 +66,7 @@ JSON;
         $data = (object)[
             'somename' => null,
             'someint' => 15,
-            'somedate' => '2020-11-13T23:10:05+02:00'
+            'somedate' => '2020-11-13T23:10:05+02:00',
         ];
         list($valid, $errors) = \tool_mulib\local\json_schema::validate($data, $schema);
         $this->assertTrue($valid);
@@ -83,7 +89,7 @@ JSON;
         $data = (object)[
             'somename' => '',
             'someint' => 15,
-            'somedate' => '2020-11-13T23:10:05+02:00'
+            'somedate' => '2020-11-13T23:10:05+02:00',
         ];
         list($valid, $errors) = \tool_mulib\local\json_schema::validate($data, $schema);
         $this->assertFalse($valid);
@@ -92,7 +98,7 @@ JSON;
         $data = (object)[
             'somename' => 'abc',
             'someint' => 100,
-            'somedate' => '2020-11-13T23:10:05+02:00'
+            'somedate' => '2020-11-13T23:10:05+02:00',
         ];
         list($valid, $errors) = \tool_mulib\local\json_schema::validate($data, $schema);
         $this->assertFalse($valid);
@@ -101,7 +107,7 @@ JSON;
         $data = (object)[
             'somename' => 'abc',
             'someint' => 15,
-            'somedate' => '2020-02-30T23:10:05+02:00'
+            'somedate' => '2020-02-30T23:10:05+02:00',
         ];
         list($valid, $errors) = \tool_mulib\local\json_schema::validate($data, $schema);
         $this->assertFalse($valid);
@@ -110,13 +116,16 @@ JSON;
         $data = (object)[
             'somename' => 'abc',
             'someint' => 15,
-            'somedate' => '2020/02/02 23:10:05'
+            'somedate' => '2020/02/02 23:10:05',
         ];
         list($valid, $errors) = \tool_mulib\local\json_schema::validate($data, $schema);
         $this->assertFalse($valid);
         $this->assertSame(['/somedate' => ['The data must match the \'date-time\' format']], $errors);
     }
 
+    /**
+     * @covers ::normalise_data
+     */
     public function test_normalise_data(): void {
         $data = ['a', 1, false];
         $this->assertSame($data, \tool_mulib\local\json_schema::normalise_data($data));
@@ -130,12 +139,12 @@ JSON;
         $data = null;
         $this->assertSame($data, \tool_mulib\local\json_schema::normalise_data($data));
 
-        $data = ['x'=> 'a', 'Y' => 1];
+        $data = ['x' => 'a', 'Y' => 1];
         $result = \tool_mulib\local\json_schema::normalise_data($data);
         $this->assertIsObject($result);
         $this->assertSame($data, (array)$result);
 
-        $data = (object)['x'=> 'a', 'Y' => 1];
+        $data = (object)['x' => 'a', 'Y' => 1];
         $result = \tool_mulib\local\json_schema::normalise_data($data);
         $this->assertIsObject($result);
         $this->assertSame((array)$data, (array)$result);

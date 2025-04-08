@@ -1,5 +1,6 @@
 <?php
 // This file is part of Additional tools library for Moodle™.
+// phpcs:disable moodle.Files.BoilerplateComment.CommentEndedTooSoon
 
 namespace tool_mulib\local\form;
 
@@ -13,6 +14,7 @@ namespace tool_mulib\local\form;
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 final class notification_create extends \tool_mulib\local\dialog_form {
+    #[\Override]
     protected function definition() {
         $mform = $this->_form;
         $component = $this->_customdata['component'];
@@ -44,6 +46,7 @@ final class notification_create extends \tool_mulib\local\dialog_form {
         $this->add_action_buttons(true, get_string('notification_create', 'tool_mulib'));
     }
 
+    #[\Override]
     public function validation($data, $files) {
         $errors = parent::validation($data, $files);
 

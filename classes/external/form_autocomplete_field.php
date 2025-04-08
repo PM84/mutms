@@ -1,5 +1,7 @@
 <?php
 // This file is part of Additional tools library for Moodle™.
+// phpcs:disable moodle.Files.BoilerplateComment.CommentEndedTooSoon
+// phpcs:disable moodle.Files.LineLength.TooLong
 
 namespace tool_mulib\external;
 
@@ -129,7 +131,7 @@ abstract class form_autocomplete_field extends \core_external\external_api {
                 // Sanitize the extra fields to prevent potential XSS exploit.
                 $user->extrafields[] = (object) [
                     'name' => $extrafield,
-                    'value' => s($record->$extrafield)
+                    'value' => s($record->$extrafield),
                 ];
             }
             $list[] = [

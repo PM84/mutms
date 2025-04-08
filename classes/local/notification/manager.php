@@ -1,9 +1,11 @@
 <?php
 // This file is part of Additional tools library for Moodle™.
+// phpcs:disable moodle.Files.BoilerplateComment.CommentEndedTooSoon
+// phpcs:disable moodle.Files.LineLength.TooLong
 
 namespace tool_mulib\local\notification;
 
-use \tool_mulib\output\action_menu\dropdown;
+use tool_mulib\output\action_menu\dropdown;
 
 /**
  * Base for classes that describe notifications in a plugin.
@@ -119,12 +121,12 @@ abstract class manager {
      * @param \MoodleQuickForm $mform
      * @return void
      */
-     public static function add_import_frominstance_element(int $instanceid, \MoodleQuickForm $mform): void {
+    public static function add_import_frominstance_element(int $instanceid, \MoodleQuickForm $mform): void {
          $arguments = ['id' => $instanceid];
          \tool_muprog\external\form_notification_import_frominstance::add_form_element(
              $mform, $arguments, 'frominstance', get_string('notification_import_from', 'tool_mulib'));
          $mform->addRule('frominstance', null, 'required', null, 'client');
-     }
+    }
 
     /**
      * Validates if the user can import from the specified instanceid.

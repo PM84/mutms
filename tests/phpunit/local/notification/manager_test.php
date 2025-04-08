@@ -1,5 +1,8 @@
 <?php
 // This file is part of Additional tools library for Moodle™.
+// phpcs:disable moodle.Files.BoilerplateComment.CommentEndedTooSoon
+// phpcs:disable moodle.Files.LineLength.TooLong
+// phpcs:disable moodle.Commenting.DocblockDescription.Missing
 
 namespace tool_mulib\phpunit\local\notification;
 
@@ -15,17 +18,23 @@ namespace tool_mulib\phpunit\local\notification;
  *
  * @coversDefaultClass \tool_mulib\local\notification\manager
  */
-class manager_test extends \advanced_testcase {
+final class manager_test extends \advanced_testcase {
     protected function setUp(): void {
         parent::setUp();
         $this->resetAfterTest();
     }
 
-    public function test_get_component() {
+    /**
+     * @covers ::get_component
+     */
+    public function test_get_component(): void {
         $this->assertSame('tool_mulib', \tool_mulib\local\notification\manager::get_component());
     }
 
-    public function test_is_import_supported() {
+    /**
+     * @covers ::is_import_supported
+     */
+    public function test_is_import_supported(): void {
         $this->assertFalse(\tool_mulib\local\notification\manager::is_import_supported());
     }
 }

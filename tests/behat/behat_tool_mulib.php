@@ -1,7 +1,10 @@
 <?php
 // This file is part of Additional tools library for Moodle™.
+// phpcs:disable moodle.Files.BoilerplateComment.CommentEndedTooSoon
+// phpcs:disable moodle.Files.LineLength.TooLong
+// phpcs:disable moodle.Commenting.DocblockDescription.Missing
 
-// NOTE: no MOODLE_INTERNAL test here, this file may be required by behat before including /config.php.
+// NOTE: No MOODLE_INTERNAL test here, this file may be required by behat before including /config.php.
 
 use Behat\Mink\Exception\DriverException;
 use Behat\Mink\Exception\ExpectationException;
@@ -10,7 +13,7 @@ use Behat\Mink\Exception\ElementNotFoundException;
 require_once(__DIR__ . '/../../../../../lib/behat/behat_base.php');
 
 /**
- * Dialog form steps.
+ * Library mulib behat steps.
  *
  * @package     tool_mulib
  * @copyright   2022 Open LMS (https://www.openlms.net/)
@@ -177,7 +180,7 @@ class behat_tool_mulib extends behat_base {
 
                 throw new ExpectationException('"' . $args['text'] . '" text was found in the "' . $args['label'] . '" element but was not visible', $context->getSession());
             },
-            array('nodes' => $nodes, 'text' => $text, 'label' => $label),
+            ['nodes' => $nodes, 'text' => $text, 'label' => $label],
             false,
             false,
             true

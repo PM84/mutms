@@ -1,5 +1,6 @@
 <?php
 // This file is part of Additional tools library for Moodle™.
+// phpcs:disable moodle.Files.BoilerplateComment.CommentEndedTooSoon
 
 namespace tool_mulib\local;
 
@@ -13,8 +14,15 @@ namespace tool_mulib\local;
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 final class json_schema {
+    /**
+     * Validate data.
+     *
+     * @param mixed $data
+     * @param mixed $schema
+     * @return array
+     */
     public static function validate($data, $schema): array {
-        require_once __DIR__ . '/../../vendor/autoload.php';
+        require_once(__DIR__ . '/../../vendor/autoload.php');
 
         $validator = new \Opis\JsonSchema\Validator();
         try {
@@ -42,7 +50,7 @@ final class json_schema {
      * @return mixed
      */
     public static function normalise_data($data) {
-        require_once __DIR__ . '/../../vendor/autoload.php';
+        require_once(__DIR__ . '/../../vendor/autoload.php');
 
         return \Opis\JsonSchema\Helper::toJSON($data);
     }

@@ -1,5 +1,6 @@
 <?php
 // This file is part of Additional tools library for Moodle™.
+// phpcs:disable moodle.Files.BoilerplateComment.CommentEndedTooSoon
 
 namespace tool_mulib\output\dialog_form;
 
@@ -82,7 +83,6 @@ require([
         afterSubmit: $aftersubmit,
         size: $size,
     });
-    
 });
 return false;";
 

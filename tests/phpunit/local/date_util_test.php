@@ -1,7 +1,10 @@
 <?php
 // This file is part of Additional tools library for Moodle™.
+// phpcs:disable moodle.Files.BoilerplateComment.CommentEndedTooSoon
+// phpcs:disable moodle.Files.LineLength.TooLong
+// phpcs:disable moodle.Commenting.DocblockDescription.Missing
 
-namespace phpunit\local;
+namespace tool_mulib\phpunit\local;
 
 /**
  * Date helper tests.
@@ -15,12 +18,15 @@ namespace phpunit\local;
  *
  * @coversDefaultClass \tool_mulib\local\date_util
  */
-class date_util_test extends \advanced_testcase {
+final class date_util_test extends \advanced_testcase {
     protected function setUp(): void {
         parent::setUp();
         $this->resetAfterTest();
     }
 
+    /**
+     * @covers ::format_event_date
+     */
     public function test_date_util(): void {
         $result = \tool_mulib\local\date_util::format_event_date(strtotime('2022-08-15T11:00:00'), strtotime('2022-08-15T15:00:00'));
         $this->assertSame('15 August 2022&nbsp;&nbsp;&nbsp;11:00 AM&ndash;3:00 PM', $result);

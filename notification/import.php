@@ -1,5 +1,6 @@
 <?php
 // This file is part of Additional tools library for Moodle™.
+// phpcs:disable moodle.Files.BoilerplateComment.CommentEndedTooSoon
 
 /**
  * Import notification.
@@ -18,10 +19,10 @@
 
 use tool_mulib\local\notification\util;
 
+// phpcs:ignoreFile moodle.Files.MoodleInternal.MoodleInternalGlobalState
 if (!empty($_SERVER['HTTP_X_MULIB_DIALOG_FORM_REQUEST'])) {
     define('AJAX_SCRIPT', true);
 }
-
 require('../../../../config.php');
 
 $component = required_param('component', PARAM_COMPONENT);
