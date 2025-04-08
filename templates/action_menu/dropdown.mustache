@@ -1,0 +1,38 @@
+{{!
+// This file is part of Additional tools library for Moodle™.
+}}
+{{!
+    @template tool_mulib/action_menu/dropdown
+
+    Simple dropdown with extra actions.
+
+    Example context (json):
+    {
+        "title": "Extra actions",
+        "items": [
+            { "url": "https://example.com/something.php", "label": "Something" },
+            { "divider": true },
+            { "url": "https://example.com/else.php", "label": "Else" },
+            { "customhtml": "<a class="dropdown-item" href="https://example.com/other.php">Other link</a>" }
+        ],
+    }
+}}
+<div class="btn-group">
+    <!-- Set as a link to appease Goutte behat. -->
+    <a href="#" class="btn btn-link btn-icon icon-size-3 rounded-circle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="{{title}}">
+        <i class="fa fa-ellipsis-v text-dark  py-2" aria-hidden="true"></i>
+    </a>
+    <div class="dropdown-menu dropdown-menu-right">
+        {{#items}}
+            {{#divider}}
+                <div class="dropdown-divider"></div>
+            {{/divider}}
+            {{#url}}
+                <a class="dropdown-item" href="{{url}}">{{label}}</a>
+            {{/url}}
+            {{#customhtml}}
+                {{{.}}}
+            {{/customhtml}}
+        {{/items}}
+    </div>
+</div>

@@ -1,0 +1,43 @@
+{{!
+This file is part of Additional tools library for Moodle™.
+
+@copyright   2025 Petr Skoda
+@license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+
+}}
+
+{{#disabled}}
+<button disabled class="btn btn-secondary {{class}}">{{{icon}}}{{title}}</button>
+{{/disabled}}
+{{^disabled}}
+{{#legacyformtest}}
+<form method="post" action="{{formurl}}">
+<button
+  class="btn {{#primary}}btn-primary{{/primary}}{{^primary}}btn-secondary{{/primary}} {{class}}">{{{icon}}}{{title}}</button>
+</form>
+{{/legacyformtest}}
+{{^legacyformtest}}
+<noscript><form method="get" action="{{formurl}}"><button type="submit">{{title}}</button></form></noscript>
+<button id="dialog-form-action-{{uniqid}}"
+  data-form-url="{{formurl}}" data-dialog-name="{{dialogname}}" data-after-submit="{{aftersubmit}}" data-dialog-size="{{dialogsize}}"
+  class="btn {{#primary}}btn-primary{{/primary}}{{^primary}}btn-secondary{{/primary}} {{class}}">{{{icon}}}{{title}}</button>
+
+{{#js}}
+require([
+    'tool_mulib/dialog_form',
+], function(DialogForm) {
+    let action = document.getElementById('dialog-form-action-{{uniqid}}');
+
+    action.onclick = function() {
+        new DialogForm({
+            modalConfig: {title: action.dataset.dialogName},
+            triggerElement: action,
+            formUrl: action.dataset.formUrl,
+            afterSubmit: action.dataset.afterSubmit,
+            size: action.dataset.dialogSize,
+        });
+    };
+});
+{{/js}}
+{{/legacyformtest}}
+{{/disabled}}
