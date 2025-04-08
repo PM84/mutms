@@ -1,5 +1,6 @@
 <?php
 // This file is part of Additional tools library for Moodle™.
+// phpcs:disable moodle.Files.BoilerplateComment.CommentEndedTooSoon
 
 namespace tool_mulib\output\dialog_form;
 
@@ -40,6 +41,8 @@ abstract class action implements \core\output\renderable, \core\output\templatab
     protected $dialogsize = 'lg';
 
     /**
+     * Constructor.
+     *
      * @param \moodle_url $formurl
      * @param string $title
      */

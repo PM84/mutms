@@ -1,5 +1,6 @@
 <?php
 // This file is part of Additional tools library for Moodle™.
+// phpcs:disable moodle.Files.BoilerplateComment.CommentEndedTooSoon
 
 /**
  * Additional tools library language strings.
@@ -29,7 +30,7 @@ $string['notification_types'] = 'Notification types';
 $string['notification_update'] = 'Update notification';
 $string['notification_view'] = 'Notification details';
 $string['notifications'] = 'Notifications';
-$string['privacy:metadata:userid'] = 'User';
-$string['privacy:metadata:tool_mulib_notification_user:tableexplanation'] = 'User notification tracking';
 $string['pluginname'] = 'Additional tools library';
+$string['privacy:metadata:tool_mulib_notification_user:tableexplanation'] = 'User notification tracking';
+$string['privacy:metadata:userid'] = 'User';
 $string['toomanyrecords'] = 'Too many records found';

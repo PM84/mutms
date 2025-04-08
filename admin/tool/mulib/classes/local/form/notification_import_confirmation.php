@@ -1,5 +1,6 @@
 <?php
 // This file is part of Additional tools library for Moodle™.
+// phpcs:disable moodle.Files.BoilerplateComment.CommentEndedTooSoon
 
 namespace tool_mulib\local\form;
 
@@ -15,6 +16,7 @@ use tool_mulib\local\notification\manager;
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 final class notification_import_confirmation extends \tool_mulib\local\dialog_form {
+    #[\Override]
     protected function definition() {
         global $DB;
 
@@ -57,6 +59,7 @@ final class notification_import_confirmation extends \tool_mulib\local\dialog_fo
         $this->add_action_buttons(true, get_string('notification_import', 'tool_mulib'));
     }
 
+    #[\Override]
     public function validation($data, $files) {
         $errors = parent::validation($data, $files);
 

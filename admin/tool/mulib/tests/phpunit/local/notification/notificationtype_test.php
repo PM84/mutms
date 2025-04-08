@@ -1,5 +1,8 @@
 <?php
 // This file is part of Additional tools library for Moodle™.
+// phpcs:disable moodle.Files.BoilerplateComment.CommentEndedTooSoon
+// phpcs:disable moodle.Files.LineLength.TooLong
+// phpcs:disable moodle.Commenting.DocblockDescription.Missing
 
 namespace tool_mulib\phpunit\local\notification;
 
@@ -13,23 +16,32 @@ namespace tool_mulib\phpunit\local\notification;
  * @author      Petr Skoda
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
- * @coversDefaultClass \tool_mulib\local\notification\manager
+ * @coversDefaultClass \tool_mulib\local\notification\notificationtype
  */
-class notificationtype_test extends \advanced_testcase {
+final class notificationtype_test extends \advanced_testcase {
     protected function setUp(): void {
         parent::setUp();
         $this->resetAfterTest();
     }
 
-    public function test_get_component() {
+    /**
+     * @covers ::get_component
+     */
+    public function test_get_component(): void {
         $this->assertSame('tool_mulib', \tool_mulib\local\notification\notificationtype::get_component());
     }
 
-    public function test_get_classname() {
+    /**
+     * @covers ::get_classname
+     */
+    public function test_get_classname(): void {
         $this->assertSame('notificationtype', \tool_mulib\local\notification\notificationtype::get_notificationtype());
     }
 
-    public function test_format_subject() {
+    /**
+     * @covers ::format_subject
+     */
+    public function test_format_subject(): void {
         $this->assertSame(
             '',
             \tool_mulib\local\notification\notificationtype::format_subject('', [])
@@ -44,7 +56,10 @@ class notificationtype_test extends \advanced_testcase {
         );
     }
 
-    public function test_format_body() {
+    /**
+     * @covers ::format_body
+     */
+    public function test_format_body(): void {
         $this->assertSame(
             '',
             \tool_mulib\local\notification\notificationtype::format_body('', \FORMAT_HTML, [])

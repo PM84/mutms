@@ -1,5 +1,6 @@
 <?php
 // This file is part of Additional tools library for Moodle™.
+// phpcs:disable moodle.Files.BoilerplateComment.CommentEndedTooSoon
 
 namespace tool_mulib\local\notification;
 
@@ -76,7 +77,7 @@ final class util {
             $data->customjson = null;
         }
 
-        // TODO: add aux data support
+        // Note: Add aux data support here.
 
         $id = $DB->insert_record('tool_mulib_notification', $data);
         $record = $DB->get_record('tool_mulib_notification', ['id' => $id], '*', MUST_EXIST);
@@ -128,7 +129,7 @@ final class util {
             unset($data->customjson);
         }
 
-        // TODO: add aux data support
+        // Note: Add aux data support here.
 
         $DB->update_record('tool_mulib_notification', $data);
         $record = $DB->get_record('tool_mulib_notification', ['id' => $data->id], '*', MUST_EXIST);

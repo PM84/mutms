@@ -1,5 +1,6 @@
 <?php
 // This file is part of Additional tools library for Moodle™.
+// phpcs:disable moodle.Files.BoilerplateComment.CommentEndedTooSoon
 
 /**
  * Additional tools library plugin version.
@@ -11,10 +12,11 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version = 2025040700;
-$plugin->requires = 2024100700;
+/** @var stdClass $plugin */
 $plugin->component = 'tool_mulib';
-$plugin->maturity = MATURITY_STABLE;
+$plugin->version   = 2025040800;
+$plugin->requires  = 2024100700;
+$plugin->maturity  = MATURITY_ALPHA;
 $plugin->supported = [405, 405];
-$plugin->release = 'mu-4.5.3-01';
+$plugin->release   = 'mu-4.5.3-02';
 

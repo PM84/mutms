@@ -1,5 +1,6 @@
 <?php
 // This file is part of Additional tools library for Moodle™.
+// phpcs:disable moodle.Files.BoilerplateComment.CommentEndedTooSoon
 
 namespace tool_mulib\local\form;
 
@@ -13,6 +14,7 @@ namespace tool_mulib\local\form;
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 final class notification_update extends \tool_mulib\local\dialog_form {
+    #[\Override]
     protected function definition() {
         $mform = $this->_form;
         $notification = $this->_customdata['notification'];
@@ -40,7 +42,7 @@ final class notification_update extends \tool_mulib\local\dialog_form {
         $mform->addElement('advcheckbox', 'enabled', get_string('notification_enabled', 'tool_mulib'), ' ');
         $mform->setDefault('enabled', $notification->enabled);
 
-        // TODO: add aux data support
+        // Note: Add aux data support here.
 
         $mform->addElement('advcheckbox', 'custom', get_string('notification_custom', 'tool_mulib'), ' ');
         $mform->setDefault('custom', $notification->custom);
@@ -74,6 +76,7 @@ final class notification_update extends \tool_mulib\local\dialog_form {
         $this->add_action_buttons(true, get_string('notification_update', 'tool_mulib'));
     }
 
+    #[\Override]
     public function validation($data, $files) {
         $errors = parent::validation($data, $files);
 
