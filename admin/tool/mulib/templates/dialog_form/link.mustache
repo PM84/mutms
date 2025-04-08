@@ -1,0 +1,40 @@
+{{!
+This file is part of Additional tools library for Moodle™.
+
+@copyright   2025 Petr Skoda
+@license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+
+}}
+
+{{#disabled}}
+<span title="{{title}}" class="dimmed_text {{class}}">{{{icon}}}{{{title}}}</span>
+{{/disabled}}
+{{^disabled}}
+{{#legacyformtest}}
+<a href="{{formurl}}" class="{{class}}">{{{icon}}}{{title}}</a>
+{{/legacyformtest}}
+{{^legacyformtest}}
+<noscript><a href="{{formurl}}">{{{icon}}}{{title}}</a></noscript>
+<a id="dialog-form-action-{{uniqid}}" href="#" class="{{class}}"
+  data-form-url="{{formurl}}" data-dialog-name="{{dialogname}}" data-after-submit="{{aftersubmit}}" data-dialog-size="{{dialogsize}}"
+>{{{icon}}}{{title}}</a>
+
+{{#js}}
+require([
+    'tool_mulib/dialog_form',
+], function(DialogForm) {
+    let action = document.getElementById('dialog-form-action-{{uniqid}}');
+
+    action.onclick = function() {
+        new DialogForm({
+            modalConfig: {title: action.dataset.dialogName},
+            triggerElement: action,
+            formUrl: action.dataset.formUrl,
+            afterSubmit: action.dataset.afterSubmit,
+            size: action.dataset.dialogSize,
+        });
+    };
+});
+{{/js}}
+{{/legacyformtest}}
+{{/disabled}}
