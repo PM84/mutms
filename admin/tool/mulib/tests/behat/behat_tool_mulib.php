@@ -97,6 +97,8 @@ class behat_tool_mulib extends behat_base {
 
     /**
      * @Given I skip tests if :plugin is not installed
+     *
+     * @param string $plugin
      */
     public function skip_if_plugin_missing($plugin): void {
         if (!get_config($plugin, 'version')) {
@@ -106,6 +108,8 @@ class behat_tool_mulib extends behat_base {
 
     /**
      * @Given I skip tests if :plugin is installed
+     *
+     * @param string $plugin
      */
     public function skip_if_plugin_installed($plugin): void {
         if (get_config($plugin, 'version')) {
@@ -115,6 +119,8 @@ class behat_tool_mulib extends behat_base {
 
     /**
      * @Given I skip tests if :constant is defined and not empty
+     *
+     * @param string $constant
      */
     public function skip_if_constant_not_empty($constant): void {
         if (defined($constant) && constant($constant)) {
@@ -127,8 +133,8 @@ class behat_tool_mulib extends behat_base {
      *
      * @Then I should see :text in the :label definition list item
      *
-     * @param string $label
      * @param string $text
+     * @param string $label
      */
     public function list_term_contains_text($text, $label): void {
 
@@ -192,8 +198,8 @@ class behat_tool_mulib extends behat_base {
      *
      * @Then I should not see :text in the :label definition list item
      *
-     * @param string $label
      * @param string $text
+     * @param string $label
      */
     public function list_term_note_contains_text($text, $label): void {
 
@@ -267,6 +273,8 @@ class behat_tool_mulib extends behat_base {
      * Add BEHAT_VISUAL_CHECK_PAUSE constant to config.php to interactively confirm test result.
      *
      * @When I perform a visual check :assert
+     *
+     * @param string $assert
      */
     public function i_pause_for_visual_check(string $assert) {
         if (!$this->has_tag('_visual_check')) {

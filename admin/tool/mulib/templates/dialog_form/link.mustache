@@ -5,7 +5,23 @@ This file is part of Additional tools library for Moodle™.
 @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
 
 }}
+{{!
+    @template tool_mulib/dialog_form/link
 
+    Dialog form launch link.
+
+    Example context (json):
+    {
+        "title": "Actions",
+        "formurl": "https://example.com/something.php",
+        "dialogname": "Some dialog",
+        "aftersubmit": "reload",
+        "class": "xl",
+        "disabled": false,
+        "legacyformtest": false,
+        "icon": "<i class=\"icon fa fa-cog fa-fw\" aria-hidden=\"true\" title=\"Edit\" aria-label=\"\"></i>"
+    }
+}}
 {{#disabled}}
 <span title="{{title}}" class="dimmed_text {{class}}">{{{icon}}}{{{title}}}</span>
 {{/disabled}}

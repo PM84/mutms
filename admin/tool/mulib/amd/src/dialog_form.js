@@ -159,10 +159,10 @@ define([
                     promise.reject(new Error('Dialog form rendering error'));
                 }
                 return null;
-            }.bind(this))
+            })
             .fail(function(ex) {
                 promise.reject(ex);
-            }.bind(this));
+            });
 
         return promise.promise();
     };
@@ -343,7 +343,7 @@ define([
                 // NOTE: do not enable buttons here, there is no correct way to recover
                 // from unexpected errors.
                 Notification.exception(exception);
-            }.bind(this));
+            });
     };
 
     /**

@@ -27,7 +27,7 @@ trait dialog_form_trait {
      * @param mixed $customdata
      * @param string $method
      * @param string $target
-     * @param null|array$attributes
+     * @param null|array $attributes
      * @param bool $editable
      * @param mixed|null $ajaxformdata
      */
@@ -53,7 +53,7 @@ trait dialog_form_trait {
     /**
      * Replacement for redirect call after processing submitted form.
      *
-     * @param $url
+     * @param mixed $url
      * @param string|null $message
      * @param string $messagetype
      * @return void
