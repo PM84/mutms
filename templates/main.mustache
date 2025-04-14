@@ -1,0 +1,114 @@
+{{!
+    This file is part of plugin tool_vault - https://lmsvault.io
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template tool_vault/main
+
+    Main page of Vault tool.
+
+    Example context (json):
+    {
+        "pixpath": "/"
+    }
+}}
+
+{{^isregistered}}
+    {{{registrationform}}}
+{{/isregistered}}
+
+{{#lastoperation}}
+    {{> tool_vault/last_operation }}
+{{/lastoperation}}
+
+<div class="container-fluid" style="max-width: 900px">
+    <div class="row">
+        <div class="col-md-2 col-lg-1">
+            <img src="{{pixbaseurl}}/cloudup.svg" width="48" height="48" alt="">
+        </div>
+        <div class="col-md-10 col-lg-11">
+            <p>
+                <a href="{{mainurl}}?section=backup">{{#str}} sitebackup, tool_vault {{/str}}</a><br>
+                {{#str}} sitebackup_desc, tool_vault {{/str}}
+            </p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-2 col-lg-1">
+            {{#allowrestore}}
+                <img src="{{pixbaseurl}}/clouddown.svg" width="48" height="48" alt="">
+            {{/allowrestore}}
+            {{^allowrestore}}
+                <img src="{{pixbaseurl}}/clouddownoff.svg" width="48" height="48" alt="">
+            {{/allowrestore}}
+        </div>
+        <div class="col-md-10 col-lg-11">
+            <p>
+                <a href="{{mainurl}}?section=restore">{{#str}} siterestore, tool_vault {{/str}}</a><br>
+                {{#str}} siterestore_desc, tool_vault {{/str}}
+                {{^allowrestore}}
+                <br>
+                {{#str}} siterestore_notallowed_desc, tool_vault {{/str}}
+                {{/allowrestore}}
+            </p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-2 col-lg-1">
+            <img src="{{pixbaseurl}}/history.svg" width="48" height="48" alt="">
+        </div>
+        <div class="col-md-10 col-lg-11">
+            <p>
+                <a href="{{mainurl}}?section=logs">{{#str}} history, tool_vault {{/str}}</a><br>
+                {{#str}} history_desc, tool_vault {{/str}}
+            </p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-2 col-lg-1">
+            <img src="{{pixbaseurl}}/tools.svg" width="48" height="48" alt="">
+        </div>
+        <div class="col-md-10 col-lg-11">
+            <p>
+                <a href="{{mainurl}}?section=vaulttools">{{#str}} tools, tool_vault {{/str}}</a><br>
+                {{#str}} tools_desc, tool_vault {{/str}}
+            </p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-2 col-lg-1">
+            <img src="{{pixbaseurl}}/settingstune.svg" width="48" height="48" alt="">
+        </div>
+        <div class="col-md-10 col-lg-11">
+            <p>
+                <a href="{{settingsurl}}">{{#str}} settings, moodle {{/str}}</a><br>
+                {{#str}} settings_desc, tool_vault {{/str}}
+            </p>
+        </div>
+    </div>
+    {{#registrationinfo}}
+    <div class="row">
+        <div class="col-md-2 col-lg-1">
+            <img src="{{pixbaseurl}}/managecloud.svg" width="48" height="48" alt="">
+        </div>
+        <div class="col-md-10 col-lg-11">
+            <p class="pb-1 mb-0">{{#str}} youareusingapikey, tool_vault, {{apikey}} {{/str}}
+            <a href="{{forgeturl}}">{{#str}} forgetapikey, tool_vault {{/str}}</a>
+            </p>
+            <p><a href="{{vaulturl}}/dashboard" target="_blank">{{#str}} manageremoteaccount, tool_vault {{/str}}</a><br>
+        </div>
+    </div>
+    {{/registrationinfo}}
+</div>
