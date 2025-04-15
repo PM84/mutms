@@ -1,5 +1,9 @@
 # Changelog
 
+## 4.5.4 - 2025-05-15
+### Changed
+- Only changes to automatic testing scripts
+
 ## 4.5.3 - 2025-03-18
 ### Fixed
 - behat tests checking that certificate opens in a new window failing with selenium/standalone-chrome:4
