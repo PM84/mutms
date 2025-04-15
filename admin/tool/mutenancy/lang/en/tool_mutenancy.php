@@ -77,12 +77,11 @@ $string['mutenancy:memberupdate'] = 'Update account of tenant member';
 $string['mutenancy:switch'] = 'Switch to tenant';
 $string['mutenancy:view'] = 'View tenant';
 $string['pluginname'] = 'Multi-tenancy';
-$string['privacy:metadata'] = 'Multi-tenancy plugin does not store any personal data.';
 $string['privacy:metadata:tool_mutenancy_manager'] = 'Tenant managers';
 $string['privacy:metadata:tool_mutenancy_manager:tenantid'] = 'Tenant id';
 $string['privacy:metadata:tool_mutenancy_manager:timecreated'] = 'Time of creation';
 $string['privacy:metadata:tool_mutenancy_manager:usercreated'] = 'User who created tenant';
-$string['privacy:metadata:tool_mutenancy_manager:userid'] = 'Manager id';
+$string['privacy:metadata:tool_mutenancy_manager:userid'] = 'Manager user id';
 $string['role_tenantmanager_archetype'] = 'ARCHETYPE: Tenant manager';
 $string['role_tenantmanager_description'] = 'Tenant manager role gets assigned to all tenant mangers automatically in tenant and tenant category contexts.
 
@@ -110,11 +109,12 @@ $string['tenancy_deactivate_info'] = 'Tenant manager role will be deleted during
 $string['tenant'] = 'Tenant';
 $string['tenant_actions'] = 'Actions';
 $string['tenant_archive'] = 'Archive tenant';
-$string['tenant_archive_info'] = 'Archiving tenant
+$string['tenant_archive_info'] = 'Archiving tenant:
 
-* prevents tenant members from logging in and stops all outgoing emails and notifications.
-* hides tenant category
-* archiving is a required step before tenant can be deleted';
+* prevents tenant members from logging in and stops all outgoing emails and notifications,
+* hides tenant category.
+
+Archiving is a required step before tenant can be deleted.';
 $string['tenant_archived'] = 'Archived';
 $string['tenant_category'] = 'Tenant category';
 $string['tenant_categoryidnumber'] = 'Tenant category ID number';
@@ -135,12 +135,14 @@ $string['tenant_delete_movetotenant'] = 'Allocate members to';
 $string['tenant_idnumber'] = 'Tenant ID';
 $string['tenant_loginshow'] = 'Show tenant on login page';
 $string['tenant_loginurl'] = 'Tenant login URL';
+$string['tenant_manager'] = 'Tenant manager';
 $string['tenant_managers'] = 'Tenant managers';
 $string['tenant_member'] = 'Tenant member';
 $string['tenant_memberlimit'] = 'Tenant members limit';
 $string['tenant_name'] = 'Tenant name';
 $string['tenant_restore'] = 'Restore archived tenant';
 $string['tenant_restore_info'] = 'Restoring of tenant should revert most changes done during tenant archiving.
+
 It is however recommended to verify all tenant settings and category visibility afterwards.';
 $string['tenant_sitefullname'] = 'Tenant site name';
 $string['tenant_siteshortname'] = 'Tenant site short name';
