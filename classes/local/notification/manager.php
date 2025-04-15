@@ -128,17 +128,16 @@ abstract class manager {
     }
 
     /**
-     * Adds the frominstance autocomplete element to oimport form.
+     * Adds the frominstance autocomplete element to import form.
      *
      * @param int $instanceid
      * @param \MoodleQuickForm $mform
      * @return void
      */
     public static function add_import_frominstance_element(int $instanceid, \MoodleQuickForm $mform): void {
-         $arguments = ['id' => $instanceid];
-         \tool_muprog\external\form_notification_import_frominstance::add_form_element(
-             $mform, $arguments, 'frominstance', get_string('notification_import_from', 'tool_mulib'));
-         $mform->addRule('frominstance', null, 'required', null, 'client');
+        if (self::is_import_supported()) {
+            throw new \core\exception\coding_exception('managers that support notification import must override add_import_frominstance_element method');
+        }
     }
 
     /**
