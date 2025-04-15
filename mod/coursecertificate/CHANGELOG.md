@@ -1,5 +1,9 @@
 # Changelog
 
+## 4.5.4 - 2025-04-15
+### Fixed
+- Changed branch name in the testing matrix since the required branch of tool_certificate is no longer the default one
+
 ## 4.5.3 - 2025-03-18
 ### Fixed
 - behat tests checking that certificate opens in a new window failing with selenium/standalone-chrome:4
