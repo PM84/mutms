@@ -71,27 +71,29 @@ if (!$classname || !class_exists($classname)) {
 
 $manager::setup_view_page($notification);
 
-echo '<dl class="row">';
+$details = [];
+
 $name = $classname::get_name();
-echo '<dt class="col-3">' . get_string('notification', 'tool_mulib') . ':</dt><dd class="col-9">' . $name . '</dd>';
+$details[] = ['property' => get_string('notification', 'tool_mulib'), 'value' => $name];
 $instancename = $manager::get_instance_name($notification->instanceid);
 $manageurl = $manager::get_instance_management_url($notification->instanceid);
 if ($manageurl) {
     $instancename = html_writer::link($manageurl, $instancename);
 }
-echo '<dt class="col-3">' . get_string('notification_instance', 'tool_mulib') . ':</dt><dd class="col-9">' . $instancename . '</dd>';
+$details[] = ['property' => get_string('notification_instance', 'tool_mulib'), 'value' => $instancename];
 $description = $classname::get_description();
 $enabled = $notification->enabled ? get_string('yes') : get_string('no');
-echo '<dt class="col-3">' . get_string('notification_enabled', 'tool_mulib') . ':</dt><dd class="col-9">' . $enabled  . '</dd>';
-echo '<dt class="col-3">' . get_string('description') . ':</dt><dd class="col-9">' . $description  . '</dd>';
+$details[] = ['property' => get_string('notification_enabled', 'tool_mulib'), 'value' => $enabled ];
+$details[] = ['property' => get_string('description'), 'value' => $description ];
 $custom = $notification->custom ? get_string('yes') : get_string('no');
-echo '<dt class="col-3">' . get_string('notification_custom', 'tool_mulib') . ':</dt><dd class="col-9">' . $custom  . '</dd>';
+$details[] = ['property' => get_string('notification_custom', 'tool_mulib'), 'value' => $custom ];
 $a = [];
 $subject = $classname::get_subject($notification, $a);
-echo '<dt class="col-3">' . get_string('notification_subject', 'tool_mulib') . ':</dt><dd class="col-9">' . $subject  . '</dd>';
+$details[] = ['property' => get_string('notification_subject', 'tool_mulib'), 'value' => $subject ];
 $body = $classname::get_body($notification, $a);
-echo '<dt class="col-3">' . get_string('notification_body', 'tool_mulib') . ':</dt><dd class="col-9">' . $body  . '</dd>';
-echo '</dl>';
+$details[] = ['property' => get_string('notification_body', 'tool_mulib'), 'value' => $body ];
+
+echo $OUTPUT->render_from_template('tool_mulib/entity_details', ['details' => $details]);
 
 $buttons = [];
 

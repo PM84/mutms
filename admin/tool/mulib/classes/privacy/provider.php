@@ -23,9 +23,11 @@ use core_privacy\local\request\approved_contextlist;
 use core_privacy\local\request\approved_userlist;
 use core_privacy\local\request\contextlist;
 use core_privacy\local\request\userlist;
+use core_privacy\local\request\transform;
+use core_privacy\local\request\writer;
 
 /**
- * Open LMS support class privacy support.
+ * Additional tools privacy support.
  *
  * @package     tool_mulib
  * @copyright   2022 Open LMS (https://www.openlms.net/)
@@ -39,7 +41,7 @@ class provider implements
     \core_privacy\local\request\core_userlist_provider {
 
     /**
-     * Returns meta data about this system.
+     * Returns meta-data about additional tools plugin.
      *
      * @param collection $collection The initialised collection to add items to.
      * @return collection A listing of user data stored through this system.
@@ -48,7 +50,9 @@ class provider implements
         $collection->add_database_table(
             'tool_mulib_notification_user',
             [
+                'notificationid' => 'privacy:metadata:notificationid',
                 'userid' => 'privacy:metadata:userid',
+                'timenotified' => 'privacy:metadata:timenotified',
             ],
             'privacy:metadata:tool_mulib_notification_user:tableexplanation'
         );
@@ -62,7 +66,11 @@ class provider implements
      * @return contextlist $contextlist The contextlist containing the list of contexts used in this plugin.
      */
     public static function get_contexts_for_userid(int $userid): contextlist {
-        return new contextlist();
+        $list = new contextlist();
+        // Note that we do not know which context the notification belonged to,
+        // so use system context for everything.
+        $list->add_system_context();
+        return $list;
     }
 
     /**
@@ -70,8 +78,45 @@ class provider implements
      *
      * @param approved_contextlist $contextlist The approved contexts to export information for.
      */
-    public static function export_user_data(approved_contextlist $contextlist) {
-        // This will be tricky.
+    public static function export_user_data(approved_contextlist $contextlist): void {
+        global $DB;
+
+        $syscontext = \context_system::instance();
+
+        $foundsystem = false;
+        foreach ($contextlist->get_contexts() as $context) {
+            if ($context->id == $syscontext->id) {
+                $foundsystem = true;
+                break;
+            }
+        }
+
+        if (!$foundsystem) {
+            // We do not know the actual context where the notification came from,
+            // so we use only system context here.
+            return;
+        }
+
+        $subcontexts = [get_string('privacy:metadata:tool_mulib_notification_user:tableexplanation', 'tool_mulib')];
+
+        $sql = "SELECT nu.timenotified, n.component, n.notificationtype, n.instanceid, nu.otherid1, nu.otherid2
+                  FROM {tool_mulib_notification_user} nu
+                  JOIN {tool_mulib_notification} n ON n.id = nu.notificationid
+                 WHERE nu.userid = :userid
+              ORDER BY nu.id ASC";
+        $params = ['userid' => $contextlist->get_user()->id];
+
+        $data = [];
+        $rs = $DB->get_recordset_sql($sql, $params);
+        foreach ($rs as $notification) {
+            $notification->timenotified = transform::datetime($notification->timenotified);
+            $data[] = $notification;
+        }
+        $rs->close();
+        // Method export_related_data() supports arrays, not just objects.
+        writer::with_context($syscontext)->export_related_data(
+            $subcontexts,
+            'data', $data);
     }
 
     /**
@@ -79,8 +124,16 @@ class provider implements
      *
      * @param \context $context The specific context to delete data for.
      */
-    public static function delete_data_for_all_users_in_context(\context $context) {
-        // This will be tricky.
+    public static function delete_data_for_all_users_in_context(\context $context): void {
+        global $DB;
+
+        $syscontext = \context_system::instance();
+        if ($context->id != $syscontext->id) {
+            return;
+        }
+
+        // This is a bad idea, users may get notified again.
+        $DB->delete_records('tool_mulib_notification_user', []);
     }
 
     /**
@@ -88,8 +141,18 @@ class provider implements
      *
      * @param approved_contextlist $contextlist The approved contexts and user information to delete information for.
      */
-    public static function delete_data_for_user(approved_contextlist $contextlist) {
-        // This will be tricky.
+    public static function delete_data_for_user(approved_contextlist $contextlist): void {
+        global $DB;
+
+        $syscontext = \context_system::instance();
+
+        foreach ($contextlist->get_contexts() as $context) {
+            if ($context->id != $syscontext->id) {
+                continue;
+            }
+            $userid = $contextlist->get_user()->id;
+            $DB->delete_records('tool_mulib_notification_user', ['userid' => $userid]);
+        }
     }
 
     /**
@@ -97,8 +160,21 @@ class provider implements
      *
      * @param userlist $userlist The userlist containing the list of users who have data in this context/plugin combination.
      */
-    public static function get_users_in_context(userlist $userlist) {
-        // This will be tricky.
+    public static function get_users_in_context(userlist $userlist): void {
+        global $DB;
+
+        $syscontext = \context_system::instance();
+        if ($userlist->get_context()->id != $syscontext->id) {
+            return;
+        }
+
+        $sql = "SELECT nu.userid
+                  FROM {tool_mulib_notification_user} nu
+                  JOIN {tool_mulib_notification} n ON n.id = nu.notificationid
+                  JOIN {user} u ON u.id = nu.userid AND u.deleted = 0
+              ORDER BY nu.userid ASC";
+
+        $userlist->add_users($DB->get_fieldset_sql($sql));
     }
 
     /**
@@ -106,7 +182,16 @@ class provider implements
      *
      * @param approved_userlist $userlist The approved context and user information to delete information for.
      */
-    public static function delete_data_for_users(approved_userlist $userlist) {
-        // This will be tricky.
+    public static function delete_data_for_users(approved_userlist $userlist): void {
+        global $DB;
+
+        $syscontext = \context_system::instance();
+        if ($userlist->get_context()->id != $syscontext->id) {
+            return;
+        }
+
+        foreach ($userlist->get_userids() as $userid) {
+            $DB->delete_records('tool_mulib_notification_user', ['userid' => $userid]);
+        }
     }
 }
