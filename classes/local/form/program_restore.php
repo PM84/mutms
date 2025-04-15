@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 // phpcs:disable moodle.Files.BoilerplateComment.CommentEndedTooSoon
+// phpcs:disable moodle.Files.LineLength.TooLong
 
 namespace tool_muprog\local\form;
 
@@ -30,6 +31,9 @@ final class program_restore extends \tool_mulib\local\dialog_form {
     protected function definition() {
         $mform = $this->_form;
         $program = $this->_customdata['program'];
+
+        $info = '<div class="alert alert-info">' . markdown_to_html(get_string('program_restore_info', 'tool_muprog')) . '</div>';
+        $mform->addElement('html', $info);
 
         $mform->addElement('static', 'fullname', get_string('programname', 'tool_muprog'), format_string($program->fullname));
 
