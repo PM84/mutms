@@ -42,9 +42,19 @@ $string['catalogue_tag'] = 'Filter by tag';
 $string['certificates'] = 'Certificates';
 $string['certification'] = 'Certification';
 $string['certification_archive'] = 'Archive certification';
+$string['certification_archive_info'] = 'Archiving certification:
+
+* archives relevant program allocations,
+* prevents updates of certification,
+* and in general it hides certification from regular users.
+
+Archiving is a required step before certification can be deleted.';
 $string['certification_create'] = 'Add certification';
 $string['certification_delete'] = 'Delete certification';
 $string['certification_restore'] = 'Restore certification';
+$string['certification_restore_info'] = 'Restoring of certification reverts changes done during certification archiving.
+
+It is however recommended to verify all certification settings and assigned users afterwards.';
 $string['certification_update'] = 'Update certification';
 $string['certificationidnumber'] = 'Certification ID';
 $string['certificationimage'] = 'Certification image';

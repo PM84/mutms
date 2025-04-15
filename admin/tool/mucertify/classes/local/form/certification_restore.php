@@ -32,6 +32,9 @@ final class certification_restore extends \tool_mulib\local\dialog_form {
         $mform = $this->_form;
         $certification = $this->_customdata['certification'];
 
+        $info = '<div class="alert alert-info">' . markdown_to_html(get_string('certification_restore_info', 'tool_mucertify')) . '</div>';
+        $mform->addElement('html', $info);
+
         $mform->addElement('static', 'fullname', get_string('certificationname', 'tool_mucertify'), format_string($certification->fullname));
 
         $mform->addElement('static', 'idnumber', get_string('certificationidnumber', 'tool_mucertify'), format_string($certification->idnumber));
