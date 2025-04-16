@@ -1,4 +1,4 @@
-@tool @tool_muprog @muTMS
+@tool @tool_muprog @tool_mutrain @muTMS
 Feature: Training program completion by students tests
 
   Background:

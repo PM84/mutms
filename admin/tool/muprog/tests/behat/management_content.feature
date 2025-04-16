@@ -317,7 +317,7 @@ Feature: Program content management tests
     And I should see "Course 2"
     And I should see "Course 3"
 
-  @javascript
+  @javascript @tool_mutrain
   Scenario: Manager may add, update and delete training in program
     Given I skip tests if "tool_mutrain" is not installed
     And the following "custom field categories" exist:

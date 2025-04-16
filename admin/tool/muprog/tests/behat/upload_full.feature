@@ -200,7 +200,7 @@ Feature: Program upload full tests
     And I should see "Active; Requests are not allowed" in the "Requests with approval" definition list item
     And I should see "Inactive" in the "Automatic cohort allocation" definition list item
 
-  @_file_upload
+  @_file_upload @tool_mutrain
   Scenario: System manager can upload all programs into original categories using normal JSON with training
     Given I skip tests if "tool_mutrain" is not installed
     And the following "tool_mutrain > frameworks" exist:
@@ -630,7 +630,7 @@ Feature: Program upload full tests
     And I should see "Active; Requests are not allowed" in the "Requests with approval" definition list item
     And I should see "Inactive" in the "Automatic cohort allocation" definition list item
 
-  @_file_upload
+  @_file_upload @tool_mutrain
   Scenario: System manager can upload all programs into original categories using extracted CSV with training
     Given I skip tests if "tool_mutrain" is not installed
     And the following "tool_mutrain > frameworks" exist:

@@ -62,8 +62,7 @@ final class program_update extends \tool_mulib\local\dialog_form {
         $mform->addElement('editor', 'description_editor', get_string('description'), ['rows' => 5], $editoroptions);
         $mform->setType('description_editor', PARAM_RAW);
 
-        $mform->addElement('select', 'archived', get_string('programsarchived', 'tool_muprog'), [0 => get_string('no'), 1 => get_string('yes')]);
-        $mform->addHelpButton('archived', 'programsarchived', 'tool_muprog');
+        $mform->addElement('select', 'archived', get_string('archived', 'tool_muprog'), [0 => get_string('no'), 1 => get_string('yes')]);
         $mform->hardFreeze('archived');
 
         $mform->addElement('hidden', 'id');
