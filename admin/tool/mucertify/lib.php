@@ -145,3 +145,30 @@ function tool_mucertify_get_tagged_certifications($tag, $exclusivemode = false, 
     return new core_tag\output\tagindex($tag, 'tool_mucertify', 'certification', $content,
         $exclusivemode, 0, 0, 1, $page, $totalpages);
 }
+
+/**
+ * This function extends the category navigation with certifications.
+ *
+ * @param navigation_node $navigation The navigation node to extend
+ * @param context $coursecategorycontext The context of the course category
+ */
+function tool_mucertify_extend_navigation_category_settings($navigation, $coursecategorycontext): void {
+    if (!enrol_is_enabled('muprog')) {
+        return;
+    }
+
+    if (!has_capability('tool/mucertify:view', $coursecategorycontext)) {
+        return;
+    }
+
+    // NOTE: catnav is added to unbreak breadcrums on management pages.
+    $settingsnode = navigation_node::create(
+        get_string('certifications', 'tool_mucertify'),
+        new moodle_url('/admin/tool/mucertify/management/index.php', ['contextid' => $coursecategorycontext->id, 'catnav' => 1]),
+        navigation_node::TYPE_CUSTOM,
+        null,
+        'tool_mucertify_certifications'
+    );
+    $settingsnode->set_force_into_more_menu(true);
+    $navigation->add_node($settingsnode);
+}

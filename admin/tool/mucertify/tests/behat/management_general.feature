@@ -1,5 +1,5 @@
 @tool @tool_mucertify @muTMS
-Feature: General certification management tests
+Feature: General Certifications management tests
 
   Background:
     Given unnecessary Admin bookmarks block gets deleted
