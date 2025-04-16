@@ -69,7 +69,7 @@ Feature: Certifications navigation behat steps test
   Scenario: Admin navigates to certifications the normal way
     Given I log in as "admin"
 
-    When I navigate to "Certifications > Certification management" in site administration
+    When I navigate to "Certifications > Certifications management" in site administration
     Then I should see "Certification 000"
     And I should see "Certification 001"
     And I should see "Certification 002"
