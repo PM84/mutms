@@ -182,3 +182,30 @@ function tool_muprog_get_tagged_programs($tag, $exclusivemode = false, $fromctx 
     return new core_tag\output\tagindex($tag, 'tool_muprog', 'program', $content,
         $exclusivemode, 0, 0, 1, $page, $totalpages);
 }
+
+/**
+ * This function extends the category navigation with programs.
+ *
+ * @param navigation_node $navigation The navigation node to extend
+ * @param context $coursecategorycontext The context of the course category
+ */
+function tool_muprog_extend_navigation_category_settings($navigation, $coursecategorycontext): void {
+    if (!enrol_is_enabled('muprog')) {
+        return;
+    }
+
+    if (!has_capability('tool/muprog:view', $coursecategorycontext)) {
+        return;
+    }
+
+    // NOTE: catnav is added to unbreak breadcrums on management pages.
+    $settingsnode = navigation_node::create(
+        get_string('programs', 'tool_muprog'),
+        new moodle_url('/admin/tool/muprog/management/index.php', ['contextid' => $coursecategorycontext->id, 'catnav' => 1]),
+        navigation_node::TYPE_CUSTOM,
+        null,
+        'tool_muprog_programs'
+    );
+    $settingsnode->set_force_into_more_menu(true);
+    $navigation->add_node($settingsnode);
+}

@@ -111,7 +111,7 @@ final class programs extends system_report {
     }
 
     /**
-     * Row class
+     * Row class.
      *
      * @param \stdClass $row
      * @return string
