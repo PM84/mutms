@@ -23,10 +23,11 @@ use tool_mutrain\local\framework;
 /**
  * Data class for training custom field
  *
- * @package   customfield_mutrain
- * @copyright 2024 Open LMS (https://www.openlms.net/)
- * @author    Petr Skoda
- * @license   https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package    customfield_mutrain
+ * @copyright  2024 Open LMS (https://www.openlms.net/)
+ * @copyright  2025 Petr Skoda
+ * @author     Petr Skoda
+ * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class data_controller extends \core_customfield\data_controller {
 
@@ -50,11 +51,13 @@ class data_controller extends \core_customfield\data_controller {
         $mform->addElement('text', $elementname, $this->get_field()->get_formatted_name(), 'size=5');
         $mform->setType($elementname, PARAM_RAW);
 
-        $category = $this->get_field()->get_category();
-        if (!framework::is_area_compatible($category->get('component'), $category->get('area'))) {
-            $warning = get_string('error_incompatiblearea', 'tool_mutrain');
-            $warning = '<div class="alert alert-warning">' . $warning . '</div>';
-            $mform->addElement('static', $elementname.'warning', '', $warning);
+        if (class_exists(framework::class)) {
+            $category = $this->get_field()->get_category();
+            if (!framework::is_area_compatible($category->get('component'), $category->get('area'))) {
+                $warning = get_string('error_incompatiblearea', 'tool_mutrain');
+                $warning = '<div class="alert alert-warning">' . $warning . '</div>';
+                $mform->addElement('static', $elementname.'warning', '', $warning);
+            }
         }
 
         if ($required) {
@@ -144,7 +147,7 @@ class data_controller extends \core_customfield\data_controller {
             $value = null;
         } else if ($value !== null) {
             if ($value < 0) {
-                throw new \invalid_parameter_exception('training amount value cannot be negative');
+                throw new \invalid_parameter_exception('training value cannot be negative');
             }
             $value = (int)$value;
             if ($value == 0) {
