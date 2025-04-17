@@ -24,6 +24,7 @@ namespace tool_mutrain\phpunit;
  * @group      muTMS
  * @package    tool_mutrain
  * @copyright  2022 Open LMS (https://www.openlms.net/)
+ * @copyright  2025 Petr Skoda
  * @author     Petr Skoda
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
