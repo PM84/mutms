@@ -33,7 +33,7 @@
 /** @var stdClass $COURSE */
 
 use tool_muprog\local\management;
-use tool_mulib\output\action_menu\dropdown;
+use tool_mulib\output\dropdown;
 
 require('../../../../config.php');
 require_once($CFG->dirroot . '/lib/formslib.php');
