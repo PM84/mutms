@@ -98,15 +98,14 @@ final class manual extends base {
     }
 
     /**
-     * assignment related buttons for certification management page.
+     * Assignment related buttons for certification management page.
      *
+     * @param \tool_mulib\output\header_actions $actions
      * @param stdClass $certification
      * @param stdClass $source
-     * @return array
+     * @return void
      */
-    public static function get_management_certification_users_buttons(stdClass $certification, stdClass $source): array {
-        global $OUTPUT;
-
+    public static function add_management_certification_users_actions(\tool_mulib\output\header_actions $actions, stdClass $certification, stdClass $source): void {
         if ($source->type !== static::get_type()) {
             throw new \coding_exception('invalid instance');
         }
@@ -116,13 +115,12 @@ final class manual extends base {
         if ($enabled && has_capability('tool/mucertify:assign', $context)) {
             $url = new \moodle_url('/admin/tool/mucertify/management/source_manual_assign.php', ['sourceid' => $source->id]);
             $button = new \tool_mulib\output\dialog_form\button($url, get_string('source_manual_assignusers', 'tool_mucertify'));
-            $buttons[] = $OUTPUT->render($button);
+            $actions->add_button($button);
 
             $url = new \moodle_url('/admin/tool/mucertify/management/source_manual_upload.php', ['sourceid' => $source->id]);
-            $button = new \tool_mulib\output\dialog_form\button($url, get_string('source_manual_uploadusers', 'tool_mucertify'));
-            $buttons[] = $OUTPUT->render($button);
+            $link = new \tool_mulib\output\dialog_form\link($url, get_string('source_manual_uploadusers', 'tool_mucertify'));
+            $actions->get_dropdown()->add_dialog_form($link);
         }
-        return $buttons;
     }
 
     /**

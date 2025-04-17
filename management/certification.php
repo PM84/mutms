@@ -33,7 +33,7 @@
 /** @var stdClass $COURSE */
 
 use tool_mucertify\local\management;
-use tool_mulib\output\dropdown;
+use tool_mulib\output\header_actions;
 
 require('../../../../config.php');
 require_once($CFG->dirroot . '/lib/formslib.php');
@@ -53,15 +53,16 @@ management::setup_certification_page($currenturl, $context, $certification, 'cer
 /** @var \tool_mucertify\output\management\renderer $managementoutput */
 $managementoutput = $PAGE->get_renderer('tool_mucertify', 'management');
 
-$dropdown = new dropdown(get_string('extra_menu_management_certification_general', 'tool_mucertify'));
+$actions = new header_actions(get_string('management_certification_general_actions', 'tool_mucertify'));
 if ($certification->archived && has_capability('tool/mucertify:delete', $context)) {
     $url = new moodle_url('/admin/tool/mucertify/management/certification_delete.php', ['id' => $certification->id]);
     $link = new tool_mulib\output\dialog_form\link($url, get_string('certification_delete', 'tool_mucertify'));
+    $link->set_dialog_size('sm');
     $link->set_after_submit($link::AFTER_SUBMIT_REDIRECT);
-    $dropdown->add_dialog_form($link);
+    $actions->get_dropdown()->add_dialog_form($link);
 }
-if ($dropdown->has_items()) {
-    $PAGE->add_header_action($OUTPUT->render($dropdown));
+if ($actions->has_items()) {
+    $PAGE->add_header_action($OUTPUT->render($actions));
 }
 
 echo $OUTPUT->header();

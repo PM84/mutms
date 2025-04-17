@@ -27,7 +27,7 @@
  */
 
 use tool_mucertify\local\management;
-use tool_mulib\output\dropdown;
+use tool_mulib\output\header_actions;
 
 /** @var moodle_database $DB */
 /** @var moodle_page $PAGE */
@@ -60,25 +60,17 @@ $currenturl = new moodle_url('/admin/tool/mucertify/management/index.php', ['con
 
 management::setup_index_page($currenturl, $context);
 
-$buttons = [];
-$dropdown = new dropdown(get_string('extra_menu_management_index', 'tool_muprog'));
+$actions = new header_actions(get_string('management_index_actions', 'tool_muprog'));
 
 if (has_capability('tool/mucertify:edit', $context)) {
-    $addurl = new moodle_url('/admin/tool/mucertify/management/certification_create.php', ['contextid' => $context->id]);
-    $addbutton = new tool_mulib\output\dialog_form\button($addurl, get_string('certification_create', 'tool_mucertify'));
-    $addbutton->set_after_submit($addbutton::AFTER_SUBMIT_REDIRECT);
-    $buttons[] = $OUTPUT->render($addbutton);
+    $url = new moodle_url('/admin/tool/mucertify/management/certification_create.php', ['contextid' => $context->id]);
+    $button = new tool_mulib\output\dialog_form\button($url, get_string('certification_create', 'tool_mucertify'));
+    $button->set_after_submit($button::AFTER_SUBMIT_REDIRECT);
+    $actions->add_button($button);
 }
 
-if ($buttons || $dropdown->has_items()) {
-    $action = '';
-    if ($buttons) {
-        $action .= implode($buttons);
-    }
-    if ($dropdown->has_items()) {
-        $action .= $OUTPUT->render($dropdown);
-    }
-    $PAGE->add_header_action($action);
+if ($actions->has_items()) {
+    $PAGE->add_header_action($OUTPUT->render($actions));
 }
 
 echo $OUTPUT->header();

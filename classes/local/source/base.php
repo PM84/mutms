@@ -130,14 +130,14 @@ abstract class base {
     }
 
     /**
-     * assignment related buttons for certification management page.
+     * Assignment related buttons for certification users page.
      *
+     * @param \tool_mulib\output\header_actions $actions
      * @param stdClass $certification
      * @param stdClass $source
-     * @return array
+     * @return void
      */
-    public static function get_management_certification_users_buttons(stdClass $certification, stdClass $source): array {
-        return [];
+    public static function add_management_certification_users_actions(\tool_mulib\output\header_actions $actions, stdClass $certification, stdClass $source): void {
     }
 
     /**

@@ -34,13 +34,12 @@ final class certification_delete extends \tool_mulib\local\dialog_form {
         $mform = $this->_form;
         $certification = $this->_customdata['certification'];
 
+        $info = '<div class="alert alert-danger">' . markdown_to_html(get_string('certification_delete_info', 'tool_mucertify')) . '</div>';
+        $mform->addElement('html', $info);
+
         $mform->addElement('static', 'fullname', get_string('certificationname', 'tool_mucertify'), format_string($certification->fullname));
 
         $mform->addElement('static', 'idnumber', get_string('certificationidnumber', 'tool_mucertify'), format_string($certification->idnumber));
-
-        $mform->addElement('select', 'archived', get_string('archived', 'tool_mucertify'), [0 => get_string('no'), 1 => get_string('yes')]);
-        $mform->freeze('archived');
-        $mform->setDefault('archived', $certification->archived);
 
         $mform->addElement('hidden', 'id');
         $mform->setType('id', PARAM_INT);
