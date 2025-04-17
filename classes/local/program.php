@@ -771,7 +771,7 @@ final class program {
      * @param stdClass $data
      * @return stdClass
      */
-    public static function update_program_scheduling(stdClass $data): stdClass {
+    public static function update_scheduling(stdClass $data): stdClass {
         global $DB;
 
         if (!isset($data->id) || !isset($data->programstart_type) || !isset($data->programdue_type) || !isset($data->programend_type)) {
@@ -844,7 +844,7 @@ final class program {
      * @param int $id
      * @return void
      */
-    public static function delete_program(int $id): void {
+    public static function delete(int $id): void {
         global $DB, $CFG;
         require_once($CFG->dirroot . '/group/lib.php');
 

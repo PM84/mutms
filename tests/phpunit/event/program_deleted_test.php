@@ -49,7 +49,7 @@ final class program_deleted_test extends \advanced_testcase {
         $program = program::create($data);
 
         $sink = $this->redirectEvents();
-        program::delete_program($program->id);
+        program::delete($program->id);
         $events = $sink->get_events();
         $sink->close();
 

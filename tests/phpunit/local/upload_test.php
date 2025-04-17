@@ -111,9 +111,9 @@ final class upload_test extends \advanced_testcase {
         $oldprograms = unserialize(serialize($rawprograms));
         $this->assertCount(3, $rawprograms);
 
-        \tool_muprog\local\program::delete_program($program0->id);
-        \tool_muprog\local\program::delete_program($program1->id);
-        \tool_muprog\local\program::delete_program($program2->id);
+        \tool_muprog\local\program::delete($program0->id);
+        \tool_muprog\local\program::delete($program1->id);
+        \tool_muprog\local\program::delete($program2->id);
 
         \tool_muprog\local\upload::validate_references($rawprograms);
 
@@ -133,9 +133,9 @@ final class upload_test extends \advanced_testcase {
         $program2x = $DB->get_record('tool_muprog_program', ['idnumber' => $program2->idnumber], '*', MUST_EXIST);
         $this->assertSame($program2->contextid, $program2x->contextid);
 
-        \tool_muprog\local\program::delete_program($program0x->id);
-        \tool_muprog\local\program::delete_program($program1x->id);
-        \tool_muprog\local\program::delete_program($program2x->id);
+        \tool_muprog\local\program::delete($program0x->id);
+        \tool_muprog\local\program::delete($program1x->id);
+        \tool_muprog\local\program::delete($program2x->id);
 
         \tool_muprog\local\upload::validate_references($rawprograms2);
         $data = (object)[

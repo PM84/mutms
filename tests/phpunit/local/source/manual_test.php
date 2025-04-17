@@ -134,7 +134,7 @@ final class manual_test extends \advanced_testcase {
             'programend_type' => 'date',
             'programend_date' => $now - 20,
         ];
-        $program1 = program::update_program_scheduling($data);
+        $program1 = program::update_scheduling($data);
         \tool_muprog\local\source\manual::allocate_users($program1->id, $source1->id, [$user3->id]);
         $allocation = $DB->get_record('tool_muprog_allocation', ['programid' => $program1->id, 'userid' => $user3->id]);
         $this->assertEquals($now, $allocation->timestart);
@@ -313,7 +313,7 @@ final class manual_test extends \advanced_testcase {
             'programend_type' => 'date',
             'programend_date' => $timestart + (30 * 60 * 60 * 24),
         ];
-        $program1 = program::update_program_scheduling($pdata);
+        $program1 = program::update_scheduling($pdata);
         $source1 = $DB->get_record('tool_muprog_source', ['programid' => $program1->id, 'type' => 'manual'], '*', MUST_EXIST);
 
         $draftid = \file_get_unused_draft_itemid();
@@ -384,7 +384,7 @@ final class manual_test extends \advanced_testcase {
             'programend_type' => 'date',
             'programend_date' => $now + 60 * 60 * 2,
         ];
-        $program2 = program::update_program_scheduling($data);
+        $program2 = program::update_scheduling($data);
 
         $program3 = $generator->create_program();
 

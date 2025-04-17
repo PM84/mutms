@@ -385,7 +385,7 @@ final class program_test extends \advanced_testcase {
             'programend_type' => 'date',
             'programend_date' => time() + 60 * 60 * 6,
         ];
-        $program2 = program::update_program_scheduling($data);
+        $program2 = program::update_scheduling($data);
         $scohort2 = $DB->get_record('tool_muprog_source', ['programid' => $program2->id, 'type' => 'cohort'], '*', MUST_EXIST);
 
         $data = (object)[
@@ -493,7 +493,7 @@ final class program_test extends \advanced_testcase {
         $this->assertArrayHasKey('delay', $types);
     }
 
-    public function test_update_program_scheduling(): void {
+    public function test_update_scheduling(): void {
         $syscontext = \context_system::instance();
         $data = (object)[
             'fullname' => 'Some program',
@@ -509,7 +509,7 @@ final class program_test extends \advanced_testcase {
             'programdue_type' => 'notset',
             'programend_type' => 'notset',
         ];
-        $program = program::update_program_scheduling($data);
+        $program = program::update_scheduling($data);
         $this->assertInstanceOf('stdClass', $program);
         $this->assertSame(\tool_muprog\local\util::json_encode(['type' => 'allocation']), $program->startdatejson);
         $this->assertSame(\tool_muprog\local\util::json_encode(['type' => 'notset']), $program->duedatejson);
@@ -524,7 +524,7 @@ final class program_test extends \advanced_testcase {
             'programend_type' => 'date',
             'programend_date' => time() + 60 * 60 * 6,
         ];
-        $program = program::update_program_scheduling($data);
+        $program = program::update_scheduling($data);
         $this->assertInstanceOf('stdClass', $program);
         $this->assertSame(\tool_muprog\local\util::json_encode(['type' => 'date', 'date' => $data->programstart_date]), $program->startdatejson);
         $this->assertSame(\tool_muprog\local\util::json_encode(['type' => 'date', 'date' => $data->programdue_date]), $program->duedatejson);
@@ -539,14 +539,14 @@ final class program_test extends \advanced_testcase {
             'programend_type' => 'delay',
             'programend_delay' => ['type' => 'months', 'value' => 2],
         ];
-        $program = program::update_program_scheduling($data);
+        $program = program::update_scheduling($data);
         $this->assertInstanceOf('stdClass', $program);
         $this->assertSame(\tool_muprog\local\util::json_encode(['type' => 'delay', 'delay' => 'PT3H']), $program->startdatejson);
         $this->assertSame(\tool_muprog\local\util::json_encode(['type' => 'delay', 'delay' => 'P6D']), $program->duedatejson);
         $this->assertSame(\tool_muprog\local\util::json_encode(['type' => 'delay', 'delay' => 'P2M']), $program->enddatejson);
     }
 
-    public function test_delete_program(): void {
+    public function test_delete(): void {
         global $DB;
 
         $syscontext = \context_system::instance();
@@ -557,7 +557,7 @@ final class program_test extends \advanced_testcase {
         ];
         $program = program::create($data);
 
-        program::delete_program($program->id);
+        program::delete($program->id);
         $this->assertFalse($DB->record_exists('tool_muprog_program', ['id' => $program->id]));
     }
 
@@ -588,7 +588,7 @@ final class program_test extends \advanced_testcase {
         $this->assertSame($admin->id, $record->snapshotby);
         $this->assertSame('some explanation', $record->explanation);
 
-        program::delete_program($program->id);
+        program::delete($program->id);
         $this->setCurrentTimeStart();
         $DB->delete_records('tool_muprog_prg_snapshot', []);
         program::make_snapshot($program->id, 'delete', 'some explanation');
@@ -694,7 +694,7 @@ final class program_test extends \advanced_testcase {
         $customfieldsdata = $handler->export_instance_data_object($program2->id);
         $this->assertEquals('hocus-pocus', $customfieldsdata->testfield1);
 
-        program::delete_program($program1->id);
+        program::delete($program1->id);
 
         $this->assertFalse($DB->record_exists('customfield_data', ['instanceid' => $program1->id, 'fieldid' => $field1->get('id')]));
 

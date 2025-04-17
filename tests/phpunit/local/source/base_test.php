@@ -59,7 +59,7 @@ final class base_test extends \advanced_testcase {
             'programend_type' => 'date',
             'programend_date' => $now + 200,
         ];
-        $program = program::update_program_scheduling($data);
+        $program = program::update_scheduling($data);
 
         $this->assertTrue(\tool_muprog\local\source\base::is_valid_dateoverrides($program, []));
         $this->assertTrue(\tool_muprog\local\source\base::is_valid_dateoverrides($program, ['timestart' => $now + 1]));
