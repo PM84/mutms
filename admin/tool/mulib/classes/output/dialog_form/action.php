@@ -182,10 +182,13 @@ abstract class action implements \core\output\renderable, \core\output\templatab
     /**
      * Set dialog size.
      *
-     * @param string $size allowed values are '', 'lg or 'xl'
+     * @param string $size allowed values are '', 'sm', 'lg or 'xl'
      * @return void
      */
     public function set_dialog_size(string $size): void {
+        if ($size === 'sm') {
+            $size = '';
+        }
         if ($size !== '' && $size !== 'lg' && $size !== 'xl') {
             throw new \core\exception\invalid_parameter_exception('invalid dialog size');
         }
