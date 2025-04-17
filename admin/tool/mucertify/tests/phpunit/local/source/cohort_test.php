@@ -199,12 +199,13 @@ final class cohort_test extends \advanced_testcase {
         $this->assertSame('[]', \tool_mucertify\local\source\cohort::encode_datajson($formdata));
     }
 
-    public function test_get_management_certification_users_buttons(): void {
+    public function test_add_management_certification_users_actions(): void {
         $certification = new \stdClass();
         $source = new \stdClass();
 
-        $result = \tool_mucertify\local\source\cohort::get_management_certification_users_buttons($certification, $source);
-        $this->assertCount(0, $result);
+        $actions = new \tool_mulib\output\header_actions('xyz');
+        \tool_mucertify\local\source\cohort::add_management_certification_users_actions($actions, $certification, $source);
+        $this->assertFalse($actions->has_items());
     }
 
     public function test_update_source(): void {

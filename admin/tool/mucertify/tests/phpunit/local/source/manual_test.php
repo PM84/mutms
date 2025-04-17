@@ -135,7 +135,7 @@ final class manual_test extends \advanced_testcase {
         $this->assertSame('[]', \tool_mucertify\local\source\manual::encode_datajson($formdata));
     }
 
-    public function test_get_management_certification_users_buttons(): void {
+    public function test_add_management_certification_users_actions(): void {
         global $DB;
 
         $category = $this->getDataGenerator()->create_category([]);
@@ -170,16 +170,19 @@ final class manual_test extends \advanced_testcase {
             ['type' => 'manual', 'certificationid' => $certification->id], '*', MUST_EXIST);
 
         $this->setUser($user2);
-        $result = \tool_mucertify\local\source\manual::get_management_certification_users_buttons($certification, $source);
-        $this->assertCount(0, $result);
+        $actions = new \tool_mulib\output\header_actions('xyz');
+        \tool_mucertify\local\source\manual::add_management_certification_users_actions($actions, $certification, $source);
+        $this->assertFalse($actions->has_items());
 
         $this->setUser($user1);
-        $result = \tool_mucertify\local\source\manual::get_management_certification_users_buttons($certification, $source);
-        $this->assertCount(2, $result);
+        $actions = new \tool_mulib\output\header_actions('xyz');
+        \tool_mucertify\local\source\manual::add_management_certification_users_actions($actions, $certification, $source);
+        $this->assertTrue($actions->has_items());
 
         $certification->archived = '1';
-        $result = \tool_mucertify\local\source\manual::get_management_certification_users_buttons($certification, $source);
-        $this->assertCount(0, $result);
+        $actions = new \tool_mulib\output\header_actions('xyz');
+        \tool_mucertify\local\source\manual::add_management_certification_users_actions($actions, $certification, $source);
+        $this->assertFalse($actions->has_items());
         $certification->archived = '0';
     }
 

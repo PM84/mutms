@@ -51,6 +51,9 @@ $string['certification_archive_info'] = 'Archiving certification:
 Archiving is a required step before certification can be deleted.';
 $string['certification_create'] = 'Add certification';
 $string['certification_delete'] = 'Delete certification';
+$string['certification_delete_info'] = 'During certification deletion all certification data is deleted and users are de-allocated from programs.
+
+Note that certifications data snapshots are retained.';
 $string['certification_restore'] = 'Restore certification';
 $string['certification_restore_info'] = 'Restoring of certification reverts changes done during certification archiving.
 
@@ -104,8 +107,6 @@ $string['evidence_default_text'] = 'Upload of historic certification periods';
 $string['evidence_details'] = 'Evidence details';
 $string['evidence_details_help'] = 'Evidence details serve as explanation why certification was granted or revoked.';
 $string['expirationafter'] = 'Expires after';
-$string['extra_menu_management_certification_general'] = 'Certification actions';
-$string['extra_menu_management_certification_users'] = 'User actions';
 $string['fromdate'] = 'Valid from';
 $string['graceperiod'] = 'Grace period';
 $string['history_upload'] = 'Upload history';
@@ -120,6 +121,8 @@ $string['history_upload_timecertifiedcolumn'] = 'Certification date column';
 $string['history_upload_timefromcolumn'] = 'Period valid from column';
 $string['history_upload_timeuntilcolumn'] = 'Period expiration column';
 $string['management'] = 'Certifications management';
+$string['management_certification_general_actions'] = 'Certification actions';
+$string['management_certification_users_actions'] = 'User actions';
 $string['messageprovider:approval_reject_notification'] = 'Certification request rejection notification';
 $string['messageprovider:approval_request_notification'] = 'Certification approval request notification';
 $string['messageprovider:assignment_notification'] = 'Certification assignment notification';

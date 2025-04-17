@@ -33,6 +33,7 @@
 /** @var stdClass $COURSE */
 
 use tool_mucertify\local\management;
+use tool_mulib\output\header_actions;
 
 require('../../../../config.php');
 require_once($CFG->dirroot . '/lib/formslib.php');
@@ -52,32 +53,24 @@ management::setup_certification_page($currenturl, $context, $certification, 'cer
 /** @var \tool_mucertify\local\source\base[] $sourceclasses */ // Type hack.
 $sourceclasses = \tool_mucertify\local\assignment::get_source_classes();
 
-$buttons = [];
+$actions = new header_actions(get_string('management_certification_users_actions', 'tool_mucertify'));
+
 foreach ($sourceclasses as $sourceclass) {
     $sourcetype = $sourceclass::get_type();
     $sourcerecord = $DB->get_record('tool_mucertify_source', ['certificationid' => $certification->id, 'type' => $sourcetype]);
     if (!$sourcerecord) {
         continue;
     }
-    $buttons = array_merge($buttons,  $sourceclass::get_management_certification_users_buttons($certification, $sourcerecord));
+    $sourceclass::add_management_certification_users_actions($actions, $certification, $sourcerecord);
 }
-
-$dropdown = new \tool_mulib\output\dropdown(get_string('extra_menu_management_certification_users', 'tool_mucertify'));
 if (!$certification->archived && has_capability('tool/mucertify:admin', $context)) {
     $url = new \moodle_url('/admin/tool/mucertify/management/history_upload.php', ['certificationid' => $certification->id]);
     $link = new \tool_mulib\output\dialog_form\link($url, get_string('history_upload', 'tool_mucertify'));
-    $dropdown->add_dialog_form($link);
+    $actions->get_dropdown()->add_dialog_form($link);
 }
 
-if ($buttons || $dropdown->has_items()) {
-    $action = '';
-    if ($buttons) {
-        $action .= implode($buttons);
-    }
-    if ($dropdown->has_items()) {
-        $action .= $OUTPUT->render($dropdown);
-    }
-    $PAGE->add_header_action($action);
+if ($actions->has_items()) {
+    $PAGE->add_header_action($OUTPUT->render($actions));
 }
 
 echo $OUTPUT->header();
