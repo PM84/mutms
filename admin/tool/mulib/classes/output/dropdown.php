@@ -16,7 +16,7 @@
 
 // phpcs:disable moodle.Files.BoilerplateComment.CommentEndedTooSoon
 
-namespace tool_mulib\output\action_menu;
+namespace tool_mulib\output;
 
 /**
  * Action menu dropdown.
@@ -27,11 +27,11 @@ namespace tool_mulib\output\action_menu;
  * @author      Petr Skoda
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class dropdown implements \renderable, \core\output\named_templatable {
+class dropdown implements \core\output\renderable, \core\output\named_templatable {
     /** @var array $items links, dividers or custom html fragments */
-    protected $items = [];
+    private $items = [];
     /** @var string */
-    protected $title;
+    private $title;
 
     /**
      * Constructor.
@@ -48,14 +48,14 @@ class dropdown implements \renderable, \core\output\named_templatable {
      * @param string $label
      * @param \moodle_url $url
      */
-    public function add_item(string $label, \moodle_url $url): void {
+    final public function add_item(string $label, \moodle_url $url): void {
         $this->items[] = ['label' => $label, 'url' => $url->out(false)];
     }
 
     /**
      * Add divider element.
      */
-    public function add_divider(): void {
+    final public function add_divider(): void {
         $this->items[] = ['divider' => true];
     }
 
@@ -64,7 +64,7 @@ class dropdown implements \renderable, \core\output\named_templatable {
      *
      * @param \tool_mulib\output\dialog_form\link $link
      */
-    public function add_dialog_form(\tool_mulib\output\dialog_form\link $link): void {
+    final public function add_dialog_form(\tool_mulib\output\dialog_form\link $link): void {
         global $OUTPUT;
         $oldclass = $link->get_class();
         $link->set_class('dropdown-item');
@@ -77,7 +77,7 @@ class dropdown implements \renderable, \core\output\named_templatable {
      *
      * @return bool
      */
-    public function has_items(): bool {
+    final public function has_items(): bool {
         return !empty($this->items);
     }
 
@@ -87,7 +87,7 @@ class dropdown implements \renderable, \core\output\named_templatable {
      * @param \renderer_base $output
      * @return array
      */
-    public function export_for_template(\renderer_base $output): array {
+    final public function export_for_template(\renderer_base $output): array {
         return [
             'title' => $this->title,
             'items' => $this->items,
@@ -100,7 +100,7 @@ class dropdown implements \renderable, \core\output\named_templatable {
      * @param \renderer_base $renderer The renderer requesting the template name
      * @return string
      */
-    public function get_template_name(\renderer_base $renderer): string {
-        return 'tool_mulib/action_menu/dropdown';
+    final public function get_template_name(\renderer_base $renderer): string {
+        return 'tool_mulib/dropdown';
     }
 }
