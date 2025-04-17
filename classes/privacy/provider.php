@@ -1,5 +1,5 @@
 <?php
-// This file is part of Programs for Moodle™.
+// This file is part of Program enrolment plugin for Moodle™.
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@
 namespace enrol_muprog\privacy;
 
 /**
- * Programs enrolment privacy provider.
+ * Program enrolment privacy provider.
  *
  * @package     enrol_muprog
  * @copyright   2025 Petr Skoda

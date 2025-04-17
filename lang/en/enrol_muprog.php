@@ -1,5 +1,5 @@
 <?php
-// This file is part of Programs for Moodle™.
+// This file is part of Program enrolment plugin for Moodle™.
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -24,5 +24,5 @@
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-$string['pluginname'] = 'Programs enrolment';
-$string['privacy:metadata'] = 'Programs enrolment plugin does not store any personal information';
+$string['pluginname'] = 'Program enrolment';
+$string['privacy:metadata'] = 'Program enrolment plugin does not store any personal information';

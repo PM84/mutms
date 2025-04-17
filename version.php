@@ -1,5 +1,5 @@
 <?php
-// This file is part of Programs for Moodle™.
+// This file is part of Program enrolment plugin for Moodle™.
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -17,7 +17,7 @@
 // phpcs:disable moodle.Files.BoilerplateComment.CommentEndedTooSoon
 
 /**
- * Programs enrolment plugin version.
+ * Program enrolment plugin version.
  *
  * @package     enrol_muprog
  * @copyright   2025 Petr Skoda
