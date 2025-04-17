@@ -65,7 +65,7 @@ $managementoutput = $PAGE->get_renderer('tool_muprog', 'management');
 allocation::fix_user_enrolments($program->id, $allocation->userid);
 $allocation = $DB->get_record('tool_muprog_allocation', ['id' => $allocation->id], '*', MUST_EXIST);
 
-$dropdown = new \tool_mulib\output\action_menu\dropdown(
+$dropdown = new \tool_mulib\output\dropdown(
     get_string('extra_menu_management_program_allocation', 'tool_muprog'));
 
 if (has_capability('tool/muprog:admin', $context)) {
