@@ -19,7 +19,7 @@
 
 namespace tool_mulib\local\notification;
 
-use tool_mulib\output\dropdown;
+use tool_mulib\output\header_actions;
 
 /**
  * Base for classes that describe notifications in a plugin.
@@ -258,22 +258,23 @@ abstract class manager {
      * Render list of all instance notifications and management UI.
      *
      * @param int $instanceid
-     * @return dropdown|null
+     * @return header_actions
      */
-    public static function get_extra_actions(int $instanceid): ?dropdown {
+    public static function get_header_actions(int $instanceid): header_actions {
+        $actions = new header_actions(get_string('notification_extramenu', 'tool_mulib'));
+
         if (!static::can_manage($instanceid)) {
-            return null;
+            return $actions;
         }
         if (!static::is_import_supported()) {
-            return null;
+            return $actions;
         }
 
-        $dropdown = new dropdown(get_string('notification_extramenu', 'tool_mulib'));
         $component = static::get_component();
         $url = new \moodle_url('/admin/tool/mulib/notification/import.php', ['instanceid' => $instanceid, 'component' => $component]);
         $link = new \tool_mulib\output\dialog_form\link($url, get_string('notification_import', 'tool_mulib'));
-        $dropdown->add_dialog_form($link);
+        $actions->get_dropdown()->add_dialog_form($link);
 
-        return $dropdown;
+        return $actions;
     }
 }
