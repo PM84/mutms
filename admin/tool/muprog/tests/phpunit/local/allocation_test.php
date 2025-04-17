@@ -90,7 +90,7 @@ final class allocation_test extends \advanced_testcase {
             'programdue_type' => 'notset',
             'programend_type' => 'notset',
         ];
-        $program = \tool_muprog\local\program::update_program_scheduling($data);
+        $program = \tool_muprog\local\program::update_scheduling($data);
         $this->assertSame($timeallocation, \tool_muprog\local\allocation::get_default_timestart($program, $timeallocation));
 
         $data = (object)[
@@ -100,7 +100,7 @@ final class allocation_test extends \advanced_testcase {
             'programdue_type' => 'notset',
             'programend_type' => 'notset',
         ];
-        $program = \tool_muprog\local\program::update_program_scheduling($data);
+        $program = \tool_muprog\local\program::update_scheduling($data);
         $this->assertSame($data->programstart_date, \tool_muprog\local\allocation::get_default_timestart($program, $timeallocation));
 
         $data = (object)[
@@ -110,7 +110,7 @@ final class allocation_test extends \advanced_testcase {
             'programdue_type' => 'notset',
             'programend_type' => 'notset',
         ];
-        $program = \tool_muprog\local\program::update_program_scheduling($data);
+        $program = \tool_muprog\local\program::update_scheduling($data);
         $this->assertSame($timeallocation + (60 * 60 * 3), \tool_muprog\local\allocation::get_default_timestart($program, $timeallocation));
     }
 
@@ -132,7 +132,7 @@ final class allocation_test extends \advanced_testcase {
             'programdue_type' => 'notset',
             'programend_type' => 'notset',
         ];
-        $program = \tool_muprog\local\program::update_program_scheduling($data);
+        $program = \tool_muprog\local\program::update_scheduling($data);
         $this->assertSame(null, \tool_muprog\local\allocation::get_default_timedue($program, $timeallocation, $timestart));
 
         $data = (object)[
@@ -143,7 +143,7 @@ final class allocation_test extends \advanced_testcase {
             'programdue_date' => $timestart + 20,
             'programend_type' => 'notset',
         ];
-        $program = \tool_muprog\local\program::update_program_scheduling($data);
+        $program = \tool_muprog\local\program::update_scheduling($data);
         $this->assertSame($data->programdue_date, \tool_muprog\local\allocation::get_default_timedue($program, $timeallocation, $timestart));
 
         $data = (object)[
@@ -154,7 +154,7 @@ final class allocation_test extends \advanced_testcase {
             'programdue_delay' => ['type' => 'hours', 'value' => 3],
             'programend_type' => 'notset',
         ];
-        $program = \tool_muprog\local\program::update_program_scheduling($data);
+        $program = \tool_muprog\local\program::update_scheduling($data);
         $this->assertSame($timeallocation + (60 * 60 * 3), \tool_muprog\local\allocation::get_default_timedue($program, $timeallocation, $timestart));
     }
 
@@ -176,7 +176,7 @@ final class allocation_test extends \advanced_testcase {
             'programend_type' => 'notset',
             'programdue_type' => 'notset',
         ];
-        $program = \tool_muprog\local\program::update_program_scheduling($data);
+        $program = \tool_muprog\local\program::update_scheduling($data);
         $this->assertSame(null, \tool_muprog\local\allocation::get_default_timeend($program, $timeallocation, $timestart));
 
         $data = (object)[
@@ -187,7 +187,7 @@ final class allocation_test extends \advanced_testcase {
             'programend_date' => $timestart + 20,
             'programdue_type' => 'notset',
         ];
-        $program = \tool_muprog\local\program::update_program_scheduling($data);
+        $program = \tool_muprog\local\program::update_scheduling($data);
         $this->assertSame($data->programend_date, \tool_muprog\local\allocation::get_default_timeend($program, $timeallocation, $timestart));
 
         $data = (object)[
@@ -198,7 +198,7 @@ final class allocation_test extends \advanced_testcase {
             'programend_delay' => ['type' => 'hours', 'value' => 3],
             'programdue_type' => 'notset',
         ];
-        $program = \tool_muprog\local\program::update_program_scheduling($data);
+        $program = \tool_muprog\local\program::update_scheduling($data);
         $this->assertSame($timeallocation + (60 * 60 * 3), \tool_muprog\local\allocation::get_default_timeend($program, $timeallocation, $timestart));
     }
 
@@ -2058,7 +2058,7 @@ final class allocation_test extends \advanced_testcase {
         $program1 = $generator->create_program(['sources' => ['manual' => []]]);
         $source1 = $DB->get_record('tool_muprog_source', ['programid' => $program1->id, 'type' => 'manual'], '*', MUST_EXIST);
 
-        $program1 = program::update_program_scheduling((object)[
+        $program1 = program::update_scheduling((object)[
             'id' => $program1->id,
             'programstart_type' => 'date',
             'programstart_date' => time() + 100,
@@ -2128,7 +2128,7 @@ final class allocation_test extends \advanced_testcase {
         $program1 = $generator->create_program(['sources' => ['manual' => []]]);
         $source1 = $DB->get_record('tool_muprog_source', ['programid' => $program1->id, 'type' => 'manual'], '*', MUST_EXIST);
 
-        $program1 = program::update_program_scheduling((object)[
+        $program1 = program::update_scheduling((object)[
             'id' => $program1->id,
             'programstart_type' => 'date',
             'programstart_date' => time() - 100,
@@ -2199,7 +2199,7 @@ final class allocation_test extends \advanced_testcase {
         $program1 = $generator->create_program(['sources' => ['manual' => []]]);
         $source1 = $DB->get_record('tool_muprog_source', ['programid' => $program1->id, 'type' => 'manual'], '*', MUST_EXIST);
 
-        $program1 = program::update_program_scheduling((object)[
+        $program1 = program::update_scheduling((object)[
             'id' => $program1->id,
             'programstart_type' => 'date',
             'programstart_date' => time() - 200,
@@ -2336,7 +2336,7 @@ final class allocation_test extends \advanced_testcase {
         ]);
         $groups = $DB->get_records('groups', [], 'id ASC');
         $this->assertCount(4, $groups);
-        program::delete_program($program2->id);
+        program::delete($program2->id);
         $groups = $DB->get_records('groups', [], 'id ASC');
         $this->assertCount(2, $groups);
         $groups = array_values($groups);
@@ -2400,6 +2400,6 @@ final class allocation_test extends \advanced_testcase {
         $this->assertCount(0, $DB->get_records('groups', ['name' => $program3->fullname, 'courseid' => $course1->id]));
         delete_course($course1, false);
         $program3 = program::update_general((object)['id' => $program3->id, 'creategroups' => 1]);
-        program::delete_program($program3->id);
+        program::delete($program3->id);
     }
 }

@@ -110,10 +110,6 @@ $string['exportfile_programs'] = 'programs';
 $string['exportformat'] = 'File format';
 $string['exportformat_csv'] = 'CSV';
 $string['exportformat_json'] = 'JSON';
-$string['extra_menu_management_index'] = 'Programs actions';
-$string['extra_menu_management_program_allocation'] = 'Allocation actions';
-$string['extra_menu_management_program_general'] = 'Program actions';
-$string['extra_menu_management_program_users'] = 'Users actions';
 $string['fixeddate'] = 'At a fixed date';
 $string['importallocationend'] = 'Allocation end ({$a})';
 $string['importallocationstart'] = 'Allocation start ({$a})';
@@ -134,6 +130,10 @@ $string['itemcompletion'] = 'Program item completion';
 $string['itempoints'] = 'Points';
 $string['itemrecalculate'] = 'Recalculate item completion';
 $string['management'] = 'Programs management';
+$string['management_index_actions'] = 'Programs actions';
+$string['management_program_allocation_actions'] = 'Allocation actions';
+$string['management_program_general_actions'] = 'Program actions';
+$string['management_program_users_actions'] = 'Users actions';
 $string['messageprovider:allocation_notification'] = 'Program allocation notification';
 $string['messageprovider:approval_reject_notification'] = 'Program request rejection notification';
 $string['messageprovider:approval_request_notification'] = 'Program approval request notification';
@@ -290,6 +290,9 @@ $string['program_archive_info'] = 'Archiving program:
 Archiving is a required step before program can be deleted.';
 $string['program_create'] = 'Add program';
 $string['program_delete'] = 'Delete program';
+$string['program_delete_info'] = 'During program deletion all program data is deleted and users are unenrolled from program courses.
+
+Note that program data snapshots are retained.';
 $string['program_restore'] = 'Restore program';
 $string['program_restore_info'] = 'Restoring of program reverts changes done during program archiving.
 

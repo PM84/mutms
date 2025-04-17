@@ -33,14 +33,12 @@ final class program_delete extends \tool_mulib\local\dialog_form {
         $mform = $this->_form;
         $program = $this->_customdata['program'];
 
+        $info = '<div class="alert alert-danger">' . markdown_to_html(get_string('program_delete_info', 'tool_muprog')) . '</div>';
+        $mform->addElement('html', $info);
+
         $mform->addElement('static', 'fullname', get_string('programname', 'tool_muprog'), format_string($program->fullname));
 
         $mform->addElement('static', 'idnumber', get_string('idnumber'), format_string($program->idnumber));
-
-        $mform->addElement('select', 'archived', get_string('archived', 'tool_muprog'),
-            [0 => get_string('no'), 1 => get_string('yes')]);
-        $mform->freeze('archived');
-        $mform->setDefault('archived', $program->archived);
 
         $mform->addElement('hidden', 'id');
         $mform->setType('id', PARAM_INT);

@@ -65,7 +65,7 @@ if ($form->is_cancelled()) {
 }
 
 if ($data = $form->get_data()) {
-    program::delete_program($program->id);
+    program::delete($program->id);
     $returnurl = new moodle_url('/admin/tool/muprog/management/index.php', ['contextid' => $program->contextid]);
     $form->redirect_submitted($returnurl);
 }
