@@ -26,10 +26,11 @@ use core_external\external_value;
 /**
  * Provides list of candidates for adding fields to framework.
  *
- * @package     tool_mutrain
- * @copyright   2024 Open LMS (https://www.openlms.net/)
- * @author      Petr Skoda
- * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package    tool_mutrain
+ * @copyright  2024 Open LMS (https://www.openlms.net/)
+ * @copyright  2025 Petr Skoda
+ * @author     Petr Skoda
+ * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 final class form_field_add_fieldid extends \tool_mulib\external\form_autocomplete_field {
     /**

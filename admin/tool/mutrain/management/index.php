@@ -21,12 +21,13 @@
  *
  * @package    tool_mutrain
  * @copyright  2024 Open LMS (https://www.openlms.net/)
+ * @copyright  2025 Petr Skoda
  * @author     Petr Skoda
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 use tool_mutrain\local\management;
-use tool_mulib\output\action_menu\dropdown;
+use tool_mulib\output\dropdown;
 
 /** @var moodle_database $DB */
 /** @var moodle_page $PAGE */

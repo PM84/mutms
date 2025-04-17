@@ -26,6 +26,7 @@ use stdClass;
  *
  * @package    tool_mutrain
  * @copyright  2024 Open LMS (https://www.openlms.net/)
+ * @copyright  2025 Petr Skoda
  * @author     Petr Skoda
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */

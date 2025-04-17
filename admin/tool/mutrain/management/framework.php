@@ -26,7 +26,7 @@
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use tool_mulib\output\action_menu\dropdown;
+use tool_mulib\output\dropdown;
 use tool_mutrain\local\management;
 
 /** @var moodle_database $DB */
