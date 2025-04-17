@@ -21,10 +21,11 @@ namespace customfield_mutrain\privacy;
 /**
  * Privacy Subsystem for customfield_mutrain.
  *
- * @package   customfield_mutrain
- * @copyright 2024 Open LMS (https://www.openlms.net/)
- * @author    Petr Skoda
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package    customfield_mutrain
+ * @copyright  2024 Open LMS (https://www.openlms.net/)
+ * @copyright  2025 Petr Skoda
+ * @author     Petr Skoda
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class provider implements
     \core_privacy\local\metadata\null_provider {

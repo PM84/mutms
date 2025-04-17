@@ -23,10 +23,11 @@ use tool_mutrain\local\framework;
 /**
  * Data class for training custom field
  *
- * @package   customfield_mutrain
- * @copyright 2024 Open LMS (https://www.openlms.net/)
- * @author    Petr Skoda
- * @license   https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package    customfield_mutrain
+ * @copyright  2024 Open LMS (https://www.openlms.net/)
+ * @copyright  2025 Petr Skoda
+ * @author     Petr Skoda
+ * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class field_controller extends \core_customfield\field_controller {
     /**
@@ -39,21 +40,19 @@ class field_controller extends \core_customfield\field_controller {
      *
      * @param \MoodleQuickForm $mform
      */
-    public function config_form_definition(\MoodleQuickForm $mform) {
+    public function config_form_definition(\MoodleQuickForm $mform): void {
         $category = $this->get_category();
-        if (!framework::is_area_compatible($category->get('component'), $category->get('area'))) {
-            $warning = get_string('error_incompatiblearea', 'tool_mutrain');
-            $warning = '<div class="alert alert-warning">' . $warning . '</div>';
-            $mform->addElement('static', 'warningtraining', '', $warning);
+        if (class_exists(framework::class)) {
+            if (!framework::is_area_compatible($category->get('component'), $category->get('area'))) {
+                $warning = get_string('error_incompatiblearea', 'tool_mutrain');
+                $warning = '<div class="alert alert-warning">' . $warning . '</div>';
+                $mform->addElement('static', 'warningtraining', '', $warning);
+            }
         }
     }
 
     /**
-     * Delete a field and all associated data
-     *
-     * Plugins may override it if it is necessary to delete related data (such as files)
-     *
-     * Not that the delete() method from data_controller is not called here.
+     * Delete a field and all associated data.
      *
      * @return bool
      */
@@ -62,8 +61,10 @@ class field_controller extends \core_customfield\field_controller {
 
         $fieldid = $this->get('id');
 
-        $DB->delete_records('tool_mutrain_completion', ['fieldid' => $fieldid]);
-        $DB->delete_records('tool_mutrain_field', ['fieldid' => $fieldid]);
+        if (class_exists(framework::class)) {
+            $DB->delete_records('tool_mutrain_completion', ['fieldid' => $fieldid]);
+            $DB->delete_records('tool_mutrain_field', ['fieldid' => $fieldid]);
+        }
 
         return parent::delete();
     }
