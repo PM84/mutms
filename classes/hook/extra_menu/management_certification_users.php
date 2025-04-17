@@ -28,7 +28,7 @@ namespace tool_mucertify\hook\extra_menu;
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 #[\core\attribute\label('Additions to "Users actions" extra menu in Users tab in certification.')]
-final class management_certification_users extends \tool_mulib\output\action_menu\dropdown {
+final class management_certification_users extends \tool_mulib\output\dropdown {
     /** @var \stdClass certification record */
     protected $certification;
 

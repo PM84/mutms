@@ -91,11 +91,9 @@ EOT;
     public function render_user_assignment(stdClass $certification, stdClass $assignment): string {
         global $DB;
 
-        $result = '';
+        $details = [];
 
-        $result .= '<dl class="row">';
-        $result .= '<dt class="col-3">' . get_string('certificationstatus', 'tool_mucertify') . '</dt><dd class="col-9">'
-            . assignment::get_status_html($certification, $assignment) . '</dd>';
+        $details[] = ['property' => get_string('certificationstatus', 'tool_mucertify'), 'value' => assignment::get_status_html($certification, $assignment)];
 
         if ($certification->recertify && !$certification->archived && !$assignment->archived) {
             $stoprecertify = !$DB->record_exists('tool_mucertify_period', [
@@ -103,20 +101,19 @@ EOT;
                 'userid' => $assignment->userid,
                 'recertifiable' => 1,
             ]);
-            $result .= '<dt class="col-3">' . get_string('stoprecertify', 'tool_mucertify') . '</dt><dd class="col-9">'
-                . ($stoprecertify ? get_string('yes') : get_string('no')) . '<br />';
+            $details[] = ['property' => get_string('stoprecertify', 'tool_mucertify'), 'value' => ($stoprecertify ? get_string('yes') : get_string('no'))];
         }
 
         if ($assignment->timecertifiedtemp) {
-            $result .= '<dt class="col-3">' . get_string('certifieduntiltemporary', 'tool_mucertify') . '</dt><dd class="col-9">'
-                . userdate($assignment->timecertifiedtemp) . '</dd>';
+            $details[] = ['property' => get_string('certifieduntiltemporary', 'tool_mucertify'), 'value' => userdate($assignment->timecertifiedtemp)];
         }
-        $customfieldoutput = $this->page->get_renderer('tool_mucertify', 'customfield');
-        $result .= $customfieldoutput->render_customfields($certification->id);
 
-        $result .= '</dl>';
+        $handler = \tool_mucertify\customfield\fields_handler::create();
+        foreach ($handler->get_instance_data($certification->id) as $data) {
+            $details[] = ['property' => $data->get_field()->get('name'), 'value' => $data->export_value()];
+        }
 
-        return $result;
+        return $this->output->render_from_template('tool_mulib/entity_details', ['details' => $details]);
     }
 
     /**
@@ -159,8 +156,6 @@ EOT;
         }
 
         $certificationicon = $this->output->pix_icon('certification', '', 'tool_mucertify');
-        $strnotset = get_string('notset', 'tool_mucertify');
-        $dateformat = get_string('strftimedatetimeshort');
 
         foreach ($assignments as $assignment) {
             $row = [];

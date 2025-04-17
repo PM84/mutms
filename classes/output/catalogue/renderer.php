@@ -77,12 +77,14 @@ class renderer extends \plugin_renderer_base {
 </div>
 EOT;
 
-        $result .= '<dl class="row">';
-        $result .= '<dt class="col-3">' . get_string('certificationstatus', 'tool_mucertify') . '</dt><dd class="col-9">'
-            . get_string('errornoassignment', 'tool_mucertify') . '</dd>';
-        $customfieldoutput = $this->page->get_renderer('tool_mucertify', 'customfield');
-        $result .= $customfieldoutput->render_customfields($certification->id);
-        $result .= '</dl>';
+        $details = [];
+        $details[] = ['property' => get_string('certificationstatus', 'tool_mucertify'),
+            'value' => get_string('errornoassignment', 'tool_mucertify')];
+        $handler = \tool_mucertify\customfield\fields_handler::create();
+        foreach ($handler->get_instance_data($certification->id) as $data) {
+            $details[] = ['property' => $data->get_field()->get('name'), 'value' => $data->export_value()];
+        }
+        $result .= $this->output->render_from_template('tool_mulib/entity_details', ['details' => $details]);
 
         $actions = [];
         /** @var \tool_mucertify\local\source\base[] $sourceclasses */ // Type hack.
