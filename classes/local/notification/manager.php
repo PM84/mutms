@@ -19,7 +19,7 @@
 
 namespace tool_mulib\local\notification;
 
-use tool_mulib\output\action_menu\dropdown;
+use tool_mulib\output\dropdown;
 
 /**
  * Base for classes that describe notifications in a plugin.
