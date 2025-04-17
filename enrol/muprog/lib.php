@@ -1,5 +1,5 @@
 <?php
-// This file is part of Programs for Moodle™.
+// This file is part of Program enrolment plugin for Moodle™.
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -17,7 +17,7 @@
 // phpcs:disable moodle.Files.BoilerplateComment.CommentEndedTooSoon
 
 /**
- * Programs enrolment class.
+ * Program enrolment plugin class.
  *
  * @package     enrol_muprog
  * @copyright   2025 Petr Skoda
@@ -30,8 +30,12 @@ class enrol_muprog_plugin extends enrol_plugin {
      * @param stdClass|null $instance
      * @return string
      */
-    public function get_instance_name($instance) {
+    public function get_instance_name($instance): string {
         global $DB;
+
+        if (!class_exists(\tool_muprog\local\program::class)) {
+            return get_string('error');
+        }
 
         $program = $DB->get_record('tool_muprog_program', ['id' => $instance->customint1]);
 
@@ -102,6 +106,6 @@ class enrol_muprog_plugin extends enrol_plugin {
      * @param int $oldid
      */
     public function restore_instance(restore_enrolments_structure_step $step, stdClass $data, $course, $oldid): void {
-        // No restoring possible.
+        // Restoring is not necessary, programs will recreate enrolments automatically.
     }
 }
