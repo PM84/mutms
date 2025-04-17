@@ -303,7 +303,7 @@ final class framework_test extends \advanced_testcase {
         $this->assertFalse(framework::is_deletable($framework1->id));
         $this->assertFalse(framework::is_deletable($framework2->id));
 
-        \tool_muprog\local\program::delete_program($program1->id);
+        \tool_muprog\local\program::delete($program1->id);
 
         $this->assertTrue(framework::is_deletable($framework1->id));
         $this->assertFalse(framework::is_deletable($framework2->id));

@@ -26,7 +26,7 @@
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use tool_mulib\output\dropdown;
+use tool_mulib\output\header_actions;
 use tool_mutrain\local\management;
 
 /** @var moodle_database $DB */
@@ -53,29 +53,20 @@ management::setup_framework_page($pageurl, $context, $framework);
 /** @var \tool_mutrain\output\management\renderer $managementoutput */
 $managementoutput = $PAGE->get_renderer('tool_mutrain', 'management');
 
-$buttons = [];
-
-$dropdown = new dropdown(get_string('extra_menu_management_framework', 'tool_mutrain'));
+$actions = new header_actions(get_string('management_framework_actions', 'tool_mutrain'));
 if (has_capability('tool/mutrain:manageframeworks', $context)) {
     if (\tool_mutrain\local\framework::is_deletable($framework->id)) {
         $url = new moodle_url('/admin/tool/mutrain/management/framework_delete.php', ['id' => $framework->id]);
         $link = new tool_mulib\output\dialog_form\link($url, get_string('framework_delete', 'tool_mutrain'));
         $link->set_after_submit($link::AFTER_SUBMIT_REDIRECT);
-        $dropdown->add_dialog_form($link);
+        $actions->get_dropdown()->add_dialog_form($link);
     }
     $url = new \moodle_url('/admin/tool/mutrain/management/framework_update.php', ['id' => $framework->id]);
     $button = new \tool_mulib\output\dialog_form\button($url, get_string('framework_update', 'tool_mutrain'));
-    $buttons[] = $OUTPUT->render($button);
+    $actions->add_button($button);
 }
-if ($buttons || $dropdown->has_items()) {
-    $action = '';
-    if ($buttons) {
-        $action .= implode($buttons);
-    }
-    if ($dropdown->has_items()) {
-        $action .= $OUTPUT->render($dropdown);
-    }
-    $PAGE->add_header_action($action);
+if ($actions->has_items()) {
+    $PAGE->add_header_action($OUTPUT->render($actions));
 }
 
 echo $OUTPUT->header();
