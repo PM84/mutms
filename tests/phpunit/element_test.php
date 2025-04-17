@@ -377,7 +377,7 @@ final class element_test extends \advanced_testcase {
         $this->assertTrue($filesize > 30000 && $filesize < 120000);
 
         // Deleted program.
-        \tool_muprog\local\program::delete_program($program2->id);
+        \tool_muprog\local\program::delete($program2->id);
         $issuedata = [
             'programid' => $program2->id,
             'programfullname' => $program2->fullname,
