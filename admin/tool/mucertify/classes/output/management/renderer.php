@@ -48,27 +48,24 @@ class renderer extends \plugin_renderer_base {
 
         $context = \context::instance_by_id($certification->contextid);
 
-        $result = '';
+        $certificationimage = '';
 
         $presentation = (array)json_decode($certification->presentationjson);
         if (!empty($presentation['image'])) {
             $imageurl = moodle_url::make_file_url("$CFG->wwwroot/pluginfile.php",
                 '/' . $context->id . '/tool_mucertify/image/' . $certification->id . '/'. $presentation['image'], false);
-            $result .= '<div class="float-end certificationimage">' . html_writer::img($imageurl, '') . '</div>';
+            $certificationimage = '<div class="float-end certificationimage">' . html_writer::img($imageurl, '') . '</div>';
         }
-        $result .= '<dl class="row">';
-        $result .= '<dt class="col-3">' . get_string('certificationname', 'tool_mucertify') . '</dt><dd class="col-9">'
-            . format_string($certification->fullname) . '</dd>';
-        $result .= '<dt class="col-3">' . get_string('certificationidnumber', 'tool_mucertify') . '</dt><dd class="col-9">'
-            . s($certification->idnumber) . '</dd>';
-        $result .= '<dt class="col-3">' . get_string('category') . '</dt><dd class="col-9">'
-            . html_writer::link(new moodle_url('/admin/tool/mucertify/management/index.php',
-                ['contextid' => $context->id]), $context->get_context_name(false)) . '</dd>';
+
+        $details = [];
+        $details[] = ['property' => get_string('certificationname', 'tool_mucertify'), 'value' => format_string($certification->fullname)];
+        $details[] = ['property' => get_string('certificationidnumber', 'tool_mucertify'), 'value' => s($certification->idnumber)];
+        $url = new moodle_url('/admin/tool/mucertify/management/index.php', ['contextid' => $context->id]);
+        $details[] = ['property' => get_string('category'), 'value' => html_writer::link($url, $context->get_context_name(false))];
         if ($CFG->usetags) {
             $tags = \core_tag_tag::get_item_tags('tool_mucertify', 'certification', $certification->id);
             if ($tags) {
-                $result .= '<dt class="col-3">' . get_string('tags') . '</dt><dd class="col-9">'
-                    . $this->output->tag_list($tags, '', 'certification-tags') . '</dd>';
+                $details[] = ['property' => get_string('tags'), 'value' => $this->output->tag_list($tags, '', 'certification-tags')];
             }
         }
         $description = file_rewrite_pluginfile_urls($certification->description, 'pluginfile.php', $context->id, 'tool_mucertify', 'description', $certification->id);
@@ -76,7 +73,7 @@ class renderer extends \plugin_renderer_base {
         if (trim($description) === '') {
             $description = '&nbsp;';
         }
-        $result .= '<dt class="col-3">' . get_string('description') . '</dt><dd class="col-9">' . $description . '</dd>';
+        $details[] = ['property' => get_string('description'), 'value' => $description];
 
         $archived = $certification->archived ? get_string('yes') : get_string('no');
         if (has_capability('tool/mucertify:edit', $context)) {
@@ -90,14 +87,13 @@ class renderer extends \plugin_renderer_base {
             $action->set_dialog_size('');
             $archived .= $this->output->render($action);
         }
-        $result .= '<dt class="col-3">' . get_string('archived', 'tool_mucertify') . '</dt><dd class="col-9">' . $archived . '</dd>';
+        $details[] = ['property' => get_string('archived', 'tool_mucertify'), 'value' => $archived];
 
-        /** @var \tool_mucertify\output\customfield\renderer $customfieldoutput */
-        $customfieldoutput = $this->page->get_renderer('tool_mucertify', 'customfield');
-        $result .= $customfieldoutput->render_customfields($certification->id);
-        $result .= '</dl>';
-
-        return $result;
+        $handler = \tool_mucertify\customfield\fields_handler::create();
+        foreach ($handler->get_instance_data($certification->id) as $data) {
+            $details[] = ['property' => $data->get_field()->get('name'), 'value' => $data->export_value()];
+        }
+        return $certificationimage . $this->output->render_from_template('tool_mulib/entity_details', ['details' => $details]);
     }
 
     /**
@@ -107,22 +103,19 @@ class renderer extends \plugin_renderer_base {
      * @return string
      */
     public function render_certification_visibility(stdClass $certification): string {
-        $result = '';
+        $details = [];
 
-        $result .= '<dl class="row">';
-        $result .= '<dt class="col-3">' . get_string('public', 'tool_mucertify') . '</dt><dd class="col-9">'
-            . ($certification->public ? get_string('yes') : get_string('no')) . '</dd>';
-        $result .= '<dt class="col-3">' . get_string('cohorts', 'tool_mucertify') . '</dt><dd class="col-9">';
+        $details[] = ['property' => get_string('public', 'tool_mucertify'),
+            'value' => ($certification->public ? get_string('yes') : get_string('no'))];
         $cohorts = management::fetch_current_cohorts_menu($certification->id);
         if ($cohorts) {
-            $result .= implode(', ', array_map('format_string', $cohorts));
+            $cohortsstr = implode(', ', array_map('format_string', $cohorts));
         } else {
-            $result .= '-';
+            $cohortsstr = '-';
         }
-        $result .= '</dd>';
-        $result .= '</dl>';
+        $details[] = ['property' => get_string('cohorts', 'tool_mucertify'), 'value' => $cohortsstr];
 
-        return $result;
+        return $this->output->render_from_template('tool_mulib/entity_details', ['details' => $details]);
     }
 
     /**
@@ -136,8 +129,7 @@ class renderer extends \plugin_renderer_base {
 
         $settings = certification::get_periods_settings($certification);
 
-        $result = '';
-        $result .= '<dl class="row">';
+        $details = [];
 
         if ($settings->programid1) {
             $program1 = $DB->get_record('tool_muprog_program', ['id' => $settings->programid1]);
@@ -157,20 +149,17 @@ class renderer extends \plugin_renderer_base {
         } else {
             $program1str = '<span class="badge badge-danger">' . get_string('notset', 'tool_mucertify') . '</span>';
         }
-        $result .= '<dt class="col-3">' . get_string('program', 'tool_muprog') . '</dt><dd class="col-9">'
-            . $program1str . '</dd>';
+        $details[] = ['property' => get_string('program', 'tool_muprog'), 'value' => $program1str];
 
         if ($settings->due1) {
             $due = util::format_duration($settings->due1);
         } else {
             $due = get_string('notset', 'tool_mucertify');
         }
-        $result .= '<dt class="col-3">' . get_string('windowduedate', 'tool_mucertify') . '</dt><dd class="col-9">'
-            . $due . '</dd>';
+        $details[] = ['property' => get_string('windowduedate', 'tool_mucertify'), 'value' => $due];
 
         $since = certification::get_valid_options();
-        $result .= '<dt class="col-3">' . get_string('fromdate', 'tool_mucertify') . '</dt><dd class="col-9">'
-            . $since[$settings->valid1] . '</dd>';
+        $details[] = ['property' => get_string('fromdate', 'tool_mucertify'), 'value' => $since[$settings->valid1]];
 
         $since = certification::get_windowend_options();
         if ($settings->windowend1['since'] === certification::SINCE_NEVER) {
@@ -181,8 +170,7 @@ class renderer extends \plugin_renderer_base {
             $a->after = $since[$settings->windowend1['since']];
             $windowend = get_string('delayafter', 'tool_mucertify', $a);
         }
-        $result .= '<dt class="col-3">' . get_string('windowenddate', 'tool_mucertify') . '</dt><dd class="col-9">'
-            . $windowend . '</dd>';
+        $details[] = ['property' => get_string('windowenddate', 'tool_mucertify'), 'value' => $windowend];
 
         $since = certification::get_expiration_options();
         if ($settings->expiration1['since'] === certification::SINCE_NEVER) {
@@ -193,12 +181,10 @@ class renderer extends \plugin_renderer_base {
             $a->after = $since[$settings->expiration1['since']];
             $expiration = get_string('delayafter', 'tool_mucertify', $a);
         }
-        $result .= '<dt class="col-3">' . get_string('untildate', 'tool_mucertify') . '</dt><dd class="col-9">'
-            . $expiration . '</dd>';
+        $details[] = ['property' => get_string('untildate', 'tool_mucertify'), 'value' => $expiration];
 
         $resettypes = certification::get_resettype_options();
-        $result .= '<dt class="col-3">' . get_string('resettype1', 'tool_mucertify') . '</dt><dd class="col-9">'
-            . $resettypes[$settings->resettype1] . '</dd>';
+        $details[] = ['property' => get_string('resettype1', 'tool_mucertify'), 'value' => $resettypes[$settings->resettype1]];
 
         if ($settings->recertify === null) {
             $recertifystr = get_string('no');
@@ -208,11 +194,9 @@ class renderer extends \plugin_renderer_base {
             $a->before = get_string('untildate', 'tool_mucertify');
             $recertifystr = get_string('delaybefore', 'tool_mucertify', $a);
         }
-        $result .= '<dt class="col-3">' . get_string('recertify', 'tool_mucertify') . '</dt><dd class="col-9">'
-            . $recertifystr . '</dd>';
+        $details[] = ['property' => get_string('recertify', 'tool_mucertify'), 'value' => $recertifystr];
 
-        $result .= '</dl>';
-        return $result;
+        return $this->output->render_from_template('tool_mulib/entity_details', ['details' => $details]);
     }
 
     /**
@@ -226,8 +210,7 @@ class renderer extends \plugin_renderer_base {
 
         $settings = certification::get_periods_settings($certification);
 
-        $result = '';
-        $result .= '<dl class="row">';
+        $details = [];
 
         if ($settings->programid2) {
             $program2 = $DB->get_record('tool_muprog_program', ['id' => $settings->programid2]);
@@ -247,24 +230,20 @@ class renderer extends \plugin_renderer_base {
         } else {
             $program2str = '<span class="badge badge-danger">' . get_string('notset', 'tool_mucertify') . '</span>';
         }
-        $result .= '<dt class="col-3">' . get_string('program', 'tool_muprog') . '</dt><dd class="col-9">'
-            . $program2str . '</dd>';
+        $details[] = ['property' => get_string('program', 'tool_muprog'), 'value' => $program2str];
 
         if ($settings->grace2) {
             $grace = util::format_duration($settings->grace2);
         } else {
             $grace = get_string('notset', 'tool_mucertify');
         }
-        $result .= '<dt class="col-3">' . get_string('graceperiod', 'tool_mucertify') . '</dt><dd class="col-9">'
-            . $grace . '</dd>';
+        $details[] = ['property' => get_string('graceperiod', 'tool_mucertify'), 'value' => $grace];
 
         $resettypes = certification::get_resettype_options();
-        $result .= '<dt class="col-3">' . get_string('resettype2', 'tool_mucertify') . '</dt><dd class="col-9">'
-            . $resettypes[$settings->resettype2] . '</dd>';
+        $details[] = ['property' => get_string('resettype2', 'tool_mucertify'), 'value' => $resettypes[$settings->resettype2]];
 
         $since = certification::get_valid_options();
-        $result .= '<dt class="col-3">' . get_string('fromdate', 'tool_mucertify') . '</dt><dd class="col-9">'
-            . $since[$settings->valid2] . '</dd>';
+        $details[] = ['property' => get_string('fromdate', 'tool_mucertify'), 'value' => $since[$settings->valid2]];
 
         $since = certification::get_windowend_options();
         if ($settings->windowend2['since'] === certification::SINCE_NEVER) {
@@ -275,8 +254,7 @@ class renderer extends \plugin_renderer_base {
             $a->after = $since[$settings->windowend2['since']];
             $windowend = get_string('delayafter', 'tool_mucertify', $a);
         }
-        $result .= '<dt class="col-3">' . get_string('windowenddate', 'tool_mucertify') . '</dt><dd class="col-9">'
-            . $windowend . '</dd>';
+        $details[] = ['property' => get_string('windowenddate', 'tool_mucertify'), 'value' => $windowend];
 
         $since = certification::get_expiration_options();
         if ($settings->expiration2['since'] === certification::SINCE_NEVER) {
@@ -287,11 +265,9 @@ class renderer extends \plugin_renderer_base {
             $a->after = $since[$settings->expiration2['since']];
             $expiration = get_string('delayafter', 'tool_mucertify', $a);
         }
-        $result .= '<dt class="col-3">' . get_string('untildate', 'tool_mucertify') . '</dt><dd class="col-9">'
-            . $expiration . '</dd>';
+        $details[] = ['property' => get_string('untildate', 'tool_mucertify'), 'value' => $expiration];
 
-        $result .= '</dl>';
-        return $result;
+        return $this->output->render_from_template('tool_mulib/entity_details', ['details' => $details]);
     }
 
     /**
@@ -303,13 +279,12 @@ class renderer extends \plugin_renderer_base {
     public function render_certification_certificate(stdClass $certification): string {
         global $DB;
 
-        $result = '';
-        $result .= '<dl class="row">';
-        $result .= '<dt class="col-3">' . get_string('certificatetemplate', 'tool_certificate') . '</dt><dd class="col-9">';
+        $details = [];
+
         if ($certification->templateid) {
             $template = $DB->get_record('tool_certificate_templates', ['id' => $certification->templateid]);
             if (!$template) {
-                $result .= get_string('error');
+                $details[] = ['property' => get_string('certificatetemplate', 'tool_certificate'), 'value' => get_string('error')];
             } else {
                 $name = format_string($template->name);
                 $template = $DB->get_record('tool_certificate_templates', ['id' => $certification->templateid]);
@@ -320,15 +295,14 @@ class renderer extends \plugin_renderer_base {
                         $name = html_writer::link($url, $name);
                     }
                 }
-                $result .= $name;
+                $details[] = ['property' => get_string('certificatetemplate', 'tool_certificate'), 'value' => $name];
             }
         } else {
-            $result .= get_string('notset', 'tool_muprog');
+            $details[] = ['property' => get_string('certificatetemplate', 'tool_certificate'),
+                'value' => get_string('notset', 'tool_muprog')];
         }
-        $result .= '</dd>';
-        $result .= '</dl>';
 
-        return $result;
+        return $this->output->render_from_template('tool_mulib/entity_details', ['details' => $details]);
     }
 
     /**
@@ -378,13 +352,12 @@ class renderer extends \plugin_renderer_base {
             }
         }
 
-        $result = '';
+        $details = [];
 
-        $result .= '<dl class="row">';
-        $result .= '<dt class="col-3">' . get_string('certificationstatus', 'tool_mucertify') . '</dt><dd class="col-9">'
-            . assignment::get_status_html($certification, $assignment) . '</dd>';
-        $result .= '<dt class="col-3">' . get_string('archived', 'tool_mucertify') . '</dt><dd class="col-9">'
-            . (($certification->archived || $assignment->archived) ? get_string('yes') : get_string('no')) . '<br />';
+        $details[] = ['property' => get_string('certificationstatus', 'tool_mucertify'),
+            'value' => assignment::get_status_html($certification, $assignment)];
+        $details[] = ['property' => get_string('archived', 'tool_mucertify'),
+            'value' => (($certification->archived || $assignment->archived) ? get_string('yes') : get_string('no'))];
 
         if ($certification->recertify && !$certification->archived && !$assignment->archived) {
             $stoprecertify = !$DB->record_exists('tool_mucertify_period', [
@@ -392,17 +365,15 @@ class renderer extends \plugin_renderer_base {
                 'userid' => $assignment->userid,
                 'recertifiable' => 1,
             ]);
-            $result .= '<dt class="col-3">' . get_string('stoprecertify', 'tool_mucertify') . '</dt><dd class="col-9">'
-                . ($stoprecertify ? get_string('yes') : get_string('no')) . '<br />';
+            $details[] = ['property' => get_string('stoprecertify', 'tool_mucertify'), 'value' => ($stoprecertify ? get_string('yes') : get_string('no'))];
         }
 
         if ($assignment->timecertifiedtemp) {
-            $result .= '<dt class="col-3">' . get_string('certifieduntiltemporary', 'tool_mucertify') . '</dt><dd class="col-9">'
-                . userdate($assignment->timecertifiedtemp) . '</dd>';
+            $details[] = ['property' => get_string('certifieduntiltemporary', 'tool_mucertify'), 'value' => userdate($assignment->timecertifiedtemp)];
         }
-        $result .= '<dt class="col-3">' . get_string('source', 'tool_mucertify') . '</dt><dd class="col-9">'
-            . $sourcenames[$source->type] . '</dd>';
-        $result .= '</dl>';
+        $details[] = ['property' => get_string('source', 'tool_mucertify'), 'value' => $sourcenames[$source->type]];
+
+        $result = $this->output->render_from_template('tool_mulib/entity_details', ['details' => $details]);
 
         if ($buttons) {
             $result .= '<div class="buttons mb-5">';
@@ -473,9 +444,7 @@ class renderer extends \plugin_renderer_base {
             }
         }
 
-        $result = '';
-
-        $result .= '<dl class="row">';
+        $details = [];
 
         $programname = $strnotset;
         if ($program) {
@@ -489,40 +458,38 @@ class renderer extends \plugin_renderer_base {
                 $programname = html_writer::link($url, $programname);
             }
         }
-        $result .= '<dt class="col-3">' . get_string('program', 'tool_muprog') . '</dt><dd class="col-9">'
-            . $programname . '</dd>';
+        $details[] = ['property' => get_string('program', 'tool_muprog'), 'value' => $programname];
 
         if ($allocation) {
             $programstatus = \tool_muprog\local\allocation::get_completion_status_html($program, $allocation);
         } else {
             $programstatus = get_string('notallocated', 'tool_mucertify');
         }
-        $result .= '<dt class="col-3">' . get_string('programstatus', 'tool_muprog') . '</dt><dd class="col-9">'
-            . $programstatus . '</dd>';
+        $details[] = ['property' => get_string('programstatus', 'tool_muprog'), 'value' => $programstatus];
 
-        $result .= '<dt class="col-3">' . get_string('windowstartdate', 'tool_mucertify') . '</dt><dd class="col-9">'
-            . period::get_windowstart_html($certification, $assignment, $period) . '</dd>';
+        $details[] = ['property' => get_string('windowstartdate', 'tool_mucertify'),
+            'value' => period::get_windowstart_html($certification, $assignment, $period)];
 
-        $result .= '<dt class="col-3">' . get_string('windowduedate', 'tool_mucertify') . '</dt><dd class="col-9">'
-            . period::get_windowdue_html($certification, $assignment, $period) . '</dd>';
+        $details[] = ['property' => get_string('windowduedate', 'tool_mucertify'),
+            'value' => period::get_windowdue_html($certification, $assignment, $period)];
 
-        $result .= '<dt class="col-3">' . get_string('windowenddate', 'tool_mucertify') . '</dt><dd class="col-9">'
-            . period::get_windowend_html($certification, $assignment, $period) . '</dd>';
+        $details[] = ['property' => get_string('windowenddate', 'tool_mucertify'),
+            'value' => period::get_windowend_html($certification, $assignment, $period)];
 
-        $result .= '<dt class="col-3">' . get_string('fromdate', 'tool_mucertify') . '</dt><dd class="col-9">'
-            . period::get_from_html($certification, $assignment, $period) . '</dd>';
+        $details[] = ['property' => get_string('fromdate', 'tool_mucertify'),
+            'value' => period::get_from_html($certification, $assignment, $period)];
 
-        $result .= '<dt class="col-3">' . get_string('untildate', 'tool_mucertify') . '</dt><dd class="col-9">'
-            . period::get_until_html($certification, $assignment, $period) . '</dd>';
+        $details[] = ['property' => get_string('untildate', 'tool_mucertify'),
+            'value' => period::get_until_html($certification, $assignment, $period)];
 
-        $result .= '<dt class="col-3">' . get_string('recertify', 'tool_mucertify') . '</dt><dd class="col-9">'
-            . period::get_recertify_html($certification, $assignment, $period) . '</dd>';
+        $details[] = ['property' => get_string('recertify', 'tool_mucertify'),
+            'value' => period::get_recertify_html($certification, $assignment, $period)];
 
-        $result .= '<dt class="col-3">' . get_string('certifieddate', 'tool_mucertify') . '</dt><dd class="col-9">'
-            . ($period->timecertified ? userdate($period->timecertified) : $strnotset) . '</dd>';
+        $details[] = ['property' => get_string('certifieddate', 'tool_mucertify'),
+            'value' => ($period->timecertified ? userdate($period->timecertified) : $strnotset)];
 
-        $result .= '<dt class="col-3">' . get_string('revokeddate', 'tool_mucertify') . '</dt><dd class="col-9">'
-            . ($period->timerevoked ? userdate($period->timerevoked) : $strnotset) . '</dd>';
+        $details[] = ['property' => get_string('revokeddate', 'tool_mucertify'),
+            'value' => ($period->timerevoked ? userdate($period->timerevoked) : $strnotset)];
 
         if (!empty($certification->templateid) && \tool_mucertify\local\certificate::is_available()) {
             $template = $DB->get_record('tool_certificate_templates', ['id' => $certification->templateid]);
@@ -541,23 +508,22 @@ class renderer extends \plugin_renderer_base {
                         $issuecode = get_string('error');
                     }
                 }
-                $result .= '<dt class="col-3">' . get_string('certificate', 'tool_certificate') . '</dt><dd class="col-9">'
-                    . $issuecode . '</dd>';
+                $details[] = ['property' => get_string('certificate', 'tool_certificate'), 'value' => $issuecode];
             }
         }
 
         if ($period->evidencejson) {
             $jsondata = (object)json_decode($period->evidencejson);
             if (isset($jsondata->details)) {
-                $result .= '<dt class="col-3">' . get_string('evidence_details', 'tool_mucertify') . '</dt><dd class="col-9">'
-                    . format_text($jsondata->details, FORMAT_PLAIN, ['para' => false]) . '</dd>';
+                $details[] = ['property' => get_string('evidence_details', 'tool_mucertify'),
+                    'value' => format_text($jsondata->details, FORMAT_PLAIN, ['para' => false])];
             }
         }
 
-        $result .= '<dt class="col-3">' . get_string('periodstatus', 'tool_mucertify') . '</dt><dd class="col-9">'
-            . period::get_status_html($certification, $assignment, $period) . '</dd>';
+        $details[] = ['property' => get_string('periodstatus', 'tool_mucertify'),
+            'value' => period::get_status_html($certification, $assignment, $period)];
 
-        $result .= '</dl>';
+        $result = $this->output->render_from_template('tool_mulib/entity_details', ['details' => $details]);
 
         if ($buttons) {
             $result .= '<div class="buttons mb-5">';
@@ -578,9 +544,9 @@ class renderer extends \plugin_renderer_base {
     public function render_user_notifications(stdClass $certification, stdClass $assignment): string {
         $strnotset = get_string('notset', 'tool_mucertify');
 
-        $result = $this->output->heading(get_string('notificationdates', 'tool_mucertify'), 3, ['h4']);
+        $heading = $this->output->heading(get_string('notificationdates', 'tool_mucertify'), 3, ['h4']);
 
-        $result .= '<dl class="row">';
+        $details = [];
 
         $types = notification_manager::get_all_types();
         // phpcs:ignore moodle.Commenting.InlineComment.TypeHintingForeach
@@ -589,15 +555,11 @@ class renderer extends \plugin_renderer_base {
             if ($notificationtype === 'unassignment') {
                 continue;
             }
-            $result .= '<dt class="col-3">';
-            $result .= $classname::get_name();
-            $result .= '</dt><dd class="col-9">';
             $timenotified = notification_manager::get_timenotified($assignment->userid, $certification->id, $notificationtype);
-            $result .= ($timenotified ? userdate($timenotified) : $strnotset);
-            $result .= '</dd>';
+            $details[] = ['property' => $classname::get_name(), 'value' => $timenotified ? userdate($timenotified) : $strnotset];
         }
 
-        return $result;
+        return $heading . $this->output->render_from_template('tool_mulib/entity_details', ['details' => $details]);
     }
 
     /**
@@ -608,8 +570,6 @@ class renderer extends \plugin_renderer_base {
      */
     public function render_certification_sources(stdClass $certification): string {
         global $DB;
-
-        $result = '';
 
         $sources = [];
         /** @var \tool_mucertify\local\source\base[] $sourceclasses */
@@ -625,17 +585,16 @@ class renderer extends \plugin_renderer_base {
             $sources[$sourcetype] = $sourceclass::render_status($certification, $sourcerecord);
         }
 
-        if ($sources) {
-            $result .= '<dl class="row">';
-            foreach ($sources as $sourcetype => $status) {
-                $name = $sourceclasses[$sourcetype]::get_name();
-                $result .= '<dt class="col-3">' . $name . '</dt><dd class="col-9">' . $status . '</dd>';
-            }
-            $result .= '</dl>';
-        } else {
-            $result = get_string('notavailable');
+        if (!$sources) {
+            return get_string('notavailable');
         }
 
-        return $result;
+        $details = [];
+        foreach ($sources as $sourcetype => $status) {
+            $name = $sourceclasses[$sourcetype]::get_name();
+            $details[] = ['property' => $name, 'value' => $status];
+        }
+
+        return $this->output->render_from_template('tool_mulib/entity_details', ['details' => $details]);
     }
 }
