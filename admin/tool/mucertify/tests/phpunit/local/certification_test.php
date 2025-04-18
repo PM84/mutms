@@ -297,7 +297,7 @@ final class certification_test extends \advanced_testcase {
 
         $data = [
             'id' => $certification->id,
-            'cohorts' => [$cohort2->id, $cohort1->id],
+            'cohortids' => [$cohort2->id, $cohort1->id],
             'public' => 0,
         ];
         $certification = certification::update_visibility((object)$data);
@@ -309,7 +309,7 @@ final class certification_test extends \advanced_testcase {
 
         $data = [
             'id' => $certification->id,
-            'cohorts' => [$cohort2->id, $cohort3->id],
+            'cohortids' => [$cohort2->id, $cohort3->id],
             'public' => 0,
         ];
         $certification = certification::update_visibility((object)$data);

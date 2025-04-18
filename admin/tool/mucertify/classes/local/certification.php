@@ -367,10 +367,14 @@ final class certification {
     public static function update_visibility(stdClass $data): stdClass {
         global $DB;
 
-        if ((isset($data->cohorts) && !is_array($data->cohorts))
-            || empty($data->id) || !isset($data->public)) {
-
+        if ((isset($data->cohortids) && !is_array($data->cohortids))
+            || empty($data->id) || !isset($data->public)
+        ) {
             throw new \coding_exception('Invalid data');
+        }
+
+        if (isset($data->cohorts)) {
+            debugging('use cohortids key instead of cohorts', DEBUG_DEVELOPER);
         }
 
         $trans = $DB->start_delegated_transaction();
@@ -381,11 +385,11 @@ final class certification {
             $DB->set_field('tool_mucertify_certification', 'public', (int)(bool)$data->public, ['id' => $data->id]);
         }
 
-        if (isset($data->cohorts)) {
+        if (isset($data->cohortids)) {
             $oldcohorts = management::fetch_current_cohorts_menu($data->id);
             $oldcohorts = array_keys($oldcohorts);
             $oldcohorts = array_flip($oldcohorts);
-            foreach ($data->cohorts as $cid) {
+            foreach ($data->cohortids as $cid) {
                 if (isset($oldcohorts[$cid])) {
                     unset($oldcohorts[$cid]);
                     continue;

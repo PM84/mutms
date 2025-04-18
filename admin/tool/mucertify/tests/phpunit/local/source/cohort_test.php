@@ -85,12 +85,12 @@ final class cohort_test extends \advanced_testcase {
         \cohort_add_member($cohort3->id, $user1->id);
 
         $data = [
-            'sources' => ['cohort' => ['cohorts' => [$cohort1->id, $cohort2->id]]],
+            'sources' => ['cohort' => ['cohortids' => [$cohort1->id, $cohort2->id]]],
             'programid1' => $program1->id,
         ];
         $certification1 = $generator->create_certification($data);
         $data = [
-            'sources' => ['cohort' => ['cohorts' => [$cohort2->id]]],
+            'sources' => ['cohort' => ['cohortids' => [$cohort2->id]]],
             'programid1' => $program2->id,
         ];
         $certification2 = $generator->create_certification($data);
@@ -238,7 +238,7 @@ final class cohort_test extends \advanced_testcase {
             'certificationid' => $certification->id,
             'type' => 'cohort',
             'enable' => 1,
-            'cohorts' => [],
+            'cohortids' => [],
         ];
         $source = \tool_mucertify\local\source\cohort::update_source((object)$data);
         $this->assertSame($certification->id, $source->certificationid);
@@ -248,7 +248,7 @@ final class cohort_test extends \advanced_testcase {
             'certificationid' => $certification->id,
             'type' => 'cohort',
             'enable' => 1,
-            'cohorts' => [$cohort1->id, $cohort3->id],
+            'cohortids' => [$cohort1->id, $cohort3->id],
         ];
         $source = \tool_mucertify\local\source\cohort::update_source((object)$data);
         $this->assertSame($certification->id, $source->certificationid);
@@ -262,7 +262,7 @@ final class cohort_test extends \advanced_testcase {
             'certificationid' => $certification->id,
             'type' => 'cohort',
             'enable' => 1,
-            'cohorts' => [$cohort2->id, $cohort3->id],
+            'cohortids' => [$cohort2->id, $cohort3->id],
         ];
         $source = \tool_mucertify\local\source\cohort::update_source((object)$data);
         $this->assertSame($certification->id, $source->certificationid);
@@ -276,7 +276,7 @@ final class cohort_test extends \advanced_testcase {
             'certificationid' => $certification->id,
             'type' => 'cohort',
             'enable' => 0,
-            'cohorts' => [$cohort2->id, $cohort3->id],
+            'cohortids' => [$cohort2->id, $cohort3->id],
         ];
         $source = \tool_mucertify\local\source\cohort::update_source((object)$data);
         $this->assertSame(null, $source);
@@ -303,7 +303,7 @@ final class cohort_test extends \advanced_testcase {
         \cohort_add_member($cohort1->id, $user2->id);
 
         $data = [
-            'sources' => ['cohort' => ['cohorts' => [$cohort1->id, $cohort2->id]]],
+            'sources' => ['cohort' => ['cohortids' => [$cohort1->id, $cohort2->id]]],
             'programid1' => $program1->id,
         ];
         $certification = $generator->create_certification($data);
@@ -336,7 +336,7 @@ final class cohort_test extends \advanced_testcase {
         $this->assertSame('Inactive', \tool_mucertify\local\source\cohort::render_status_details($certification, null));
 
         $data = [
-            'sources' => ['cohort' => ['cohorts' => []]],
+            'sources' => ['cohort' => ['cohortids' => []]],
         ];
         $certification = $generator->create_certification($data);
         $source = $DB->get_record('tool_mucertify_source',
@@ -344,7 +344,7 @@ final class cohort_test extends \advanced_testcase {
         $this->assertSame('Active', \tool_mucertify\local\source\cohort::render_status_details($certification, $source));
 
         $data = [
-            'sources' => ['cohort' => ['cohorts' => [$cohort1->id, $cohort2->id]]],
+            'sources' => ['cohort' => ['cohortids' => [$cohort1->id, $cohort2->id]]],
         ];
         $certification = $generator->create_certification($data);
         $source = $DB->get_record('tool_mucertify_source',
@@ -405,7 +405,7 @@ final class cohort_test extends \advanced_testcase {
         \cohort_add_member($cohort1->id, $user1->id);
 
         $data = [
-            'sources' => ['cohort' => ['cohorts' => [$cohort1->id]]],
+            'sources' => ['cohort' => ['cohortids' => [$cohort1->id]]],
             'programid1' => $program1->id,
         ];
         $certification = $generator->create_certification($data);

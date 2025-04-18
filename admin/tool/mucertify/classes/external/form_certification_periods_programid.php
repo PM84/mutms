@@ -65,10 +65,8 @@ final class form_certification_periods_programid extends \tool_mulib\external\fo
     public static function execute(string $query, int $certificationid): array {
         global $DB;
 
-        $parameters = self::validate_parameters(self::execute_parameters(),
-            ['query' => $query, 'certificationid' => $certificationid]);
-        $query = $parameters['query'];
-        $certificationid = $parameters['certificationid'];
+        ['query' => $query, 'certificationid' => $certificationid] = self::validate_parameters(
+            self::execute_parameters(), ['query' => $query, 'certificationid' => $certificationid]);
 
         $certification = $DB->get_record('tool_mucertify_certification', ['id' => $certificationid], '*', MUST_EXIST);
 

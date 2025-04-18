@@ -133,8 +133,6 @@ Feature: Issuing of certificates for certification completion
 
     And I log out
 
-# TODO fix me
-#    When I run all adhoc tasks
     When I run the "tool_mucertify\task\cron" task
     And I log in as "student1"
     And I follow "Profile" in the user menu

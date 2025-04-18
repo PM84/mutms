@@ -43,4 +43,18 @@ $functions = [
         'ajax' => true,
         'loginrequired' => true,
     ],
+    'tool_mucertify_form_certification_visibility_edit_cohortids' => [
+        'classname' => tool_mucertify\external\form_certification_visibility_edit_cohortids::class,
+        'description' => 'Return list of cohorts for certification visibility.',
+        'type' => 'read',
+        'ajax' => true,
+        'loginrequired' => true,
+    ],
+    'tool_mucertify_form_source_cohort_edit_cohortids' => [
+        'classname' => tool_mucertify\external\form_source_cohort_edit_cohortids::class,
+        'description' => 'Return list of cohorts for cohort allocation.',
+        'type' => 'read',
+        'ajax' => true,
+        'loginrequired' => true,
+    ],
 ];

@@ -107,10 +107,14 @@ final class cohort extends base {
             return;
         }
 
+        if (isset($data->cohorts)) {
+            debugging('Use cohortids instead of cohorts key', DEBUG_DEVELOPER);
+        }
+
         $oldcohorts = self::fetch_assignment_cohorts_menu($source->id);
         $sourceid = $DB->get_field('tool_mucertify_source', 'id', ['certificationid' => $data->certificationid, 'type' => 'cohort']);
-        $data->cohorts = $data->cohorts ?? [];
-        foreach ($data->cohorts as $cid) {
+        $data->cohortids = $data->cohortids ?? [];
+        foreach ($data->cohortids as $cid) {
             if (isset($oldcohorts[$cid])) {
                 unset($oldcohorts[$cid]);
                 continue;
