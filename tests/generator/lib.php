@@ -109,8 +109,14 @@ class tool_mucertify_generator extends component_generator_base {
         }
         unset($record->sources);
 
-        $cohorts = empty($record->cohorts) ? [] : $record->cohorts;
+        $cohorts = [];
+        if (!empty($record->cohortids)) {
+            $cohorts = $record->cohortids;
+        } else if (!empty($record->cohorts)) {
+            $cohorts = $record->cohorts;
+        }
         unset($record->cohorts);
+        unset($record->cohortods);
 
         $periodsdefauls = (array)certification::get_periods_defaults();
         $periods = [];
@@ -142,7 +148,7 @@ class tool_mucertify_generator extends component_generator_base {
                 }
 
             }
-            certification::update_visibility((object)['id' => $certification->id, 'public' => $certification->public, 'cohorts' => $cohortids]);
+            certification::update_visibility((object)['id' => $certification->id, 'public' => $certification->public, 'cohortids' => $cohortids]);
         }
 
         if ($periods) {

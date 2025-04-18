@@ -101,15 +101,15 @@ final class approval_test extends \advanced_testcase {
         $this->assertTrue(approval::can_user_request($certification1, $source1a, $user1->id));
 
         $certification1 = certification::update_visibility((object)['id' => $certification1->id,
-            'public' => 0, 'cohorts' => [$cohort1->id]]);
+            'public' => 0, 'cohortids' => [$cohort1->id]]);
         $this->assertTrue(approval::can_user_request($certification1, $source1a, $user1->id));
 
         $certification1 = certification::update_visibility((object)['id' => $certification1->id,
-            'public' => 0, 'cohorts' => []]);
+            'public' => 0, 'cohortids' => []]);
         $this->assertFalse(approval::can_user_request($certification1, $source1a, $user1->id));
 
         $certification1 = certification::update_visibility((object)['id' => $certification1->id,
-            'public' => 1, 'cohorts' => [$cohort1->id]]);
+            'public' => 1, 'cohortids' => [$cohort1->id]]);
         $this->assertTrue(approval::can_user_request($certification1, $source1a, $user1->id));
 
         // Assigned already.
