@@ -22,47 +22,47 @@ namespace tool_mucertify\phpunit\event;
 use tool_mucertify\local\certification;
 
 /**
- * Certification created event test.
+ * Certification restored event test.
  *
  * @group      muTMS
  * @package    tool_mucertify
- * @copyright  2023 Open LMS (https://www.openlms.net/)
  * @copyright  2025 Petr Skoda
- * @author     Petr Skoda
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
- * @covers \tool_mucertify\event\certification_created
+ * @covers \tool_mucertify\event\certification_restored
  */
-final class certification_created_test extends \advanced_testcase {
+final class certification_restored_test extends \advanced_testcase {
     public function setUp(): void {
         parent::setUp();
         $this->resetAfterTest();
     }
 
-    public function test_create(): void {
+    public function test_updates(): void {
         $syscontext = \context_system::instance();
         $data = (object)[
             'fullname' => 'Some certification',
             'idnumber' => 'SP1',
             'contextid' => $syscontext->id,
+            'archived' => '1',
         ];
         $admin = get_admin();
-
         $this->setAdminUser();
-        $sink = $this->redirectEvents();
         $certification = certification::create($data);
+
+        $sink = $this->redirectEvents();
+        $certification = certification::restore($certification->id);
         $events = $sink->get_events();
         $sink->close();
 
         $this->assertCount(1, $events);
         $event = reset($events);
-        $this->assertInstanceOf(\tool_mucertify\event\certification_created::class, $event);
+        $this->assertInstanceOf(\tool_mucertify\event\certification_restored::class, $event);
         $this->assertEquals($syscontext->id, $event->contextid);
         $this->assertSame($certification->id, $event->objectid);
-        $this->assertSame('c', $event->crud);
+        $this->assertSame('u', $event->crud);
         $this->assertSame($event::LEVEL_OTHER, $event->edulevel);
         $this->assertSame('tool_mucertify_certification', $event->objecttable);
-        $this->assertSame('Certification created', $event::get_name());
+        $this->assertSame('Certification restored', $event::get_name());
         $description = $event->get_description();
         $certificationurl = new \moodle_url('/admin/tool/mucertify/management/certification.php', ['id' => $certification->id]);
         $this->assertSame($certificationurl->out(false), $event->get_url()->out(false));

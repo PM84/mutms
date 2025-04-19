@@ -537,49 +537,6 @@ final class certification_test extends \advanced_testcase {
         $this->assertSame(true, $DB->record_exists('tool_mucertify_certification', ['id' => $certification1->id]));
     }
 
-    public function test_make_snapshot(): void {
-        global $DB;
-
-        $syscontext = \context_system::instance();
-        $data = (object)[
-            'fullname' => 'Some certification',
-            'idnumber' => 'SP1',
-            'contextid' => $syscontext->id,
-        ];
-        $certification = certification::create($data);
-        $this->setAdminUser();
-        $admin = get_admin();
-
-        $this->setCurrentTimeStart();
-        $DB->delete_records('tool_mucertify_crt_snapshot', []);
-        certification::make_snapshot($certification->id, 'test', 'some explanation');
-
-        $records = $DB->get_records('tool_mucertify_crt_snapshot', []);
-        $this->assertCount(1, $records);
-
-        $record = reset($records);
-        $this->assertSame($certification->id, $record->certificationid);
-        $this->assertSame('test', $record->reason);
-        $this->assertTimeCurrent($record->timesnapshot);
-        $this->assertSame($admin->id, $record->snapshotby);
-        $this->assertSame('some explanation', $record->explanation);
-
-        certification::delete($certification->id);
-        $this->setCurrentTimeStart();
-        $DB->delete_records('tool_mucertify_crt_snapshot', []);
-        certification::make_snapshot($certification->id, 'delete', 'some explanation');
-
-        $records = $DB->get_records('tool_mucertify_crt_snapshot', []);
-        $this->assertCount(1, $records);
-
-        $record = reset($records);
-        $this->assertSame($certification->id, $record->certificationid);
-        $this->assertSame('delete', $record->reason);
-        $this->assertTimeCurrent($record->timesnapshot);
-        $this->assertSame($admin->id, $record->snapshotby);
-        $this->assertSame('some explanation', $record->explanation);
-    }
-
     public function test_pre_course_category_delete(): void {
         global $DB;
 

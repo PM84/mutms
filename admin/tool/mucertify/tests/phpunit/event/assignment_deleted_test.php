@@ -20,7 +20,7 @@
 namespace tool_mucertify\phpunit\event;
 
 /**
- * Certification event test.
+ * Certification assignment deleted event test.
  *
  * @group      muTMS
  * @package    tool_mucertify
@@ -29,15 +29,15 @@ namespace tool_mucertify\phpunit\event;
  * @author     Petr Skoda
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
- * @covers \tool_mucertify\event\user_certified
+ * @covers \tool_mucertify\event\assignment_deleted
  */
-final class user_certified_test extends \advanced_testcase {
+final class assignment_deleted_test extends \advanced_testcase {
     public function setUp(): void {
         parent::setUp();
         $this->resetAfterTest();
     }
 
-    public function test_user_certified(): void {
+    public function test_unassign_user(): void {
         global $DB;
         /** @var \tool_mucertify_generator $generator */
         $generator = $this->getDataGenerator()->get_plugin_generator('tool_mucertify');
@@ -46,8 +46,7 @@ final class user_certified_test extends \advanced_testcase {
 
         $syscontext = \context_system::instance();
         $user = $this->getDataGenerator()->create_user();
-        $program = $programgenerator->create_program(['sources' => 'mucertify', 'archived' => 0]);
-        $programsource = $DB->get_record('tool_muprog_source', ['programid' => $program->id, 'type' => 'mucertify']);
+        $program = $programgenerator->create_program(['sources' => 'mucertify', 'archived' => 1]);
         $certification = $generator->create_certification([
             'sources' => 'manual',
             'programid1' => $program->id,
@@ -58,40 +57,25 @@ final class user_certified_test extends \advanced_testcase {
         \tool_mucertify\local\source\manual::assign_users($certification->id, $source->id, [$user->id], []);
         $assignment = $DB->get_record('tool_mucertify_assignment',
             ['userid' => $user->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
-        $top = \tool_muprog\local\program::load_content($program->id);
-        $allocation = $DB->get_record('tool_muprog_allocation', ['sourceid' => $programsource->id, 'userid' => $user->id], '*', MUST_EXIST);
 
         $this->setAdminUser();
         $sink = $this->redirectEvents();
-        \tool_muprog\local\allocation::update_item_completion((object)[
-            'allocationid' => $allocation->id,
-            'itemid' => $top->get_id(),
-            'timecompleted' => time(),
-            'evidencetimecompleted' => time(),
-            'evidencedetails' => 'test',
-        ]);
+        \tool_mucertify\local\source\manual::unassign_user($certification, $source, $assignment);
         $events = $sink->get_events();
         $sink->close();
-        $this->assertCount(3, $events); // The other 2 are calendar event deletions.
-        $event = reset($events);
-        $this->assertInstanceOf(\tool_muprog\event\program_completed::class, $event);
 
-        $sink = $this->redirectEvents();
-        \tool_mucertify\local\event_observer::program_completed($event);
-        $events = $sink->get_events();
-        $sink->close();
         $this->assertCount(1, $events);
         $event = reset($events);
-        $this->assertInstanceOf(\tool_mucertify\event\user_certified::class, $event);
+        $this->assertInstanceOf(\tool_mucertify\event\assignment_deleted::class, $event);
         $this->assertEquals($syscontext->id, $event->contextid);
         $this->assertSame($assignment->id, $event->objectid);
         $this->assertSame($user->id, $event->relateduserid);
-        $this->assertSame('u', $event->crud);
-        $this->assertSame($event::LEVEL_PARTICIPATING, $event->edulevel);
+        $this->assertSame('d', $event->crud);
+        $this->assertSame($event::LEVEL_OTHER, $event->edulevel);
         $this->assertSame('tool_mucertify_assignment', $event->objecttable);
-        $this->assertSame('User was certified', $event::get_name());
+        $this->assertSame('User was un-assigned from certification', $event::get_name());
         $description = $event->get_description();
-        $certificationurl = new \moodle_url('/admin/tool/mucertify/management/user_assignment.php', ['id' => $assignment->id]);
+        $certificationurl = new \moodle_url('/admin/tool/mucertify/management/certification.php', ['id' => $certification->id]);
         $this->assertSame($certificationurl->out(false), $event->get_url()->out(false));
     }
 }

@@ -22,7 +22,7 @@ namespace tool_mucertify\phpunit\event;
 use tool_mucertify\local\certification;
 
 /**
- * Certification event test.
+ * Certification deleted event test.
  *
  * @group      muTMS
  * @package    tool_mucertify

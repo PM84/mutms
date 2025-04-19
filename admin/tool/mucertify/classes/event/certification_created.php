@@ -33,9 +33,9 @@ final class certification_created extends \core\event\base {
      *
      * @param \stdClass $certification
      *
-     * @return certification_created|static
+     * @return static
      */
-    public static function create_from_certification(\stdClass $certification) {
+    public static function create_from_certification(\stdClass $certification): static {
         $context = \context::instance_by_id($certification->contextid);
         $data = [
             'context' => $context,

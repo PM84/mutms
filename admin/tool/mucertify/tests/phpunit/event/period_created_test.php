@@ -20,24 +20,22 @@
 namespace tool_mucertify\phpunit\event;
 
 /**
- * Certification event test.
+ * Certification period created test.
  *
  * @group      muTMS
  * @package    tool_mucertify
- * @copyright  2023 Open LMS (https://www.openlms.net/)
  * @copyright  2025 Petr Skoda
- * @author     Petr Skoda
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
- * @covers \tool_mucertify\event\user_assigned
+ * @covers \tool_mucertify\event\period_created
  */
-final class user_assigned_test extends \advanced_testcase {
+final class period_created_test extends \advanced_testcase {
     public function setUp(): void {
         parent::setUp();
         $this->resetAfterTest();
     }
 
-    public function test_assign_user(): void {
+    public function test_period_created(): void {
         global $DB;
         /** @var \tool_mucertify_generator $generator */
         $generator = $this->getDataGenerator()->get_plugin_generator('tool_mucertify');
@@ -46,7 +44,8 @@ final class user_assigned_test extends \advanced_testcase {
 
         $syscontext = \context_system::instance();
         $user = $this->getDataGenerator()->create_user();
-        $program = $programgenerator->create_program(['sources' => 'mucertify', 'archived' => 1]);
+        $program = $programgenerator->create_program(['sources' => 'mucertify', 'archived' => 0]);
+        $programsource = $DB->get_record('tool_muprog_source', ['programid' => $program->id, 'type' => 'mucertify']);
         $certification = $generator->create_certification([
             'sources' => 'manual',
             'programid1' => $program->id,
@@ -55,26 +54,31 @@ final class user_assigned_test extends \advanced_testcase {
         $source = $DB->get_record('tool_mucertify_source',
             ['type' => 'manual', 'certificationid' => $certification->id], '*', MUST_EXIST);
 
-        $this->setAdminUser();
         $sink = $this->redirectEvents();
         \tool_mucertify\local\source\manual::assign_users($certification->id, $source->id, [$user->id], []);
         $events = $sink->get_events();
         $sink->close();
-
-        $this->assertCount(1, $events);
-        $event = reset($events);
         $assignment = $DB->get_record('tool_mucertify_assignment',
             ['userid' => $user->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
-        $this->assertInstanceOf(\tool_mucertify\event\user_assigned::class, $event);
+        $period = $DB->get_record('tool_mucertify_period', ['certificationid' => $certification->id, 'userid' => $user->id]);
+
+        $this->assertCount(4, $events);
+        $this->assertInstanceOf(\tool_mucertify\event\assignment_created::class, $events[0]);
+        $this->assertInstanceOf(\tool_mucertify\event\period_created::class, $events[1]);
+        $this->assertInstanceOf(\tool_muprog\event\allocation_created::class, $events[2]);
+        $this->assertInstanceOf(\core\event\calendar_event_created::class, $events[3]);
+
+        $event = $events[1];
+        $this->assertInstanceOf(\tool_mucertify\event\period_created::class, $event);
         $this->assertEquals($syscontext->id, $event->contextid);
-        $this->assertSame($assignment->id, $event->objectid);
+        $this->assertSame($period->id, $event->objectid);
         $this->assertSame($user->id, $event->relateduserid);
         $this->assertSame('c', $event->crud);
-        $this->assertSame($event::LEVEL_OTHER, $event->edulevel);
-        $this->assertSame('tool_mucertify_assignment', $event->objecttable);
-        $this->assertSame('User assigned to certification', $event::get_name());
+        $this->assertSame($event::LEVEL_PARTICIPATING, $event->edulevel);
+        $this->assertSame('tool_mucertify_period', $event->objecttable);
+        $this->assertSame('Certification period created', $event::get_name());
         $description = $event->get_description();
-        $certificationurl = new \moodle_url('/admin/tool/mucertify/management/user_assignment.php', ['id' => $assignment->id]);
+        $certificationurl = new \moodle_url('/admin/tool/mucertify/management/period.php', ['id' => $period->id]);
         $this->assertSame($certificationurl->out(false), $event->get_url()->out(false));
     }
 }

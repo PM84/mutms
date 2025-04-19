@@ -41,7 +41,7 @@ final class event_observer_test extends \advanced_testcase {
         $this->resetAfterTest();
     }
 
-    public function test_program_completed(): void {
+    public function test_allocation_completed(): void {
         global $DB;
 
         /** @var \tool_mucertify_generator $generator */

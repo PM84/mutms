@@ -33,9 +33,9 @@ final class certification_deleted extends \core\event\base {
      *
      * @param \stdClass $certification
      *
-     * @return certification_deleted|static
+     * @return static
      */
-    public static function create_from_certification(\stdClass $certification) {
+    public static function create_from_certification(\stdClass $certification): static {
         $context = \context::instance_by_id($certification->contextid);
         $data = [
             'context' => $context,

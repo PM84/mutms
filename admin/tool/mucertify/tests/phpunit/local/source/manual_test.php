@@ -20,6 +20,7 @@
 namespace tool_mucertify\phpunit\local\source;
 
 use tool_mucertify\local\certification;
+use tool_mucertify\local\source\manual;
 
 /**
  * Certification manual assignment source test.
@@ -40,25 +41,25 @@ final class manual_test extends \advanced_testcase {
     }
 
     public function test_get_type(): void {
-        $this->assertSame('manual', \tool_mucertify\local\source\manual::get_type());
+        $this->assertSame('manual', manual::get_type());
     }
 
     public function test_get_name(): void {
-        $this->assertSame('Manual assignment', \tool_mucertify\local\source\manual::get_name());
+        $this->assertSame('Manual assignment', manual::get_name());
     }
 
     public function test_is_new_allowed(): void {
         $certification = new \stdClass();
-        $this->assertSame(true, \tool_mucertify\local\source\manual::is_new_allowed($certification));
+        $this->assertSame(true, manual::is_new_allowed($certification));
     }
 
     public function test_is_update_allowed(): void {
         $certification = new \stdClass();
-        $this->assertSame(true, \tool_mucertify\local\source\manual::is_update_allowed($certification));
+        $this->assertSame(true, manual::is_update_allowed($certification));
     }
 
     public function test_fix_assignments(): void {
-        $result = \tool_mucertify\local\source\manual::fix_assignments(null, null);
+        $result = manual::fix_assignments(null, null);
         $this->assertFalse($result);
     }
 
@@ -66,7 +67,7 @@ final class manual_test extends \advanced_testcase {
         $certification = new \stdClass();
         $source = new \stdClass();
         $assignment = new \stdClass();
-        $result = \tool_mucertify\local\source\manual::assignment_edit_supported($certification, $source, $assignment);
+        $result = manual::assignment_edit_supported($certification, $source, $assignment);
         $this->assertTrue($result);
     }
 
@@ -76,11 +77,11 @@ final class manual_test extends \advanced_testcase {
         $assignment = new \stdClass();
 
         $assignment->archived = '0';
-        $result = \tool_mucertify\local\source\manual::assignment_delete_supported($certification, $source, $assignment);
+        $result = manual::assignment_delete_supported($certification, $source, $assignment);
         $this->assertTrue($result);
 
         $assignment->archived = '1';
-        $result = \tool_mucertify\local\source\manual::assignment_delete_supported($certification, $source, $assignment);
+        $result = manual::assignment_delete_supported($certification, $source, $assignment);
         $this->assertTrue($result);
     }
 
@@ -106,33 +107,33 @@ final class manual_test extends \advanced_testcase {
         $source = $DB->get_record('tool_mucertify_source',
             ['type' => 'manual', 'certificationid' => $certification->id], '*', MUST_EXIST);
 
-        $result = \tool_mucertify\local\source\manual::is_assignment_possible($certification, $source);
+        $result = manual::is_assignment_possible($certification, $source);
         $this->assertTrue($result);
 
         $certification->archived = '1';
-        $result = \tool_mucertify\local\source\manual::is_assignment_possible($certification, $source);
+        $result = manual::is_assignment_possible($certification, $source);
         $this->assertFalse($result);
         $certification->archived = '0';
 
         $certification->programid1 = null;
-        $result = \tool_mucertify\local\source\manual::is_assignment_possible($certification, $source);
+        $result = manual::is_assignment_possible($certification, $source);
         $this->assertFalse($result);
     }
 
     public function test_get_catalogue_actions(): void {
         $certification = new \stdClass();
         $source = new \stdClass();
-        $this->assertSame([], \tool_mucertify\local\source\manual::get_catalogue_actions($certification, $source));
+        $this->assertSame([], manual::get_catalogue_actions($certification, $source));
     }
 
     public function test_decode_datajson(): void {
         $source = new \stdClass();
-        $this->assertSame($source, \tool_mucertify\local\source\manual::decode_datajson($source));
+        $this->assertSame($source, manual::decode_datajson($source));
     }
 
     public function test_encode_datajson(): void {
         $formdata = new \stdClass();
-        $this->assertSame('[]', \tool_mucertify\local\source\manual::encode_datajson($formdata));
+        $this->assertSame('[]', manual::encode_datajson($formdata));
     }
 
     public function test_add_management_certification_users_actions(): void {
@@ -171,17 +172,17 @@ final class manual_test extends \advanced_testcase {
 
         $this->setUser($user2);
         $actions = new \tool_mulib\output\header_actions('xyz');
-        \tool_mucertify\local\source\manual::add_management_certification_users_actions($actions, $certification, $source);
+        manual::add_management_certification_users_actions($actions, $certification, $source);
         $this->assertFalse($actions->has_items());
 
         $this->setUser($user1);
         $actions = new \tool_mulib\output\header_actions('xyz');
-        \tool_mucertify\local\source\manual::add_management_certification_users_actions($actions, $certification, $source);
+        manual::add_management_certification_users_actions($actions, $certification, $source);
         $this->assertTrue($actions->has_items());
 
         $certification->archived = '1';
         $actions = new \tool_mulib\output\header_actions('xyz');
-        \tool_mucertify\local\source\manual::add_management_certification_users_actions($actions, $certification, $source);
+        manual::add_management_certification_users_actions($actions, $certification, $source);
         $this->assertFalse($actions->has_items());
         $certification->archived = '0';
     }
@@ -204,7 +205,7 @@ final class manual_test extends \advanced_testcase {
             'type' => 'manual',
             'enable' => 0,
         ];
-        $source = \tool_mucertify\local\source\manual::update_source((object)$data);
+        $source = manual::update_source((object)$data);
         $this->assertSame(null, $source);
 
         $data = [
@@ -212,7 +213,7 @@ final class manual_test extends \advanced_testcase {
             'type' => 'manual',
             'enable' => 1,
         ];
-        $source = \tool_mucertify\local\source\manual::update_source((object)$data);
+        $source = manual::update_source((object)$data);
         $this->assertSame($certification->id, $source->certificationid);
         $this->assertSame('manual', $source->type);
     }
@@ -245,7 +246,7 @@ final class manual_test extends \advanced_testcase {
             ['type' => 'manual', 'certificationid' => $certification->id], '*', MUST_EXIST);
 
         $this->setCurrentTimeStart();
-        \tool_mucertify\local\source\manual::assign_users($certification->id, $source->id, [$user1->id]);
+        manual::assign_users($certification->id, $source->id, [$user1->id]);
         $assignment = $DB->get_record('tool_mucertify_assignment', ['userid' => $user1->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
         $this->assertSame($source->id, $assignment->sourceid);
         $this->assertSame('[]', $assignment->sourcedatajson);
@@ -268,7 +269,7 @@ final class manual_test extends \advanced_testcase {
 
         $now = time();
         $this->setCurrentTimeStart();
-        \tool_mucertify\local\source\manual::assign_users($certification->id, $source->id, [$user2->id], [
+        manual::assign_users($certification->id, $source->id, [$user2->id], [
             'timewindowstart' => $now - DAYSECS,
             'timewindowdue' => null,
             'timewindowend' => $now + DAYSECS,
@@ -301,7 +302,7 @@ final class manual_test extends \advanced_testcase {
         $source = $DB->get_record('tool_mucertify_source',
             ['type' => 'manual', 'certificationid' => $certification->id], '*', MUST_EXIST);
 
-        \tool_mucertify\local\source\manual::assign_users($certification->id, $source->id, [$user1->id]);
+        manual::assign_users($certification->id, $source->id, [$user1->id]);
         $assignment = $DB->get_record('tool_mucertify_assignment', ['userid' => $user1->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
         $this->assertSame($source->id, $assignment->sourceid);
         $this->assertSame('[]', $assignment->sourcedatajson);
@@ -313,7 +314,7 @@ final class manual_test extends \advanced_testcase {
         $this->assertFalse($period);
 
         $now = time();
-        \tool_mucertify\local\source\manual::assign_users($certification->id, $source->id, [$user2->id], [
+        manual::assign_users($certification->id, $source->id, [$user2->id], [
             'timecertifiedtemp' => $now + WEEKSECS,
         ]);
         $assignment = $DB->get_record('tool_mucertify_assignment', ['userid' => $user2->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
@@ -335,7 +336,7 @@ final class manual_test extends \advanced_testcase {
             ['type' => 'manual', 'certificationid' => $certification->id], '*', MUST_EXIST);
 
         $this->setCurrentTimeStart();
-        \tool_mucertify\local\source\manual::assign_users($certification->id, $source->id, [$user3->id], [
+        manual::assign_users($certification->id, $source->id, [$user3->id], [
             'noperiod' => 1,
         ]);
         $assignment = $DB->get_record('tool_mucertify_assignment', ['userid' => $user3->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
@@ -348,7 +349,7 @@ final class manual_test extends \advanced_testcase {
         $this->assertCount(0, $DB->get_records('tool_mucertify_period', ['userid' => $user3->id]));
 
         $this->setCurrentTimeStart();
-        \tool_mucertify\local\source\manual::assign_users($certification->id, $source->id, [$user4->id], [
+        manual::assign_users($certification->id, $source->id, [$user4->id], [
             'noperiod' => 0,
         ]);
         $assignment = $DB->get_record('tool_mucertify_assignment', ['userid' => $user4->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
@@ -359,6 +360,91 @@ final class manual_test extends \advanced_testcase {
         $this->assertSame('[]', $assignment->evidencejson);
         $this->assertTimeCurrent($assignment->timecreated);
         $this->assertCount(1, $DB->get_records('tool_mucertify_period', ['userid' => $user4->id]));
+    }
+
+    public function test_update_assignment(): void {
+        global $DB;
+
+        /** @var \tool_mucertify_generator $generator */
+        $generator = $this->getDataGenerator()->get_plugin_generator('tool_mucertify');
+        /** @var \tool_muprog_generator $programgenerator */
+        $programgenerator = $this->getDataGenerator()->get_plugin_generator('tool_muprog');
+
+        $program1 = $programgenerator->create_program();
+        $user1 = $this->getDataGenerator()->create_user();
+
+        $data = [
+            'sources' => ['manual' => []],
+            'programid1' => $program1->id,
+        ];
+        $certification = $generator->create_certification($data);
+        $source = $DB->get_record('tool_mucertify_source',
+            ['type' => 'manual', 'certificationid' => $certification->id], '*', MUST_EXIST);
+        manual::assign_users($certification->id, $source->id, [$user1->id]);
+        $assignment = $DB->get_record('tool_mucertify_assignment', ['userid' => $user1->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
+
+        $data = [
+            'id' => $assignment->id,
+        ];
+        manual::update_assignment((object)$data);
+        $assignment2 = $DB->get_record('tool_mucertify_assignment', ['userid' => $user1->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
+        $this->assertSame((array)$assignment, (array)$assignment2);
+
+        $now = time();
+        $data = [
+            'id' => $assignment->id,
+            'timecertifiedtemp' => (string)($now + WEEKSECS),
+        ];
+        manual::update_assignment((object)$data);
+        $assignment2 = $DB->get_record('tool_mucertify_assignment', ['userid' => $user1->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
+        $this->assertSame($data['timecertifiedtemp'], $assignment2->timecertifiedtemp);
+        $this->assertSame($assignment2->timecreated, $assignment2->timecertifiedfrom);
+        $this->assertSame($assignment2->timecertifiedtemp, $assignment2->timecertifieduntil);
+        $assignment->timecertifiedtemp = $assignment2->timecertifiedtemp;
+        $assignment->timecertifiedfrom = $assignment2->timecertifiedfrom;
+        $assignment->timecertifieduntil = $assignment2->timecertifieduntil;
+        $this->assertSame((array)$assignment, (array)$assignment2);
+
+        $data = [
+            'id' => $assignment->id,
+            'timecertifiedtemp' => null,
+            'archived' => '1',
+        ];
+        manual::update_assignment((object)$data);
+        $assignment2 = $DB->get_record('tool_mucertify_assignment', ['userid' => $user1->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
+        $this->assertSame($data['archived'], $assignment2->archived);
+        $this->assertSame(null, $assignment2->timecertifiedtemp);
+        $this->assertSame(null, $assignment2->timecertifiedfrom);
+        $this->assertSame(null, $assignment2->timecertifieduntil);
+
+        $data = [
+            'id' => $assignment->id,
+            'archived' => '0',
+        ];
+        manual::update_assignment((object)$data);
+        $assignment2 = $DB->get_record('tool_mucertify_assignment', ['userid' => $user1->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
+        $assignment->timecertifiedtemp = $assignment2->timecertifiedtemp;
+        $assignment->timecertifiedfrom = $assignment2->timecertifiedfrom;
+        $assignment->timecertifieduntil = $assignment2->timecertifieduntil;
+        $this->assertSame((array)$assignment, (array)$assignment2);
+
+        $period = $DB->get_record('tool_mucertify_period', ['userid' => $user1->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
+        $this->assertSame('1', $period->recertifiable);
+        $data = [
+            'id' => $assignment->id,
+            'stoprecertify' => '1',
+        ];
+        manual::update_assignment((object)$data);
+        $period = $DB->get_record('tool_mucertify_period', ['userid' => $user1->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
+        $this->assertSame('0', $period->recertifiable);
+
+        $data = [
+            'id' => $assignment->id,
+            'stoprecertify' => '0',
+        ];
+        manual::update_assignment((object)$data);
+        $period = $DB->get_record('tool_mucertify_period', ['userid' => $user1->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
+        $this->assertSame('1', $period->recertifiable);
     }
 
     public function test_unassign_user(): void {
@@ -385,11 +471,11 @@ final class manual_test extends \advanced_testcase {
         $source = $DB->get_record('tool_mucertify_source',
             ['type' => 'manual', 'certificationid' => $certification->id], '*', MUST_EXIST);
         $this->setCurrentTimeStart();
-        \tool_mucertify\local\source\manual::assign_users($certification->id, $source->id, [$user1->id, $user2->id]);
+        manual::assign_users($certification->id, $source->id, [$user1->id, $user2->id]);
         $assignment = $DB->get_record('tool_mucertify_assignment', ['userid' => $user1->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
         $this->assertCount(1, $DB->get_records('tool_mucertify_period', ['userid' => $user1->id, 'certificationid' => $certification->id]));
 
-        \tool_mucertify\local\source\manual::unassign_user($certification, $source, $assignment);
+        manual::unassign_user($certification, $source, $assignment);
         $this->assertCount(0, $DB->get_records('tool_mucertify_assignment', ['userid' => $user1->id, 'certificationid' => $certification->id]));
         $this->assertCount(0, $DB->get_records('tool_mucertify_period', ['userid' => $user1->id, 'certificationid' => $certification->id]));
         $this->assertCount(1, $DB->get_records('tool_mucertify_assignment', ['userid' => $user2->id, 'certificationid' => $certification->id]));
@@ -399,8 +485,8 @@ final class manual_test extends \advanced_testcase {
     public function test_render_status_details(): void {
         $certification = new \stdClass();
         $source = new \stdClass();
-        $this->assertSame('Active', \tool_mucertify\local\source\manual::render_status_details($certification, $source));
-        $this->assertSame('Inactive', \tool_mucertify\local\source\manual::render_status_details($certification, null));
+        $this->assertSame('Active', manual::render_status_details($certification, $source));
+        $this->assertSame('Inactive', manual::render_status_details($certification, null));
     }
 
     public function test_render_status(): void {
@@ -429,14 +515,14 @@ final class manual_test extends \advanced_testcase {
             ['type' => 'manual', 'certificationid' => $certification->id], '*', MUST_EXIST);
 
         $this->setUser($user2);
-        $this->assertSame('Active', \tool_mucertify\local\source\manual::render_status($certification, $source));
-        $this->assertSame('Inactive', \tool_mucertify\local\source\manual::render_status($certification, null));
+        $this->assertSame('Active', manual::render_status($certification, $source));
+        $this->assertSame('Inactive', manual::render_status($certification, null));
 
         $this->setUser($user1);
-        $this->assertStringStartsWith('Active', \tool_mucertify\local\source\manual::render_status($certification, $source));
-        $this->assertStringContainsString('"Update Manual assignment"', \tool_mucertify\local\source\manual::render_status($certification, $source));
-        $this->assertStringStartsWith('Inactive', \tool_mucertify\local\source\manual::render_status($certification, null));
-        $this->assertStringContainsString('"Update Manual assignment"', \tool_mucertify\local\source\manual::render_status($certification, null));
+        $this->assertStringStartsWith('Active', manual::render_status($certification, $source));
+        $this->assertStringContainsString('"Update Manual assignment"', manual::render_status($certification, $source));
+        $this->assertStringStartsWith('Inactive', manual::render_status($certification, null));
+        $this->assertStringContainsString('"Update Manual assignment"', manual::render_status($certification, null));
     }
 
     public function test_get_assigner(): void {
@@ -460,19 +546,19 @@ final class manual_test extends \advanced_testcase {
         $certification = $generator->create_certification($data);
         $source = $DB->get_record('tool_mucertify_source',
             ['type' => 'manual', 'certificationid' => $certification->id], '*', MUST_EXIST);
-        \tool_mucertify\local\source\manual::assign_users($certification->id, $source->id, [$user1->id]);
+        manual::assign_users($certification->id, $source->id, [$user1->id]);
         $assignment = $DB->get_record('tool_mucertify_assignment', ['userid' => $user1->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
 
         $this->setUser(null);
-        $result = \tool_mucertify\local\source\manual::get_assigner($certification, $source, $assignment);
+        $result = manual::get_assigner($certification, $source, $assignment);
         $this->assertSame($admin->id, $result->id);
 
         $this->setUser($user2);
-        $result = \tool_mucertify\local\source\manual::get_assigner($certification, $source, $assignment);
+        $result = manual::get_assigner($certification, $source, $assignment);
         $this->assertSame($user2->id, $result->id);
 
         $this->setGuestUser();
-        $result = \tool_mucertify\local\source\manual::get_assigner($certification, $source, $assignment);
+        $result = manual::get_assigner($certification, $source, $assignment);
         $this->assertSame($admin->id, $result->id);
     }
 }

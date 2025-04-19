@@ -30,8 +30,8 @@ defined('MOODLE_INTERNAL') || die();
 
 $observers = [
     [
-        'eventname'   => \tool_muprog\event\program_completed::class,
-        'callback'    => \tool_mucertify\local\event_observer::class . '::program_completed',
+        'eventname'   => \tool_muprog\event\allocation_completed::class,
+        'callback'    => \tool_mucertify\local\event_observer::class . '::allocation_completed',
     ],
     [
         'eventname' => \tool_certificate\event\template_deleted::class,
