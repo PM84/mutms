@@ -32,14 +32,17 @@ final class program_updated extends \core\event\base {
      * Helper for event creation.
      *
      * @param \stdClass $program
+     * @param string|null $action
+     * @param int|null $otherid
      *
-     * @return program_updated|static
+     * @return static
      */
-    public static function create_from_program(\stdClass $program) {
+    public static function create_from_program(\stdClass $program, ?string $action = null, ?int $otherid = null): static {
         $context = \context::instance_by_id($program->contextid);
         $data = [
             'context' => $context,
             'objectid' => $program->id,
+            'other' => ['action' => $action, 'otherid' => $otherid],
         ];
         /** @var static $event */
         $event = self::create($data);
@@ -53,7 +56,13 @@ final class program_updated extends \core\event\base {
      * @return string
      */
     public function get_description() {
-        return "The user with id '$this->userid' updated program with id '$this->objectid'";
+        $desc = "The user with id '$this->userid' updated program with id '$this->objectid'";
+        if (isset($this->other['action'])) {
+            $action = $this->other['action'];
+            $otherid = $this->other['otherid'] ?? null;
+            $desc .= " (action: $action, otherid: $otherid)";
+        }
+        return $desc;
     }
 
     /**

@@ -19,7 +19,7 @@
 namespace tool_muprog\event;
 
 /**
- * Program completed event.
+ * User allocated event.
  *
  * @package    tool_muprog
  * @copyright  2022 Open LMS (https://www.openlms.net/)
@@ -27,25 +27,22 @@ namespace tool_muprog\event;
  * @author     Petr Skoda
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-final class program_completed extends \core\event\base {
+final class allocation_created extends \core\event\base {
     /**
      * Helper for event creation.
      *
      * @param \stdClass $allocation
      * @param \stdClass $program
      *
-     * @return program_completed|static
+     * @return static
      */
-    public static function create_from_allocation(\stdClass $allocation, \stdClass $program) {
-        if (!$allocation->timecompleted) {
-            throw new \coding_exception('user must have already completed the program');
-        }
+    public static function create_from_allocation(\stdClass $allocation, \stdClass $program): static {
         $context = \context::instance_by_id($program->contextid);
         $data = [
             'context' => $context,
             'objectid' => $allocation->id,
             'relateduserid' => $allocation->userid,
-            'other' => ['programid' => $program->id, 'timecompleted' => $allocation->timecompleted],
+            'other' => ['programid' => $program->id],
         ];
         /** @var static $event */
         $event = self::create($data);
@@ -60,7 +57,7 @@ final class program_completed extends \core\event\base {
      * @return string
      */
     public function get_description() {
-        return "The user with id '$this->relateduserid' completed program with id '$this->objectid'";
+        return "The user with id '$this->relateduserid' was allocated to program with id '$this->objectid'";
     }
 
     /**
@@ -69,7 +66,7 @@ final class program_completed extends \core\event\base {
      * @return string
      */
     public static function get_name() {
-        return get_string('event_program_completed', 'tool_muprog');
+        return get_string('event_allocation_created', 'tool_muprog');
     }
 
     /**
@@ -88,7 +85,7 @@ final class program_completed extends \core\event\base {
      */
     protected function init() {
         $this->data['crud'] = 'c';
-        $this->data['edulevel'] = self::LEVEL_PARTICIPATING;
+        $this->data['edulevel'] = self::LEVEL_OTHER;
         $this->data['objecttable'] = 'tool_muprog_allocation';
     }
 }

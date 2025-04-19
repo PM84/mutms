@@ -18,65 +18,50 @@
 
 namespace tool_muprog\phpunit\event;
 
+use tool_muprog\local\program;
+
 /**
- * User allocated event test.
+ * Program archived event test.
  *
  * @group      muTMS
  * @package    tool_muprog
- * @copyright  2022 Open LMS (https://www.openlms.net/)
  * @copyright  2025 Petr Skoda
- * @author     Petr Skoda
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
- * @covers \tool_muprog\event\user_allocated
+ * @covers \tool_muprog\event\program_archived
  */
-final class user_allocated_test extends \advanced_testcase {
+final class program_archived_test extends \advanced_testcase {
     public function setUp(): void {
         parent::setUp();
         $this->resetAfterTest();
     }
 
     public function test_event(): void {
-        global $DB;
-
         $syscontext = \context_system::instance();
         $data = (object)[
             'fullname' => 'Some program',
             'idnumber' => 'SP1',
             'contextid' => $syscontext->id,
-            'sources' => ['manual' => []],
         ];
-        $admin = get_admin();
-        $user = $this->getDataGenerator()->create_user();
-        /** @var \tool_muprog_generator $generator */
-        $generator = $this->getDataGenerator()->get_plugin_generator('tool_muprog');
-
         $this->setAdminUser();
-        $program = $generator->create_program($data);
-        $source = $DB->get_record('tool_muprog_source', ['programid' => $program->id, 'type' => 'manual']);
+        $program = program::create($data);
 
-        $this->setAdminUser();
         $sink = $this->redirectEvents();
-        \tool_muprog\local\source\manual::allocate_users($program->id, $source->id, [$user->id]);
+        $program = program::archive($program->id);
         $events = $sink->get_events();
         $sink->close();
 
-        $allocation = $DB->get_record('tool_muprog_allocation', ['programid' => $program->id, 'userid' => $user->id]);
-
-        $this->assertCount(2, $events);
-        $this->assertInstanceOf('tool_muprog\event\user_allocated', $events[0]);
-        $this->assertInstanceOf('core\event\calendar_event_created', $events[1]);
-        $event = $events[0];
+        $this->assertCount(1, $events);
+        $event = reset($events);
+        $this->assertInstanceOf('tool_muprog\event\program_archived', $event);
         $this->assertEquals($syscontext->id, $event->contextid);
-        $this->assertSame($allocation->id, $event->objectid);
-        $this->assertSame($admin->id, $event->userid);
-        $this->assertSame($user->id, $event->relateduserid);
-        $this->assertSame('c', $event->crud);
+        $this->assertSame($program->id, $event->objectid);
+        $this->assertSame('u', $event->crud);
         $this->assertSame($event::LEVEL_OTHER, $event->edulevel);
-        $this->assertSame('tool_muprog_allocation', $event->objecttable);
-        $this->assertSame('User allocated to program', $event::get_name());
+        $this->assertSame('tool_muprog_program', $event->objecttable);
+        $this->assertSame('Program archived', $event::get_name());
         $description = $event->get_description();
-        $programurl = new \moodle_url('/admin/tool/muprog/management/user_allocation.php', ['id' => $allocation->id]);
+        $programurl = new \moodle_url('/admin/tool/muprog/management/program.php', ['id' => $program->id]);
         $this->assertSame($programurl->out(false), $event->get_url()->out(false));
     }
 }

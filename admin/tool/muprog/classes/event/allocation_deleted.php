@@ -19,9 +19,7 @@
 namespace tool_muprog\event;
 
 /**
- * Catalogue program viewed event.
- *
- * NOTE: this is learner view in catalogue only, management UI and My program does not trigger this.
+ * User deallocated event.
  *
  * @package    tool_muprog
  * @copyright  2022 Open LMS (https://www.openlms.net/)
@@ -29,22 +27,26 @@ namespace tool_muprog\event;
  * @author     Petr Skoda
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-final class catalogue_program_viewed extends \core\event\base {
+final class allocation_deleted extends \core\event\base {
     /**
      * Helper for event creation.
      *
+     * @param \stdClass $allocation
      * @param \stdClass $program
      *
      * @return static
      */
-    public static function create_from_program(\stdClass $program): static {
+    public static function create_from_allocation(\stdClass $allocation, \stdClass $program): static {
         $context = \context::instance_by_id($program->contextid);
         $data = [
             'context' => $context,
-            'objectid' => $program->id,
+            'objectid' => $allocation->id,
+            'relateduserid' => $allocation->userid,
+            'other' => ['programid' => $program->id],
         ];
         /** @var static $event */
         $event = self::create($data);
+        $event->add_record_snapshot('tool_muprog_allocation', $allocation);
         $event->add_record_snapshot('tool_muprog_program', $program);
         return $event;
     }
@@ -55,7 +57,7 @@ final class catalogue_program_viewed extends \core\event\base {
      * @return string
      */
     public function get_description() {
-        return "The user with id '$this->userid' viewed program in catalogue with id '$this->objectid'";
+        return "The user with id '$this->relateduserid' was deallocated from program with id '$this->objectid'";
     }
 
     /**
@@ -64,7 +66,7 @@ final class catalogue_program_viewed extends \core\event\base {
      * @return string
      */
     public static function get_name() {
-        return get_string('event_catalogue_program_viewed', 'tool_muprog');
+        return get_string('event_allocation_deleted', 'tool_muprog');
     }
 
     /**
@@ -73,7 +75,7 @@ final class catalogue_program_viewed extends \core\event\base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/admin/tool/muprog/catalogue/program.php', ['id' => $this->objectid]);
+        return new \moodle_url('/admin/tool/muprog/management/program.php', ['id' => $this->other['programid']]);
     }
 
     /**
@@ -82,8 +84,8 @@ final class catalogue_program_viewed extends \core\event\base {
      * @return void
      */
     protected function init() {
-        $this->data['crud'] = 'r';
+        $this->data['crud'] = 'd';
         $this->data['edulevel'] = self::LEVEL_OTHER;
-        $this->data['objecttable'] = 'tool_muprog_program';
+        $this->data['objecttable'] = 'tool_muprog_allocation';
     }
 }

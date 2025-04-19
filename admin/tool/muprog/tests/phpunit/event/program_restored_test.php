@@ -18,64 +18,49 @@
 
 namespace tool_muprog\phpunit\event;
 
+use tool_muprog\local\program;
+
 /**
- * User deallocated event test.
+ * Program restored event test.
  *
  * @group      muTMS
  * @package    tool_muprog
- * @copyright  2022 Open LMS (https://www.openlms.net/)
  * @copyright  2025 Petr Skoda
- * @author     Petr Skoda
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
- * @covers \tool_muprog\event\user_deallocated
+ * @covers \tool_muprog\event\program_restored
  */
-final class user_deallocated_test extends \advanced_testcase {
+final class program_restored_test extends \advanced_testcase {
     public function setUp(): void {
         parent::setUp();
         $this->resetAfterTest();
     }
 
     public function test_event(): void {
-        global $DB;
-
         $syscontext = \context_system::instance();
         $data = (object)[
             'fullname' => 'Some program',
             'idnumber' => 'SP1',
             'contextid' => $syscontext->id,
-            'sources' => ['manual' => []],
+            'archived' => '1',
         ];
-        $admin = get_admin();
-        $user = $this->getDataGenerator()->create_user();
-        /** @var \tool_muprog_generator $generator */
-        $generator = $this->getDataGenerator()->get_plugin_generator('tool_muprog');
-
         $this->setAdminUser();
-        $program = $generator->create_program($data);
-        $source = $DB->get_record('tool_muprog_source', ['programid' => $program->id, 'type' => 'manual']);
-
-        $this->setAdminUser();
-        \tool_muprog\local\source\manual::allocate_users($program->id, $source->id, [$user->id]);
-        $allocation = $DB->get_record('tool_muprog_allocation', ['programid' => $program->id, 'userid' => $user->id]);
+        $program = program::create($data);
 
         $sink = $this->redirectEvents();
-        \tool_muprog\local\source\manual::deallocate_user($program, $source, $allocation);
+        $program = program::restore($program->id);
         $events = $sink->get_events();
         $sink->close();
 
-        $this->assertCount(2, $events);
-        $this->assertInstanceOf('tool_muprog\event\user_deallocated', $events[1]);
-        $this->assertInstanceOf('core\event\calendar_event_deleted', $events[0]);
-        $event = $events[1];
+        $this->assertCount(1, $events);
+        $event = reset($events);
+        $this->assertInstanceOf('tool_muprog\event\program_restored', $event);
         $this->assertEquals($syscontext->id, $event->contextid);
-        $this->assertSame($allocation->id, $event->objectid);
-        $this->assertSame($admin->id, $event->userid);
-        $this->assertSame($user->id, $event->relateduserid);
-        $this->assertSame('c', $event->crud);
+        $this->assertSame($program->id, $event->objectid);
+        $this->assertSame('u', $event->crud);
         $this->assertSame($event::LEVEL_OTHER, $event->edulevel);
-        $this->assertSame('tool_muprog_allocation', $event->objecttable);
-        $this->assertSame('User deallocated from program', $event::get_name());
+        $this->assertSame('tool_muprog_program', $event->objecttable);
+        $this->assertSame('Program restored', $event::get_name());
         $description = $event->get_description();
         $programurl = new \moodle_url('/admin/tool/muprog/management/program.php', ['id' => $program->id]);
         $this->assertSame($programurl->out(false), $event->get_url()->out(false));
