@@ -21,7 +21,7 @@ namespace tool_muprog\event;
 /**
  * Program viewed event.
  *
- * NOTE: this is learner view in catalogue only, management UI does not trigger this.
+ * NOTE: this is learner view on My programs page only, management UI does not trigger this.
  *
  * @package    tool_muprog
  * @copyright  2022 Open LMS (https://www.openlms.net/)
@@ -35,9 +35,9 @@ final class program_viewed extends \core\event\base {
      *
      * @param \stdClass $program
      *
-     * @return program_viewed|static
+     * @return static
      */
-    public static function create_from_program(\stdClass $program) {
+    public static function create_from_program(\stdClass $program): static {
         $context = \context::instance_by_id($program->contextid);
         $data = [
             'context' => $context,

@@ -33,9 +33,9 @@ final class program_deleted extends \core\event\base {
      *
      * @param \stdClass $program
      *
-     * @return program_deleted|static
+     * @return static
      */
-    public static function create_from_program(\stdClass $program) {
+    public static function create_from_program(\stdClass $program): static {
         $context = \context::instance_by_id($program->contextid);
         $data = [
             'context' => $context,

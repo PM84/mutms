@@ -19,17 +19,13 @@
 namespace tool_muprog\event;
 
 /**
- * Catalogue program viewed event.
- *
- * NOTE: this is learner view in catalogue only, management UI and My program does not trigger this.
+ * Program archived event.
  *
  * @package    tool_muprog
- * @copyright  2022 Open LMS (https://www.openlms.net/)
  * @copyright  2025 Petr Skoda
- * @author     Petr Skoda
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-final class catalogue_program_viewed extends \core\event\base {
+final class program_archived extends \core\event\base {
     /**
      * Helper for event creation.
      *
@@ -55,7 +51,7 @@ final class catalogue_program_viewed extends \core\event\base {
      * @return string
      */
     public function get_description() {
-        return "The user with id '$this->userid' viewed program in catalogue with id '$this->objectid'";
+        return "The user with id '$this->userid' archived program with id '$this->objectid'";
     }
 
     /**
@@ -64,7 +60,7 @@ final class catalogue_program_viewed extends \core\event\base {
      * @return string
      */
     public static function get_name() {
-        return get_string('event_catalogue_program_viewed', 'tool_muprog');
+        return get_string('event_program_archived', 'tool_muprog');
     }
 
     /**
@@ -73,7 +69,7 @@ final class catalogue_program_viewed extends \core\event\base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/admin/tool/muprog/catalogue/program.php', ['id' => $this->objectid]);
+        return new \moodle_url('/admin/tool/muprog/management/program.php', ['id' => $this->objectid]);
     }
 
     /**
@@ -82,7 +78,7 @@ final class catalogue_program_viewed extends \core\event\base {
      * @return void
      */
     protected function init() {
-        $this->data['crud'] = 'r';
+        $this->data['crud'] = 'u';
         $this->data['edulevel'] = self::LEVEL_OTHER;
         $this->data['objecttable'] = 'tool_muprog_program';
     }
