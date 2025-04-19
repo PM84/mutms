@@ -19,15 +19,13 @@
 namespace tool_mucertify\event;
 
 /**
- * Certification updated event.
+ * Certification archived event.
  *
  * @package    tool_mucertify
- * @copyright  2023 Open LMS (https://www.openlms.net/)
  * @copyright  2025 Petr Skoda
- * @author     Petr Skoda
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-final class certification_updated extends \core\event\base {
+final class certification_archived extends \core\event\base {
     /**
      * Helper for event creation.
      *
@@ -53,7 +51,7 @@ final class certification_updated extends \core\event\base {
      * @return string
      */
     public function get_description() {
-        return "The user with id '$this->userid' updated certification with id '$this->objectid'";
+        return "The user with id '$this->userid' archived certification with id '$this->objectid'";
     }
 
     /**
@@ -62,7 +60,7 @@ final class certification_updated extends \core\event\base {
      * @return string
      */
     public static function get_name() {
-        return get_string('event_certification_updated', 'tool_mucertify');
+        return get_string('event_certification_archived', 'tool_mucertify');
     }
 
     /**

@@ -321,13 +321,19 @@ final class period {
 
         if ($assignment) {
             $assignment = assignment::fix_caches($assignment->id);
+        } else {
+            $assignment = null;
         }
+
+        $period = $DB->get_record('tool_mucertify_period', ['id' => $id], '*', MUST_EXIST);
 
         $trans->allow_commit();
 
+        \tool_mucertify\event\period_created::create_from_period($certification, $assignment, $period)->trigger();
+
         \tool_muprog\local\source\mucertify::sync_certifications($record->certificationid, $record->userid);
 
-        return $DB->get_record('tool_mucertify_period', ['id' => $id], '*', MUST_EXIST);
+        return $period;
     }
 
     /**
@@ -402,6 +408,8 @@ final class period {
         global $DB;
 
         $record = $DB->get_record('tool_mucertify_period', ['id' => $data->id], '*', MUST_EXIST);
+        $certification = $DB->get_record('tool_mucertify_certification', ['id' => $record->certificationid], '*', MUST_EXIST);
+
         $oldrecord = clone($record);
         $datefields = ['timewindowstart', 'timewindowdue', 'timewindowend', 'timecertified', 'timefrom', 'timeuntil', 'timerevoked'];
 
@@ -459,17 +467,23 @@ final class period {
             ['certificationid' => $record->certificationid, 'userid' => $record->userid]);
         if ($assignment) {
             $assignment = assignment::fix_caches($assignment->id);
+        } else {
+            $assignment = null;
         }
 
         if (!$oldrecord->timerevoked && $record->timerevoked && $record->certificateissueid) {
             certificate::revoke($record->id);
         }
 
+        $period = $DB->get_record('tool_mucertify_period', ['id' => $record->id], '*', MUST_EXIST);
+
         $trans->allow_commit();
+
+        \tool_mucertify\event\period_updated::create_from_period($certification, $assignment, $period)->trigger();
 
         \tool_muprog\local\source\mucertify::sync_certifications($record->certificationid, $record->userid);
 
-        return $DB->get_record('tool_mucertify_period', ['id' => $record->id], '*', MUST_EXIST);
+        return $period;
     }
 
     /**
@@ -481,6 +495,9 @@ final class period {
      */
     public static function update_recertifiable(stdClass $assignment, bool $stoprecertify): void {
         global $DB;
+
+        $certification = $DB->get_record('tool_mucertify_certification', ['id' => $assignment->certificationid], '*', MUST_EXIST);
+
         if ($stoprecertify) {
             $DB->set_field('tool_mucertify_period', 'recertifiable', 0,
                 ['certificationid' => $assignment->certificationid, 'userid' => $assignment->userid]);
@@ -489,6 +506,8 @@ final class period {
                 ['certificationid' => $assignment->certificationid, 'userid' => $assignment->userid, 'timerevoked' => null]);
         }
         self::fix_flags($assignment->certificationid, $assignment->userid);
+
+        \tool_mucertify\event\assignment_updated::create_from_assignment($certification, $assignment)->trigger();
     }
 
     /**
@@ -504,6 +523,7 @@ final class period {
         if (!$record) {
             return;
         }
+        $certification = $DB->get_record('tool_mucertify_certification', ['id' => $record->certificationid], '*', MUST_EXIST);
 
         $trans = $DB->start_delegated_transaction();
 
@@ -520,9 +540,13 @@ final class period {
             ['certificationid' => $record->certificationid, 'userid' => $record->userid]);
         if ($assignment) {
             $assignment = assignment::fix_caches($assignment->id);
+        } else {
+            $assignment = null;
         }
 
         $trans->allow_commit();
+
+        \tool_mucertify\event\period_deleted::create_from_period($certification, $assignment, $record)->trigger();
 
         \tool_muprog\local\source\mucertify::sync_certifications($record->certificationid, $record->userid);
     }
@@ -534,7 +558,7 @@ final class period {
      * @param stdClass $allocation
      * @return void
      */
-    public static function program_completed(stdClass $program, stdClass $allocation): void {
+    public static function allocation_completed(stdClass $program, stdClass $allocation): void {
         global $DB;
 
         if ($program->id != $allocation->programid) {
@@ -625,7 +649,7 @@ final class period {
 
         $assignment = assignment::fix_caches($assignment->id);
 
-        \tool_mucertify\event\user_certified::create_from_period($certification, $assignment, $period)->trigger();
+        \tool_mucertify\event\period_certified::create_from_period($certification, $assignment, $period)->trigger();
 
         if (certificate::is_available() && $certification->templateid) {
             // Make sure the certificate is generated asap.
@@ -1012,6 +1036,11 @@ final class period {
                     continue;
                 }
                 \tool_mucertify\local\source\manual::assign_users($certification->id, $source->id, [$user->id], ['noperiod' => 1]);
+                $assignment = $DB->get_record('tool_mucertify_assignment', ['certificationid' => $certification->id, 'userid' => $user->id]);
+                if (!$assignment) {
+                    $result['skipped']++;
+                    continue;
+                }
                 $result['assigned']++;
                 // New periods are created as non-recertifiable.
                 $prevertrecertification = true;
@@ -1036,7 +1065,7 @@ final class period {
             ]);
             $result['periods']++;
             if ($prevertrecertification) {
-                self::update_recertifiable($period, true);
+                self::update_recertifiable($assignment, true);
             }
         }
 

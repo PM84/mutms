@@ -155,7 +155,7 @@ final class certification {
             }
         }
 
-        $certification = self::make_snapshot($data->id, 'add');
+        $certification = $DB->get_record('tool_mucertify_certification', ['id' => $data->id], '*', MUST_EXIST);
 
         // Save custom fields if there are any of them in the form.
         $handler = \tool_mucertify\customfield\fields_handler::create();
@@ -164,8 +164,7 @@ final class certification {
 
         $trans->allow_commit();
 
-        $event = \tool_mucertify\event\certification_created::create_from_certification($certification);
-        $event->trigger();
+        \tool_mucertify\event\certification_created::create_from_certification($certification)->trigger();
 
         return $certification;
     }
@@ -250,16 +249,13 @@ final class certification {
 
         $certification = self::update_image($data);
 
-        $certification = self::make_snapshot($certification->id, 'update_general');
-
         // Save custom fields if there are any of them in the form.
         $handler = \tool_mucertify\customfield\fields_handler::create();
         $handler->instance_form_save($data);
 
         $trans->allow_commit();
 
-        $event = \tool_mucertify\event\certification_updated::create_from_certification($certification);
-        $event->trigger();
+        \tool_mucertify\event\certification_updated::create_from_certification($certification)->trigger();
 
         \tool_mucertify\local\assignment::fix_assignment_sources($certification->id, null);
         \tool_muprog\local\source\mucertify::sync_certifications($certification->id, null);
@@ -314,12 +310,12 @@ final class certification {
         $trans = $DB->start_delegated_transaction();
 
         $DB->set_field('tool_mucertify_certification', 'archived', '1', ['id' => $certification->id]);
-        $certification = self::make_snapshot($certification->id, 'archive');
+
+        $certification = $DB->get_record('tool_mucertify_certification', ['id' => $certification->id], '*', MUST_EXIST);
 
         $trans->allow_commit();
 
-        $event = \tool_mucertify\event\certification_updated::create_from_certification($certification);
-        $event->trigger();
+        \tool_mucertify\event\certification_archived::create_from_certification($certification)->trigger();
 
         \tool_mucertify\local\assignment::fix_assignment_sources($certification->id, null);
         \tool_muprog\local\source\mucertify::sync_certifications($certification->id, null);
@@ -345,12 +341,12 @@ final class certification {
         $trans = $DB->start_delegated_transaction();
 
         $DB->set_field('tool_mucertify_certification', 'archived', '0', ['id' => $certification->id]);
-        $certification = self::make_snapshot($certification->id, 'restore');
+
+        $certification = $DB->get_record('tool_mucertify_certification', ['id' => $certification->id], '*', MUST_EXIST);
 
         $trans->allow_commit();
 
-        $event = \tool_mucertify\event\certification_updated::create_from_certification($certification);
-        $event->trigger();
+        \tool_mucertify\event\certification_restored::create_from_certification($certification)->trigger();
 
         \tool_mucertify\local\assignment::fix_assignment_sources($certification->id, null);
         \tool_muprog\local\source\mucertify::sync_certifications($certification->id, null);
@@ -402,12 +398,11 @@ final class certification {
             }
         }
 
-        $certification = self::make_snapshot($data->id, 'update_visibility');
+        $certification = $DB->get_record('tool_mucertify_certification', ['id' => $oldcertification->id], '*', MUST_EXIST);
 
         $trans->allow_commit();
 
-        $event = \tool_mucertify\event\certification_updated::create_from_certification($certification);
-        $event->trigger();
+        \tool_mucertify\event\certification_updated::create_from_certification($certification)->trigger();
 
         \tool_mucertify\local\assignment::fix_assignment_sources($certification->id, null);
         \tool_muprog\local\source\mucertify::sync_certifications($certification->id, null);
@@ -577,12 +572,11 @@ final class certification {
 
         $DB->update_record('tool_mucertify_certification', $record);
 
-        $certification = self::make_snapshot($record->id, 'update_settings');
+        $certification = $DB->get_record('tool_mucertify_certification', ['id' => $record->id], '*', MUST_EXIST);
 
         $trans->allow_commit();
 
-        $event = \tool_mucertify\event\certification_updated::create_from_certification($certification);
-        $event->trigger();
+        \tool_mucertify\event\certification_updated::create_from_certification($certification)->trigger();
 
         \tool_mucertify\local\assignment::fix_assignment_sources($certification->id, null);
         \tool_muprog\local\source\mucertify::sync_certifications($certification->id, null);
@@ -616,12 +610,11 @@ final class certification {
 
         $DB->set_field('tool_mucertify_certification', 'templateid', $templateid, ['id' => $certification->id]);
 
-        $certification = self::make_snapshot($certification->id, 'update_certificate');
+        $certification = $DB->get_record('tool_mucertify_certification', ['id' => $certification->id], '*', MUST_EXIST);
 
         $trans->allow_commit();
 
-        $event = \tool_mucertify\event\certification_updated::create_from_certification($certification);
-        $event->trigger();
+        \tool_mucertify\event\certification_updated::create_from_certification($certification)->trigger();
 
         return $certification;
     }
@@ -662,56 +655,15 @@ final class certification {
 
         $DB->delete_records('tool_mucertify_certification', ['id' => $certification->id]);
 
-        self::make_snapshot($certification->id, 'delete');
-
         $handler = \tool_mucertify\customfield\fields_handler::create();
         $handler->delete_instance($certification->id);
 
         $trans->allow_commit();
 
-        $event = \tool_mucertify\event\certification_deleted::create_from_certification($certification);
-        $event->trigger();
+        \tool_mucertify\event\certification_deleted::create_from_certification($certification)->trigger();
 
         // Deal with leftover program allocations.
         \tool_muprog\local\source\mucertify::sync_certifications($certification->id, null);
-    }
-
-    /**
-     * Make a full certification snapshot.
-     *
-     * @param int $certificationid
-     * @param string $reason
-     * @param string|null $explanation
-     * @return \stdClass|null null of certification does not exist any more, program record otherwise
-     */
-    public static function make_snapshot(int $certificationid, string $reason, ?string $explanation = null): ?\stdClass {
-        global $DB, $USER;
-
-        $data = new \stdClass();
-        $data->certificationid = $certificationid;
-        $data->reason = $reason;
-        $data->timesnapshot = time();
-        if ($USER->id > 0) {
-            $data->snapshotby = $USER->id;
-        }
-        $data->explanation = $explanation;
-
-        if ($reason === 'delete') {
-            if ($DB->record_exists('tool_mucertify_certification', ['id' => $certificationid])) {
-                throw new \coding_exception('deleted certification must not exist');
-            }
-            $DB->insert_record('tool_mucertify_crt_snapshot', $data);
-            return null;
-        }
-
-        $certification = $DB->get_record('tool_mucertify_certification', ['id' => $certificationid], '*', MUST_EXIST);
-        $data->certificationjson = util::json_encode($certification);
-        $data->cohortsjson = util::json_encode($DB->get_records('tool_mucertify_cohort', ['certificationid' => $certification->id], 'id ASC'));
-        $data->sourcesjson = util::json_encode($DB->get_records('tool_mucertify_source', ['certificationid' => $certification->id], 'id ASC'));
-
-        $DB->insert_record('tool_mucertify_crt_snapshot', $data);
-
-        return $certification;
     }
 
     /**

@@ -92,20 +92,6 @@ class provider implements
             'privacy:metadata:table:tool_mucertify_period'
         );
 
-        $collection->add_database_table(
-            'tool_mucertify_usr_snapshot',
-            [
-                'certificationid' => 'privacy:metadata:field:certificationid',
-                'userid' => 'privacy:metadata:field:userid',
-                'assignmentid' => 'privacy:metadata:field:assignmentid',
-                'reason' => 'privacy:metadata:field:reason',
-                'timesnapshot' => 'privacy:metadata:field:timesnapshot',
-                'snapshotby' => 'privacy:metadata:field:snapshotby',
-                'explanation' => 'privacy:metadata:field:explanation',
-            ],
-            'privacy:metadata:table:tool_mucertify_usr_snapshot'
-        );
-
         return $collection;
     }
 
@@ -199,22 +185,6 @@ class provider implements
                 $assignment->periods[] = $period;
             }
 
-            // Set user snapshot data.
-            $assignment->usersnapshots = [];
-            $sql = "SELECT certificationid, userid, reason, timesnapshot, snapshotby, explanation, sourceid,
-                           archived, periodsjson
-                      FROM {tool_mucertify_usr_snapshot}
-                     WHERE certificationid = :certificationid AND userid = :userid
-                  ORDER BY timesnapshot ASC";
-            $params = ['certificationid' => $assignment->certificationid, 'userid' => $assignment->userid];
-
-            $snapshots = $DB->get_recordset_sql($sql, $params);
-            foreach ($snapshots as $snapshot) {
-                $snapshot->timesnapshot = \core_privacy\local\request\transform::datetime($snapshot->timesnapshot);
-                $assignment->usersnapshots[] = $snapshot;
-            }
-            $snapshots->close();
-
             $certificationcontext = \context::instance_by_id($assignment->contextid);
             unset($assignment->id, $assignment->contextid);
             writer::with_context($certificationcontext)->export_data(
@@ -251,12 +221,9 @@ class provider implements
             if (!isset($allclasses[$source->type])) {
                 continue;
             }
-            /** @var \tool_mucertify\local\source\base $coursceclass */
-            $coursceclass = $allclasses[$source->type];
-            $coursceclass::unassign_user($certification, $source, $assignment);
-
-            $params = ['certificationid' => $assignment->certificationid, 'userid' => $assignment->userid];
-            $DB->delete_records('tool_mucertify_usr_snapshot', $params);
+            /** @var \tool_mucertify\local\source\base $sourceclass */
+            $sourceclass = $allclasses[$source->type];
+            $sourceclass::unassign_user($certification, $source, $assignment);
         }
         $rs->close();
     }
@@ -295,14 +262,11 @@ class provider implements
             if (!isset($allclasses[$source->type])) {
                 continue;
             }
-            /** @var \tool_mucertify\local\source\base $coursceclass */
-            $coursceclass = $allclasses[$source->type];
-            $coursceclass::unassign_user($certification, $source, $assignment);
+            /** @var \tool_mucertify\local\source\base $sourceclass */
+            $sourceclass = $allclasses[$source->type];
+            $sourceclass::unassign_user($certification, $source, $assignment);
         }
         $rs->close();
-
-        $params = ['userid' => $user->id];
-        $DB->delete_records('tool_mucertify_usr_snapshot', $params);
     }
 
     /**
@@ -336,12 +300,9 @@ class provider implements
             if (!isset($allclasses[$source->type])) {
                 continue;
             }
-            /** @var \tool_mucertify\local\source\base $coursceclass */
-            $coursceclass = $allclasses[$source->type];
-            $coursceclass::unassign_user($certification, $source, $assignment);
-
-            $params = ['userid' => $assignment->userid];
-            $DB->delete_records('tool_mucertify_usr_snapshot', $params);
+            /** @var \tool_mucertify\local\source\base $sourceclass */
+            $sourceclass = $allclasses[$source->type];
+            $sourceclass::unassign_user($certification, $source, $assignment);
         }
         $rs->close();
     }

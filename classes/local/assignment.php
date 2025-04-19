@@ -77,49 +77,6 @@ final class assignment {
     }
 
     /**
-     * Manually update user assignment data including temporary certification.
-     *
-     * @param stdClass $data
-     * @return stdClass assignment record
-     */
-    public static function update_user(stdClass $data): stdClass {
-        global $DB;
-
-        $record = $DB->get_record('tool_mucertify_assignment', ['id' => $data->id], '*', MUST_EXIST);
-
-        $trans = $DB->start_delegated_transaction();
-
-        if (property_exists($data, 'timecertifiedtemp')) {
-            $record->timecertifiedtemp = $data->timecertifiedtemp;
-            if (!$record->timecertifiedtemp) {
-                $record->timecertifiedtemp = null;
-            }
-        }
-        if (property_exists($data, 'archived')) {
-            $record->archived = (int)(bool)$data->archived;
-        }
-
-        $DB->update_record('tool_mucertify_assignment', $record);
-        $record = $DB->get_record('tool_mucertify_assignment', ['id' => $record->id], '*', MUST_EXIST);
-
-        if (property_exists($data, 'stoprecertify')) {
-            period::update_recertifiable($record, (bool)$data->stoprecertify);
-        }
-
-        $record = self::fix_caches($record->id);
-
-        self::make_snapshot($record->certificationid, $record->userid, 'assignment_edit');
-
-        $trans->allow_commit();
-
-        \tool_muprog\local\source\mucertify::sync_certifications($record->certificationid, $record->userid);
-
-        notification_manager::trigger_notifications($record->certificationid, $record->userid);
-
-        return $DB->get_record('tool_mucertify_assignment', ['id' => $record->id], '*', MUST_EXIST);
-    }
-
-    /**
      * Returns valid until/expiration date as HTML.
      *
      * @param stdClass $certification
@@ -274,57 +231,6 @@ final class assignment {
                  WHERE c.archived = 0 AND ca.archived = 0 AND ca.userid = :userid";
 
         return $DB->record_exists_sql($sql, ['userid' => $userid]);
-    }
-
-    /**
-     * Make a full user periods and assignment snapshot.
-     *
-     * @param int $certificationid
-     * @param int $userid
-     * @param string $reason snapshot reason type
-     * @param string|null $explanation
-     * @return \stdClass|null assignment record or null if not exists
-     */
-    public static function make_snapshot(int $certificationid, int $userid, string $reason, ?string $explanation = null): ?stdClass {
-        global $DB, $USER;
-
-        $assignment = $DB->get_record('tool_mucertify_assignment', ['certificationid' => $certificationid, 'userid' => $userid]);
-        if (!$assignment) {
-            $assignment = null;
-            $assignmentid = null;
-        } else {
-            $assignmentid = $assignment->id;
-        }
-
-        $data = new stdClass();
-        $data->certificationid = $certificationid;
-        $data->userid = $userid;
-        $data->assignmentid = $assignmentid;
-        $data->reason = $reason;
-        $data->timesnapshot = time();
-        if ($USER->id > 0) {
-            $data->snapshotby = $USER->id;
-        }
-        $data->explanation = $explanation;
-
-        if ($assignment) {
-            foreach ((array)$assignment as $k => $v) {
-                if ($k === 'id' || $k === 'timecreated') {
-                    continue;
-                }
-                $data->{$k} = $v;
-            }
-        }
-
-        $sql = "SELECT p.*
-                  FROM {tool_mucertify_period} p
-                 WHERE p.userid = :userid AND p.certificationid = :certificationid
-              ORDER BY p.id ASC";
-        $data->periodsjson = util::json_encode($DB->get_records_sql($sql, ['certificationid' => $certificationid, 'userid' => $userid]));
-
-        $DB->insert_record('tool_mucertify_usr_snapshot', $data);
-
-        return $assignment;
     }
 
     /**

@@ -28,7 +28,7 @@ defined('MOODLE_INTERNAL') || die();
 
 /** @var stdClass $plugin */
 $plugin->component = 'tool_mucertify';
-$plugin->version   = 2025041503;
+$plugin->version   = 2025041504;
 $plugin->requires  = 2024091700.00;
 $plugin->maturity  = MATURITY_ALPHA;
 $plugin->supported = [405, 405];

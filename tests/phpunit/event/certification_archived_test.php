@@ -19,61 +19,49 @@
 
 namespace tool_mucertify\phpunit\event;
 
+use tool_mucertify\local\certification;
+
 /**
- * Certification event test.
+ * Certification archived event test.
  *
  * @group      muTMS
  * @package    tool_mucertify
- * @copyright  2023 Open LMS (https://www.openlms.net/)
  * @copyright  2025 Petr Skoda
- * @author     Petr Skoda
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
- * @covers \tool_mucertify\event\user_unassigned
+ * @covers \tool_mucertify\event\certification_archived
  */
-final class user_unassigned_test extends \advanced_testcase {
+final class certification_archived_test extends \advanced_testcase {
     public function setUp(): void {
         parent::setUp();
         $this->resetAfterTest();
     }
 
-    public function test_unassign_user(): void {
-        global $DB;
-        /** @var \tool_mucertify_generator $generator */
-        $generator = $this->getDataGenerator()->get_plugin_generator('tool_mucertify');
-        /** @var \tool_muprog_generator $programgenerator */
-        $programgenerator = $this->getDataGenerator()->get_plugin_generator('tool_muprog');
-
+    public function test_updates(): void {
         $syscontext = \context_system::instance();
-        $user = $this->getDataGenerator()->create_user();
-        $program = $programgenerator->create_program(['sources' => 'mucertify', 'archived' => 1]);
-        $certification = $generator->create_certification([
-            'sources' => 'manual',
-            'programid1' => $program->id,
+        $data = (object)[
+            'fullname' => 'Some certification',
+            'idnumber' => 'SP1',
             'contextid' => $syscontext->id,
-        ]);
-        $source = $DB->get_record('tool_mucertify_source',
-            ['type' => 'manual', 'certificationid' => $certification->id], '*', MUST_EXIST);
-        \tool_mucertify\local\source\manual::assign_users($certification->id, $source->id, [$user->id], []);
-        $assignment = $DB->get_record('tool_mucertify_assignment',
-            ['userid' => $user->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
-
+        ];
+        $admin = get_admin();
         $this->setAdminUser();
+        $certification = certification::create($data);
+
         $sink = $this->redirectEvents();
-        \tool_mucertify\local\source\manual::unassign_user($certification, $source, $assignment);
+        $certification = certification::archive($certification->id);
         $events = $sink->get_events();
         $sink->close();
 
         $this->assertCount(1, $events);
         $event = reset($events);
-        $this->assertInstanceOf(\tool_mucertify\event\user_unassigned::class, $event);
+        $this->assertInstanceOf(\tool_mucertify\event\certification_archived::class, $event);
         $this->assertEquals($syscontext->id, $event->contextid);
-        $this->assertSame($assignment->id, $event->objectid);
-        $this->assertSame($user->id, $event->relateduserid);
-        $this->assertSame('d', $event->crud);
+        $this->assertSame($certification->id, $event->objectid);
+        $this->assertSame('u', $event->crud);
         $this->assertSame($event::LEVEL_OTHER, $event->edulevel);
-        $this->assertSame('tool_mucertify_assignment', $event->objecttable);
-        $this->assertSame('User was un-assigned from certification', $event::get_name());
+        $this->assertSame('tool_mucertify_certification', $event->objecttable);
+        $this->assertSame('Certification archived', $event::get_name());
         $description = $event->get_description();
         $certificationurl = new \moodle_url('/admin/tool/mucertify/management/certification.php', ['id' => $certification->id]);
         $this->assertSame($certificationurl->out(false), $event->get_url()->out(false));

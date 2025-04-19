@@ -153,8 +153,6 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         $writer = writer::with_context($certification1context);
         $certificationdata = $writer->get_data([$strassignment, $this->certification1->fullname]);
         $this->assertNotEmpty($certificationdata);
-        // Verify we have usrsnapshot data in certification 1 for user1.
-        $this->assertNotEmpty($certificationdata->assignment->usersnapshots);
 
         // Verify we have nothing in certification 2 for user1.
         $writer = writer::with_context($certification2context);
@@ -178,9 +176,6 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         // Get all user assignments match with this context.
         $userassignments = $DB->get_records('tool_mucertify_assignment', ['certificationid' => $this->certification1->id]);
         $this->assertCount(0, $userassignments);
-        // Check for tool_mucertify_certs_issues and tool_mucertify_usr_snapshot.
-        $snapshots = $DB->get_records('tool_mucertify_usr_snapshot', ['certificationid' => $this->certification1->id]);
-        $this->assertCount(0, $snapshots);
 
         // Get all user assignments match with this context, check count of assignments from other contexts.
         $userassignments = $DB->get_records('tool_mucertify_assignment', []);
@@ -202,9 +197,6 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         // Get all user enrolments match with user1.
         $userenrolments = $DB->get_records('tool_mucertify_assignment', ['userid' => $this->user3->id]);
         $this->assertCount(2, $userenrolments);
-        // Check for tool_mucertify_usr_snapshot with user3.
-        $snapshots = $DB->get_records('tool_mucertify_usr_snapshot', ['userid' => $this->user3->id]);
-        $this->assertCount(2, $snapshots);
 
         // Delete everything for the user3 in the context.
         $approvedlist = new approved_contextlist($this->user3, 'tool_mucertify', [$certification1context->id, $certification2context->id]);
@@ -212,9 +204,6 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         // Get all user enrolments match with user3.
         $userenrolments = $DB->get_records('tool_mucertify_assignment', ['userid' => $this->user3->id]);
         $this->assertCount(0, $userenrolments);
-        // Check for tool_mucertify_usr_snapshot with user3.
-        $snapshots = $DB->get_records('tool_mucertify_usr_snapshot', ['userid' => $this->user3->id]);
-        $this->assertCount(0, $snapshots);
         // Check for tool_mucertify_request with user3.
         $requests = $DB->get_records('tool_mucertify_request', ['userid' => $this->user3->id]);
         $this->assertCount(0, $requests);
@@ -222,9 +211,6 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         // Get all user enrolments accounts.
         $userenrolments = $DB->get_records('tool_mucertify_assignment', []);
         $this->assertCount(2, $userenrolments);
-        // Check for tool_mucertify_usr_snapshot.
-        $snapshots = $DB->get_records('tool_mucertify_usr_snapshot', ['userid' => $this->user1->id]);
-        $this->assertCount(1, $snapshots);
     }
 
     /**
@@ -297,9 +283,6 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         \tool_mucertify\privacy\provider::get_users_in_context($userlist1);
         // The user data in $certification1context should be deleted.
         $this->assertCount(0, $userlist1);
-        // Check for tool_mucertify_usr_snapshot with user3.
-        $snapshots = $DB->get_records('tool_mucertify_usr_snapshot', ['userid' => $this->user3->id]);
-        $this->assertCount(0, $snapshots);
         // Check for tool_mucertify_request with user3.
         $requests = $DB->get_records('tool_mucertify_request', ['userid' => $this->user3->id]);
         $this->assertCount(0, $requests);
@@ -309,9 +292,6 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         \tool_mucertify\privacy\provider::get_users_in_context($userlist2);
         // The user data in $certification2context should be still present.
         $this->assertCount(2, $userlist2);
-        // Check for tool_mucertify_usr_snapshot.
-        $snapshots = $DB->get_records('tool_mucertify_usr_snapshot', ['userid' => $this->user2->id]);
-        $this->assertCount(1, $snapshots);
 
         // Convert $userlist2 into an approved_contextlist in the system context.
         $approvedlist2 = new approved_userlist($certification2context, $component, $userlist2->get_userids());

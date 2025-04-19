@@ -975,7 +975,7 @@ final class period_test extends \advanced_testcase {
         $this->assertSame('0', $period2->recertifiable);
     }
 
-    public function test_program_completed(): void {
+    public function test_allocation_completed(): void {
         global $DB;
 
         /** @var \tool_mucertify_generator $generator */
@@ -1057,7 +1057,7 @@ final class period_test extends \advanced_testcase {
         $period2->timeuntil = null;
         $DB->update_record('tool_mucertify_period', $period2);
         $allocation2 = $DB->get_record('tool_muprog_allocation', ['sourceid' => $program1source->id, 'userid' => $user2->id], '*', MUST_EXIST);
-        \tool_mucertify\local\period::program_completed($program1, $allocation2);
+        \tool_mucertify\local\period::allocation_completed($program1, $allocation2);
         $period2 = $DB->get_record('tool_mucertify_period', ['certificationid' => $certification->id, 'userid' => $user2->id], '*', MUST_EXIST);
         $this->assertSame($allocation2->id, $period2->allocationid);
         $this->assertTimeCurrent($period2->timecertified);
@@ -1078,7 +1078,7 @@ final class period_test extends \advanced_testcase {
         $period2->timeuntil = null;
         $DB->update_record('tool_mucertify_period', $period2);
         $allocation2 = $DB->get_record('tool_muprog_allocation', ['sourceid' => $program1source->id, 'userid' => $user2->id], '*', MUST_EXIST);
-        \tool_mucertify\local\period::program_completed($program1, $allocation2);
+        \tool_mucertify\local\period::allocation_completed($program1, $allocation2);
         $period2 = $DB->get_record('tool_mucertify_period', ['certificationid' => $certification->id, 'userid' => $user2->id], '*', MUST_EXIST);
         $this->assertSame($allocation2->id, $period2->allocationid);
         $this->assertTimeCurrent($period2->timecertified);

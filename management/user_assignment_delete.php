@@ -57,9 +57,8 @@ $returnurl = new moodle_url('/admin/tool/mucertify/management/certification_user
 
 $user = $DB->get_record('user', ['id' => $assignment->userid], '*', MUST_EXIST);
 
-/** @var \tool_mucertify\local\source\base $coursceclass */
-$coursceclass = assignment::get_source_classes()[$source->type];
-if (!$coursceclass::assignment_delete_supported($certification, $source, $assignment)) {
+$sourceclass = assignment::get_source_classname($source->type);
+if (!$sourceclass || !$sourceclass::assignment_delete_supported($certification, $source, $assignment)) {
     redirect($returnurl);
 }
 
@@ -74,7 +73,7 @@ if ($form->is_cancelled()) {
 }
 
 if ($data = $form->get_data()) {
-    $coursceclass::unassign_user($certification, $source, $assignment);
+    $sourceclass::unassign_user($certification, $source, $assignment);
     $form->redirect_submitted($returnurl);
 }
 

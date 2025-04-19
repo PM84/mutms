@@ -19,34 +19,45 @@
 namespace tool_mucertify\event;
 
 /**
- * User assigned event.
+ * User certified event.
  *
  * @package    tool_mucertify
- * @copyright  2023 Open LMS (https://www.openlms.net/)
+ * @copyright  2022 Open LMS (https://www.openlms.net/)
  * @copyright  2025 Petr Skoda
  * @author     Petr Skoda
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-final class user_assigned extends \core\event\base {
+final class period_certified extends \core\event\base {
     /**
      * Helper for event creation.
      *
-     * @param \stdClass $assignment
      * @param \stdClass $certification
+     * @param \stdClass|null $assignment
+     * @param \stdClass $period
      *
-     * @return user_assigned|static
+     * @return static
      */
-    public static function create_from_assignment(\stdClass $assignment, \stdClass $certification) {
+    public static function create_from_period(\stdClass $certification, ?\stdClass $assignment, \stdClass $period): static {
+        if (!$period->timecertified) {
+            throw new \coding_exception('user must have already completed the certification');
+        }
         $context = \context::instance_by_id($certification->contextid);
         $data = [
             'context' => $context,
-            'objectid' => $assignment->id,
-            'relateduserid' => $assignment->userid,
-            'other' => ['certificationid' => $certification->id],
+            'objectid' => $period->id,
+            'relateduserid' => $period->userid,
+            'other' => [
+                'certificationid' => $certification->id,
+                'assignmentid' => $assignment->id ?? null,
+                'timecertified' => $period->timecertified,
+            ],
         ];
         /** @var static $event */
         $event = self::create($data);
-        $event->add_record_snapshot('tool_mucertify_assignment', $assignment);
+        $event->add_record_snapshot('tool_mucertify_period', $period);
+        if ($assignment) {
+            $event->add_record_snapshot('tool_mucertify_assignment', $assignment);
+        }
         $event->add_record_snapshot('tool_mucertify_certification', $certification);
         return $event;
     }
@@ -57,7 +68,7 @@ final class user_assigned extends \core\event\base {
      * @return string
      */
     public function get_description() {
-        return "The user with id '$this->relateduserid' was assigned to certification with id '$this->objectid'";
+        return "The user with id '$this->relateduserid' was certified in period with id '$this->objectid'";
     }
 
     /**
@@ -66,7 +77,7 @@ final class user_assigned extends \core\event\base {
      * @return string
      */
     public static function get_name() {
-        return get_string('event_user_assigned', 'tool_mucertify');
+        return get_string('event_period_certified', 'tool_mucertify');
     }
 
     /**
@@ -75,7 +86,7 @@ final class user_assigned extends \core\event\base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/admin/tool/mucertify/management/user_assignment.php', ['id' => $this->objectid]);
+        return new \moodle_url('/admin/tool/mucertify/management/period.php', ['id' => $this->objectid]);
     }
 
     /**
@@ -84,8 +95,8 @@ final class user_assigned extends \core\event\base {
      * @return void
      */
     protected function init() {
-        $this->data['crud'] = 'c';
-        $this->data['edulevel'] = self::LEVEL_OTHER;
-        $this->data['objecttable'] = 'tool_mucertify_assignment';
+        $this->data['crud'] = 'u';
+        $this->data['edulevel'] = self::LEVEL_PARTICIPATING;
+        $this->data['objecttable'] = 'tool_mucertify_period';
     }
 }

@@ -187,7 +187,7 @@ final class valid_test extends \advanced_testcase {
         $period5 = period::override_dates((object)$dateoverrides);
         $assignment5 = $DB->get_record('tool_mucertify_assignment',
             ['certificationid' => $certification1->id, 'userid' => $user5->id], '*', MUST_EXIST);
-        $assignment5 = assignment::update_user((object)['id' => $assignment5->id, 'archived' => 1]);
+        $assignment5 = \tool_mucertify\local\source\base::update_assignment((object)['id' => $assignment5->id, 'archived' => 1]);
         $period6 = $DB->get_record('tool_mucertify_period',
             ['certificationid' => $certification2->id, 'userid' => $user6->id], '*', MUST_EXIST);
         $dateoverrides = [

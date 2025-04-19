@@ -19,7 +19,7 @@
 namespace tool_mucertify\event;
 
 /**
- * Certification updated event.
+ * User unassigned event.
  *
  * @package    tool_mucertify
  * @copyright  2023 Open LMS (https://www.openlms.net/)
@@ -27,22 +27,26 @@ namespace tool_mucertify\event;
  * @author     Petr Skoda
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-final class certification_updated extends \core\event\base {
+final class assignment_deleted extends \core\event\base {
     /**
      * Helper for event creation.
      *
      * @param \stdClass $certification
+     * @param \stdClass $assignment
      *
      * @return static
      */
-    public static function create_from_certification(\stdClass $certification): static {
+    public static function create_from_assignment(\stdClass $certification, \stdClass $assignment): static {
         $context = \context::instance_by_id($certification->contextid);
         $data = [
             'context' => $context,
-            'objectid' => $certification->id,
+            'objectid' => $assignment->id,
+            'relateduserid' => $assignment->userid,
+            'other' => ['certificationid' => $certification->id],
         ];
         /** @var static $event */
         $event = self::create($data);
+        $event->add_record_snapshot('tool_mucertify_assignment', $assignment);
         $event->add_record_snapshot('tool_mucertify_certification', $certification);
         return $event;
     }
@@ -53,7 +57,7 @@ final class certification_updated extends \core\event\base {
      * @return string
      */
     public function get_description() {
-        return "The user with id '$this->userid' updated certification with id '$this->objectid'";
+        return "The user with id '$this->relateduserid' was unassigned from certification with id '$this->objectid'";
     }
 
     /**
@@ -62,7 +66,7 @@ final class certification_updated extends \core\event\base {
      * @return string
      */
     public static function get_name() {
-        return get_string('event_certification_updated', 'tool_mucertify');
+        return get_string('event_assignment_deleted', 'tool_mucertify');
     }
 
     /**
@@ -71,7 +75,7 @@ final class certification_updated extends \core\event\base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/admin/tool/mucertify/management/certification.php', ['id' => $this->objectid]);
+        return new \moodle_url('/admin/tool/mucertify/management/certification.php', ['id' => $this->other['certificationid']]);
     }
 
     /**
@@ -80,8 +84,8 @@ final class certification_updated extends \core\event\base {
      * @return void
      */
     protected function init() {
-        $this->data['crud'] = 'u';
+        $this->data['crud'] = 'd';
         $this->data['edulevel'] = self::LEVEL_OTHER;
-        $this->data['objecttable'] = 'tool_mucertify_certification';
+        $this->data['objecttable'] = 'tool_mucertify_assignment';
     }
 }

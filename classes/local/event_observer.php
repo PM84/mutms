@@ -32,10 +32,10 @@ final class event_observer {
     /**
      * Program completed observer.
      *
-     * @param \tool_muprog\event\program_completed $event
+     * @param \tool_muprog\event\allocation_completed $event
      */
-    public static function program_completed(\tool_muprog\event\program_completed $event): void {
-        period::program_completed(
+    public static function allocation_completed(\tool_muprog\event\allocation_completed $event): void {
+        period::allocation_completed(
             $event->get_record_snapshot('tool_muprog_program', $event->get_data()['other']['programid']),
             $event->get_record_snapshot('tool_muprog_allocation', $event->objectid)
         );

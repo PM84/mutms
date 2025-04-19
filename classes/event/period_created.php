@@ -19,34 +19,39 @@
 namespace tool_mucertify\event;
 
 /**
- * User unassigned event.
+ * Certification period created event.
  *
  * @package    tool_mucertify
- * @copyright  2023 Open LMS (https://www.openlms.net/)
  * @copyright  2025 Petr Skoda
- * @author     Petr Skoda
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-final class user_unassigned extends \core\event\base {
+final class period_created extends \core\event\base {
     /**
      * Helper for event creation.
      *
-     * @param \stdClass $assignment
      * @param \stdClass $certification
+     * @param \stdClass|null $assignment
+     * @param \stdClass $period
      *
-     * @return user_unassigned|static
+     * @return static
      */
-    public static function create_from_assignment(\stdClass $assignment, \stdClass $certification) {
+    public static function create_from_period(\stdClass $certification, ?\stdClass $assignment, \stdClass $period): static {
         $context = \context::instance_by_id($certification->contextid);
         $data = [
             'context' => $context,
-            'objectid' => $assignment->id,
-            'relateduserid' => $assignment->userid,
-            'other' => ['certificationid' => $certification->id],
+            'objectid' => $period->id,
+            'relateduserid' => $period->userid,
+            'other' => [
+                'certificationid' => $certification->id,
+                'assignmentid' => $assignment->id ?? null,
+            ],
         ];
         /** @var static $event */
         $event = self::create($data);
-        $event->add_record_snapshot('tool_mucertify_assignment', $assignment);
+        $event->add_record_snapshot('tool_mucertify_period', $period);
+        if ($assignment) {
+            $event->add_record_snapshot('tool_mucertify_assignment', $assignment);
+        }
         $event->add_record_snapshot('tool_mucertify_certification', $certification);
         return $event;
     }
@@ -57,7 +62,7 @@ final class user_unassigned extends \core\event\base {
      * @return string
      */
     public function get_description() {
-        return "The user with id '$this->relateduserid' was unassigned from certification with id '$this->objectid'";
+        return "Period with id '$this->objectid' for user with id '$this->relateduserid' was created";
     }
 
     /**
@@ -66,7 +71,7 @@ final class user_unassigned extends \core\event\base {
      * @return string
      */
     public static function get_name() {
-        return get_string('event_user_unassigned', 'tool_mucertify');
+        return get_string('event_period_created', 'tool_mucertify');
     }
 
     /**
@@ -75,7 +80,7 @@ final class user_unassigned extends \core\event\base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/admin/tool/mucertify/management/certification.php', ['id' => $this->other['certificationid']]);
+        return new \moodle_url('/admin/tool/mucertify/management/period.php', ['id' => $this->objectid]);
     }
 
     /**
@@ -84,8 +89,8 @@ final class user_unassigned extends \core\event\base {
      * @return void
      */
     protected function init() {
-        $this->data['crud'] = 'd';
-        $this->data['edulevel'] = self::LEVEL_OTHER;
-        $this->data['objecttable'] = 'tool_mucertify_assignment';
+        $this->data['crud'] = 'c';
+        $this->data['edulevel'] = self::LEVEL_PARTICIPATING;
+        $this->data['objecttable'] = 'tool_mucertify_period';
     }
 }

@@ -21,6 +21,8 @@ namespace tool_mucertify\local\source;
 
 use tool_mucertify\local\assignment;
 use tool_mucertify\navigation\views\certification_secondary;
+use tool_mucertify\local\notification_manager;
+use tool_mucertify\local\period;
 
 use stdClass;
 
@@ -213,8 +215,6 @@ abstract class base {
         }
         $sourceclass::after_update($oldsource, $data, $source);
 
-        \tool_mucertify\local\certification::make_snapshot($certification->id, 'update_source');
-
         $sourceclass::fix_assignments($certification->id, null);
         \tool_muprog\local\source\mucertify::sync_certifications($certification->id, null);
 
@@ -260,22 +260,64 @@ abstract class base {
         $record->id = $DB->insert_record('tool_mucertify_assignment', $record);
         $assignment = $DB->get_record('tool_mucertify_assignment', ['id' => $record->id], '*', MUST_EXIST);
 
-        if (empty($dateoverrides['noperiod'])) {
-            \tool_mucertify\local\period::add_first($assignment, $dateoverrides);
-        }
-
         $assignment = assignment::fix_caches($assignment->id);
 
-        assignment::make_snapshot($assignment->certificationid, $assignment->userid, 'assignment');
+        \tool_mucertify\event\assignment_created::create_from_assignment($certification, $assignment)->trigger();
+
+        if (empty($dateoverrides['noperiod'])) {
+            \tool_mucertify\local\period::add_first($assignment, $dateoverrides);
+            $assignment = assignment::fix_caches($assignment->id);
+        }
 
         $trans->allow_commit();
 
-        $event = \tool_mucertify\event\user_assigned::create_from_assignment($assignment, $certification);
-        $event->trigger();
-
         \tool_mucertify\local\notification\assignment::notify_now($user, $certification, $source, $assignment);
 
-        return $assignment;
+        return $DB->get_record('tool_mucertify_assignment', ['id' => $assignment->id], '*', MUST_EXIST);
+    }
+
+    /**
+     * Manually update user assignment data including temporary certification.
+     *
+     * @param stdClass $data
+     * @return stdClass assignment record
+     */
+    final public static function update_assignment(stdClass $data): stdClass {
+        global $DB;
+
+        $record = $DB->get_record('tool_mucertify_assignment', ['id' => $data->id], '*', MUST_EXIST);
+        $certification = $DB->get_record('tool_mucertify_certification', ['id' => $record->certificationid], '*', MUST_EXIST);
+
+        $trans = $DB->start_delegated_transaction();
+
+        if (property_exists($data, 'timecertifiedtemp')) {
+            $record->timecertifiedtemp = $data->timecertifiedtemp;
+            if (!$record->timecertifiedtemp) {
+                $record->timecertifiedtemp = null;
+            }
+        }
+        if (property_exists($data, 'archived')) {
+            $record->archived = (int)(bool)$data->archived;
+        }
+
+        $DB->update_record('tool_mucertify_assignment', $record);
+        $record = $DB->get_record('tool_mucertify_assignment', ['id' => $record->id], '*', MUST_EXIST);
+
+        if (property_exists($data, 'stoprecertify')) {
+            period::update_recertifiable($record, (bool)$data->stoprecertify);
+        }
+
+        $record = assignment::fix_caches($record->id);
+
+        \tool_mucertify\event\assignment_updated::create_from_assignment($certification, $record)->trigger();
+
+        $trans->allow_commit();
+
+        \tool_muprog\local\source\mucertify::sync_certifications($record->certificationid, $record->userid);
+
+        notification_manager::trigger_notifications($record->certificationid, $record->userid);
+
+        return $DB->get_record('tool_mucertify_assignment', ['id' => $record->id], '*', MUST_EXIST);
     }
 
     /**
@@ -286,7 +328,7 @@ abstract class base {
      * @param stdClass $assignment
      * @return void
      */
-    public static function unassign_user(stdClass $certification, stdClass $source, stdClass $assignment): void {
+    final public static function unassign_user(stdClass $certification, stdClass $source, stdClass $assignment): void {
         global $DB;
 
         if (static::get_type() !== $source->type || $certification->id != $assignment->certificationid || $certification->id != $source->certificationid) {
@@ -312,10 +354,9 @@ abstract class base {
             ['certificationid' => $assignment->certificationid, 'userid' => $assignment->userid]);
         $DB->delete_records('tool_mucertify_assignment', ['id' => $assignment->id]);
 
-        $trans->allow_commit();
+        \tool_mucertify\event\assignment_deleted::create_from_assignment($certification, $assignment)->trigger();
 
-        $event = \tool_mucertify\event\user_unassigned::create_from_assignment($assignment, $certification);
-        $event->trigger();
+        $trans->allow_commit();
     }
 
     /**
