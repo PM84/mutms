@@ -604,7 +604,7 @@ final class program {
     }
 
     /**
-     * Import program allocation, scheduling and sources from another program.
+     * Import allocation settings, scheduling and sources from another program.
      *
      * NOTE: this does not trigger fixing of enrolments and allocations.
      *

@@ -51,8 +51,8 @@ Feature: Manual program allocation tests
       | tool/muprog:delete           | Allow      | pmanager | System       |           |
       | tool/muprog:addcourse        | Allow      | pmanager | System       |           |
       | tool/muprog:allocate         | Allow      | pmanager | System       |           |
+      | tool/muprog:deallocate       | Allow      | pmanager | System       |           |
       | tool/muprog:manageallocation | Allow      | pmanager | System       |           |
-      | tool/muprog:archive          | Allow      | pmanager | System       |           |
       | moodle/cohort:view           | Allow      | pmanager | System       |           |
     And the following "role assigns" exist:
       | user      | role          | contextlevel | reference |
@@ -321,16 +321,16 @@ Feature: Manual program allocation tests
     And I follow "Student 1"
     And I click on "Allocation actions" "link"
     And I should see "Update allocation"
-    And I should see "Delete program allocation"
+    And I should not see "Delete program allocation"
 
-    When I click on "Archive" "link"
-    And I press dialog form button "Archive"
+    When I click on "Archive allocation" "link"
+    And I press dialog form button "Archive allocation"
     And I click on "Allocation actions" "link"
     Then I should not see "Update allocation"
     And I should see "Delete program allocation"
 
-    When I click on "Restore" "link"
-    And I press dialog form button "Restore"
+    When I click on "Restore allocation" "link"
+    And I press dialog form button "Restore allocation"
     And I click on "Allocation actions" "link"
     Then I should see "Update allocation"
-    And I should see "Delete program allocation"
+    And I should not see "Delete program allocation"

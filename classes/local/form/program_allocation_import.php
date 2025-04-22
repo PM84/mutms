@@ -19,7 +19,7 @@
 namespace tool_muprog\local\form;
 
 /**
- * Import program allocation - program selection step.
+ * Import allocation settings - program selection step.
  *
  * @package    tool_muprog
  * @copyright  2023 Open LMS (https://www.openlms.net/)

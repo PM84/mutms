@@ -48,7 +48,7 @@ final class program_allocations_edit extends \tool_mulib\local\dialog_form {
         $mform->setType('id', PARAM_INT);
         $mform->setDefault('id', $data->id);
 
-        $this->add_action_buttons(true, get_string('updateallocations', 'tool_muprog'));
+        $this->add_action_buttons(true, get_string('program_allocations_edit', 'tool_muprog'));
 
         $this->set_data($data);
     }

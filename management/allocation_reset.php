@@ -40,7 +40,6 @@ if (!empty($_SERVER['HTTP_X_MULIB_DIALOG_FORM_REQUEST'])) {
     define('AJAX_SCRIPT', true);
 }
 require('../../../../config.php');
-require_once($CFG->dirroot . '/lib/formslib.php');
 
 $id = required_param('id', PARAM_INT);
 
@@ -51,29 +50,29 @@ $program = $DB->get_record('tool_muprog_program', ['id' => $allocation->programi
 $source = $DB->get_record('tool_muprog_source', ['id' => $allocation->sourceid], '*', MUST_EXIST);
 
 $context = context::instance_by_id($program->contextid);
-require_capability('tool/muprog:manageallocation', $context);
+require_capability('tool/muprog:reset', $context);
 
-$returnurl = new moodle_url('/admin/tool/muprog/management/program_users.php', ['id' => $program->id]);
+$returnurl = new moodle_url('/admin/tool/muprog/management/allocation.php', ['id' => $allocation->id]);
 
 $user = $DB->get_record('user', ['id' => $allocation->userid], '*', MUST_EXIST);
 
-$sourceclass = allocation::get_source_classname($source->type);
-if (!$sourceclass || !$sourceclass::allocation_delete_supported($program, $source, $allocation)) {
+if ($program->archived || $allocation->archived) {
     redirect($returnurl);
 }
 
-$currenturl = new moodle_url('/admin/tool/muprog/management/user_allocation_delete.php', ['id' => $allocation->id]);
+$currenturl = new moodle_url('/admin/tool/muprog/management/allocation_reset.php', ['id' => $allocation->id]);
 
 management::setup_program_page($currenturl, $context, $program, 'program_users');
 
-$form = new \tool_muprog\local\form\user_allocation_delete(null, ['allocation' => $allocation, 'user' => $user, 'context' => $context]);
+$form = new \tool_muprog\local\form\allocation_reset(null,
+    ['allocation' => $allocation, 'user' => $user, 'context' => $context, 'source' => $source, 'program' => $program]);
 
 if ($form->is_cancelled()) {
     redirect($returnurl);
 }
 
 if ($data = $form->get_data()) {
-    $sourceclass::deallocate_user($program, $source, $allocation);
+    allocation::reset($data);
     $form->redirect_submitted($returnurl);
 }
 

@@ -157,7 +157,7 @@ final class manual_test extends \advanced_testcase {
         $this->assertSame((string)$dateoverrides['timeend'], $allocation->timeend);
     }
 
-    public function test_update_allocation(): void {
+    public function test_allocation_update(): void {
         global $DB;
 
         /** @var \tool_muprog_generator $generator */
@@ -173,28 +173,70 @@ final class manual_test extends \advanced_testcase {
 
         $now = time();
 
-        $allocation->archived = '0';
         $allocation->timeallocated = (string)$now;
         $allocation->timestart = (string)($now - 60 * 60 * 12);
         $allocation->timedue = (string)($now + 60 * 60 * 10);
         $allocation->timeend = (string)($now + 60 * 60 * 20);
-        $result = manual::update_allocation($allocation);
+        $result = manual::allocation_update($allocation);
         $this->assertSame((array)$result, (array)$allocation);
 
         $newallocation = $DB->get_record('tool_muprog_allocation', ['programid' => $program1->id, 'userid' => $user1->id], '*', MUST_EXIST);
         $this->assertSame((array)$allocation, (array)$newallocation);
 
-        $allocation->archived = '1';
         $allocation->timeallocated = (string)$now;
         $allocation->timestart = (string)($now - 60 * 60 * 12);
         $allocation->timedue = (string)($now + 60 * 60 * 10);
         $allocation->timeend = (string)($now + 60 * 60 * 20);
-        manual::update_allocation($allocation);
+        manual::allocation_update($allocation);
         $newallocation = $DB->get_record('tool_muprog_allocation', ['programid' => $program1->id, 'userid' => $user1->id], '*', MUST_EXIST);
         $this->assertSame((array)$allocation, (array)$newallocation);
     }
 
-    public function test_deallocate_user(): void {
+    public function test_allocation_archive(): void {
+        global $DB;
+
+        /** @var \tool_muprog_generator $generator */
+        $generator = $this->getDataGenerator()->get_plugin_generator('tool_muprog');
+
+        $user1 = $this->getDataGenerator()->create_user();
+        $course1 = $this->getDataGenerator()->create_course();
+        $context1 = \context_course::instance($course1->id);
+        $program1 = $generator->create_program(['fullname' => 'hokus', 'sources' => ['manual' => []]]);
+        $source1 = $DB->get_record('tool_muprog_source', ['programid' => $program1->id, 'type' => 'manual'], '*', MUST_EXIST);
+        manual::allocate_users($program1->id, $source1->id, [$user1->id]);
+        $allocation = $DB->get_record('tool_muprog_allocation', ['programid' => $program1->id, 'userid' => $user1->id], '*', MUST_EXIST);
+
+        $allocation = manual::allocation_archive($allocation->id);
+        $this->assertSame('1', $allocation->archived);
+
+        $allocation = manual::allocation_archive($allocation->id);
+        $this->assertSame('1', $allocation->archived);
+    }
+
+    public function test_allocation_restore(): void {
+        global $DB;
+
+        /** @var \tool_muprog_generator $generator */
+        $generator = $this->getDataGenerator()->get_plugin_generator('tool_muprog');
+
+        $user1 = $this->getDataGenerator()->create_user();
+        $course1 = $this->getDataGenerator()->create_course();
+        $context1 = \context_course::instance($course1->id);
+        $program1 = $generator->create_program(['fullname' => 'hokus', 'sources' => ['manual' => []]]);
+        $source1 = $DB->get_record('tool_muprog_source', ['programid' => $program1->id, 'type' => 'manual'], '*', MUST_EXIST);
+        manual::allocate_users($program1->id, $source1->id, [$user1->id]);
+        $allocation = $DB->get_record('tool_muprog_allocation', ['programid' => $program1->id, 'userid' => $user1->id], '*', MUST_EXIST);
+
+        $allocation = manual::allocation_archive($allocation->id);
+
+        $allocation = manual::allocation_restore($allocation->id);
+        $this->assertSame('0', $allocation->archived);
+
+        $allocation = manual::allocation_restore($allocation->id);
+        $this->assertSame('0', $allocation->archived);
+    }
+
+    public function test_allocation_delete(): void {
         global $DB;
 
         /** @var \tool_muprog_generator $generator */
@@ -219,7 +261,7 @@ final class manual_test extends \advanced_testcase {
         $this->assertCount(1, $DB->get_records('tool_mulib_notification_user', ['userid' => $user1->id]));
         $this->assertCount(1, $DB->get_records('tool_mulib_notification_user', ['userid' => $user2->id]));
 
-        manual::deallocate_user($program1, $source1, $allocation1);
+        manual::allocation_delete($program1, $source1, $allocation1);
         $this->assertFalse($DB->record_exists('tool_muprog_allocation', ['programid' => $program1->id, 'userid' => $user1->id]));
         $this->assertTrue($DB->record_exists('tool_muprog_allocation', ['programid' => $program1->id, 'userid' => $user2->id]));
         $this->assertCount(1, $DB->get_records('tool_mulib_notification_user', []));
@@ -478,7 +520,7 @@ final class manual_test extends \advanced_testcase {
         $this->assertTimeCurrent($allocation->timeallocated, $allocation->timestart);
         $this->assertSame(null, $allocation->timedue);
         $this->assertSame(null, $allocation->timeend);
-        manual::deallocate_user($program1, $source1, $allocation);
+        manual::allocation_delete($program1, $source1, $allocation);
 
         $data = (object)[
             'id' => $user1->id,
@@ -497,7 +539,7 @@ final class manual_test extends \advanced_testcase {
         $this->assertSame(strtotime($data->pstartdate9), (int)$allocation->timestart);
         $this->assertSame(strtotime($data->pduedate9), (int)$allocation->timedue);
         $this->assertSame(strtotime($data->penddate9), (int)$allocation->timeend);
-        manual::deallocate_user($program1, $source1, $allocation);
+        manual::allocation_delete($program1, $source1, $allocation);
 
         $data = (object)[
             'id' => $user1->id,
@@ -516,7 +558,7 @@ final class manual_test extends \advanced_testcase {
         $this->assertSame(strtotime($data->pstartdate2), (int)$allocation->timestart);
         $this->assertSame($now + 60 * 60, (int)$allocation->timedue);
         $this->assertSame($now + 60 * 60 * 2, (int)$allocation->timeend);
-        manual::deallocate_user($program2, $source2, $allocation);
+        manual::allocation_delete($program2, $source2, $allocation);
 
         $data = (object)[
             'id' => $user1->id,

@@ -37,9 +37,10 @@ Feature: Program completion by managers tests
       | tool/muprog:view              | Allow      | padmin   | System       |           |
       | tool/muprog:edit              | Allow      | padmin   | System       |           |
       | tool/muprog:delete            | Allow      | padmin   | System       |           |
+      | tool/muprog:allocate          | Allow      | pmanager | System       |           |
+      | tool/muprog:deallocate        | Allow      | pmanager | System       |           |
       | tool/muprog:manageevidence    | Allow      | padmin   | System       |           |
       | tool/muprog:manageallocation  | Allow      | pmanager | System       |           |
-      | tool/muprog:archive           | Allow      | pmanager | System       |           |
       | tool/muprog:admin             | Allow      | padmin   | System       |           |
     And the following "role assigns" exist:
       | user      | role          | contextlevel | reference |

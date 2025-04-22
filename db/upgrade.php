@@ -37,7 +37,7 @@ function xmldb_tool_muprog_upgrade($oldversion): bool {
 
     $dbman = $DB->get_manager();
 
-    if ($oldversion < 2025041504) {
+    if ($oldversion < 2025042100) {
         $table = new xmldb_table('tool_muprog_prg_snapshot');
         if ($dbman->table_exists($table)) {
             $dbman->drop_table($table);
@@ -48,7 +48,7 @@ function xmldb_tool_muprog_upgrade($oldversion): bool {
             $dbman->drop_table($table);
         }
 
-        upgrade_plugin_savepoint(true, 2025041504, 'tool', 'muprog');
+        upgrade_plugin_savepoint(true, 2025042100, 'tool', 'muprog');
     }
 
     return true;

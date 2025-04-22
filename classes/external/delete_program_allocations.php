@@ -87,7 +87,7 @@ final class delete_program_allocations extends external_api {
             /** @var class-string<\tool_muprog\local\source\base> $sourceclass */
             $sourceclass = $sourceclasses[$source->type];
 
-            if (!$sourceclass::allocation_delete_supported($program, $source, $allocationrecord)) {
+            if (!$sourceclass::is_allocation_delete_possible($program, $source, $allocationrecord)) {
                 // They should have checked data returned from get_program_allocations.
                 throw new \invalid_parameter_exception('Cannot deallocate');
             }
@@ -99,7 +99,7 @@ final class delete_program_allocations extends external_api {
         foreach ($deallocate as $v) {
             /** @var class-string<\tool_muprog\local\source\base> $sourceclass */
             list($sourceclass, $source, $allocationrecord) = $v;
-            $sourceclass::deallocate_user($program, $source, $allocationrecord);
+            $sourceclass::allocation_delete($program, $source, $allocationrecord);
         }
 
         return array_keys($deallocate);

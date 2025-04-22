@@ -60,7 +60,7 @@ final class allocation_deleted_test extends \advanced_testcase {
         $allocation = $DB->get_record('tool_muprog_allocation', ['programid' => $program->id, 'userid' => $user->id]);
 
         $sink = $this->redirectEvents();
-        \tool_muprog\local\source\manual::deallocate_user($program, $source, $allocation);
+        \tool_muprog\local\source\manual::allocation_delete($program, $source, $allocation);
         $events = $sink->get_events();
         $sink->close();
 

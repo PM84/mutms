@@ -19,15 +19,13 @@
 namespace tool_muprog\event;
 
 /**
- * User allocated event.
+ * User allocation restored event.
  *
  * @package    tool_muprog
- * @copyright  2022 Open LMS (https://www.openlms.net/)
  * @copyright  2025 Petr Skoda
- * @author     Petr Skoda
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-final class allocation_created extends \core\event\base {
+final class allocation_restored extends \core\event\base {
     /**
      * Helper for event creation.
      *
@@ -57,7 +55,7 @@ final class allocation_created extends \core\event\base {
      * @return string
      */
     public function get_description() {
-        return "The user with id '$this->relateduserid' was allocated to program with id '$this->objectid'";
+        return "The allocation of user with id '$this->relateduserid' to program with id '$this->objectid' was restored";
     }
 
     /**
@@ -66,7 +64,7 @@ final class allocation_created extends \core\event\base {
      * @return string
      */
     public static function get_name() {
-        return get_string('event_allocation_created', 'tool_muprog');
+        return get_string('event_allocation_restored', 'tool_muprog');
     }
 
     /**
@@ -84,7 +82,7 @@ final class allocation_created extends \core\event\base {
      * @return void
      */
     protected function init() {
-        $this->data['crud'] = 'c';
+        $this->data['crud'] = 'u';
         $this->data['edulevel'] = self::LEVEL_OTHER;
         $this->data['objecttable'] = 'tool_muprog_allocation';
     }

@@ -38,8 +38,10 @@ $capabilities = [
         ],
     ],
 
-    /* Access the programs management UI - needed for programs management capabilities
-       this allows sidestepping of regular program visibility rules */
+    /*
+     * Access the programs management UI - needed for programs management capabilities
+     * this allows sidestepping of regular program visibility rules.
+     */
     'tool/muprog:view' => [
         'captype' => 'read',
         'contextlevel' => CONTEXT_COURSECAT,
@@ -81,7 +83,7 @@ $capabilities = [
         ],
     ],
 
-    /* Add course to program. This is used to find courses that user can add to programs */
+    /* Add course to program. This is used to find courses that user can add to programs. */
     'tool/muprog:addcourse' => [
         'captype' => 'read',
         'contextlevel' => CONTEXT_COURSE,
@@ -91,7 +93,7 @@ $capabilities = [
         ],
     ],
 
-    /* Allocate programs to users manually, used only when manual source enabled in program. */
+    /* Allocate programs to users and restore allocations manually if source allows it. */
     'tool/muprog:allocate' => [
         'captype' => 'write',
         'contextlevel' => CONTEXT_COURSECAT,
@@ -101,10 +103,8 @@ $capabilities = [
         ],
     ],
 
-    /*
-     * Archive and restore allocations if source allows it.
-     */
-    'tool/muprog:archive' => [
+    /* Deallocate programs and archive allocations if source allows it. */
+    'tool/muprog:deallocate' => [
         'captype' => 'write',
         'contextlevel' => CONTEXT_COURSECAT,
         'archetypes' => [
@@ -113,10 +113,7 @@ $capabilities = [
         ],
     ],
 
-    /*
-     * Alter certification dates or
-     * delete allocations if source allows it.
-     */
+    /* Alter program dates if source allows it. */
     'tool/muprog:manageallocation' => [
         'riskbitmask' => RISK_DATALOSS,
         'captype' => 'write',
@@ -127,7 +124,7 @@ $capabilities = [
         ],
     ],
 
-    /* Add, update and delete other evidence of completion */
+    /* Add, update and delete other evidence of completion. */
     'tool/muprog:manageevidence' => [
         'captype' => 'write',
         'contextlevel' => CONTEXT_COURSECAT,
@@ -137,14 +134,13 @@ $capabilities = [
         ],
     ],
 
-    /*
-     * Reset program progress manually.
-     */
+    /* Reset program progress manually. */
     'tool/muprog:reset' => [
         'riskbitmask' => RISK_CONFIG | RISK_DATALOSS,
         'captype' => 'write',
         'contextlevel' => CONTEXT_COURSECAT,
         'archetypes' => [
+            'manager' => CAP_ALLOW,
         ],
     ],
 
@@ -157,10 +153,11 @@ $capabilities = [
         'captype' => 'write',
         'contextlevel' => CONTEXT_COURSECAT,
         'archetypes' => [
+            'manager' => CAP_ALLOW,
         ],
     ],
 
-    /* To copy over content, allocation and notification settings to other programs */
+    /* To copy over content, allocation and notification settings to other programs. */
     'tool/muprog:clone' => [
         'captype' => 'read',
         'contextlevel' => CONTEXT_COURSECAT,
@@ -170,7 +167,7 @@ $capabilities = [
         ],
     ],
 
-    // Export programs - settings and structure.
+    /* Export programs - settings and structure. */
     'tool/muprog:export' => [
         'captype' => 'read',
         'contextlevel' => CONTEXT_COURSECAT,
@@ -179,7 +176,7 @@ $capabilities = [
         ],
     ],
 
-    // Upload programs - settings and structure.
+    /* Upload programs - settings and structure. */
     'tool/muprog:upload' => [
         'captype' => 'write',
         'contextlevel' => CONTEXT_COURSECAT,
@@ -188,6 +185,7 @@ $capabilities = [
         ],
     ],
 
+    /* Configure program custom fields. */
     'tool/muprog:configurecustomfields' => [
         'riskbitmask' => RISK_CONFIG | RISK_DATALOSS,
         'captype' => 'write',
@@ -196,5 +194,4 @@ $capabilities = [
             'manager' => CAP_ALLOW,
         ],
     ],
-
 ];

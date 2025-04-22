@@ -58,7 +58,7 @@ final class allocation_updated_test extends \advanced_testcase {
         $allocation = $DB->get_record('tool_muprog_allocation', ['programid' => $program->id, 'userid' => $user->id]);
 
         $sink = $this->redirectEvents();
-        \tool_muprog\local\source\manual::update_allocation($allocation);
+        \tool_muprog\local\source\manual::allocation_update($allocation);
         $events = $sink->get_events();
         $sink->close();
 
@@ -74,7 +74,7 @@ final class allocation_updated_test extends \advanced_testcase {
         $this->assertSame('tool_muprog_allocation', $event->objecttable);
         $this->assertSame('User program allocation updated', $event::get_name());
         $description = $event->get_description();
-        $programurl = new \moodle_url('/admin/tool/muprog/management/user_allocation.php', ['id' => $allocation->id]);
+        $programurl = new \moodle_url('/admin/tool/muprog/management/allocation.php', ['id' => $allocation->id]);
         $this->assertSame($programurl->out(false), $event->get_url()->out(false));
     }
 }

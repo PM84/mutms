@@ -53,31 +53,27 @@ $source = $DB->get_record('tool_muprog_source', ['id' => $allocation->sourceid],
 $context = context::instance_by_id($program->contextid);
 require_capability('tool/muprog:manageallocation', $context);
 
-$returnurl = new moodle_url('/admin/tool/muprog/management/user_allocation.php', ['id' => $allocation->id]);
+$returnurl = new moodle_url('/admin/tool/muprog/management/program_users.php', ['id' => $program->id]);
 
 $user = $DB->get_record('user', ['id' => $allocation->userid], '*', MUST_EXIST);
 
 $sourceclass = allocation::get_source_classname($source->type);
-if (!$sourceclass || !$sourceclass::allocation_edit_supported($program, $source, $allocation)) {
+if (!$sourceclass || !$sourceclass::is_allocation_delete_possible($program, $source, $allocation)) {
     redirect($returnurl);
 }
 
-if ($program->archived || $allocation->archived) {
-    redirect($returnurl);
-}
-
-$currenturl = new moodle_url('/admin/tool/muprog/management/user_allocation_edit.php', ['id' => $allocation->id]);
+$currenturl = new moodle_url('/admin/tool/muprog/management/allocation_delete.php', ['id' => $allocation->id]);
 
 management::setup_program_page($currenturl, $context, $program, 'program_users');
 
-$form = new \tool_muprog\local\form\user_allocation_edit(null, ['allocation' => $allocation, 'user' => $user, 'context' => $context]);
+$form = new \tool_muprog\local\form\allocation_delete(null, ['allocation' => $allocation, 'user' => $user, 'context' => $context]);
 
 if ($form->is_cancelled()) {
     redirect($returnurl);
 }
 
 if ($data = $form->get_data()) {
-    $sourceclass::update_allocation($data);
+    $sourceclass::allocation_delete($program, $source, $allocation);
     $form->redirect_submitted($returnurl);
 }
 

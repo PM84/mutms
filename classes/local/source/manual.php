@@ -80,18 +80,6 @@ final class manual extends base {
     }
 
     /**
-     * Is it possible to manually edit user allocation?
-     *
-     * @param stdClass $program
-     * @param stdClass $source
-     * @param stdClass $allocation
-     * @return bool
-     */
-    public static function allocation_edit_supported(stdClass $program, stdClass $source, stdClass $allocation): bool {
-        return true;
-    }
-
-    /**
      * Is it possible to manually archive and unarchive user allocation?
      *
      * @param stdClass $program
@@ -99,7 +87,7 @@ final class manual extends base {
      * @param stdClass $allocation
      * @return bool
      */
-    public static function allocation_archiving_supported(stdClass $program, stdClass $source, stdClass $allocation): bool {
+    public static function is_allocation_archive_possible(stdClass $program, stdClass $source, stdClass $allocation): bool {
         return true;
     }
 
@@ -111,7 +99,7 @@ final class manual extends base {
      * @param stdClass $allocation
      * @return bool
      */
-    public static function allocation_delete_supported(stdClass $program, stdClass $source, stdClass $allocation): bool {
+    public static function is_allocation_delete_possible(stdClass $program, stdClass $source, stdClass $allocation): bool {
         return true;
     }
 
@@ -152,6 +140,7 @@ final class manual extends base {
 
             $url = new \moodle_url('/admin/tool/muprog/management/source_manual_upload.php', ['sourceid' => $source->id]);
             $link = new \tool_mulib\output\dialog_form\link($url, get_string('source_manual_uploadusers', 'tool_muprog'));
+            $link->set_dialog_size('xl');
             $actions->get_dropdown()->add_dialog_form($link);
         }
     }
@@ -203,7 +192,7 @@ final class manual extends base {
                 // One allocation per program only.
                 continue;
             }
-            self::allocate_user($program, $source, $user->id, [], $dateoverrides);
+            self::allocation_create($program, $source, $user->id, [], $dateoverrides);
         }
 
         if (count($userids) === 1) {
@@ -292,7 +281,7 @@ final class manual extends base {
                 $result['errors']++;
                 continue;
             }
-            self::allocate_user($program, $source, $user->id, [], $dateoverrides);
+            self::allocation_create($program, $source, $user->id, [], $dateoverrides);
             \tool_muprog\local\allocation::fix_user_enrolments($program->id, $user->id);
             \tool_muprog\local\notification_manager::trigger_notifications($program->id, $user->id);
             $userids[] = $user->id;
@@ -384,7 +373,7 @@ final class manual extends base {
             return;
         }
 
-        self::allocate_user($program, $source, $user->id, [], $dateoverrides);
+        self::allocation_create($program, $source, $user->id, [], $dateoverrides);
         \tool_muprog\local\allocation::fix_user_enrolments($program->id, $user->id);
         \tool_muprog\local\notification_manager::trigger_notifications($program->id, $user->id);
 

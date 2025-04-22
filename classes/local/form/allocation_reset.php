@@ -31,7 +31,7 @@ use tool_muprog\local\course_reset;
  * @author     Petr Skoda
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-final class user_allocation_reset extends \tool_mulib\local\dialog_form {
+final class allocation_reset extends \tool_mulib\local\dialog_form {
     /** @var bool editing supported*/
     private $editsupported;
 
@@ -53,9 +53,9 @@ final class user_allocation_reset extends \tool_mulib\local\dialog_form {
         $mform->addElement('select', 'resettype', get_string('resettype', 'tool_muprog'), $options);
 
         $sourceclass = allocation::get_source_classname($source->type);
-        if ($sourceclass && $sourceclass::allocation_edit_supported($program, $source, $allocation)) {
+        if ($sourceclass && $sourceclass::is_allocation_update_possible($program, $source, $allocation)) {
             $this->editsupported = true;
-            $mform->addElement('advcheckbox', 'updateallocation', get_string('updateallocation', 'tool_muprog'));
+            $mform->addElement('advcheckbox', 'updateallocation', get_string('allocation_reset_updateallocation', 'tool_muprog'));
             $mform->addElement('date_time_selector', 'timestart', get_string('programstart_date', 'tool_muprog'), ['optional' => false]);
             $mform->disabledIf('timestart', 'updateallocation', 'eq', 0);
             $mform->addElement('date_time_selector', 'timedue', get_string('programdue_date', 'tool_muprog'), ['optional' => true]);
@@ -70,7 +70,7 @@ final class user_allocation_reset extends \tool_mulib\local\dialog_form {
         $mform->setType('id', PARAM_INT);
         $mform->setDefault('id', $allocation->id);
 
-        $this->add_action_buttons(true, get_string('resetallocation', 'tool_muprog'));
+        $this->add_action_buttons(true, get_string('allocation_reset', 'tool_muprog'));
 
         $this->set_data($allocation);
     }

@@ -258,7 +258,7 @@ final class cohort_test extends \advanced_testcase {
         $this->assertSame($source1c->id, $allocations[2]->sourceid);
         $this->assertSame('1', $allocations[2]->archived);
 
-        \tool_muprog\local\source\manual::deallocate_user($program1, $source1m, $allocations[0]);
+        \tool_muprog\local\source\manual::allocation_delete($program1, $source1m, $allocations[0]);
 
         $program1 = program::restore($program1->id);
         $allocations = $DB->get_records('tool_muprog_allocation', ['programid' => $program1->id], 'userid ASC');

@@ -58,7 +58,7 @@ $program = $DB->get_record('tool_muprog_program', ['id' => $allocation->programi
 $context = context::instance_by_id($program->contextid);
 require_capability('tool/muprog:admin', $context);
 
-$returnurl = new moodle_url('/admin/tool/muprog/management/user_allocation.php', ['id' => $allocation->id]);
+$returnurl = new moodle_url('/admin/tool/muprog/management/allocation.php', ['id' => $allocation->id]);
 
 $currenturl = new moodle_url('/admin/tool/muprog/management/item_completion_override.php', ['allocationid' => $allocation->id, 'itemid' => $item->id]);
 
