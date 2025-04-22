@@ -22,7 +22,7 @@ use tool_muprog\local\program;
 use tool_muprog\local\util;
 
 /**
- * Import program allocation - confirmation step.
+ * Import allocation settings - confirmation step.
  *
  * @package    tool_muprog
  * @copyright  2023 Open LMS (https://www.openlms.net/)

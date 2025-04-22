@@ -119,42 +119,13 @@ final class cohort extends base {
         return $result;
     }
 
-    /**
-     * Is it possible to manually edit user allocation?
-     *
-     * @param stdClass $program
-     * @param stdClass $source
-     * @param stdClass $allocation
-     * @return bool
-     */
-    public static function allocation_edit_supported(stdClass $program, stdClass $source, stdClass $allocation): bool {
-        return true;
-    }
-
-    /**
-     * Is it possible to manually archive and unarchive user allocation?
-     *
-     * @param stdClass $program
-     * @param stdClass $source
-     * @param stdClass $allocation
-     * @return bool
-     */
-    public static function allocation_archiving_supported(stdClass $program, stdClass $source, stdClass $allocation): bool {
+    #[\Override]
+    public static function is_allocation_archive_possible(stdClass $program, stdClass $source, stdClass $allocation): bool {
         return false;
     }
 
-    /**
-     * Is it possible to manually delete user allocation?
-     *
-     * @param stdClass $program
-     * @param stdClass $source
-     * @param stdClass $allocation
-     * @return bool
-     */
-    public static function allocation_delete_supported(stdClass $program, stdClass $source, stdClass $allocation): bool {
-        if ($allocation->archived) {
-            return true;
-        }
+    #[\Override]
+    public static function is_allocation_restore_possible(stdClass $program, stdClass $source, stdClass $allocation): bool {
         return false;
     }
 
@@ -274,7 +245,7 @@ final class cohort extends base {
                     $source = $DB->get_record('tool_muprog_source', ['id' => $record->sourceid], '*', MUST_EXIST);
                     $lastsource = $source;
                 }
-                self::allocate_user($program, $source, $record->userid, []);
+                self::allocation_create($program, $source, $record->userid, []);
                 $updated = true;
             }
         }

@@ -50,7 +50,7 @@ final class selfallocation extends base {
      * @param stdClass $allocation
      * @return bool
      */
-    public static function allocation_edit_supported(stdClass $program, stdClass $source, stdClass $allocation): bool {
+    public static function is_allocation_update_possible(stdClass $program, stdClass $source, stdClass $allocation): bool {
         return true;
     }
 
@@ -62,7 +62,7 @@ final class selfallocation extends base {
      * @param stdClass $allocation
      * @return bool
      */
-    public static function allocation_archiving_supported(stdClass $program, stdClass $source, stdClass $allocation): bool {
+    public static function is_allocation_archive_possible(stdClass $program, stdClass $source, stdClass $allocation): bool {
         return true;
     }
 
@@ -100,7 +100,7 @@ final class selfallocation extends base {
      * @param stdClass $allocation
      * @return bool
      */
-    public static function allocation_delete_supported(stdClass $program, stdClass $source, stdClass $allocation): bool {
+    public static function is_allocation_delete_possible(stdClass $program, stdClass $source, stdClass $allocation): bool {
         return true;
     }
 
@@ -211,7 +211,7 @@ final class selfallocation extends base {
             return $allocation;
         }
 
-        $allocation = self::allocate_user($program, $source, $user->id, []);
+        $allocation = self::allocation_create($program, $source, $user->id, []);
 
         \tool_muprog\local\allocation::fix_user_enrolments($program->id, $user->id);
         \tool_muprog\local\notification_manager::trigger_notifications($program->id, $user->id);

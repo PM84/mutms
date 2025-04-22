@@ -68,7 +68,7 @@ final class deallocation_test extends \advanced_testcase {
         $DB->update_record('tool_muprog_allocation', $allocation3);
 
         $sink = $this->redirectMessages();
-        manual::deallocate_user($program1, $source1, $allocation1);
+        manual::allocation_delete($program1, $source1, $allocation1);
         $messages = $sink->get_messages();
         $sink->close();
         $this->assertCount(0, $messages);
@@ -77,7 +77,7 @@ final class deallocation_test extends \advanced_testcase {
 
         $sink = $this->redirectMessages();
         $this->setCurrentTimeStart();
-        manual::deallocate_user($program1, $source1, $allocation2);
+        manual::allocation_delete($program1, $source1, $allocation2);
         $messages = $sink->get_messages();
         $sink->close();
         $this->assertCount(1, $messages);
@@ -89,7 +89,7 @@ final class deallocation_test extends \advanced_testcase {
 
         $sink = $this->redirectMessages();
         $this->setCurrentTimeStart();
-        manual::deallocate_user($program1, $source1, $allocation3);
+        manual::allocation_delete($program1, $source1, $allocation3);
         $messages = $sink->get_messages();
         $sink->close();
         $this->assertCount(1, $messages);
@@ -104,7 +104,7 @@ final class deallocation_test extends \advanced_testcase {
         $program1->archived = '1';
         $DB->update_record('tool_muprog_program', $program1);
         $sink = $this->redirectMessages();
-        manual::deallocate_user($program1, $source1, $allocation1);
+        manual::allocation_delete($program1, $source1, $allocation1);
         $messages = $sink->get_messages();
         $sink->close();
         $this->assertCount(0, $messages);

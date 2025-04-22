@@ -837,7 +837,7 @@ final class calendar_test extends \advanced_testcase {
         $this->assertCount(5, $DB->get_records('event', ['component' => 'tool_muprog']));
         $this->assertCount(5, $DB->get_records('event', ['component' => 'tool_muprog', 'visible' => 1]));
 
-        manual::deallocate_user($program2, $source2, $allocation2x1, true);
+        manual::allocation_delete($program2, $source2, $allocation2x1, true);
         $this->assertCount(4, $DB->get_records('event', ['component' => 'tool_muprog']));
         $this->assertCount(4, $DB->get_records('event', ['component' => 'tool_muprog', 'visible' => 1]));
         $event = $DB->get_record('event',
@@ -920,7 +920,7 @@ final class calendar_test extends \advanced_testcase {
         $this->assertSame('1', $event->visible);
 
         $allocation1x1->timestart = (string)($now - 100);
-        $allocation1x1 = \tool_muprog\local\source\base::update_allocation($allocation1x1);
+        $allocation1x1 = \tool_muprog\local\source\base::allocation_update($allocation1x1);
         $event = $DB->get_record('event',
             ['component' => 'tool_muprog', 'instance' => $allocation1x1->id, 'eventtype' => \tool_muprog\local\calendar::EVENTTYPE_START], '*', MUST_EXIST);
         $this->assertSame((string)($now - 100), $event->timestart);
@@ -971,7 +971,7 @@ final class calendar_test extends \advanced_testcase {
         $this->assertSame('1', $event->visible);
 
         $allocation1x1->timecompleted = (string)($now - 100);
-        $allocation1x1 = \tool_muprog\local\source\base::update_allocation($allocation1x1);
+        $allocation1x1 = \tool_muprog\local\source\base::allocation_update($allocation1x1);
         $event = $DB->get_record('event',
             ['component' => 'tool_muprog', 'instance' => $allocation1x1->id, 'eventtype' => \tool_muprog\local\calendar::EVENTTYPE_START]);
         $this->assertFalse($event);
@@ -1014,8 +1014,7 @@ final class calendar_test extends \advanced_testcase {
         $this->assertSame('0', $event->groupid);
         $this->assertSame('1', $event->visible);
 
-        $allocation1x1->archived = '1';
-        $allocation1x1 = \tool_muprog\local\source\base::update_allocation($allocation1x1);
+        $allocation1x1 = \tool_muprog\local\source\base::allocation_archive($allocation1x1->id);
         $event = $DB->get_record('event',
             ['component' => 'tool_muprog', 'instance' => $allocation1x1->id, 'eventtype' => \tool_muprog\local\calendar::EVENTTYPE_START]);
         $this->assertFalse($event);

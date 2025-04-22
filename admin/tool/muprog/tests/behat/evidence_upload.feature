@@ -50,7 +50,7 @@ Feature: Upload program completion evidence using csv
       | tool/muprog:manageevidence  | Allow      | pmanager | System       |           |
       | tool/muprog:edit            | Allow      | pmanager | System       |           |
       | tool/muprog:allocate        | Allow      | pmanager | System       |           |
-      | tool/muprog:archive         | Allow      | pmanager | System       |           |
+      | tool/muprog:deallocate      | Allow      | pmanager | System       |           |
     And the following "role assigns" exist:
       | user      | role          | contextlevel | reference |
       | manager   | manager       | System       |           |

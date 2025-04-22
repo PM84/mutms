@@ -62,31 +62,31 @@ final class mucertify_test extends \advanced_testcase {
         $this->assertSame(true, \tool_muprog\local\source\mucertify::is_update_allowed($program));
     }
 
-    public function test_allocation_edit_supported(): void {
+    public function test_is_allocation_update_possible(): void {
         $program = new stdClass();
         $source = new stdClass();
         $allocation = new stdClass();
-        $this->assertSame(false, \tool_muprog\local\source\mucertify::allocation_edit_supported($program, $source, $allocation));
+        $this->assertSame(false, \tool_muprog\local\source\mucertify::is_allocation_update_possible($program, $source, $allocation));
     }
 
-    public function test_allocation_delete_supported(): void {
+    public function test_is_allocation_delete_possible(): void {
         $now = time();
         $program = new stdClass();
         $source = new stdClass();
         $allocation = new stdClass();
         $allocation->archived = '0';
         $allocation->timeend = null;
-        $this->assertSame(false, \tool_muprog\local\source\mucertify::allocation_delete_supported($program, $source, $allocation));
+        $this->assertSame(false, \tool_muprog\local\source\mucertify::is_allocation_delete_possible($program, $source, $allocation));
 
         $allocation->timeend = $now + 100;
-        $this->assertSame(false, \tool_muprog\local\source\mucertify::allocation_delete_supported($program, $source, $allocation));
+        $this->assertSame(false, \tool_muprog\local\source\mucertify::is_allocation_delete_possible($program, $source, $allocation));
 
         $allocation->timeend = $now - 100;
-        $this->assertSame(true, \tool_muprog\local\source\mucertify::allocation_delete_supported($program, $source, $allocation));
+        $this->assertSame(true, \tool_muprog\local\source\mucertify::is_allocation_delete_possible($program, $source, $allocation));
 
         $allocation->timeend = null;
         $allocation->archived = '1';
-        $this->assertSame(true, \tool_muprog\local\source\mucertify::allocation_delete_supported($program, $source, $allocation));
+        $this->assertSame(true, \tool_muprog\local\source\mucertify::is_allocation_delete_possible($program, $source, $allocation));
     }
 
     public function test_render_status_details(): void {
@@ -212,8 +212,7 @@ final class mucertify_test extends \advanced_testcase {
         ]);
         $assignment4 = $DB->get_record('tool_mucertify_assignment',
             ['userid' => $user4->id, 'certificationid' => $certification1->id], '*', MUST_EXIST);
-        $assignment4->archived = '1';
-        $assignment4 = \tool_mucertify\local\source\base::update_assignment($assignment4);
+        $assignment4 = \tool_mucertify\local\source\base::assignment_archive($assignment4->id);
 
         manual::assign_users($certification1->id, $source1->id, [$user5->id], [
             'timewindowstart' => $now - DAYSECS,
@@ -429,6 +428,10 @@ final class mucertify_test extends \advanced_testcase {
             'sourceid' => $program1sourcemanual->id, 'userid' => $user7->id], '*', MUST_EXIST);
         $this->assertSame('0', $allocation7->archived);
 
+        $allocations = $DB->get_records('tool_muprog_allocation', [], 'id ASC');
+        \tool_muprog\local\source\mucertify::sync_certifications(null, null);
+        $this->assertEquals($allocations, $DB->get_records('tool_muprog_allocation', [], 'id ASC'));
+
         $period2->timewindowend = (string)($now - 10);
         $DB->update_record('tool_mucertify_period', $period2);
 
@@ -447,15 +450,43 @@ final class mucertify_test extends \advanced_testcase {
         \tool_muprog\local\source\mucertify::sync_certifications(null, null);
         $this->assertCount(1, $DB->get_records('tool_muprog_allocation',
             ['sourceid' => $program1source->id, 'archived' => 0]));
-        $this->assertCount(5, $DB->get_records('tool_muprog_allocation',
+        $this->assertCount(4, $DB->get_records('tool_muprog_allocation',
             ['sourceid' => $program1source->id, 'archived' => 1]));
+        $this->assertFalse($DB->record_exists('tool_muprog_allocation',
+            ['id' => $period4->allocationid]));
+
+        $allocations = $DB->get_records('tool_muprog_allocation', [], 'id ASC');
+        \tool_muprog\local\source\mucertify::sync_certifications(null, null);
+        $this->assertEquals($allocations, $DB->get_records('tool_muprog_allocation', [], 'id ASC'));
 
         $certification1->archived = '1';
         $DB->update_record('tool_mucertify_certification', $certification1);
         \tool_muprog\local\source\mucertify::sync_certifications(null, null);
         $this->assertCount(0, $DB->get_records('tool_muprog_allocation',
             ['sourceid' => $program1source->id, 'archived' => 0]));
-        $this->assertCount(6, $DB->get_records('tool_muprog_allocation',
+        $this->assertCount(5, $DB->get_records('tool_muprog_allocation',
+            ['sourceid' => $program1source->id, 'archived' => 1]));
+
+        $allocations = $DB->get_records('tool_muprog_allocation', [], 'id ASC');
+        \tool_muprog\local\source\mucertify::sync_certifications(null, null);
+        $this->assertEquals($allocations, $DB->get_records('tool_muprog_allocation', [], 'id ASC'));
+
+        $DB->delete_records('tool_mucertify_assignment', ['id' => $assignment3->id]);
+        \tool_muprog\local\source\mucertify::sync_certifications(null, null);
+        $this->assertCount(0, $DB->get_records('tool_muprog_allocation',
+            ['sourceid' => $program1source->id, 'archived' => 0]));
+        $this->assertCount(4, $DB->get_records('tool_muprog_allocation',
+            ['sourceid' => $program1source->id, 'archived' => 1]));
+
+        $allocations = $DB->get_records('tool_muprog_allocation', [], 'id ASC');
+        \tool_muprog\local\source\mucertify::sync_certifications(null, null);
+        $this->assertEquals($allocations, $DB->get_records('tool_muprog_allocation', [], 'id ASC'));
+
+        $DB->delete_records('tool_mucertify_certification', ['id' => $certification1->id]);
+        \tool_muprog\local\source\mucertify::sync_certifications(null, null);
+        $this->assertCount(0, $DB->get_records('tool_muprog_allocation',
+            ['sourceid' => $program1source->id, 'archived' => 0]));
+        $this->assertCount(0, $DB->get_records('tool_muprog_allocation',
             ['sourceid' => $program1source->id, 'archived' => 1]));
     }
 
@@ -525,8 +556,7 @@ final class mucertify_test extends \advanced_testcase {
         ]);
         $assignment4 = $DB->get_record('tool_mucertify_assignment',
             ['userid' => $user4->id, 'certificationid' => $certification1->id], '*', MUST_EXIST);
-        $assignment4->archived = '1';
-        $assignment4 = \tool_mucertify\local\source\base::update_assignment($assignment4);
+        $assignment4 = \tool_mucertify\local\source\base::assignment_archive($assignment4->id);
 
         manual::assign_users($certification1->id, $source1->id, [$user5->id], [
             'timewindowstart' => $now - DAYSECS,
@@ -820,8 +850,7 @@ final class mucertify_test extends \advanced_testcase {
         ]);
         $assignment4 = $DB->get_record('tool_mucertify_assignment',
             ['userid' => $user4->id, 'certificationid' => $certification1->id], '*', MUST_EXIST);
-        $assignment4->archived = '1';
-        $assignment4 = \tool_mucertify\local\source\base::update_assignment($assignment4);
+        $assignment4 = \tool_mucertify\local\source\base::assignment_archive($assignment4->id);
 
         manual::assign_users($certification1->id, $source1->id, [$user5->id], [
             'timewindowstart' => $now - DAYSECS,

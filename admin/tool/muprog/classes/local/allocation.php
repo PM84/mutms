@@ -1121,11 +1121,11 @@ final class allocation {
             $completion = $DB->get_record('tool_muprog_completion', ['allocationid' => $allocation->id, 'itemid' => $item->id]);
             if ($allocation->timecompleted && !$completion) {
                 $allocation->timecompleted = null;
-                base::update_allocation($allocation);
+                base::allocation_update($allocation);
             } else if ($completion && $completion->timecompleted <= time()) {
                 if ($allocation->timecompleted != $completion->timecompleted) {
                     $allocation->timecompleted = $completion->timecompleted;
-                    base::update_allocation($allocation);
+                    base::allocation_update($allocation);
                 }
             }
         }

@@ -613,7 +613,7 @@ final class allocation_test extends \advanced_testcase {
         $allocation->timestart = (string)($now - 60 * 60 * 3);
         $allocation->timedue = (string)($now + 60 * 60 * 10);
         $allocation->timeend = (string)($now + 60 * 60 * 20);
-        \tool_muprog\local\source\base::update_allocation($allocation);
+        \tool_muprog\local\source\base::allocation_update($allocation);
         $allocation = $DB->get_record('tool_muprog_allocation', ['programid' => $program1->id, 'userid' => $user1->id], '*', MUST_EXIST);
         $this->assertSame('Open', \tool_muprog\local\allocation::get_completion_status_plain($program1, $allocation));
 
@@ -676,7 +676,7 @@ final class allocation_test extends \advanced_testcase {
         $allocation->timestart = (string)($now - 60 * 60 * 3);
         $allocation->timedue = (string)($now + 60 * 60 * 10);
         $allocation->timeend = (string)($now + 60 * 60 * 20);
-        \tool_muprog\local\source\base::update_allocation($allocation);
+        \tool_muprog\local\source\base::allocation_update($allocation);
         $allocation = $DB->get_record('tool_muprog_allocation', ['programid' => $program1->id, 'userid' => $user1->id], '*', MUST_EXIST);
         $this->assertSame('Open', \tool_muprog\local\allocation::get_completion_status_plain($program1, $allocation));
         $this->assertNull($allocation->timecompleted);
@@ -768,7 +768,7 @@ final class allocation_test extends \advanced_testcase {
         ];
         \tool_muprog\local\allocation::update_item_completion($data);
         $allocation->timecompleted = (string)($now - 2000);
-        \tool_muprog\local\source\base::update_allocation($allocation);
+        \tool_muprog\local\source\base::allocation_update($allocation);
 
         $data7 = (object)[
             'allocationid' => $allocation->id,
@@ -854,134 +854,123 @@ final class allocation_test extends \advanced_testcase {
         $allocation = $DB->get_record('tool_muprog_allocation', ['programid' => $program1->id, 'userid' => $user1->id], '*', MUST_EXIST);
 
         $now = time();
-        $allocation->archived = '0';
         $allocation->timeallocated = (string)$now;
         $allocation->timestart = (string)($now + 60 * 60 * 1);
         $allocation->timedue = (string)($now + 60 * 60 * 10);
         $allocation->timeend = (string)($now + 60 * 60 * 20);
         $allocation->timecompleted = null;
-        \tool_muprog\local\source\base::update_allocation($allocation);
+        \tool_muprog\local\source\base::allocation_update($allocation);
         $allocation = $DB->get_record('tool_muprog_allocation', ['programid' => $program1->id, 'userid' => $user1->id], '*', MUST_EXIST);
         $this->assertSame('Not open yet', \tool_muprog\local\allocation::get_completion_status_plain($program1, $allocation));
 
         $now = time();
-        $allocation->archived = '0';
         $allocation->timeallocated = (string)$now;
         $allocation->timestart = (string)($now - 60 * 60 * 1);
         $allocation->timedue = (string)($now + 60 * 60 * 10);
         $allocation->timeend = (string)($now + 60 * 60 * 20);
         $allocation->timecompleted = null;
-        \tool_muprog\local\source\base::update_allocation($allocation);
+        \tool_muprog\local\source\base::allocation_update($allocation);
         $allocation = $DB->get_record('tool_muprog_allocation', ['programid' => $program1->id, 'userid' => $user1->id], '*', MUST_EXIST);
         $this->assertSame('Open', \tool_muprog\local\allocation::get_completion_status_plain($program1, $allocation));
 
         $now = time();
-        $allocation->archived = '0';
         $allocation->timeallocated = (string)$now;
         $allocation->timestart = (string)($now - 60 * 60 * 10);
         $allocation->timedue = (string)($now - 60 * 60 * 1);
         $allocation->timeend = (string)($now + 60 * 60 * 20);
         $allocation->timecompleted = null;
-        \tool_muprog\local\source\base::update_allocation($allocation);
+        \tool_muprog\local\source\base::allocation_update($allocation);
         $allocation = $DB->get_record('tool_muprog_allocation', ['programid' => $program1->id, 'userid' => $user1->id], '*', MUST_EXIST);
         $this->assertSame('Overdue', \tool_muprog\local\allocation::get_completion_status_plain($program1, $allocation));
 
         $now = time();
-        $allocation->archived = '0';
         $allocation->timeallocated = (string)$now;
         $allocation->timestart = (string)($now - 60 * 60 * 10);
         $allocation->timedue = (string)($now - 60 * 60 * 5);
         $allocation->timeend = (string)($now - 60 * 60 * 1);
         $allocation->timecompleted = null;
-        \tool_muprog\local\source\base::update_allocation($allocation);
+        \tool_muprog\local\source\base::allocation_update($allocation);
         $allocation = $DB->get_record('tool_muprog_allocation', ['programid' => $program1->id, 'userid' => $user1->id], '*', MUST_EXIST);
         $this->assertSame('Failed', \tool_muprog\local\allocation::get_completion_status_plain($program1, $allocation));
 
         $now = time();
-        $allocation->archived = '0';
         $allocation->timeallocated = (string)$now;
         $allocation->timestart = (string)($now - 60 * 60 * 1);
         $allocation->timedue = (string)($now + 60 * 60 * 10);
         $allocation->timeend = (string)($now + 60 * 60 * 20);
         $allocation->timecompleted = (string)($now - 60 * 60 * 1);
-        \tool_muprog\local\source\base::update_allocation($allocation);
+        \tool_muprog\local\source\base::allocation_update($allocation);
         $allocation = $DB->get_record('tool_muprog_allocation', ['programid' => $program1->id, 'userid' => $user1->id], '*', MUST_EXIST);
         $this->assertSame('Completed', \tool_muprog\local\allocation::get_completion_status_plain($program1, $allocation));
 
         $now = time();
-        $allocation->archived = '0';
         $allocation->timeallocated = (string)$now;
         $allocation->timestart = (string)($now - 60 * 60 * 1);
         $allocation->timedue = (string)($now + 60 * 60 * 10);
         $allocation->timeend = (string)($now + 60 * 60 * 20);
         $allocation->timecompleted = (string)($now + 60 * 60 * 1);
-        \tool_muprog\local\source\base::update_allocation($allocation);
+        \tool_muprog\local\source\base::allocation_update($allocation);
         $allocation = $DB->get_record('tool_muprog_allocation', ['programid' => $program1->id, 'userid' => $user1->id], '*', MUST_EXIST);
         $this->assertSame('Completed', \tool_muprog\local\allocation::get_completion_status_plain($program1, $allocation));
 
         $now = time();
-        $allocation->archived = '1';
         $allocation->timeallocated = (string)$now;
         $allocation->timestart = (string)($now + 60 * 60 * 1);
         $allocation->timedue = (string)($now + 60 * 60 * 10);
         $allocation->timeend = (string)($now + 60 * 60 * 20);
         $allocation->timecompleted = null;
-        \tool_muprog\local\source\base::update_allocation($allocation);
-        $allocation = $DB->get_record('tool_muprog_allocation', ['programid' => $program1->id, 'userid' => $user1->id], '*', MUST_EXIST);
+        \tool_muprog\local\source\base::allocation_update($allocation);
+        $allocation = \tool_muprog\local\source\base::allocation_archive($allocation->id);
         $this->assertSame('Archived', \tool_muprog\local\allocation::get_completion_status_plain($program1, $allocation));
 
         $now = time();
-        $allocation->archived = '1';
         $allocation->timeallocated = (string)$now;
         $allocation->timestart = (string)($now - 60 * 60 * 1);
         $allocation->timedue = (string)($now + 60 * 60 * 10);
         $allocation->timeend = (string)($now + 60 * 60 * 20);
         $allocation->timecompleted = null;
-        \tool_muprog\local\source\base::update_allocation($allocation);
-        $allocation = $DB->get_record('tool_muprog_allocation', ['programid' => $program1->id, 'userid' => $user1->id], '*', MUST_EXIST);
+        \tool_muprog\local\source\base::allocation_update($allocation);
+        $allocation = \tool_muprog\local\source\base::allocation_archive($allocation->id);
         $this->assertSame('Archived', \tool_muprog\local\allocation::get_completion_status_plain($program1, $allocation));
 
         $now = time();
-        $allocation->archived = '1';
         $allocation->timeallocated = (string)$now;
         $allocation->timestart = (string)($now - 60 * 60 * 10);
         $allocation->timedue = (string)($now - 60 * 60 * 1);
         $allocation->timeend = (string)($now + 60 * 60 * 20);
         $allocation->timecompleted = null;
-        \tool_muprog\local\source\base::update_allocation($allocation);
-        $allocation = $DB->get_record('tool_muprog_allocation', ['programid' => $program1->id, 'userid' => $user1->id], '*', MUST_EXIST);
+        \tool_muprog\local\source\base::allocation_update($allocation);
+        $allocation = \tool_muprog\local\source\base::allocation_archive($allocation->id);
         $this->assertSame('Archived', \tool_muprog\local\allocation::get_completion_status_plain($program1, $allocation));
 
         $now = time();
-        $allocation->archived = '1';
         $allocation->timeallocated = (string)$now;
         $allocation->timestart = (string)($now - 60 * 60 * 10);
         $allocation->timedue = (string)($now - 60 * 60 * 5);
         $allocation->timeend = (string)($now - 60 * 60 * 1);
         $allocation->timecompleted = null;
-        \tool_muprog\local\source\base::update_allocation($allocation);
-        $allocation = $DB->get_record('tool_muprog_allocation', ['programid' => $program1->id, 'userid' => $user1->id], '*', MUST_EXIST);
+        \tool_muprog\local\source\base::allocation_update($allocation);
+        $allocation = \tool_muprog\local\source\base::allocation_archive($allocation->id);
         $this->assertSame('Archived', \tool_muprog\local\allocation::get_completion_status_plain($program1, $allocation));
 
-        $now = time();
         $allocation->archived = '1';
         $allocation->timeallocated = (string)$now;
         $allocation->timestart = (string)($now - 60 * 60 * 1);
         $allocation->timedue = (string)($now + 60 * 60 * 10);
         $allocation->timeend = (string)($now + 60 * 60 * 20);
         $allocation->timecompleted = (string)($now - 60 * 60 * 1);
-        \tool_muprog\local\source\base::update_allocation($allocation);
-        $allocation = $DB->get_record('tool_muprog_allocation', ['programid' => $program1->id, 'userid' => $user1->id], '*', MUST_EXIST);
+        \tool_muprog\local\source\base::allocation_update($allocation);
+        $allocation = \tool_muprog\local\source\base::allocation_archive($allocation->id);
         $this->assertSame('Archived completed', \tool_muprog\local\allocation::get_completion_status_plain($program1, $allocation));
 
         $now = time();
-        $allocation->archived = '0';
         $allocation->timeallocated = (string)$now;
         $allocation->timestart = (string)($now - 60 * 60 * 1);
         $allocation->timedue = (string)($now + 60 * 60 * 10);
         $allocation->timeend = (string)($now + 60 * 60 * 20);
         $allocation->timecompleted = (string)($now - 60 * 60 * 1);
-        \tool_muprog\local\source\base::update_allocation($allocation);
+        \tool_muprog\local\source\base::allocation_update($allocation);
+        $allocation = \tool_muprog\local\source\base::allocation_restore($allocation->id);
         $program1 = \tool_muprog\local\program::archive($program1->id);
         $allocation = $DB->get_record('tool_muprog_allocation', ['programid' => $program1->id, 'userid' => $user1->id], '*', MUST_EXIST);
         $this->assertSame('Archived completed', \tool_muprog\local\allocation::get_completion_status_plain($program1, $allocation));
@@ -1002,136 +991,124 @@ final class allocation_test extends \advanced_testcase {
         $allocation = $DB->get_record('tool_muprog_allocation', ['programid' => $program1->id, 'userid' => $user1->id], '*', MUST_EXIST);
 
         $now = time();
-        $allocation->archived = '0';
         $allocation->timeallocated = (string)$now;
         $allocation->timestart = (string)($now + 60 * 60 * 1);
         $allocation->timedue = (string)($now + 60 * 60 * 10);
         $allocation->timeend = (string)($now + 60 * 60 * 20);
         $allocation->timecompleted = null;
-        \tool_muprog\local\source\base::update_allocation($allocation);
+        \tool_muprog\local\source\base::allocation_update($allocation);
         $allocation = $DB->get_record('tool_muprog_allocation', ['programid' => $program1->id, 'userid' => $user1->id], '*', MUST_EXIST);
         $this->assertStringContainsString('Not open yet', \tool_muprog\local\allocation::get_completion_status_html($program1, $allocation));
 
         $now = time();
-        $allocation->archived = '0';
         $allocation->timeallocated = (string)$now;
         $allocation->timestart = (string)($now - 60 * 60 * 1);
         $allocation->timedue = (string)($now + 60 * 60 * 10);
         $allocation->timeend = (string)($now + 60 * 60 * 20);
         $allocation->timecompleted = null;
-        \tool_muprog\local\source\base::update_allocation($allocation);
+        \tool_muprog\local\source\base::allocation_update($allocation);
         $allocation = $DB->get_record('tool_muprog_allocation', ['programid' => $program1->id, 'userid' => $user1->id], '*', MUST_EXIST);
         $this->assertStringContainsString('Open', allocation::get_completion_status_html($program1, $allocation));
 
         $now = time();
-        $allocation->archived = '0';
         $allocation->timeallocated = (string)$now;
         $allocation->timestart = (string)($now - 60 * 60 * 10);
         $allocation->timedue = (string)($now - 60 * 60 * 1);
         $allocation->timeend = (string)($now + 60 * 60 * 20);
         $allocation->timecompleted = null;
-        manual::update_allocation($allocation);
+        manual::allocation_update($allocation);
         $allocation = $DB->get_record('tool_muprog_allocation', ['programid' => $program1->id, 'userid' => $user1->id], '*', MUST_EXIST);
         $this->assertStringContainsString('Overdue', allocation::get_completion_status_html($program1, $allocation));
 
         $now = time();
-        $allocation->archived = '0';
         $allocation->timeallocated = (string)$now;
         $allocation->timestart = (string)($now - 60 * 60 * 10);
         $allocation->timedue = (string)($now - 60 * 60 * 5);
         $allocation->timeend = (string)($now - 60 * 60 * 1);
         $allocation->timecompleted = null;
-        manual::update_allocation($allocation);
+        manual::allocation_update($allocation);
         $allocation = $DB->get_record('tool_muprog_allocation', ['programid' => $program1->id, 'userid' => $user1->id], '*', MUST_EXIST);
         $this->assertStringContainsString('Failed', allocation::get_completion_status_html($program1, $allocation));
 
         $now = time();
-        $allocation->archived = '0';
         $allocation->timeallocated = (string)$now;
         $allocation->timestart = (string)($now - 60 * 60 * 1);
         $allocation->timedue = (string)($now + 60 * 60 * 10);
         $allocation->timeend = (string)($now + 60 * 60 * 20);
         $allocation->timecompleted = (string)($now - 60 * 60 * 1);
-        manual::update_allocation($allocation);
+        manual::allocation_update($allocation);
         $allocation = $DB->get_record('tool_muprog_allocation', ['programid' => $program1->id, 'userid' => $user1->id], '*', MUST_EXIST);
         $this->assertStringContainsString('Completed', allocation::get_completion_status_html($program1, $allocation));
 
         $now = time();
-        $allocation->archived = '0';
         $allocation->timeallocated = (string)$now;
         $allocation->timestart = (string)($now - 60 * 60 * 1);
         $allocation->timedue = (string)($now + 60 * 60 * 10);
         $allocation->timeend = (string)($now + 60 * 60 * 20);
         $allocation->timecompleted = (string)($now + 60 * 60 * 1);
-        manual::update_allocation($allocation);
+        manual::allocation_update($allocation);
         $allocation = $DB->get_record('tool_muprog_allocation', ['programid' => $program1->id, 'userid' => $user1->id], '*', MUST_EXIST);
         $this->assertStringContainsString('Completed', allocation::get_completion_status_html($program1, $allocation));
 
         $now = time();
-        $allocation->archived = '1';
         $allocation->timeallocated = (string)$now;
         $allocation->timestart = (string)($now + 60 * 60 * 1);
         $allocation->timedue = (string)($now + 60 * 60 * 10);
         $allocation->timeend = (string)($now + 60 * 60 * 20);
         $allocation->timecompleted = null;
-        manual::update_allocation($allocation);
-        $allocation = $DB->get_record('tool_muprog_allocation', ['programid' => $program1->id, 'userid' => $user1->id], '*', MUST_EXIST);
+        manual::allocation_update($allocation);
+        $allocation = \tool_muprog\local\source\base::allocation_archive($allocation->id);
         $this->assertStringContainsString('Archived', allocation::get_completion_status_html($program1, $allocation));
 
         $now = time();
-        $allocation->archived = '1';
         $allocation->timeallocated = (string)$now;
         $allocation->timestart = (string)($now - 60 * 60 * 1);
         $allocation->timedue = (string)($now + 60 * 60 * 10);
         $allocation->timeend = (string)($now + 60 * 60 * 20);
         $allocation->timecompleted = null;
-        manual::update_allocation($allocation);
-        $allocation = $DB->get_record('tool_muprog_allocation', ['programid' => $program1->id, 'userid' => $user1->id], '*', MUST_EXIST);
+        manual::allocation_update($allocation);
+        $allocation = \tool_muprog\local\source\base::allocation_archive($allocation->id);
         $this->assertStringContainsString('Archived', allocation::get_completion_status_html($program1, $allocation));
 
         $now = time();
-        $allocation->archived = '1';
         $allocation->timeallocated = (string)$now;
         $allocation->timestart = (string)($now - 60 * 60 * 10);
         $allocation->timedue = (string)($now - 60 * 60 * 1);
         $allocation->timeend = (string)($now + 60 * 60 * 20);
         $allocation->timecompleted = null;
-        manual::update_allocation($allocation);
-        $allocation = $DB->get_record('tool_muprog_allocation', ['programid' => $program1->id, 'userid' => $user1->id], '*', MUST_EXIST);
+        manual::allocation_update($allocation);
+        $allocation = \tool_muprog\local\source\base::allocation_archive($allocation->id);
         $this->assertStringContainsString('Archived', allocation::get_completion_status_html($program1, $allocation));
 
         $now = time();
-        $allocation->archived = '1';
         $allocation->timeallocated = (string)$now;
         $allocation->timestart = (string)($now - 60 * 60 * 10);
         $allocation->timedue = (string)($now - 60 * 60 * 5);
         $allocation->timeend = (string)($now - 60 * 60 * 1);
         $allocation->timecompleted = null;
-        manual::update_allocation($allocation);
-        $allocation = $DB->get_record('tool_muprog_allocation', ['programid' => $program1->id, 'userid' => $user1->id], '*', MUST_EXIST);
+        manual::allocation_update($allocation);
+        $allocation = \tool_muprog\local\source\base::allocation_archive($allocation->id);
         $this->assertStringContainsString('Archived', allocation::get_completion_status_html($program1, $allocation));
 
         $now = time();
-        $allocation->archived = '1';
         $allocation->timeallocated = (string)$now;
         $allocation->timestart = (string)($now - 60 * 60 * 1);
         $allocation->timedue = (string)($now + 60 * 60 * 10);
         $allocation->timeend = (string)($now + 60 * 60 * 20);
         $allocation->timecompleted = (string)($now - 60 * 60 * 1);
-        manual::update_allocation($allocation);
-        $allocation = $DB->get_record('tool_muprog_allocation', ['programid' => $program1->id, 'userid' => $user1->id], '*', MUST_EXIST);
+        manual::allocation_update($allocation);
+        $allocation = \tool_muprog\local\source\base::allocation_archive($allocation->id);
         $this->assertStringContainsString('Archived completed', allocation::get_completion_status_html($program1, $allocation));
 
         $now = time();
-        $allocation->archived = '0';
         $allocation->timeallocated = (string)$now;
         $allocation->timestart = (string)($now - 60 * 60 * 1);
         $allocation->timedue = (string)($now + 60 * 60 * 10);
         $allocation->timeend = (string)($now + 60 * 60 * 20);
         $allocation->timecompleted = (string)($now - 60 * 60 * 1);
-        manual::update_allocation($allocation);
+        manual::allocation_update($allocation);
         $program1 = program::archive($program1->id);
-        $allocation = $DB->get_record('tool_muprog_allocation', ['programid' => $program1->id, 'userid' => $user1->id], '*', MUST_EXIST);
+        $allocation = \tool_muprog\local\source\base::allocation_restore($allocation->id);
         $this->assertStringContainsString('Archived completed', allocation::get_completion_status_html($program1, $allocation));
     }
 
@@ -1203,8 +1180,7 @@ final class allocation_test extends \advanced_testcase {
         $source2 = $DB->get_record('tool_muprog_source', ['programid' => $program2->id, 'type' => 'manual'], '*', MUST_EXIST);
         manual::allocate_users($program2->id, $source2->id, [$user1->id]);
         $allocation2 = $DB->get_record('tool_muprog_allocation', ['programid' => $program2->id, 'userid' => $user1->id], '*', MUST_EXIST);
-        $allocation2->archived = 1;
-        manual::update_allocation($allocation2);
+        $allocation2 = manual::allocation_archive($allocation2->id);
         $source3 = $DB->get_record('tool_muprog_source', ['programid' => $program3->id, 'type' => 'manual'], '*', MUST_EXIST);
         manual::allocate_users($program3->id, $source3->id, [$user1->id]);
         $allocation3 = $DB->get_record('tool_muprog_allocation', ['programid' => $program3->id, 'userid' => $user1->id], '*', MUST_EXIST);
@@ -2269,7 +2245,7 @@ final class allocation_test extends \advanced_testcase {
         $this->assertCount(4, $members);
 
         $allocation1 = $DB->get_record('tool_muprog_allocation', ['programid' => $program1->id, 'userid' => $user1->id], '*', MUST_EXIST);
-        manual::deallocate_user($program1, $source1, $allocation1);
+        manual::allocation_delete($program1, $source1, $allocation1);
         $groups = $DB->get_records('groups', [], 'id ASC');
         $this->assertCount(2, $groups);
         $groups = array_values($groups);

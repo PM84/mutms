@@ -44,18 +44,6 @@ final class approval extends base {
     }
 
     /**
-     * Is it possible to manually edit user allocation?
-     *
-     * @param stdClass $program
-     * @param stdClass $source
-     * @param stdClass $allocation
-     * @return bool
-     */
-    public static function allocation_edit_supported(stdClass $program, stdClass $source, stdClass $allocation): bool {
-        return true;
-    }
-
-    /**
      * Is it possible to manually archive and unarchive user allocation?
      *
      * @param stdClass $program
@@ -63,7 +51,7 @@ final class approval extends base {
      * @param stdClass $allocation
      * @return bool
      */
-    public static function allocation_archiving_supported(stdClass $program, stdClass $source, stdClass $allocation): bool {
+    public static function is_allocation_archive_possible(stdClass $program, stdClass $source, stdClass $allocation): bool {
         return true;
     }
 
@@ -75,7 +63,7 @@ final class approval extends base {
      * @param stdClass $allocation
      * @return bool
      */
-    public static function allocation_delete_supported(stdClass $program, stdClass $source, stdClass $allocation): bool {
+    public static function is_allocation_delete_possible(stdClass $program, stdClass $source, stdClass $allocation): bool {
         return true;
     }
 
@@ -312,7 +300,7 @@ final class approval extends base {
         }
 
         $trans = $DB->start_delegated_transaction();
-        $allocation = self::allocate_user($program, $source, $user->id, []);
+        $allocation = self::allocation_create($program, $source, $user->id, []);
         $DB->delete_records('tool_muprog_request', ['id' => $request->id]);
         $trans->allow_commit();
 

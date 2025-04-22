@@ -58,7 +58,7 @@ $returnurl = new moodle_url('/admin/tool/muprog/management/program_completion_ov
 $user = $DB->get_record('user', ['id' => $allocation->userid], '*', MUST_EXIST);
 
 $sourceclass = allocation::get_source_classname($source->type);
-if (!$sourceclass || !$sourceclass::allocation_edit_supported($program, $source, $allocation)) {
+if (!$sourceclass || !$sourceclass::is_allocation_update_possible($program, $source, $allocation)) {
     redirect($returnurl);
 }
 
@@ -76,7 +76,7 @@ if ($form->is_cancelled()) {
 if ($data = $form->get_data()) {
     if ($allocation->timecompleted != $data->timecompleted) {
         $allocation->timecompleted = $data->timecompleted;
-        $sourceclass::update_allocation($allocation);
+        $sourceclass::allocation_update($allocation);
     }
     $form->redirect_submitted($returnurl);
 }

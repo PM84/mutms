@@ -20,7 +20,7 @@
 namespace tool_muprog\phpunit\external;
 
 /**
- * External API for form import program allocation
+ * External API for form Import allocation settings
  *
  * @group      muTMS
  * @package    tool_muprog

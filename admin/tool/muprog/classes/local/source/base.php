@@ -25,7 +25,7 @@ use tool_mulib\output\header_actions;
 use stdClass;
 
 /**
- * Program source abstraction.
+ * Program allocation source abstraction.
  *
  * @package    tool_muprog
  * @copyright  2022 Open LMS (https://www.openlms.net/)
@@ -113,8 +113,20 @@ abstract class base {
      * @param stdClass $allocation
      * @return bool
      */
-    public static function allocation_edit_supported(stdClass $program, stdClass $source, stdClass $allocation): bool {
-        return false;
+    public static function is_allocation_update_possible(stdClass $program, stdClass $source, stdClass $allocation): bool {
+        if ($program->id != $source->programid
+            || $program->id != $allocation->programid
+            || $source->id != $allocation->sourceid
+        ) {
+            throw new \coding_exception('invalid parameters');
+        }
+        if ($program->archived) {
+            return false;
+        }
+        if ($allocation->archived) {
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -125,8 +137,44 @@ abstract class base {
      * @param stdClass $allocation
      * @return bool
      */
-    public static function allocation_archiving_supported(stdClass $program, stdClass $source, stdClass $allocation): bool {
-        return false;
+    public static function is_allocation_archive_possible(stdClass $program, stdClass $source, stdClass $allocation): bool {
+        if ($program->id != $source->programid
+            || $program->id != $allocation->programid
+            || $source->id != $allocation->sourceid
+        ) {
+            throw new \coding_exception('invalid parameters');
+        }
+        if ($program->archived) {
+            return false;
+        }
+        if ($allocation->archived) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Is it possible to manually archive and unarchive user allocation?
+     *
+     * @param stdClass $program
+     * @param stdClass $source
+     * @param stdClass $allocation
+     * @return bool
+     */
+    public static function is_allocation_restore_possible(stdClass $program, stdClass $source, stdClass $allocation): bool {
+        if ($program->id != $source->programid
+            || $program->id != $allocation->programid
+            || $source->id != $allocation->sourceid
+        ) {
+            throw new \coding_exception('invalid parameters');
+        }
+        if ($program->archived) {
+            return false;
+        }
+        if (!$allocation->archived) {
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -137,8 +185,20 @@ abstract class base {
      * @param stdClass $allocation
      * @return bool
      */
-    public static function allocation_delete_supported(stdClass $program, stdClass $source, stdClass $allocation): bool {
-        return false;
+    public static function is_allocation_delete_possible(stdClass $program, stdClass $source, stdClass $allocation): bool {
+        if ($program->id != $source->programid
+            || $program->id != $allocation->programid
+            || $source->id != $allocation->sourceid
+        ) {
+            throw new \coding_exception('invalid parameters');
+        }
+        if ($program->archived) {
+            return false;
+        }
+        if (!$allocation->archived) {
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -198,7 +258,7 @@ abstract class base {
      * @param int|null $sourceinstanceid
      * @return stdClass user allocation record
      */
-    final protected static function allocate_user(\stdClass $program, \stdClass $source, int $userid,
+    final protected static function allocation_create(\stdClass $program, \stdClass $source, int $userid,
                                                   array $sourcedata, array $dateoverrides = [], ?int $sourceinstanceid = null): \stdClass {
         global $DB;
 
@@ -227,7 +287,7 @@ abstract class base {
         $record->timeend = empty($dateoverrides['timeend']) ?
             allocation::get_default_timeend($program, $record->timeallocated, $record->timestart) : $dateoverrides['timeend'];
 
-        // NOTE: do not validate dates here, the reason is that we the defaults validity may change over time.
+        // NOTE: do not validate dates here, the reason is that the defaults validity may change over time.
         if ($record->timeend && $record->timeend <= $record->timestart) {
             $record->timeend = $record->timestart + 1;
         }
@@ -484,7 +544,7 @@ abstract class base {
      * @param stdClass $allocation
      * @return stdClass
      */
-    final public static function update_allocation(stdClass $allocation): stdClass {
+    final public static function allocation_update(stdClass $allocation): stdClass {
         global $DB;
 
         $allocation = (object)(array)$allocation;
@@ -502,7 +562,6 @@ abstract class base {
 
         $trans = $DB->start_delegated_transaction();
 
-        $record->archived = (int)(bool)$allocation->archived;
         $record->timeallocated = $allocation->timeallocated;
         $record->timestart = $allocation->timestart;
         $record->timedue = $allocation->timedue;
@@ -525,6 +584,11 @@ abstract class base {
             $record->timecompleted = null;
         }
 
+        // Do not change archived flag here!
+        if (isset($allocation->archived) && $allocation->archived != $record->archived) {
+            debugging('Use base::allocation_archive() and base::allocation_restore() to change archived flag', DEBUG_DEVELOPER);
+        }
+
         $DB->update_record('tool_muprog_allocation', $record);
         $allocation = $DB->get_record('tool_muprog_allocation', ['id' => $allocation->id], '*', MUST_EXIST);
 
@@ -542,6 +606,62 @@ abstract class base {
     }
 
     /**
+     * Archive allocation.
+     *
+     * @param int $allocationid
+     * @return stdClass allocation record
+ */
+    final public static function allocation_archive(int $allocationid): stdClass {
+        global $DB;
+
+        $allocation = $DB->get_record('tool_muprog_allocation', ['id' => $allocationid], '*', MUST_EXIST);
+        $program = $DB->get_record('tool_muprog_program', ['id' => $allocation->programid], '*', MUST_EXIST);
+
+        if ($allocation->archived) {
+            return $allocation;
+        }
+
+        $DB->set_field('tool_muprog_allocation', 'archived', 1, ['id' => $allocation->id]);
+        $allocation = $DB->get_record('tool_muprog_allocation', ['id' => $allocation->id], '*', MUST_EXIST);
+
+        \tool_muprog\event\allocation_archived::create_from_allocation($allocation, $program)->trigger();
+
+        allocation::fix_allocation_sources($allocation->programid, $allocation->userid);
+        allocation::fix_user_enrolments($allocation->programid, $allocation->userid);
+        \tool_muprog\local\calendar::fix_allocation_events($allocation, $program);
+
+        return $allocation;
+    }
+
+    /**
+     * Restore allocation.
+     *
+     * @param int $allocationid
+     * @return stdClass allocation record
+     */
+    final public static function allocation_restore(int $allocationid): stdClass {
+        global $DB;
+
+        $allocation = $DB->get_record('tool_muprog_allocation', ['id' => $allocationid], '*', MUST_EXIST);
+        $program = $DB->get_record('tool_muprog_program', ['id' => $allocation->programid], '*', MUST_EXIST);
+
+        if (!$allocation->archived) {
+            return $allocation;
+        }
+
+        $DB->set_field('tool_muprog_allocation', 'archived', 0, ['id' => $allocation->id]);
+        $allocation = $DB->get_record('tool_muprog_allocation', ['id' => $allocation->id], '*', MUST_EXIST);
+
+        \tool_muprog\event\allocation_restored::create_from_allocation($allocation, $program)->trigger();
+
+        allocation::fix_allocation_sources($allocation->programid, $allocation->userid);
+        allocation::fix_user_enrolments($allocation->programid, $allocation->userid);
+        \tool_muprog\local\calendar::fix_allocation_events($allocation, $program);
+
+        return $allocation;
+    }
+
+    /**
      * Deallocate user from a program.
      *
      * @param stdClass $program
@@ -550,7 +670,7 @@ abstract class base {
      * @param bool $skipnotify
      * @return void
      */
-    final public static function deallocate_user(stdClass $program, stdClass $source, stdClass $allocation, bool $skipnotify = false): void {
+    final public static function allocation_delete(stdClass $program, stdClass $source, stdClass $allocation, bool $skipnotify = false): void {
         global $DB;
 
         if (static::get_type() !== $source->type || $program->id != $allocation->programid || $program->id != $source->programid) {

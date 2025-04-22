@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 // phpcs:disable moodle.Files.BoilerplateComment.CommentEndedTooSoon
+// phpcs:disable moodle.Files.LineLength.TooLong
 
 /**
  * Programs management interface.
@@ -33,8 +34,7 @@
 /** @var stdClass $COURSE */
 
 use tool_muprog\local\management;
-use tool_muprog\local\program;
-use tool_muprog\local\util;
+use tool_mulib\output\header_actions;
 
 require('../../../../config.php');
 require_once($CFG->dirroot . '/lib/formslib.php');
@@ -54,38 +54,43 @@ management::setup_program_page($currenturl, $context, $program, 'program_allocat
 /** @var \tool_muprog\output\management\renderer $managementoutput */
 $managementoutput = $PAGE->get_renderer('tool_muprog', 'management');
 
+$actions = new header_actions(get_string('management_program_allocation_actions', 'tool_muprog'));
+
+if (has_capability('tool/muprog:edit', $context) && !$program->archived) {
+    $url = new moodle_url('/admin/tool/muprog/management/program_allocation_import.php', ['id' => $program->id]);
+    $link = new \tool_mulib\output\dialog_form\link($url, get_string('importprogramallocation', 'tool_muprog'));
+    $actions->get_dropdown()->add_dialog_form($link);
+}
+
+if ($actions->has_items()) {
+    $PAGE->add_header_action($OUTPUT->render($actions));
+}
+
 echo $OUTPUT->header();
 
 if (has_capability('tool/muprog:edit', $context)) {
     $editurl = new moodle_url('/admin/tool/muprog/management/program_allocations_edit.php', ['id' => $program->id]);
-    $editbutton = new tool_mulib\output\dialog_form\icon($editurl, get_string('updateallocations', 'tool_muprog'), 'i/settings');
-    $editbutton->set_dialog_name(get_string('allocations', 'tool_muprog'));
-    $editbutton = ' ' . $OUTPUT->render($editbutton);
+    $updateicon = new tool_mulib\output\dialog_form\icon($editurl, get_string('program_allocations_edit', 'tool_muprog'), 'i/settings');
+    $updateicon->set_dialog_name(get_string('allocations', 'tool_muprog'));
+    $updateicon = ' <span style="font-size: .9375rem !important">' . $OUTPUT->render($updateicon) . '</span>';
 } else {
-    $editbutton = '';
+    $updateicon = '';
 }
-echo $OUTPUT->heading(get_string('allocations', 'tool_muprog') . $editbutton, 2, ['h3']);
+echo $OUTPUT->heading(get_string('allocations', 'tool_muprog') . $updateicon, 2, ['h3']);
 echo $managementoutput->render_program_allocation($program);
 
 if (has_capability('tool/muprog:edit', $context)) {
     $editurl = new moodle_url('/admin/tool/muprog/management/program_scheduling_edit.php', ['id' => $program->id]);
-    $editbutton = new tool_mulib\output\dialog_form\icon($editurl, get_string('updatescheduling', 'tool_muprog'), 'i/settings');
-    $editbutton->set_dialog_name(get_string('scheduling', 'tool_muprog'));
-    $editbutton = ' ' . $OUTPUT->render($editbutton);
+    $updateicon = new tool_mulib\output\dialog_form\icon($editurl, get_string('updatescheduling', 'tool_muprog'), 'i/settings');
+    $updateicon->set_dialog_name(get_string('scheduling', 'tool_muprog'));
+    $updateicon = ' <span style="font-size: .9375rem !important">' . $OUTPUT->render($updateicon) . '</span>';
 } else {
-    $editbutton = '';
+    $updateicon = '';
 }
-echo $OUTPUT->heading(get_string('scheduling', 'tool_muprog') . $editbutton, 2, ['h3']);
+echo $OUTPUT->heading(get_string('scheduling', 'tool_muprog') . $updateicon, 2, ['h3']);
 echo $managementoutput->render_program_scheduling($program);
 
 echo $OUTPUT->heading(get_string('allocationsources', 'tool_muprog'), 2, ['h3']);
 echo $managementoutput->render_program_sources($program);
-
-if (has_capability('tool/muprog:edit', $context) && !$program->archived) {
-    $importurl = new moodle_url('/admin/tool/muprog/management/program_allocation_import.php', ['id' => $program->id]);
-    $importaction = new \tool_mulib\output\dialog_form\button($importurl, get_string('importprogramallocation',
-        'tool_muprog'));
-    echo $OUTPUT->render($importaction);
-}
 
 echo $OUTPUT->footer();

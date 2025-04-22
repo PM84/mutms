@@ -25,6 +25,7 @@ namespace tool_muprog\phpunit\external;
  * @group      muTMS
  * @package    tool_muprog
  * @copyright  2023 Open LMS (https://www.openlms.net/)
+ * @copyright  2025 Petr Skoda
  * @author     Farhan Karmali
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
@@ -83,7 +84,6 @@ final class update_program_allocation_test extends \advanced_testcase {
         $this->assertSame($now - 10, $result->timestart);
         $this->assertSame($now + 60, $result->timedue);
         $this->assertSame($now + 120, $result->timeend);
-        $this->assertSame(true, $result->archived);
         $this->assertSame('manual', $result->sourcetype);
         $this->assertSame(true, $result->deletesupported);
         $this->assertSame(true, $result->editsupported);
@@ -97,7 +97,6 @@ final class update_program_allocation_test extends \advanced_testcase {
         $this->assertSame($now - 10, $result->timestart);
         $this->assertSame(null, $result->timedue);
         $this->assertSame($now + 60, $result->timeend);
-        $this->assertSame(true, $result->archived);
 
         $result = \tool_muprog\external\update_program_allocation::clean_returnvalue(
             \tool_muprog\external\update_program_allocation::execute_returns(),
@@ -108,7 +107,6 @@ final class update_program_allocation_test extends \advanced_testcase {
         $this->assertSame($now - 10, $result->timestart);
         $this->assertSame(null, $result->timedue);
         $this->assertSame($now + 60, $result->timeend);
-        $this->assertSame(false, $result->archived);
 
         try {
             \tool_muprog\external\update_program_allocation::execute($program1->id, $user1->id,

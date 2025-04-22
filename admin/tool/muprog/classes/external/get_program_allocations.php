@@ -98,8 +98,8 @@ final class get_program_allocations extends external_api {
             /** @var class-string<\tool_muprog\local\source\base> $sourceclass */
             $sourceclass = $sourceclasses[$source->type];
             $allocation->sourcetype = $source->type;
-            $allocation->deletesupported = $sourceclass::allocation_delete_supported($program, $source, $allocation);
-            $allocation->editsupported = $sourceclass::allocation_edit_supported($program, $source, $allocation);
+            $allocation->deletesupported = $sourceclass::is_allocation_delete_possible($program, $source, $allocation);
+            $allocation->editsupported = $sourceclass::is_allocation_update_possible($program, $source, $allocation);
             $results[] = $allocation;
         }
 

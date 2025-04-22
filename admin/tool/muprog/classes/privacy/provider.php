@@ -306,7 +306,7 @@ class provider implements
             }
             /** @var \tool_muprog\local\source\base $sourceclass */
             $sourceclass = $allclasses[$source->type];
-            $sourceclass::deallocate_user($program, $source, $allocation);
+            $sourceclass::allocation_delete($program, $source, $allocation);
 
             $params = ['allocationid' => $allocation->id];
             $DB->delete_records('tool_muprog_cert_issue', $params);
@@ -350,7 +350,7 @@ class provider implements
             }
             /** @var \tool_muprog\local\source\base $sourceclass */
             $sourceclass = $allclasses[$source->type];
-            $sourceclass::deallocate_user($program, $source, $allocation);
+            $sourceclass::allocation_delete($program, $source, $allocation);
 
             $params = ['allocationid' => $allocation->id];
             $DB->delete_records('tool_muprog_cert_issue', $params);
@@ -391,7 +391,7 @@ class provider implements
             }
             /** @var \tool_muprog\local\source\base $sourceclass */
             $sourceclass = $allclasses[$source->type];
-            $sourceclass::deallocate_user($program, $source, $allocation);
+            $sourceclass::allocation_delete($program, $source, $allocation);
 
             $params = ['allocationid' => $allocation->id];
             $DB->delete_records('tool_muprog_cert_issue', $params);

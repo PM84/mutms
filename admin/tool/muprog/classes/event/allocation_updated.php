@@ -73,7 +73,7 @@ final class allocation_updated extends \core\event\base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/admin/tool/muprog/management/user_allocation.php', ['id' => $this->objectid]);
+        return new \moodle_url('/admin/tool/muprog/management/allocation.php', ['id' => $this->objectid]);
     }
 
     /**

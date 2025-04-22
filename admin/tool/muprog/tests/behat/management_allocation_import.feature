@@ -1,5 +1,5 @@
 @tool @tool_muprog @muTMS
-Feature: Import program allocation
+Feature: Import allocation settings
 
   Background:
     Given unnecessary Admin bookmarks block gets deleted
@@ -134,13 +134,14 @@ Feature: Import program allocation
     And I should see "Inactive" in the "Requests with approval" definition list item
     And I should see "Inactive" in the "Automatic cohort allocation" definition list item
 
-    When I click on "Import program allocation" "button"
+    When I click on "Allocation settings actions" "link"
+    And I click on "Import allocation settings" "link"
     And I set the following fields to these values:
       | Select program | Program 000 |
     And I press dialog form button "Continue"
     And I set the following fields to these values:
       | Allocation start | 1 |
-    And I press dialog form button "Import program allocation"
+    And I press dialog form button "Import allocation settings"
     Then I should see "Thursday, 5 November 2020, 9:00" in the "Allocation start" definition list item
     And I should see "Not set" in the "Allocation end" definition list item
     And I should see "Start immediately after allocation" in the "Program start" definition list item
@@ -151,7 +152,8 @@ Feature: Import program allocation
     And I should see "Inactive" in the "Requests with approval" definition list item
     And I should see "Inactive" in the "Automatic cohort allocation" definition list item
 
-    When I click on "Import program allocation" "button"
+    When I click on "Allocation settings actions" "link"
+    And I click on "Import allocation settings" "link"
     And I set the following fields to these values:
       | Select program | Program 000 |
     And I press dialog form button "Continue"
@@ -165,7 +167,7 @@ Feature: Import program allocation
       | Automatic cohort allocation | 1 |
       | Manual allocation           | 1 |
       | Self allocation             | 1 |
-    And I press dialog form button "Import program allocation"
+    And I press dialog form button "Import allocation settings"
     Then I should see "Thursday, 5 November 2020, 9:00" in the "Allocation start" definition list item
     And I should see "Sunday, 5 November 2028, 9:00" in the "Allocation end" definition list item
     And I should see "Delay start after allocation - 5 months" in the "Program start" definition list item

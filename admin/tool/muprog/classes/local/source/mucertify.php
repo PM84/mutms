@@ -42,27 +42,18 @@ final class mucertify extends base {
         return 'mucertify';
     }
 
-    /**
-     * Allocation is controlled by tool_mucertify.
-     *
-     * @param stdClass $program
-     * @param stdClass $source
-     * @param stdClass $allocation
-     * @return bool
-     */
-    public static function allocation_edit_supported(stdClass $program, stdClass $source, stdClass $allocation): bool {
+    #[\Override]
+    public static function is_allocation_update_possible(stdClass $program, stdClass $source, stdClass $allocation): bool {
         return false;
     }
 
-    /**
-     * Is it possible to manually archive and unarchive user allocation?
-     *
-     * @param stdClass $program
-     * @param stdClass $source
-     * @param stdClass $allocation
-     * @return bool
-     */
-    public static function allocation_archiving_supported(stdClass $program, stdClass $source, stdClass $allocation): bool {
+    #[\Override]
+    public static function is_allocation_archive_possible(stdClass $program, stdClass $source, stdClass $allocation): bool {
+        return false;
+    }
+
+    #[\Override]
+    public static function is_allocation_restore_possible(stdClass $program, stdClass $source, stdClass $allocation): bool {
         return false;
     }
 
@@ -74,7 +65,8 @@ final class mucertify extends base {
      * @param stdClass $allocation
      * @return bool
      */
-    public static function allocation_delete_supported(stdClass $program, stdClass $source, stdClass $allocation): bool {
+    public static function is_allocation_delete_possible(stdClass $program, stdClass $source, stdClass $allocation): bool {
+        // Ignore program archived flag here.
         if ($allocation->archived) {
             return true;
         }
@@ -138,7 +130,7 @@ final class mucertify extends base {
 
         $sourceclasses = \tool_muprog\local\allocation::get_source_classes();
 
-        // Delete allocations from deleted certifications.
+        // Delete allocations from deleted certifications, assignments or periods.
         $params = [];
         if ($userid) {
             $userselect = "AND pa.userid = :userid";
@@ -156,10 +148,14 @@ final class mucertify extends base {
                   FROM {tool_muprog_allocation} pa
                   JOIN {tool_muprog_program} p ON p.id = pa.programid
                   JOIN {tool_muprog_source} ps ON ps.programid = p.id AND ps.type = 'mucertify' AND ps.id = pa.sourceid
-             LEFT JOIN {tool_mucertify_certification} c ON c.id = pa.sourceinstanceid
-                 WHERE c.id IS NULL
-                       $userselect $certificationselect
-              ORDER BY pa.id ASC";
+                 WHERE NOT EXISTS (
+                            SELECT 'x'
+                              FROM {tool_mucertify_period} cp
+                              JOIN {tool_mucertify_assignment} ca ON ca.certificationid = cp.certificationid AND ca.userid = cp.userid
+                              JOIN {tool_mucertify_certification} c ON c.id = cp.certificationid
+                             WHERE cp.allocationid = pa.id)";
+        $sql .= " $userselect $certificationselect";
+        $sql .= " ORDER BY pa.id ASC";
         $allocations = $DB->get_records_sql($sql, $params);
         foreach ($allocations as $allocation) {
             self::purge_allocation($allocation->id);
@@ -168,7 +164,7 @@ final class mucertify extends base {
         }
         unset($allocations);
 
-        // Archive allocations for historic, deleted, revoked and archived periods.
+        // Archive allocations for historic, revoked and archived periods.
         $params = [];
         $params['now2'] = $params['now1'] = time();
         if ($userid) {
@@ -186,22 +182,20 @@ final class mucertify extends base {
         $sql = "SELECT pa.id, pa.programid, pa.userid
                   FROM {tool_muprog_allocation} pa
                   JOIN {tool_muprog_program} p ON p.id = pa.programid
-             LEFT JOIN {tool_mucertify_period} cp ON cp.allocationid = pa.id
-             LEFT JOIN {tool_mucertify_assignment} ca ON ca.certificationid = cp.certificationid AND ca.userid = cp.userid
-             LEFT JOIN {tool_mucertify_certification} c ON c.id = cp.certificationid
                   JOIN {tool_muprog_source} ps ON ps.programid = p.id AND ps.type = 'mucertify' AND ps.id = pa.sourceid
+                  JOIN {tool_mucertify_period} cp ON cp.allocationid = pa.id
+                  JOIN {tool_mucertify_assignment} ca ON ca.certificationid = cp.certificationid AND ca.userid = cp.userid
+                  JOIN {tool_mucertify_certification} c ON c.id = cp.certificationid
                  WHERE pa.archived = 0
                        AND (
-                            cp.id IS NULL
-                            OR cp.timerevoked IS NOT NULL
-                            OR ca.id IS NULL
+                            cp.timerevoked IS NOT NULL
                             OR ca.archived = 1
                             OR c.archived = 1
                             OR (cp.timewindowend < :now1)
                             OR (cp.timeuntil < :now2)
-                       )
-                       $userselect $certificationselect
-              ORDER BY pa.id ASC";
+                       )";
+        $sql .= " $userselect $certificationselect";
+        $sql .= " ORDER BY pa.id ASC";
         $allocations = $DB->get_records_sql($sql, $params);
         foreach ($allocations as $allocation) {
             $DB->set_field('tool_muprog_allocation', 'archived', 1, ['id' => $allocation->id]);
@@ -365,7 +359,7 @@ final class mucertify extends base {
                     $delsource = $DB->get_record('tool_muprog_source', ['id' => $allocation->sourceid], '*', MUST_EXIST);
                     /** @var \tool_muprog\local\source\base $sourceclass */
                     $sourceclass = $sourceclasses[$delsource->type];
-                    $sourceclass::deallocate_user($program, $delsource, $allocation);
+                    $sourceclass::allocation_delete($program, $delsource, $allocation);
                 }
 
                 course_reset::reset_courses($user, $resettype, $program->id);
@@ -386,7 +380,7 @@ final class mucertify extends base {
                 'timedue' => $period->timewindowdue,
                 'timeend' => $period->timewindowend,
             ];
-            $allocation = self::allocate_user($program, $source, $period->userid, [], $dateoverrides, $certification->id);
+            $allocation = self::allocation_create($program, $source, $period->userid, [], $dateoverrides, $certification->id);
             $DB->set_field('tool_mucertify_period', 'allocationid', $allocation->id, ['id' => $period->id]);
             \tool_muprog\local\allocation::fix_user_enrolments($program->id, $period->userid);
         }
@@ -439,18 +433,6 @@ final class mucertify extends base {
             \tool_mucertify\local\period::allocation_completed($program, $allocation);
         }
         unset($allocations);
-    }
-
-    /**
-     * Internal - to be called only from \tool_mucertify\local\source\base::unassign_user() method.
-     * @param stdClass $allocation
-     * @return void
-     */
-    public static function user_unassigned(stdClass $allocation): void {
-        global $DB;
-
-        $DB->set_field('enrol_prgrams_allocations', 'archived', '1', ['id' => $allocation->id]);
-        \tool_muprog\local\allocation::fix_user_enrolments($allocation->programid, $allocation->userid);
     }
 
     /**

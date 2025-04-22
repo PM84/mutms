@@ -49,7 +49,6 @@ final class update_program_allocation extends external_api {
                 'timedue' => new external_value(PARAM_INT, 'time due', VALUE_OPTIONAL),
                 'timeend' => new external_value(PARAM_INT, 'time start', VALUE_OPTIONAL),
             ], 'Array of updates for timestart, timedue, timeend can be passed as unix timestamps', VALUE_DEFAULT, []),
-            'archived' => new external_value(PARAM_BOOL, 'Archived flag', VALUE_DEFAULT, null),
         ]);
     }
 
@@ -59,13 +58,12 @@ final class update_program_allocation extends external_api {
      * @param int $programid Program id.
      * @param int $userid User id.
      * @param array $allocationdates optional allocation dates.
-     * @param ?bool $archived Optional archived flag.
      * @return \stdClass
      */
-    public static function execute(int $programid, int $userid, array $allocationdates = [], ?bool $archived = null): \stdClass {
+    public static function execute(int $programid, int $userid, array $allocationdates = []): \stdClass {
         global $DB;
-        ['programid' => $programid, 'userid' => $userid, 'allocationdates' => $allocationdates, 'archived' => $archived] = self::validate_parameters(
-            self::execute_parameters(), ['programid' => $programid, 'userid' => $userid, 'allocationdates' => $allocationdates, 'archived' => $archived]);
+        ['programid' => $programid, 'userid' => $userid, 'allocationdates' => $allocationdates] = self::validate_parameters(
+            self::execute_parameters(), ['programid' => $programid, 'userid' => $userid, 'allocationdates' => $allocationdates]);
 
         $program = $DB->get_record('tool_muprog_program', ['id' => $programid], '*', MUST_EXIST);
 
@@ -77,22 +75,16 @@ final class update_program_allocation extends external_api {
         $allocation = $DB->get_record('tool_muprog_allocation',
             ['programid' => $programid, 'userid' => $userid], '*', MUST_EXIST);
 
-        $sourceclasses = allocation::get_source_classes();
         $source = $DB->get_record('tool_muprog_source', ['id' => $allocation->sourceid]);
-        if (!$source || !isset($sourceclasses[$source->type])) {
+        $sourceclass = allocation::get_source_classname($source->type);
+        if (!$sourceclass) {
             throw new \invalid_parameter_exception('Invalid allocation data');
         }
 
-        /** @var class-string<\tool_muprog\local\source\base> $sourceclass */
-        $sourceclass = $sourceclasses[$source->type];
-
-        if (!$sourceclass::allocation_edit_supported($program, $source, $allocation)) {
-            throw new \invalid_parameter_exception('Allocation data cannot be update');
+        if (!$sourceclass::is_allocation_update_possible($program, $source, $allocation)) {
+            throw new \invalid_parameter_exception('Allocation data cannot be updated');
         }
 
-        if ($archived !== null) {
-            $allocation->archived = (int)$archived;
-        }
         foreach ($allocationdates as $name => $value) {
             if ($name !== 'timestart' && $name !== 'timedue' && $name !== 'timeend') {
                 throw new \invalid_parameter_exception('Invalid date type');
@@ -105,10 +97,11 @@ final class update_program_allocation extends external_api {
             throw new \invalid_parameter_exception('Allocation dates are invalid');
         }
 
-        $allocation = \tool_muprog\local\source\base::update_allocation($allocation);
+        $allocation = \tool_muprog\local\source\base::allocation_update($allocation);
+
         $allocation->sourcetype = $source->type;
-        $allocation->deletesupported = $sourceclass::allocation_delete_supported($program, $source, $allocation);
-        $allocation->editsupported = $sourceclass::allocation_edit_supported($program, $source, $allocation);
+        $allocation->deletesupported = $sourceclass::is_allocation_delete_possible($program, $source, $allocation);
+        $allocation->editsupported = $sourceclass::is_allocation_update_possible($program, $source, $allocation);
 
         return $allocation;
     }
@@ -125,7 +118,6 @@ final class update_program_allocation extends external_api {
             'programid' => new external_value(PARAM_INT, 'Program id'),
             'userid' => new external_value(PARAM_INT, 'User id'),
             'sourceid' => new external_value(PARAM_INT, 'Allocation source id'),
-            'archived' => new external_value(PARAM_BOOL, 'Archived flag (Archived allocations do not change)'),
             'sourcedatajson' => new external_value(PARAM_RAW, 'Source data json (internal)'),
             'sourceinstanceid' => new external_value(PARAM_INT, 'Allocation source instance id (internal)'),
             'timeallocated' => new external_value(PARAM_INT, 'Allocation date'),

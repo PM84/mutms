@@ -26,14 +26,14 @@
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use tool_muprog\local\management;
-use tool_muprog\local\allocation;
-
 /** @var moodle_database $DB */
 /** @var moodle_page $PAGE */
 /** @var core_renderer $OUTPUT */
 /** @var stdClass $CFG */
 /** @var stdClass $COURSE */
+
+use tool_muprog\local\management;
+use tool_muprog\local\allocation;
 
 // phpcs:ignoreFile moodle.Files.MoodleInternal.MoodleInternalGlobalState
 if (!empty($_SERVER['HTTP_X_MULIB_DIALOG_FORM_REQUEST'])) {
@@ -51,30 +51,29 @@ $program = $DB->get_record('tool_muprog_program', ['id' => $allocation->programi
 $source = $DB->get_record('tool_muprog_source', ['id' => $allocation->sourceid], '*', MUST_EXIST);
 
 $context = context::instance_by_id($program->contextid);
-require_capability('tool/muprog:archive', $context);
+require_capability('tool/muprog:deallocate', $context);
 
-$returnurl = new moodle_url('/admin/tool/muprog/management/user_allocation.php', ['id' => $allocation->id]);
+$returnurl = new moodle_url('/admin/tool/muprog/management/allocation.php', ['id' => $allocation->id]);
 
 $sourceclass = allocation::get_source_classname($source->type);
-if (!$sourceclass || !$sourceclass::allocation_archiving_supported($program, $source, $allocation) || !$allocation->archived) {
+if (!$sourceclass || !$sourceclass::is_allocation_archive_possible($program, $source, $allocation) || $allocation->archived) {
     redirect($returnurl);
 }
 
 $user = $DB->get_record('user', ['id' => $allocation->userid], '*', MUST_EXIST);
 
-$currenturl = new moodle_url('/admin/tool/muprog/management/user_allocation_unarchive.php', ['id' => $allocation->id]);
+$currenturl = new moodle_url('/admin/tool/muprog/management/allocation_archive.php', ['id' => $allocation->id]);
 
 management::setup_program_page($currenturl, $context, $program, 'program_users');
 
-$form = new \tool_muprog\local\form\user_allocation_unarchive(null, ['allocation' => $allocation, 'user' => $user, 'context' => $context]);
+$form = new \tool_muprog\local\form\allocation_archive(null, ['allocation' => $allocation, 'user' => $user, 'context' => $context]);
 
 if ($form->is_cancelled()) {
     redirect($returnurl);
 }
 
 if ($data = $form->get_data()) {
-    $allocation->archived = 0;
-    $sourceclass::update_allocation($allocation);
+    $sourceclass::allocation_archive($allocation->id);
     $form->redirect_submitted($returnurl);
 }
 
