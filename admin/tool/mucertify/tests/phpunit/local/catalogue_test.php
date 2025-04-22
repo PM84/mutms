@@ -141,8 +141,8 @@ final class catalogue_test extends \advanced_testcase {
         $certification6 = $generator->create_certification(['contextid' => $catcontext2->id, 'sources' => ['manual' => []]]);
         $source6 = $DB->get_record('tool_mucertify_source', ['certificationid' => $certification6->id, 'type' => 'manual'], '*', MUST_EXIST);
 
-        \cohort_add_member($cohort1->id, $user2->id);
-        \cohort_add_member($cohort1->id, $user3->id);
+        cohort_add_member($cohort1->id, $user2->id);
+        cohort_add_member($cohort1->id, $user3->id);
         \tool_mucertify\local\source\manual::assign_users($certification3->id, $source3->id, [$user3->id]);
         \tool_mucertify\local\source\manual::assign_users($certification6->id, $source6->id, [$user3->id]);
 
@@ -207,8 +207,8 @@ final class catalogue_test extends \advanced_testcase {
         $certification5 = $generator->create_certification(['archived' => 1, 'cohorts' => [$cohort2->id]]);
         $certification6 = $generator->create_certification(['sources' => ['manual' => []]]);
 
-        \cohort_add_member($cohort1->id, $user2->id);
-        \cohort_add_member($cohort1->id, $user3->id);
+        cohort_add_member($cohort1->id, $user2->id);
+        cohort_add_member($cohort1->id, $user3->id);
         $source3 = $DB->get_record('tool_mucertify_source', ['certificationid' => $certification3->id, 'type' => 'manual'], '*', MUST_EXIST);
         \tool_mucertify\local\source\manual::assign_users($certification3->id, $source3->id, [$user3->id]);
         $source6 = $DB->get_record('tool_mucertify_source', ['certificationid' => $certification6->id, 'type' => 'manual'], '*', MUST_EXIST);
@@ -372,8 +372,8 @@ final class catalogue_test extends \advanced_testcase {
         $certification6 = $generator->create_certification(['contextid' => $catcontext2->id, 'sources' => ['manual' => []]]);
         $source6 = $DB->get_record('tool_mucertify_source', ['certificationid' => $certification6->id, 'type' => 'manual'], '*', MUST_EXIST);
 
-        \cohort_add_member($cohort1->id, $user2->id);
-        \cohort_add_member($cohort1->id, $user3->id);
+        cohort_add_member($cohort1->id, $user2->id);
+        cohort_add_member($cohort1->id, $user3->id);
         \tool_mucertify\local\source\manual::assign_users($certification3->id, $source3->id, [$user3->id]);
         \tool_mucertify\local\source\manual::assign_users($certification6->id, $source6->id, [$user3->id]);
 
@@ -441,8 +441,8 @@ final class catalogue_test extends \advanced_testcase {
         $certification4 = $generator->create_certification(['cohorts' => [$cohort1->id]]);
         $certification5 = $generator->create_certification(['archived' => 1, 'cohorts' => [$cohort2->id]]);
         $certification6 = $generator->create_certification(['sources' => ['manual' => []]]);
-        \cohort_add_member($cohort1->id, $user2->id);
-        \cohort_add_member($cohort1->id, $user3->id);
+        cohort_add_member($cohort1->id, $user2->id);
+        cohort_add_member($cohort1->id, $user3->id);
         $source3 = $DB->get_record('tool_mucertify_source', ['certificationid' => $certification3->id, 'type' => 'manual'], '*', MUST_EXIST);
         \tool_mucertify\local\source\manual::assign_users($certification3->id, $source3->id, [$user3->id]);
         $source6 = $DB->get_record('tool_mucertify_source', ['certificationid' => $certification6->id, 'type' => 'manual'], '*', MUST_EXIST);
@@ -653,8 +653,8 @@ final class catalogue_test extends \advanced_testcase {
         $certification6 = $generator->create_certification(['contextid' => $catcontext2->id, 'sources' => ['manual' => []]]);
         $source6 = $DB->get_record('tool_mucertify_source', ['certificationid' => $certification6->id, 'type' => 'manual'], '*', MUST_EXIST);
 
-        \cohort_add_member($cohort1->id, $user2->id);
-        \cohort_add_member($cohort1->id, $user3->id);
+        cohort_add_member($cohort1->id, $user2->id);
+        cohort_add_member($cohort1->id, $user3->id);
         \tool_mucertify\local\source\manual::assign_users($certification3->id, $source3->id, [$user3->id]);
         \tool_mucertify\local\source\manual::assign_users($certification6->id, $source6->id, [$user3->id]);
 

@@ -17,7 +17,7 @@
 // phpcs:disable moodle.Files.BoilerplateComment.CommentEndedTooSoon
 
 /**
- * certification management interface.
+ * Update certification assignment.
  *
  * @package    tool_mucertify
  * @copyright  2023 Open LMS (https://www.openlms.net/)
@@ -33,50 +33,47 @@
 /** @var stdClass $COURSE */
 
 use tool_mucertify\local\management;
-use tool_mucertify\local\period;
+use tool_mucertify\local\assignment;
 
 // phpcs:ignoreFile moodle.Files.MoodleInternal.MoodleInternalGlobalState
 if (!empty($_SERVER['HTTP_X_MULIB_DIALOG_FORM_REQUEST'])) {
     define('AJAX_SCRIPT', true);
 }
 require('../../../../config.php');
-require_once($CFG->dirroot . '/lib/formslib.php');
 
 $id = required_param('id', PARAM_INT);
 
 require_login();
 
-$period = $DB->get_record('tool_mucertify_period', ['id' => $id], '*', MUST_EXIST);
-$certification = $DB->get_record('tool_mucertify_certification', ['id' => $period->certificationid], '*', MUST_EXIST);
-$assignment = $DB->get_record('tool_mucertify_assignment', ['certificationid' => $certification->id, 'userid' => $period->userid]);
+$assignment = $DB->get_record('tool_mucertify_assignment', ['id' => $id], '*', MUST_EXIST);
+$certification = $DB->get_record('tool_mucertify_certification', ['id' => $assignment->certificationid], '*', MUST_EXIST);
+$source = $DB->get_record('tool_mucertify_source', ['id' => $assignment->sourceid], '*', MUST_EXIST);
 
 $context = context::instance_by_id($certification->contextid);
 require_capability('tool/mucertify:admin', $context);
 
-$returnurl = new moodle_url('/admin/tool/mucertify/management/period.php', ['id' => $period->id]);
-if (!$period->timerevoked || ($assignment && $assignment->archived) || $certification->archived) {
+$returnurl = new moodle_url('/admin/tool/mucertify/management/user_assignment.php', ['id' => $assignment->id]);
+
+$user = $DB->get_record('user', ['id' => $assignment->userid], '*', MUST_EXIST);
+
+$sourceclass = assignment::get_source_classname($source->type);
+if (!$sourceclass || !$sourceclass::is_assignment_update_possible($certification, $source, $assignment)) {
     redirect($returnurl);
 }
 
-$user = $DB->get_record('user', ['id' => $period->userid], '*', MUST_EXIST);
-
-$currenturl = new moodle_url('/admin/tool/mucertify/management/period_update.php', ['id' => $period->id]);
+$currenturl = new moodle_url('/admin/tool/mucertify/management/assignment_update.php', ['id' => $assignment->id]);
 
 management::setup_certification_page($currenturl, $context, $certification, 'certification_users');
 
-$form = new \tool_mucertify\local\form\period_delete(null, ['period' => $period, 'user' => $user, 'context' => $context]);
+$form = new \tool_mucertify\local\form\assignment_update(null,
+    ['certification' => $certification, 'assignment' => $assignment, 'user' => $user, 'context' => $context]);
 
 if ($form->is_cancelled()) {
     redirect($returnurl);
 }
 
 if ($data = $form->get_data()) {
-    \tool_mucertify\local\period::delete($data->id);
-    if ($assignment) {
-        $returnurl = new moodle_url('/admin/tool/mucertify/management/user_assignment.php', ['id' => $assignment->id]);
-    } else {
-        $returnurl = new moodle_url('/admin/tool/mucertify/management/certification.php', ['id' => $certification->id]);
-    }
+    $sourceclass::assignment_update($data);
     $form->redirect_submitted($returnurl);
 }
 

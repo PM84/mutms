@@ -64,9 +64,11 @@ final class period_deleted_test extends \advanced_testcase {
         $events = $sink->get_events();
         $sink->close();
 
-        $this->assertCount(1, $events);
+        $this->assertCount(2, $events);
+        $this->assertInstanceOf(\tool_mucertify\event\period_deleted::class, $events[0]);
+        $this->assertInstanceOf(\core\event\calendar_event_deleted::class, $events[1]);
+
         $event = $events[0];
-        $this->assertInstanceOf(\tool_mucertify\event\period_deleted::class, $event);
         $this->assertEquals($syscontext->id, $event->contextid);
         $this->assertSame($period->id, $event->objectid);
         $this->assertSame($user->id, $event->relateduserid);

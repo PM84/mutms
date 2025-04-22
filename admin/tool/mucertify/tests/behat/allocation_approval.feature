@@ -44,9 +44,12 @@ Feature: Certification approval assignments tests
       | tool/mucertify:edit            | Allow      | pmanager  | System       |           |
       | tool/mucertify:delete          | Allow      | pmanager  | System       |           |
       | tool/mucertify:assign          | Allow      | pmanager  | System       |           |
+      | tool/mucertify:unassign        | Allow      | pmanager  | System       |           |
+      | tool/mucertify:admin           | Allow      | pmanager  | System       |           |
       | moodle/cohort:view             | Allow      | pmanager  | System       |           |
       | tool/mucertify:view            | Allow      | allocator | System       |           |
       | tool/mucertify:assign          | Allow      | allocator | System       |           |
+      | tool/mucertify:unassign        | Allow      | allocator | System       |           |
     And the following "role assigns" exist:
       | user      | role          | contextlevel | reference |
       | manager1  | pmanager      | System       |           |
@@ -129,6 +132,9 @@ Feature: Certification approval assignments tests
     And I am on the "Cat 1" "tool_mucertify > Certifications management" page
     And I follow "Certification 001"
     And I follow "Users"
+    And I click on "Actions" "link" in the "Student 2" "table_row"
+    And I click on "Archive assignment" "link" in the "Student 2" "table_row"
+    And I press dialog form button "Archive assignment"
     And I click on "Actions" "link" in the "Student 2" "table_row"
     And I click on "Delete assignment" "link" in the "Student 2" "table_row"
     And I press dialog form button "Delete assignment"

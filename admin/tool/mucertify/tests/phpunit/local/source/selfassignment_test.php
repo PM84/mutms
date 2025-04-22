@@ -49,7 +49,7 @@ final class selfassignment_test extends \advanced_testcase {
         $certification = $generator->create_certification();
 
         $this->assertTrue(\tool_mucertify\local\source\selfassignment::is_new_allowed($certification));
-        \set_config('source_selfassignment_allownew', 0, 'tool_mucertify');
+        set_config('source_selfassignment_allownew', 0, 'tool_mucertify');
         $this->assertFalse(\tool_mucertify\local\source\selfassignment::is_new_allowed($certification));
     }
 
@@ -78,7 +78,7 @@ final class selfassignment_test extends \advanced_testcase {
 
         $cohort1 = $this->getDataGenerator()->create_cohort();
 
-        \cohort_add_member($cohort1->id, $user1->id);
+        cohort_add_member($cohort1->id, $user1->id);
 
         $this->assertTrue(\tool_mucertify\local\source\selfassignment::can_user_request($certification1, $source1a, $user1->id));
 

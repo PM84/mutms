@@ -129,7 +129,7 @@ final class assignment_periods extends \table_sql {
             $context = \context::instance_by_id($period->programcontextid, IGNORE_MISSING);
             if ($context && has_capability('tool/muprog:view', $context)) {
                 if ($period->allocationid && $DB->record_exists('tool_muprog_allocation', ['id' => $period->allocationid])) {
-                    $url = new moodle_url('/admin/tool/muprog/management/user_allocation.php', ['id' => $period->allocationid]);
+                    $url = new moodle_url('/admin/tool/muprog/management/allocation.php', ['id' => $period->allocationid]);
                 } else {
                     $url = new moodle_url('/admin/tool/muprog/management/program.php', ['id' => $period->programid]);
                 }

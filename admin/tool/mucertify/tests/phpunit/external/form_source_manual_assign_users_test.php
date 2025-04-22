@@ -117,7 +117,7 @@ final class form_source_manual_assign_users_test extends \advanced_testcase {
             $this->fail('Exception expected');
         } catch (\moodle_exception $ex) {
             $this->assertInstanceOf('required_capability_exception', $ex);
-            $this->assertSame('Sorry, but you do not currently have permissions to do that (Assign certifications).',
+            $this->assertSame('Sorry, but you do not currently have permissions to do that (Assign certifications and restore assignments).',
                 $ex->getMessage());
         }
 

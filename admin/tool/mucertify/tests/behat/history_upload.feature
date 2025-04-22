@@ -195,4 +195,4 @@ Feature: Import of historic certification periods
       | First name | Valid from     | Expiration      | Certification status | Source                      |
       | Student 1  | 2/01/20, 00:00 | 31/03/20, 00:00 | Expired              | Automatic cohort assignment |
       | Student 2  | 1/01/20, 00:00 | 31/05/20, 00:00 | Expired              | Automatic cohort assignment |
-      | Student 3  | 1/03/19, 00:00 | 31/05/36, 00:00 | Certified            | Manual assignment           |
+      | Student 3  | 1/03/19, 00:00 | 31/05/36, 00:00 | Valid                | Manual assignment           |

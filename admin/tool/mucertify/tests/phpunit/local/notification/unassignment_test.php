@@ -70,7 +70,7 @@ final class unassignment_test extends \advanced_testcase {
         $this->setAdminUser();
 
         $sink = $this->redirectMessages();
-        \tool_mucertify\local\source\manual::unassign_user($certification, $source, $assignment1);
+        \tool_mucertify\local\source\manual::assignment_delete($certification, $source, $assignment1);
         $messages = $sink->get_messages();
         $sink->close();
         $this->assertCount(0, $messages);
@@ -78,7 +78,7 @@ final class unassignment_test extends \advanced_testcase {
         $notification = $generator->create_certifiction_notification(['certificationid' => $certification->id, 'notificationtype' => 'unassignment']);
 
         $sink = $this->redirectMessages();
-        \tool_mucertify\local\source\manual::unassign_user($certification, $source, $assignment2);
+        \tool_mucertify\local\source\manual::assignment_delete($certification, $source, $assignment2);
         $messages = $sink->get_messages();
         $sink->close();
         $this->assertCount(1, $messages);
@@ -92,7 +92,7 @@ final class unassignment_test extends \advanced_testcase {
         $this->assertSame('1', $message->notification);
 
         $sink = $this->redirectMessages();
-        \tool_mucertify\local\source\manual::unassign_user($certification, $source, $assignment3);
+        \tool_mucertify\local\source\manual::assignment_delete($certification, $source, $assignment3);
         $messages = $sink->get_messages();
         $sink->close();
         $this->assertCount(1, $messages);
@@ -111,7 +111,7 @@ final class unassignment_test extends \advanced_testcase {
         $certification->archived = '1';
         $DB->update_record('tool_mucertify_certification', $certification);
         $sink = $this->redirectMessages();
-        \tool_mucertify\local\source\manual::unassign_user($certification, $source, $assignment1);
+        \tool_mucertify\local\source\manual::assignment_delete($certification, $source, $assignment1);
         $messages = $sink->get_messages();
         $sink->close();
         $this->assertCount(0, $messages);

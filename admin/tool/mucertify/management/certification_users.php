@@ -66,6 +66,7 @@ foreach ($sourceclasses as $sourceclass) {
 if (!$certification->archived && has_capability('tool/mucertify:admin', $context)) {
     $url = new \moodle_url('/admin/tool/mucertify/management/history_upload.php', ['certificationid' => $certification->id]);
     $link = new \tool_mulib\output\dialog_form\link($url, get_string('history_upload', 'tool_mucertify'));
+    $link->set_dialog_size('xl');
     $actions->get_dropdown()->add_dialog_form($link);
 }
 

@@ -19,15 +19,13 @@
 namespace tool_mucertify\event;
 
 /**
- * User assignment updated event.
+ * User assignment restored event.
  *
  * @package    tool_mucertify
- * @copyright  2023 Open LMS (https://www.openlms.net/)
  * @copyright  2025 Petr Skoda
- * @author     Petr Skoda
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-final class assignment_updated extends \core\event\base {
+final class assignment_restored extends \core\event\base {
     /**
      * Helper for event creation.
      *
@@ -57,7 +55,7 @@ final class assignment_updated extends \core\event\base {
      * @return string
      */
     public function get_description() {
-        return "The user with id '$this->relateduserid' assignment in certification with id '$this->objectid' was updated";
+        return "The user with id '$this->relateduserid' assignment in certification with id '$this->objectid' was restored";
     }
 
     /**
@@ -66,7 +64,7 @@ final class assignment_updated extends \core\event\base {
      * @return string
      */
     public static function get_name() {
-        return get_string('event_assignment_updated', 'tool_mucertify');
+        return get_string('event_assignment_restored', 'tool_mucertify');
     }
 
     /**

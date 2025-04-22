@@ -64,30 +64,13 @@ final class cohort extends base {
         return $result;
     }
 
-    /**
-     * Is it possible to manually edit user assignment?
-     *
-     * @param stdClass $certification
-     * @param stdClass $source
-     * @param stdClass $assignment
-     * @return bool
-     */
-    public static function assignment_edit_supported(stdClass $certification, stdClass $source, stdClass $assignment): bool {
-        return true;
+    #[\Override]
+    public static function is_assignment_archive_possible(stdClass $certification, stdClass $source, stdClass $assignment): bool {
+        return false;
     }
 
-    /**
-     * Is it possible to manually delete user assignment?
-     *
-     * @param stdClass $certification
-     * @param stdClass $source
-     * @param stdClass $assignment
-     * @return bool
-     */
-    public static function assignment_delete_supported(stdClass $certification, stdClass $source, stdClass $assignment): bool {
-        if ($assignment->archived) {
-            return true;
-        }
+    #[\Override]
+    public static function is_assignment_restore_possible(stdClass $certification, stdClass $source, stdClass $assignment): bool {
         return false;
     }
 
@@ -206,7 +189,7 @@ final class cohort extends base {
                     $source = $DB->get_record('tool_mucertify_source', ['id' => $record->sourceid], '*', MUST_EXIST);
                     $lastsource = $source;
                 }
-                self::assign_user($certification, $source, $record->userid, []);
+                self::assignment_create($certification, $source, $record->userid, []);
                 $updated = true;
             }
         }

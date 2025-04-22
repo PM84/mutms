@@ -44,30 +44,6 @@ final class approval extends base {
     }
 
     /**
-     * Is it possible to manually edit user assignment?
-     *
-     * @param stdClass $certification
-     * @param stdClass $source
-     * @param stdClass $assignment
-     * @return bool
-     */
-    public static function assignment_edit_supported(stdClass $certification, stdClass $source, stdClass $assignment): bool {
-        return true;
-    }
-
-    /**
-     * Is it possible to manually delete user assignment?
-     *
-     * @param stdClass $certification
-     * @param stdClass $source
-     * @param stdClass $assignment
-     * @return bool
-     */
-    public static function assignment_delete_supported(stdClass $certification, stdClass $source, stdClass $assignment): bool {
-        return true;
-    }
-
-    /**
      * Can the user request new assignment?
      *
      * @param stdClass $certification
@@ -289,7 +265,7 @@ final class approval extends base {
         }
 
         $trans = $DB->start_delegated_transaction();
-        $assignment = self::assign_user($certification, $source, $user->id, []);
+        $assignment = self::assignment_create($certification, $source, $user->id, []);
         $DB->delete_records('tool_mucertify_request', ['id' => $request->id]);
         $trans->allow_commit();
 

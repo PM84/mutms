@@ -127,5 +127,5 @@ Feature: Certification completion by students tests
     And I click on "Users" "link" in the ".secondary-navigation" "css_element"
     Then the following should exist in the "reportbuilder-table" table:
       | First name  | Certification status |
-      | Student 1   | Certified            |
+      | Student 1   | Valid                |
       | Student 2   | Not certified        |

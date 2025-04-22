@@ -58,8 +58,8 @@ echo $OUTPUT->header();
 $updateicon = '';
 if (has_capability('tool/mucertify:edit', $context)) {
     $editurl = new moodle_url('/admin/tool/mucertify/management/certification_settings_edit1.php', ['id' => $certification->id]);
-    $editicon = new tool_mulib\output\dialog_form\icon($editurl, get_string('certification_update', 'tool_mucertify'), 'i/settings');
-    $updateicon = $OUTPUT->render($editicon);
+    $updateicon = new tool_mulib\output\dialog_form\icon($editurl, get_string('certification_update', 'tool_mucertify'), 'i/settings');
+    $updateicon = ' <span style="font-size: .9375rem !important">' . $OUTPUT->render($updateicon) . '</span>';
 }
 echo $OUTPUT->heading(get_string('certification', 'tool_mucertify') . $updateicon, 3);
 echo $managementoutput->render_certification_settings1($certification);
@@ -68,8 +68,8 @@ if ($certification->recertify !== null) {
     $updateicon = '';
     if (has_capability('tool/mucertify:edit', $context)) {
         $editurl = new moodle_url('/admin/tool/mucertify/management/certification_settings_edit2.php', ['id' => $certification->id]);
-        $editicon = new tool_mulib\output\dialog_form\icon($editurl, get_string('updaterecertification', 'tool_mucertify'), 'i/settings');
-        $updateicon = $OUTPUT->render($editicon);
+        $updateicon = new tool_mulib\output\dialog_form\icon($editurl, get_string('updaterecertification', 'tool_mucertify'), 'i/settings');
+        $updateicon = ' <span style="font-size: .9375rem !important">' . $OUTPUT->render($updateicon) . '</span>';
     }
     echo $OUTPUT->heading(get_string('recertification', 'tool_mucertify') . $updateicon, 3);
     echo $managementoutput->render_certification_settings2($certification);
@@ -79,8 +79,8 @@ if (\tool_mucertify\local\certificate::is_available()) {
     $updateicon = '';
     if (has_capability('tool/mucertify:edit', $context)) {
         $editurl = new moodle_url('/admin/tool/mucertify/management/certification_certificate_edit.php', ['id' => $certification->id]);
-        $editicon = new tool_mulib\output\dialog_form\icon($editurl, get_string('updatecertificatetemplate', 'tool_mucertify'), 'i/settings');
-        $updateicon = $OUTPUT->render($editicon);
+        $updateicon = new tool_mulib\output\dialog_form\icon($editurl, get_string('updatecertificatetemplate', 'tool_mucertify'), 'i/settings');
+        $updateicon = ' <span style="font-size: .9375rem !important">' . $OUTPUT->render($updateicon) . '</span>';
     }
     echo $OUTPUT->heading(get_string('certificates', 'tool_mucertify') . $updateicon, 3);
     echo $managementoutput->render_certification_certificate($certification);

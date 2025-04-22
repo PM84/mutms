@@ -60,7 +60,7 @@ final class assignment_deleted_test extends \advanced_testcase {
 
         $this->setAdminUser();
         $sink = $this->redirectEvents();
-        \tool_mucertify\local\source\manual::unassign_user($certification, $source, $assignment);
+        \tool_mucertify\local\source\manual::assignment_delete($certification, $source, $assignment);
         $events = $sink->get_events();
         $sink->close();
 

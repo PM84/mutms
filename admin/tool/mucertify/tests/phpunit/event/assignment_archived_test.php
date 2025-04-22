@@ -20,16 +20,16 @@
 namespace tool_mucertify\phpunit\event;
 
 /**
- * Certification assignment updated event test.
+ * Certification assignment archived event test.
  *
  * @group      muTMS
  * @package    tool_mucertify
  * @copyright  2025 Petr Skoda
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
- * @covers \tool_mucertify\event\assignment_updated
+ * @covers \tool_mucertify\event\assignment_archived
  */
-final class assignment_updated_test extends \advanced_testcase {
+final class assignment_archived_test extends \advanced_testcase {
     public function setUp(): void {
         parent::setUp();
         $this->resetAfterTest();
@@ -58,26 +58,20 @@ final class assignment_updated_test extends \advanced_testcase {
 
         $this->setAdminUser();
         $sink = $this->redirectEvents();
-        \tool_mucertify\local\source\base::assignment_update($assignment);
+        \tool_mucertify\local\source\base::assignment_archive($assignment->id);
         $events = $sink->get_events();
-        $this->assertCount(0, $events);
-
-        $assignment->timecertifiedtemp = time() + YEARSECS;
-        \tool_mucertify\local\source\base::assignment_update($assignment);
-        $events = $sink->get_events();
-        $this->assertCount(1, $events);
         $sink->close();
 
         $this->assertCount(1, $events);
         $event = reset($events);
-        $this->assertInstanceOf(\tool_mucertify\event\assignment_updated::class, $event);
+        $this->assertInstanceOf(\tool_mucertify\event\assignment_archived::class, $event);
         $this->assertEquals($syscontext->id, $event->contextid);
         $this->assertSame($assignment->id, $event->objectid);
         $this->assertSame($user->id, $event->relateduserid);
         $this->assertSame('u', $event->crud);
         $this->assertSame($event::LEVEL_OTHER, $event->edulevel);
         $this->assertSame('tool_mucertify_assignment', $event->objecttable);
-        $this->assertSame('User certification assignment updated', $event::get_name());
+        $this->assertSame('User certification assignment archived', $event::get_name());
         $description = $event->get_description();
         $certificationurl = new \moodle_url('/admin/tool/mucertify/management/user_assignment.php', ['id' => $assignment->id]);
         $this->assertSame($certificationurl->out(false), $event->get_url()->out(false));

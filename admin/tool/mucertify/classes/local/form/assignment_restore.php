@@ -20,40 +20,29 @@
 namespace tool_mucertify\local\form;
 
 /**
- * Delete user assignment.
+ * Restore user assignment.
  *
  * @package    tool_mucertify
- * @copyright  2023 Open LMS (https://www.openlms.net/)
  * @copyright  2025 Petr Skoda
- * @author     Petr Skoda
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-final class user_assignment_delete extends \tool_mulib\local\dialog_form {
+final class assignment_restore extends \tool_mulib\local\dialog_form {
     #[\Override]
     protected function definition() {
         $mform = $this->_form;
+        $certification = $this->_customdata['certification'];
         $assignment = $this->_customdata['assignment'];
         $user = $this->_customdata['user'];
         $context = $this->_customdata['context'];
 
-        $mform->addElement('static', 'userfullname', get_string('user'), fullname($user));
+        $mform->addElement('static', 'certificationfullname', get_string('certificationname', 'tool_mucertify'), format_string($certification->fullname));
 
-        $mform->addElement('select', 'archived', get_string('archived', 'tool_mucertify'), [0 => get_string('no'), 1 => get_string('yes')]);
-        $mform->freeze('archived');
+        $mform->addElement('static', 'userfullname', get_string('user'), fullname($user));
 
         $mform->addElement('hidden', 'id');
         $mform->setType('id', PARAM_INT);
         $mform->setDefault('id', $assignment->id);
 
-        $this->add_action_buttons(true, get_string('deleteassignment', 'tool_mucertify'));
-
-        $this->set_data($assignment);
-    }
-
-    #[\Override]
-    public function validation($data, $files) {
-        $errors = parent::validation($data, $files);
-
-        return $errors;
+        $this->add_action_buttons(true, get_string('assignment_restore', 'tool_mucertify'));
     }
 }

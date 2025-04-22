@@ -19,6 +19,8 @@
 
 namespace tool_mucertify\phpunit\local;
 
+use tool_mucertify\local\period;
+use tool_mulib\local\date_util;
 use stdClass;
 use tool_mucertify\local\source\manual;
 use tool_muprog\local\course_reset;
@@ -66,7 +68,7 @@ final class period_test extends \advanced_testcase {
 
         $this->setCurrentTimeStart();
         $dateoverrides = [];
-        $result = \tool_mucertify\local\period::get_default_dates($certification, $user1->id, $dateoverrides);
+        $result = period::get_default_dates($certification, $user1->id, $dateoverrides);
         $this->assertTimeCurrent($result['timewindowstart']);
         $this->assertSame(null, $result['timewindowdue']);
         $this->assertSame(null, $result['timewindowend']);
@@ -85,7 +87,7 @@ final class period_test extends \advanced_testcase {
         $dateoverrides = [
             'timewindowstart' => $now,
         ];
-        $result = \tool_mucertify\local\period::get_default_dates($certification, $user1->id, $dateoverrides);
+        $result = period::get_default_dates($certification, $user1->id, $dateoverrides);
         $this->assertSame($now, $result['timewindowstart']);
         $this->assertSame($now + WEEKSECS, $result['timewindowdue']);
         $this->assertSame($now + DAYSECS * 30, $result['timewindowend']);
@@ -104,7 +106,7 @@ final class period_test extends \advanced_testcase {
         $dateoverrides = [
             'timewindowstart' => $now,
         ];
-        $result = \tool_mucertify\local\period::get_default_dates($certification, $user1->id, $dateoverrides);
+        $result = period::get_default_dates($certification, $user1->id, $dateoverrides);
         $this->assertSame($now, $result['timewindowstart']);
         $this->assertSame($now + WEEKSECS, $result['timewindowdue']);
         $this->assertSame($now + DAYSECS * 30, $result['timewindowend']);
@@ -123,7 +125,7 @@ final class period_test extends \advanced_testcase {
         $dateoverrides = [
             'timewindowstart' => $now,
         ];
-        $result = \tool_mucertify\local\period::get_default_dates($certification, $user1->id, $dateoverrides);
+        $result = period::get_default_dates($certification, $user1->id, $dateoverrides);
         $this->assertSame($now, $result['timewindowstart']);
         $this->assertSame($now + WEEKSECS, $result['timewindowdue']);
         $this->assertSame($now + DAYSECS * 37, $result['timewindowend']);
@@ -142,7 +144,7 @@ final class period_test extends \advanced_testcase {
         $dateoverrides = [
             'timewindowstart' => $now,
         ];
-        $result = \tool_mucertify\local\period::get_default_dates($certification, $user1->id, $dateoverrides);
+        $result = period::get_default_dates($certification, $user1->id, $dateoverrides);
         $this->assertSame($now, $result['timewindowstart']);
         $this->assertSame($now + WEEKSECS, $result['timewindowdue']);
         $this->assertSame($now + DAYSECS * 37, $result['timewindowend']);
@@ -161,7 +163,7 @@ final class period_test extends \advanced_testcase {
         $dateoverrides = [
             'timewindowstart' => $now,
         ];
-        $result = \tool_mucertify\local\period::get_default_dates($certification, $user1->id, $dateoverrides);
+        $result = period::get_default_dates($certification, $user1->id, $dateoverrides);
         $this->assertSame($now, $result['timewindowstart']);
         $this->assertSame($now + WEEKSECS, $result['timewindowdue']);
         $this->assertSame(null, $result['timewindowend']);
@@ -176,7 +178,7 @@ final class period_test extends \advanced_testcase {
             'timefrom' => $now + 1500,
             'timeuntil' => $now + 4000,
         ];
-        $result = \tool_mucertify\local\period::get_default_dates($certification, $user1->id, $dateoverrides);
+        $result = period::get_default_dates($certification, $user1->id, $dateoverrides);
         $this->assertSame($dateoverrides['timewindowstart'], $result['timewindowstart']);
         $this->assertSame($dateoverrides['timewindowdue'], $result['timewindowdue']);
         $this->assertSame($dateoverrides['timewindowend'], $result['timewindowend']);
@@ -212,7 +214,7 @@ final class period_test extends \advanced_testcase {
 
         $dateoverrides = [];
         $this->setCurrentTimeStart();
-        $result = \tool_mucertify\local\period::get_default_dates($certification, $user1->id, $dateoverrides);
+        $result = period::get_default_dates($certification, $user1->id, $dateoverrides);
         $this->assertSame($now + DAYSECS * 90 - DAYSECS, $result['timewindowstart']);
         $this->assertSame($now + DAYSECS * 90, $result['timewindowdue']);
         $this->assertSame($result['timewindowstart'] + DAYSECS * 30, $result['timewindowend']);
@@ -224,7 +226,7 @@ final class period_test extends \advanced_testcase {
             'timewindowstart' => $now + DAYSECS + 10,
         ];
         $this->setCurrentTimeStart();
-        $result = \tool_mucertify\local\period::get_default_dates($certification, $user1->id, $dateoverrides);
+        $result = period::get_default_dates($certification, $user1->id, $dateoverrides);
         $this->assertSame($dateoverrides['timewindowstart'], $result['timewindowstart']);
         $this->assertSame($result['timewindowstart'] + WEEKSECS, $result['timewindowdue']);
         $this->assertSame($result['timewindowstart'] + DAYSECS * 30, $result['timewindowend']);
@@ -236,7 +238,7 @@ final class period_test extends \advanced_testcase {
             'timewindowstart' => $now + DAYSECS * 120,
         ];
         $this->setCurrentTimeStart();
-        $result = \tool_mucertify\local\period::get_default_dates($certification, $user1->id, $dateoverrides);
+        $result = period::get_default_dates($certification, $user1->id, $dateoverrides);
         $this->assertSame($dateoverrides['timewindowstart'], $result['timewindowstart']);
         $this->assertSame($result['timewindowstart'] + WEEKSECS, $result['timewindowdue']);
         $this->assertSame($result['timewindowstart'] + DAYSECS * 30, $result['timewindowend']);
@@ -251,7 +253,7 @@ final class period_test extends \advanced_testcase {
             'timefrom' => $now + 1500,
             'timeuntil' => $now + 4000,
         ];
-        $result = \tool_mucertify\local\period::get_default_dates($certification, $user1->id, $dateoverrides);
+        $result = period::get_default_dates($certification, $user1->id, $dateoverrides);
         $this->assertSame($dateoverrides['timewindowstart'], $result['timewindowstart']);
         $this->assertSame($dateoverrides['timewindowdue'], $result['timewindowdue']);
         $this->assertSame($dateoverrides['timewindowend'], $result['timewindowend']);
@@ -295,7 +297,7 @@ final class period_test extends \advanced_testcase {
             'timewindowstart' => (string)($now - 10),
             'evidencedetails' => 'should be ignored',
         ];
-        $period1 = \tool_mucertify\local\period::add((object)$data);
+        $period1 = period::add((object)$data);
         $this->assertSame($certification->id, $period1->certificationid);
         $this->assertSame($user1->id, $period1->userid);
         $this->assertSame($program1->id, $period1->programid);
@@ -323,7 +325,7 @@ final class period_test extends \advanced_testcase {
             'timefrom' => (string)($now + 1000),
             'timeuntil' => (string)($now + 5000),
         ];
-        $period2 = \tool_mucertify\local\period::add((object)$data);
+        $period2 = period::add((object)$data);
         $period1 = $DB->get_record('tool_mucertify_period', ['id' => $period1->id], '*', MUST_EXIST);
         $this->assertSame($certification->id, $period2->certificationid);
         $this->assertSame($user1->id, $period2->userid);
@@ -347,7 +349,7 @@ final class period_test extends \advanced_testcase {
             'programid' => $program3->id,
             'timewindowstart' => (string)($now - 10000),
         ];
-        $period3 = \tool_mucertify\local\period::add((object)$data);
+        $period3 = period::add((object)$data);
         $period2 = $DB->get_record('tool_mucertify_period', ['id' => $period2->id], '*', MUST_EXIST);
         $period1 = $DB->get_record('tool_mucertify_period', ['id' => $period1->id], '*', MUST_EXIST);
         $this->assertSame($certification->id, $period3->certificationid);
@@ -377,7 +379,7 @@ final class period_test extends \advanced_testcase {
             'timerevoked' => (string)$now,
             'evidencedetails' => 'bad luck',
         ];
-        $period4 = \tool_mucertify\local\period::add((object)$data);
+        $period4 = period::add((object)$data);
         $period3 = $DB->get_record('tool_mucertify_period', ['id' => $period3->id], '*', MUST_EXIST);
         $period2 = $DB->get_record('tool_mucertify_period', ['id' => $period2->id], '*', MUST_EXIST);
         $period1 = $DB->get_record('tool_mucertify_period', ['id' => $period1->id], '*', MUST_EXIST);
@@ -408,7 +410,7 @@ final class period_test extends \advanced_testcase {
             'programid' => $program1->id,
             'timewindowstart' => (string)($now - 10),
         ];
-        $period5 = \tool_mucertify\local\period::add((object)$data);
+        $period5 = period::add((object)$data);
         $this->assertSame($certification->id, $period5->certificationid);
         $this->assertSame($user2->id, $period5->userid);
         $this->assertSame($program1->id, $period5->programid);
@@ -432,7 +434,7 @@ final class period_test extends \advanced_testcase {
                 'timewindowstart' => (string)($now - 10),
                 'timewindowdue' => (string)($now - 11),
             ];
-            \tool_mucertify\local\period::add((object)$data);
+            period::add((object)$data);
             $this->fail('Exception expected');
         } catch (\moodle_exception $ex) {
             $this->assertInstanceOf(\invalid_parameter_exception::class, $ex);
@@ -447,7 +449,7 @@ final class period_test extends \advanced_testcase {
                 'timewindowstart' => (string)($now - 10),
                 'timewindowend' => (string)($now - 10),
             ];
-            \tool_mucertify\local\period::add((object)$data);
+            period::add((object)$data);
             $this->fail('Exception expected');
         } catch (\moodle_exception $ex) {
             $this->assertInstanceOf(\invalid_parameter_exception::class, $ex);
@@ -463,7 +465,7 @@ final class period_test extends \advanced_testcase {
                 'timewindowdue' => (string)($now + 10),
                 'timewindowend' => (string)($now + 9),
             ];
-            \tool_mucertify\local\period::add((object)$data);
+            period::add((object)$data);
             $this->fail('Exception expected');
         } catch (\moodle_exception $ex) {
             $this->assertInstanceOf(\invalid_parameter_exception::class, $ex);
@@ -480,7 +482,7 @@ final class period_test extends \advanced_testcase {
                 'timefrom' => (string)($now - 100),
                 'timeuntil' => (string)($now - 100),
             ];
-            \tool_mucertify\local\period::add((object)$data);
+            period::add((object)$data);
             $this->fail('Exception expected');
         } catch (\moodle_exception $ex) {
             $this->assertInstanceOf(\invalid_parameter_exception::class, $ex);
@@ -497,7 +499,7 @@ final class period_test extends \advanced_testcase {
                 'timefrom' => null,
                 'timeuntil' => (string)($now + 100),
             ];
-            \tool_mucertify\local\period::add((object)$data);
+            period::add((object)$data);
             $this->fail('Exception expected');
         } catch (\moodle_exception $ex) {
             $this->assertInstanceOf(\invalid_parameter_exception::class, $ex);
@@ -518,7 +520,7 @@ final class period_test extends \advanced_testcase {
             'timefrom' => (string)(new \DateTime('2019-01-01'))->getTimestamp(),
             'timeuntil' => (string)(new \DateTime('2019-3-31'))->getTimestamp(),
         ];
-        $period31 = \tool_mucertify\local\period::add((object)$data);
+        $period31 = period::add((object)$data);
         $this->assertSame($certification->id, $period31->certificationid);
         $this->assertSame($user3->id, $period31->userid);
         $this->assertSame(null, $period31->programid);
@@ -543,7 +545,7 @@ final class period_test extends \advanced_testcase {
             'timefrom' => (string)(new \DateTime('2019-03-31'))->getTimestamp(),
             'timeuntil' => (string)(new \DateTime('2019-05-31'))->getTimestamp(),
         ];
-        $period31 = \tool_mucertify\local\period::add((object)$data);
+        $period31 = period::add((object)$data);
         $this->assertSame($certification->id, $period31->certificationid);
         $this->assertSame($user3->id, $period31->userid);
         $this->assertSame(null, $period31->programid);
@@ -586,7 +588,7 @@ final class period_test extends \advanced_testcase {
         $DB->delete_records('tool_mucertify_period', ['certificationid' => $certification->id, 'userid' => $user1->id]);
 
         $this->setCurrentTimeStart();
-        $period1 = \tool_mucertify\local\period::add_first($assignment, []);
+        $period1 = period::add_first($assignment, []);
         $this->assertSame($certification->id, $period1->certificationid);
         $this->assertSame($user1->id, $period1->userid);
         $this->assertSame($program1->id, $period1->programid);
@@ -602,7 +604,7 @@ final class period_test extends \advanced_testcase {
         $this->assertSame('1', $period1->first);
         $this->assertSame('1', $period1->recertifiable);
 
-        $this->assertSame(null, \tool_mucertify\local\period::add_first($assignment, []));
+        $this->assertSame(null, period::add_first($assignment, []));
         $this->assertCount(1, $DB->get_records('tool_mucertify_period', ['certificationid' => $certification->id, 'userid' => $user1->id]));
 
         $DB->delete_records('tool_mucertify_period', ['certificationid' => $certification->id, 'userid' => $user1->id]);
@@ -612,7 +614,7 @@ final class period_test extends \advanced_testcase {
             'windowend1' => \tool_mucertify\local\util::get_delay_form_value(['since' => \tool_mucertify\local\certification::SINCE_WINDOWSTART, 'delay' => 'P7D'], 'days'),
         ];
         $certification = \tool_mucertify\local\certification::update_settings((object)$data);
-        $period1 = \tool_mucertify\local\period::add_first($assignment, []);
+        $period1 = period::add_first($assignment, []);
         $this->assertSame($certification->id, $period1->certificationid);
         $this->assertSame($user1->id, $period1->userid);
         $this->assertSame($program1->id, $period1->programid);
@@ -642,7 +644,7 @@ final class period_test extends \advanced_testcase {
             'timerevoked' => (string)$now,
             'programid' => $program2->id,
         ];
-        $period1 = \tool_mucertify\local\period::add_first($assignment, $dateoverrides);
+        $period1 = period::add_first($assignment, $dateoverrides);
         $this->assertSame($certification->id, $period1->certificationid);
         $this->assertSame($user1->id, $period1->userid);
         $this->assertSame($program1->id, $period1->programid);
@@ -692,7 +694,7 @@ final class period_test extends \advanced_testcase {
             'programid' => $program2->id,
             'timewindowstart' => (string)($now + 1000),
         ];
-        $period2 = \tool_mucertify\local\period::add((object)$data);
+        $period2 = period::add((object)$data);
         $period1 = $DB->get_record('tool_mucertify_period', ['id' => $period1->id], '*', MUST_EXIST);
 
         $dateoverrides = [
@@ -706,7 +708,7 @@ final class period_test extends \advanced_testcase {
             'timerevoked' => (string)$now,
             'evidencedetails' => 'bad',
         ];
-        $period1 = \tool_mucertify\local\period::override_dates((object)$dateoverrides);
+        $period1 = period::override_dates((object)$dateoverrides);
         $period2 = $DB->get_record('tool_mucertify_period', ['id' => $period2->id], '*', MUST_EXIST);
         $this->assertSame($dateoverrides['timewindowstart'], $period1->timewindowstart);
         $this->assertSame($dateoverrides['timewindowdue'], $period1->timewindowdue);
@@ -726,7 +728,7 @@ final class period_test extends \advanced_testcase {
             'id' => $period1->id,
             'timerevoked' => null,
         ];
-        $period1 = \tool_mucertify\local\period::override_dates((object)$dateoverrides2);
+        $period1 = period::override_dates((object)$dateoverrides2);
         $this->assertSame($dateoverrides['timewindowstart'], $period1->timewindowstart);
         $this->assertSame($dateoverrides['timewindowdue'], $period1->timewindowdue);
         $this->assertSame($dateoverrides['timewindowend'], $period1->timewindowend);
@@ -747,7 +749,7 @@ final class period_test extends \advanced_testcase {
             'timecertified' => null,
             'evidencedetails' => 'ignored',
         ];
-        $period1 = \tool_mucertify\local\period::override_dates((object)$dateoverrides);
+        $period1 = period::override_dates((object)$dateoverrides);
         $this->assertSame('{}', $period1->evidencejson);
         $period2 = $DB->get_record('tool_mucertify_period', ['id' => $period2->id], '*', MUST_EXIST);
         $this->assertSame('0', $period1->first);
@@ -760,7 +762,7 @@ final class period_test extends \advanced_testcase {
                 'id' => $period1->id,
                 'timewindowstart' => 0,
             ];
-            $period1 = \tool_mucertify\local\period::override_dates((object)$dateoverrides);
+            $period1 = period::override_dates((object)$dateoverrides);
             $this->fail('Exception expected');
         } catch (\moodle_exception $ex) {
             $this->assertInstanceOf(\invalid_parameter_exception::class, $ex);
@@ -772,7 +774,7 @@ final class period_test extends \advanced_testcase {
                 'id' => $period1->id,
                 'timewindowstart' => (string)($now + 2000),
             ];
-            $period1 = \tool_mucertify\local\period::override_dates((object)$dateoverrides);
+            $period1 = period::override_dates((object)$dateoverrides);
             $this->fail('Exception expected');
         } catch (\moodle_exception $ex) {
             $this->assertInstanceOf(\invalid_parameter_exception::class, $ex);
@@ -785,7 +787,7 @@ final class period_test extends \advanced_testcase {
                 'timewindowstart' => (string)($now + 3000),
                 'timewindowdue' => null,
             ];
-            $period1 = \tool_mucertify\local\period::override_dates((object)$dateoverrides);
+            $period1 = period::override_dates((object)$dateoverrides);
             $this->fail('Exception expected');
         } catch (\moodle_exception $ex) {
             $this->assertInstanceOf(\invalid_parameter_exception::class, $ex);
@@ -798,7 +800,7 @@ final class period_test extends \advanced_testcase {
                 'timefrom' => (string)($now + 3000),
                 'timeuntil' => (string)($now + 2000),
             ];
-            $period1 = \tool_mucertify\local\period::override_dates((object)$dateoverrides);
+            $period1 = period::override_dates((object)$dateoverrides);
             $this->fail('Exception expected');
         } catch (\moodle_exception $ex) {
             $this->assertInstanceOf(\invalid_parameter_exception::class, $ex);
@@ -812,7 +814,7 @@ final class period_test extends \advanced_testcase {
                 'timeuntil' => (string)($now + 2000),
                 'timecertified' => (string)$now,
             ];
-            $period1 = \tool_mucertify\local\period::override_dates((object)$dateoverrides);
+            $period1 = period::override_dates((object)$dateoverrides);
             $this->fail('Exception expected');
         } catch (\moodle_exception $ex) {
             $this->assertInstanceOf(\invalid_parameter_exception::class, $ex);
@@ -854,14 +856,14 @@ final class period_test extends \advanced_testcase {
             'timewindowstart' => (string)($now - 1000),
             'timerevoked' => $now,
         ];
-        $period0 = \tool_mucertify\local\period::add((object)$data);
+        $period0 = period::add((object)$data);
         $data = [
             'certificationid' => $certification->id,
             'userid' => $user1->id,
             'programid' => $program2->id,
             'timewindowstart' => (string)($now + 1000),
         ];
-        $period2 = \tool_mucertify\local\period::add((object)$data);
+        $period2 = period::add((object)$data);
         $data = [
             'certificationid' => $certification->id,
             'userid' => $user1->id,
@@ -869,7 +871,7 @@ final class period_test extends \advanced_testcase {
             'timewindowstart' => (string)($now + 3000),
             'timerevoked' => $now,
         ];
-        $period3 = \tool_mucertify\local\period::add((object)$data);
+        $period3 = period::add((object)$data);
         $period2 = $DB->get_record('tool_mucertify_period', ['id' => $period2->id], '*', MUST_EXIST);
         $period1 = $DB->get_record('tool_mucertify_period', ['id' => $period1->id], '*', MUST_EXIST);
         $period0 = $DB->get_record('tool_mucertify_period', ['id' => $period0->id], '*', MUST_EXIST);
@@ -882,7 +884,7 @@ final class period_test extends \advanced_testcase {
         $this->assertSame('0', $period3->first);
         $this->assertSame('0', $period3->recertifiable);
 
-        \tool_mucertify\local\period::update_recertifiable($assignment, true);
+        period::update_recertifiable($assignment, true);
         $period3 = $DB->get_record('tool_mucertify_period', ['id' => $period3->id], '*', MUST_EXIST);
         $period2 = $DB->get_record('tool_mucertify_period', ['id' => $period2->id], '*', MUST_EXIST);
         $period1 = $DB->get_record('tool_mucertify_period', ['id' => $period1->id], '*', MUST_EXIST);
@@ -896,7 +898,7 @@ final class period_test extends \advanced_testcase {
         $this->assertSame('0', $period3->first);
         $this->assertSame('0', $period3->recertifiable);
 
-        \tool_mucertify\local\period::update_recertifiable($assignment, false);
+        period::update_recertifiable($assignment, false);
         $period3 = $DB->get_record('tool_mucertify_period', ['id' => $period3->id], '*', MUST_EXIST);
         $period2 = $DB->get_record('tool_mucertify_period', ['id' => $period2->id], '*', MUST_EXIST);
         $period1 = $DB->get_record('tool_mucertify_period', ['id' => $period1->id], '*', MUST_EXIST);
@@ -945,27 +947,27 @@ final class period_test extends \advanced_testcase {
             'timewindowstart' => (string)($now - 1000),
             'timerevoked' => $now,
         ];
-        $period0 = \tool_mucertify\local\period::add((object)$data);
+        $period0 = period::add((object)$data);
         $data = [
             'certificationid' => $certification->id,
             'userid' => $user1->id,
             'programid' => $program2->id,
             'timewindowstart' => (string)($now + 1000),
         ];
-        $period2 = \tool_mucertify\local\period::add((object)$data);
+        $period2 = period::add((object)$data);
         $data = [
             'certificationid' => $certification->id,
             'userid' => $user1->id,
             'programid' => $program2->id,
             'timewindowstart' => (string)($now + 3000),
         ];
-        $period3 = \tool_mucertify\local\period::add((object)$data);
+        $period3 = period::add((object)$data);
         $period2 = $DB->get_record('tool_mucertify_period', ['id' => $period2->id], '*', MUST_EXIST);
         $period1 = $DB->get_record('tool_mucertify_period', ['id' => $period1->id], '*', MUST_EXIST);
         $period0 = $DB->get_record('tool_mucertify_period', ['id' => $period0->id], '*', MUST_EXIST);
 
-        \tool_mucertify\local\period::delete($period1->id);
-        \tool_mucertify\local\period::delete($period3->id);
+        period::delete($period1->id);
+        period::delete($period3->id);
         $period0 = $DB->get_record('tool_mucertify_period', ['id' => $period0->id], '*', MUST_EXIST);
         $period2 = $DB->get_record('tool_mucertify_period', ['id' => $period2->id], '*', MUST_EXIST);
         $this->assertCount(2, $DB->get_records('tool_mucertify_period', ['certificationid' => $certification->id, 'userid' => $user1->id]));
@@ -1057,7 +1059,7 @@ final class period_test extends \advanced_testcase {
         $period2->timeuntil = null;
         $DB->update_record('tool_mucertify_period', $period2);
         $allocation2 = $DB->get_record('tool_muprog_allocation', ['sourceid' => $program1source->id, 'userid' => $user2->id], '*', MUST_EXIST);
-        \tool_mucertify\local\period::allocation_completed($program1, $allocation2);
+        period::allocation_completed($program1, $allocation2);
         $period2 = $DB->get_record('tool_mucertify_period', ['certificationid' => $certification->id, 'userid' => $user2->id], '*', MUST_EXIST);
         $this->assertSame($allocation2->id, $period2->allocationid);
         $this->assertTimeCurrent($period2->timecertified);
@@ -1078,7 +1080,7 @@ final class period_test extends \advanced_testcase {
         $period2->timeuntil = null;
         $DB->update_record('tool_mucertify_period', $period2);
         $allocation2 = $DB->get_record('tool_muprog_allocation', ['sourceid' => $program1source->id, 'userid' => $user2->id], '*', MUST_EXIST);
-        \tool_mucertify\local\period::allocation_completed($program1, $allocation2);
+        period::allocation_completed($program1, $allocation2);
         $period2 = $DB->get_record('tool_mucertify_period', ['certificationid' => $certification->id, 'userid' => $user2->id], '*', MUST_EXIST);
         $this->assertSame($allocation2->id, $period2->allocationid);
         $this->assertTimeCurrent($period2->timecertified);
@@ -1100,41 +1102,41 @@ final class period_test extends \advanced_testcase {
         $period->timewindowstart = $now + 100;
         $period->timewindowdue = null;
         $period->timewindowend = null;
-        $this->assertStringContainsString('>Future<', \tool_mucertify\local\period::get_status_html($certification, $assignment, $period));
+        $this->assertStringContainsString('>Future<', period::get_status_html($certification, $assignment, $period));
 
         $period->timewindowstart = $now - 100;
-        $this->assertStringContainsString('>Pending<', \tool_mucertify\local\period::get_status_html($certification, $assignment, $period));
+        $this->assertStringContainsString('>Pending<', period::get_status_html($certification, $assignment, $period));
 
         $period->timewindowend = $now - 50;
-        $this->assertStringContainsString('>Failed<', \tool_mucertify\local\period::get_status_html($certification, $assignment, $period));
+        $this->assertStringContainsString('>Failed<', period::get_status_html($certification, $assignment, $period));
 
         $period->timewindowend = $now + 2000;
         $period->timewindowdue = $now - 50;
-        $this->assertStringContainsString('>Overdue<', \tool_mucertify\local\period::get_status_html($certification, $assignment, $period));
+        $this->assertStringContainsString('>Overdue<', period::get_status_html($certification, $assignment, $period));
 
         $period->timecertified = $now - 20;
         $period->timefrom = $now - 20;
-        $this->assertStringContainsString('>Certified<', \tool_mucertify\local\period::get_status_html($certification, $assignment, $period));
+        $this->assertStringContainsString('>Certified<', period::get_status_html($certification, $assignment, $period));
 
         $period->timeuntil = $now + 10;
-        $this->assertStringContainsString('>Certified<', \tool_mucertify\local\period::get_status_html($certification, $assignment, $period));
+        $this->assertStringContainsString('>Certified<', period::get_status_html($certification, $assignment, $period));
 
         $period->timeuntil = $now - 10;
-        $this->assertStringContainsString('>Expired<', \tool_mucertify\local\period::get_status_html($certification, $assignment, $period));
+        $this->assertStringContainsString('>Expired<', period::get_status_html($certification, $assignment, $period));
 
         $period->timerevoked = $now + 10;
-        $this->assertStringContainsString('>Revoked<', \tool_mucertify\local\period::get_status_html($certification, $assignment, $period));
+        $this->assertStringContainsString('>Revoked<', period::get_status_html($certification, $assignment, $period));
 
         $assignment->archived = '1';
-        $this->assertStringContainsString('>Archived<', \tool_mucertify\local\period::get_status_html($certification, $assignment, $period));
+        $this->assertStringContainsString('>Archived<', period::get_status_html($certification, $assignment, $period));
 
         $assignment->archived = '0';
         $certification->archived = '1';
-        $this->assertStringContainsString('>Archived<', \tool_mucertify\local\period::get_status_html($certification, $assignment, $period));
+        $this->assertStringContainsString('>Archived<', period::get_status_html($certification, $assignment, $period));
 
         $assignment->archived = '0';
         $certification->archived = '0';
-        $this->assertStringContainsString('>Archived<', \tool_mucertify\local\period::get_status_html($certification, null, $period));
+        $this->assertStringContainsString('>Archived<', period::get_status_html($certification, null, $period));
     }
 
     public function test_get_windowstart_html(): void {
@@ -1145,11 +1147,11 @@ final class period_test extends \advanced_testcase {
         $period->timewindowstart = $now + 100;
 
         $expected = userdate($period->timewindowstart);
-        $this->assertSame($expected, \tool_mucertify\local\period::get_windowstart_html($certification, $assignment, $period));
-        $this->assertSame($expected, \tool_mucertify\local\period::get_windowstart_html($certification, $assignment, $period, false));
+        $this->assertSame($expected, period::get_windowstart_html($certification, $assignment, $period));
+        $this->assertSame($expected, period::get_windowstart_html($certification, $assignment, $period, false));
 
         $expected = userdate($period->timewindowstart, get_string('strftimedatetimeshort'));
-        $this->assertSame($expected, \tool_mucertify\local\period::get_windowstart_html($certification, $assignment, $period, true));
+        $this->assertSame($expected, period::get_windowstart_html($certification, $assignment, $period, true));
     }
 
     public function test_get_windowdue_html(): void {
@@ -1160,15 +1162,15 @@ final class period_test extends \advanced_testcase {
         $period->timewindowdue = $now + 100;
 
         $expected = userdate($period->timewindowdue);
-        $this->assertSame($expected, \tool_mucertify\local\period::get_windowdue_html($certification, $assignment, $period));
-        $this->assertSame($expected, \tool_mucertify\local\period::get_windowdue_html($certification, $assignment, $period, false));
+        $this->assertSame($expected, period::get_windowdue_html($certification, $assignment, $period));
+        $this->assertSame($expected, period::get_windowdue_html($certification, $assignment, $period, false));
 
         $expected = userdate($period->timewindowdue, get_string('strftimedatetimeshort'));
-        $this->assertSame($expected, \tool_mucertify\local\period::get_windowdue_html($certification, $assignment, $period, true));
+        $this->assertSame($expected, period::get_windowdue_html($certification, $assignment, $period, true));
 
         $period->timewindowdue = null;
-        $this->assertSame('Not set', \tool_mucertify\local\period::get_windowdue_html($certification, $assignment, $period, false));
-        $this->assertSame('Not set', \tool_mucertify\local\period::get_windowdue_html($certification, $assignment, $period, true));
+        $this->assertSame('Not set', period::get_windowdue_html($certification, $assignment, $period, false));
+        $this->assertSame('Not set', period::get_windowdue_html($certification, $assignment, $period, true));
     }
 
     public function test_get_windowend_html(): void {
@@ -1179,15 +1181,15 @@ final class period_test extends \advanced_testcase {
         $period->timewindowend = $now + 100;
 
         $expected = userdate($period->timewindowend);
-        $this->assertSame($expected, \tool_mucertify\local\period::get_windowend_html($certification, $assignment, $period));
-        $this->assertSame($expected, \tool_mucertify\local\period::get_windowend_html($certification, $assignment, $period, false));
+        $this->assertSame($expected, period::get_windowend_html($certification, $assignment, $period));
+        $this->assertSame($expected, period::get_windowend_html($certification, $assignment, $period, false));
 
         $expected = userdate($period->timewindowend, get_string('strftimedatetimeshort'));
-        $this->assertSame($expected, \tool_mucertify\local\period::get_windowend_html($certification, $assignment, $period, true));
+        $this->assertSame($expected, period::get_windowend_html($certification, $assignment, $period, true));
 
         $period->timewindowend = null;
-        $this->assertSame('Not set', \tool_mucertify\local\period::get_windowend_html($certification, $assignment, $period, false));
-        $this->assertSame('Not set', \tool_mucertify\local\period::get_windowend_html($certification, $assignment, $period, true));
+        $this->assertSame('Not set', period::get_windowend_html($certification, $assignment, $period, false));
+        $this->assertSame('Not set', period::get_windowend_html($certification, $assignment, $period, true));
     }
 
     public function test_get_from_html(): void {
@@ -1221,26 +1223,26 @@ final class period_test extends \advanced_testcase {
         $period = $DB->get_record('tool_mucertify_period',
             ['certificationid' => $certification->id, 'userid' => $user1->id], '*', MUST_EXIST);
 
-        $this->assertSame('Certification completion date', \tool_mucertify\local\period::get_from_html($certification, $assignment, $period));
-        $this->assertSame('Certification completion date', \tool_mucertify\local\period::get_from_html($certification, $assignment, $period, false));
-        $this->assertSame('Certification completion date', \tool_mucertify\local\period::get_from_html($certification, $assignment, $period, true));
+        $this->assertSame('Certification completion date', period::get_from_html($certification, $assignment, $period));
+        $this->assertSame('Certification completion date', period::get_from_html($certification, $assignment, $period, false));
+        $this->assertSame('Certification completion date', period::get_from_html($certification, $assignment, $period, true));
 
         $now = time();
         $period->timefrom = $now - 100;
         $expected = userdate($period->timefrom);
-        $this->assertSame($expected, \tool_mucertify\local\period::get_from_html($certification, $assignment, $period));
-        $this->assertSame($expected, \tool_mucertify\local\period::get_from_html($certification, $assignment, $period, false));
+        $this->assertSame($expected, period::get_from_html($certification, $assignment, $period));
+        $this->assertSame($expected, period::get_from_html($certification, $assignment, $period, false));
 
         $expected = userdate($period->timefrom, get_string('strftimedatetimeshort'));
-        $this->assertSame($expected, \tool_mucertify\local\period::get_from_html($certification, $assignment, $period, true));
+        $this->assertSame($expected, period::get_from_html($certification, $assignment, $period, true));
 
         $period->timefrom = null;
         $period->first = '0';
-        $this->assertSame('Certification due', \tool_mucertify\local\period::get_from_html($certification, $assignment, $period));
+        $this->assertSame('Certification due', period::get_from_html($certification, $assignment, $period));
 
         // This should not happen.
         $period->timecertified = $now;
-        $this->assertSame('Never', \tool_mucertify\local\period::get_from_html($certification, $assignment, $period));
+        $this->assertSame('Never', period::get_from_html($certification, $assignment, $period));
     }
 
     public function test_get_until_html(): void {
@@ -1276,26 +1278,26 @@ final class period_test extends \advanced_testcase {
         $period = $DB->get_record('tool_mucertify_period',
             ['certificationid' => $certification->id, 'userid' => $user1->id], '*', MUST_EXIST);
 
-        $this->assertSame('30 days after Certification completion date', \tool_mucertify\local\period::get_until_html($certification, $assignment, $period));
-        $this->assertSame('30 days after Certification completion date', \tool_mucertify\local\period::get_until_html($certification, $assignment, $period, false));
-        $this->assertSame('30 days after Certification completion date', \tool_mucertify\local\period::get_until_html($certification, $assignment, $period, true));
+        $this->assertSame('30 days after Certification completion date', period::get_until_html($certification, $assignment, $period));
+        $this->assertSame('30 days after Certification completion date', period::get_until_html($certification, $assignment, $period, false));
+        $this->assertSame('30 days after Certification completion date', period::get_until_html($certification, $assignment, $period, true));
 
         $now = time();
         $period->timeuntil = $now - 100;
         $expected = userdate($period->timeuntil);
-        $this->assertSame($expected, \tool_mucertify\local\period::get_until_html($certification, $assignment, $period));
-        $this->assertSame($expected, \tool_mucertify\local\period::get_until_html($certification, $assignment, $period, false));
+        $this->assertSame($expected, period::get_until_html($certification, $assignment, $period));
+        $this->assertSame($expected, period::get_until_html($certification, $assignment, $period, false));
 
         $expected = userdate($period->timeuntil, get_string('strftimedatetimeshort'));
-        $this->assertSame($expected, \tool_mucertify\local\period::get_until_html($certification, $assignment, $period, true));
+        $this->assertSame($expected, period::get_until_html($certification, $assignment, $period, true));
 
         $period->timecertified = null;
         $period->timeuntil = null;
         $period->first = '0';
-        $this->assertSame('31 days after Certification due', \tool_mucertify\local\period::get_until_html($certification, $assignment, $period));
+        $this->assertSame('31 days after Certification due', period::get_until_html($certification, $assignment, $period));
 
         $period->timecertified = $now;
-        $this->assertSame('Never', \tool_mucertify\local\period::get_until_html($certification, $assignment, $period));
+        $this->assertSame('Never', period::get_until_html($certification, $assignment, $period));
 
         $data = [
             'id' => $certification->id,
@@ -1305,7 +1307,7 @@ final class period_test extends \advanced_testcase {
         $period->timecertified = null;
         $period->timeuntil = null;
         $period->first = '0';
-        $this->assertSame('Never', \tool_mucertify\local\period::get_until_html($certification, $assignment, $period));
+        $this->assertSame('Never', period::get_until_html($certification, $assignment, $period));
     }
 
     public function test_get_recertify_html(): void {
@@ -1320,34 +1322,34 @@ final class period_test extends \advanced_testcase {
         $period->timeuntil = $now + 200;
 
         $expected = userdate($period->timeuntil - $certification->recertify);
-        $this->assertSame($expected, \tool_mucertify\local\period::get_recertify_html($certification, $assignment, $period));
-        $this->assertSame($expected, \tool_mucertify\local\period::get_recertify_html($certification, $assignment, $period, false));
+        $this->assertSame($expected, period::get_recertify_html($certification, $assignment, $period));
+        $this->assertSame($expected, period::get_recertify_html($certification, $assignment, $period, false));
 
         $expected = userdate($period->timeuntil - $certification->recertify, get_string('strftimedatetimeshort'));
-        $this->assertSame($expected, \tool_mucertify\local\period::get_recertify_html($certification, $assignment, $period, true));
+        $this->assertSame($expected, period::get_recertify_html($certification, $assignment, $period, true));
 
         $period->timeuntil = $now - 10;
         $expected = userdate($period->timeuntil - $certification->recertify, get_string('strftimedatetimeshort'));
-        $this->assertSame($expected, \tool_mucertify\local\period::get_recertify_html($certification, $assignment, $period, true));
+        $this->assertSame($expected, period::get_recertify_html($certification, $assignment, $period, true));
 
         $period->timeuntil = null;
-        $this->assertSame('If expired', \tool_mucertify\local\period::get_recertify_html($certification, $assignment, $period));
+        $this->assertSame('If expired', period::get_recertify_html($certification, $assignment, $period));
 
         $period->timeuntil = $now + 200;
         $period->recertifiable = '0';
-        $this->assertSame('No', \tool_mucertify\local\period::get_recertify_html($certification, $assignment, $period));
+        $this->assertSame('No', period::get_recertify_html($certification, $assignment, $period));
 
         $period->recertifiable = '1';
         $assignment->archived = '1';
-        $this->assertSame('No', \tool_mucertify\local\period::get_recertify_html($certification, $assignment, $period));
+        $this->assertSame('No', period::get_recertify_html($certification, $assignment, $period));
 
         $assignment->archived = '0';
         $certification->archived = '1';
-        $this->assertSame('No', \tool_mucertify\local\period::get_recertify_html($certification, $assignment, $period));
+        $this->assertSame('No', period::get_recertify_html($certification, $assignment, $period));
 
         $certification->archived = '0';
         $certification->recertify = null;
-        $this->assertSame('No', \tool_mucertify\local\period::get_recertify_html($certification, $assignment, $period));
+        $this->assertSame('No', period::get_recertify_html($certification, $assignment, $period));
     }
 
     public function test_process_recertifications(): void {
@@ -1404,7 +1406,7 @@ final class period_test extends \advanced_testcase {
         $this->assertSame((string)($now - YEARSECS + 10), $period1x1->timecertified);
         $this->assertCount(1, $DB->get_records('tool_mucertify_period', ['userid' => $user1->id]));
 
-        \tool_mucertify\local\period::process_recertifications(null, null);
+        period::process_recertifications(null, null);
         $period1x1 = $DB->get_record('tool_mucertify_period', ['id' => $period1x1->id], '*', MUST_EXIST);
         $this->assertSame('1', $period1x1->first);
         $this->assertSame('0', $period1x1->recertifiable);
@@ -1420,9 +1422,9 @@ final class period_test extends \advanced_testcase {
         $this->assertSame((string)($now + (DAYSECS * 15) - 77), $assignment1->timecertifiedtemp);
         $this->assertCount(2, $DB->get_records('tool_mucertify_period', ['userid' => $user1->id]));
 
-        \tool_mucertify\local\period::process_recertifications($certification1->id, null);
-        \tool_mucertify\local\period::process_recertifications($certification1->id, $user1->id);
-        \tool_mucertify\local\period::process_recertifications(null, $user1->id);
+        period::process_recertifications($certification1->id, null);
+        period::process_recertifications($certification1->id, $user1->id);
+        period::process_recertifications(null, $user1->id);
         $this->assertCount(2, $DB->get_records('tool_mucertify_period', ['userid' => $user1->id]));
 
         manual::assign_users($certification1->id, $source1->id, [$user2->id], [
@@ -1438,7 +1440,7 @@ final class period_test extends \advanced_testcase {
 
         // Recertification stopped.
         $DB->set_field('tool_mucertify_period', 'recertifiable', 0, ['id' => $period2x1->id]);
-        \tool_mucertify\local\period::process_recertifications(null, null);
+        period::process_recertifications(null, null);
         $this->assertCount(1, $DB->get_records('tool_mucertify_period', ['userid' => $user2->id]));
         $DB->set_field('tool_mucertify_period', 'recertifiable', 1, ['id' => $period2x1->id]);
 
@@ -1446,37 +1448,37 @@ final class period_test extends \advanced_testcase {
         $assignment2 = $DB->get_record('tool_mucertify_assignment',
             ['userid' => $user2->id, 'certificationid' => $certification1->id], '*', MUST_EXIST);
         $DB->set_field('tool_mucertify_assignment', 'archived', 1, ['id' => $assignment2->id]);
-        \tool_mucertify\local\period::process_recertifications(null, null);
+        period::process_recertifications(null, null);
         $this->assertCount(1, $DB->get_records('tool_mucertify_period', ['userid' => $user2->id]));
         $DB->set_field('tool_mucertify_assignment', 'archived', 0, ['id' => $assignment2->id]);
 
         // Archived certification.
         $DB->set_field('tool_mucertify_certification', 'archived', 1, ['id' => $certification1->id]);
-        \tool_mucertify\local\period::process_recertifications(null, null);
+        period::process_recertifications(null, null);
         $this->assertCount(1, $DB->get_records('tool_mucertify_period', ['userid' => $user2->id]));
         $DB->set_field('tool_mucertify_certification', 'archived', 0, ['id' => $certification1->id]);
 
         // Too old to recertify.
         $DB->set_field('tool_mucertify_period', 'timeuntil', $now - 91 * DAYSECS, ['id' => $period2x1->id]);
-        \tool_mucertify\local\period::process_recertifications(null, null);
+        period::process_recertifications(null, null);
         $this->assertCount(1, $DB->get_records('tool_mucertify_period', ['userid' => $user2->id]));
         $DB->set_field('tool_mucertify_period', 'timeuntil', $now + DAYSECS - 77, ['id' => $period2x1->id]);
 
         // No end date.
         $DB->set_field('tool_mucertify_period', 'timeuntil', null, ['id' => $period2x1->id]);
-        \tool_mucertify\local\period::process_recertifications(null, null);
+        period::process_recertifications(null, null);
         $this->assertCount(1, $DB->get_records('tool_mucertify_period', ['userid' => $user2->id]));
         $DB->set_field('tool_mucertify_period', 'timeuntil', $now + DAYSECS - 77, ['id' => $period2x1->id]);
 
         // Revoked.
         $DB->set_field('tool_mucertify_period', 'timerevoked', $now, ['id' => $period2x1->id]);
-        \tool_mucertify\local\period::process_recertifications(null, null);
+        period::process_recertifications(null, null);
         $this->assertCount(1, $DB->get_records('tool_mucertify_period', ['userid' => $user2->id]));
         $DB->set_field('tool_mucertify_period', 'timerevoked', null, ['id' => $period2x1->id]);
 
         // Not certified.
         $DB->set_field('tool_mucertify_period', 'timecertified', null, ['id' => $period2x1->id]);
-        \tool_mucertify\local\period::process_recertifications(null, null);
+        period::process_recertifications(null, null);
         $this->assertCount(1, $DB->get_records('tool_mucertify_period', ['userid' => $user2->id]));
         $DB->set_field('tool_mucertify_period', 'timecertified', $now - YEARSECS + 10, ['id' => $period2x1->id]);
 
@@ -1485,7 +1487,7 @@ final class period_test extends \advanced_testcase {
             'id' => $certification1->id,
             'grace2' => null,
         ]);
-        \tool_mucertify\local\period::process_recertifications(null, null);
+        period::process_recertifications(null, null);
         $this->assertCount(2, $DB->get_records('tool_mucertify_period', ['userid' => $user2->id]));
         $period2x1 = $DB->get_record('tool_mucertify_period', ['id' => $period2x1->id], '*', MUST_EXIST);
         $this->assertSame('1', $period2x1->first);
@@ -1580,7 +1582,7 @@ final class period_test extends \advanced_testcase {
             ['user3', '2022-01-01', '2022-03-31', '2022-01-01', 'ext program X passed'], // Not assigned skipped.
             ['userz', '2020-01-01', '2020-03-31', '2020-01-01', 'ext program X passed'], // Unknown user error.
         ];
-        $result = \tool_mucertify\local\period::process_history_upload($formdata, $filedata);
+        $result = period::process_history_upload($formdata, $filedata);
         $this->assertSame(['assigned' => 0, 'periods' => 3, 'skipped' => 1, 'errors' => 1], $result);
         $this->assertCount(3, $DB->get_records('tool_mucertify_period', ['userid' => $user1->id, 'certificationid' => $certification1->id]));
         $this->assertCount(1, $DB->get_records('tool_mucertify_period', ['userid' => $user2->id, 'certificationid' => $certification1->id]));
@@ -1640,7 +1642,7 @@ final class period_test extends \advanced_testcase {
             ['user1', '2020-01-04', '2020-06-30', '2020-03-30', ''], // Use default evidence text.
             ['user2', '2021-01-01', '2021-03-31', '2021-01-02', 'ext program Y passed'],
         ];
-        $result = \tool_mucertify\local\period::process_history_upload($formdata, $filedata);
+        $result = period::process_history_upload($formdata, $filedata);
         $this->assertSame(['assigned' => 0, 'periods' => 0, 'skipped' => 3, 'errors' => 0], $result);
 
         // Errors for invalid data.
@@ -1652,7 +1654,7 @@ final class period_test extends \advanced_testcase {
             ['user2', '', '2019-03-31', '2019-01-01', 'ext program X passed'], // No start date error.
             ['user2', '2019-01-01', '', '2019-01-01', 'ext program X passed'], // No end date error.
         ];
-        $result = \tool_mucertify\local\period::process_history_upload($formdata, $filedata);
+        $result = period::process_history_upload($formdata, $filedata);
         $this->assertSame(['assigned' => 0, 'periods' => 0, 'skipped' => 0, 'errors' => 5], $result);
 
         // Duplicate emails.
@@ -1673,7 +1675,7 @@ final class period_test extends \advanced_testcase {
             ['user2@example.com', '2022-01-01', '2022-03-31'],
             ['user5@example.com', '2022-01-01', '2022-03-31'],
         ];
-        $result = \tool_mucertify\local\period::process_history_upload($formdata, $filedata);
+        $result = period::process_history_upload($formdata, $filedata);
         $this->assertSame(['assigned' => 0, 'periods' => 1, 'skipped' => 0, 'errors' => 1], $result);
         $this->assertCount(3, $DB->get_records('tool_mucertify_period', ['userid' => $user1->id, 'certificationid' => $certification1->id]));
         $this->assertCount(2, $DB->get_records('tool_mucertify_period', ['userid' => $user2->id, 'certificationid' => $certification1->id]));
@@ -1713,7 +1715,7 @@ final class period_test extends \advanced_testcase {
             ['iduser2', '2023-01-01', '2023-03-31'],
             ['iduserz', '2023-01-01', '2023-03-31'],
         ];
-        $result = \tool_mucertify\local\period::process_history_upload($formdata, $filedata);
+        $result = period::process_history_upload($formdata, $filedata);
         $this->assertSame(['assigned' => 0, 'periods' => 1, 'skipped' => 0, 'errors' => 1], $result);
         $this->assertCount(3, $DB->get_records('tool_mucertify_period', ['userid' => $user1->id, 'certificationid' => $certification1->id]));
         $this->assertCount(3, $DB->get_records('tool_mucertify_period', ['userid' => $user2->id, 'certificationid' => $certification1->id]));
@@ -1753,7 +1755,7 @@ final class period_test extends \advanced_testcase {
             ['user2', '2019-01-01', '2019-03-31'],
             ['user3', '2019-01-01', '2019-03-31'],
         ];
-        $result = \tool_mucertify\local\period::process_history_upload($formdata, $filedata);
+        $result = period::process_history_upload($formdata, $filedata);
         $this->assertSame(['assigned' => 1, 'periods' => 2, 'skipped' => 0, 'errors' => 0], $result);
         $this->assertCount(4, $DB->get_records('tool_mucertify_period', ['userid' => $user2->id, 'certificationid' => $certification1->id]));
         $this->assertCount(1, $DB->get_records('tool_mucertify_period', ['userid' => $user3->id, 'certificationid' => $certification1->id]));
@@ -1792,7 +1794,7 @@ final class period_test extends \advanced_testcase {
             ['user2', '2019-01-01', '2019-03-31'],
             ['user4', '2019-01-01', '2019-03-31'],
         ];
-        $result = \tool_mucertify\local\period::process_history_upload($formdata, $filedata);
+        $result = period::process_history_upload($formdata, $filedata);
         $this->assertSame(['assigned' => 1, 'periods' => 1, 'skipped' => 1, 'errors' => 0], $result);
         $this->assertCount(4, $DB->get_records('tool_mucertify_period', ['userid' => $user2->id, 'certificationid' => $certification1->id]));
         $this->assertCount(1, $DB->get_records('tool_mucertify_period', ['userid' => $user4->id, 'certificationid' => $certification1->id]));
@@ -1812,5 +1814,179 @@ final class period_test extends \advanced_testcase {
         $this->assertSame('{"details":"history upload"}', $period4x1->evidencejson);
         $this->assertSame('1', $period4x1->first);
         $this->assertSame('0', $period4x1->recertifiable);
+    }
+
+    public function test_fix_flags(): void {
+        global $DB;
+
+        /** @var \tool_mucertify_generator $generator */
+        $generator = $this->getDataGenerator()->get_plugin_generator('tool_mucertify');
+        /** @var \tool_muprog_generator $programgenerator */
+        $programgenerator = $this->getDataGenerator()->get_plugin_generator('tool_muprog');
+
+        $program1 = $programgenerator->create_program();
+        $user1 = $this->getDataGenerator()->create_user();
+        $user2 = $this->getDataGenerator()->create_user();
+
+        $data = [
+            'sources' => ['manual' => []],
+            'programid1' => $program1->id,
+        ];
+        $certification = $generator->create_certification($data);
+        $source = $DB->get_record('tool_mucertify_source',
+            ['type' => 'manual', 'certificationid' => $certification->id], '*', MUST_EXIST);
+
+        $now = time();
+
+        manual::assign_users($certification->id, $source->id, [$user2->id]);
+        $periodx = $DB->get_record('tool_mucertify_period', ['userid' => $user2->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
+        $dateoverrides = [
+            'id' => $periodx->id,
+            'timewindowstart' => (string)($now + 1500),
+            'timewindowdue' => (string)($now + 2000),
+            'timewindowend' => (string)($now + 3000),
+            'timefrom' => (string)($now + 1000),
+            'timeuntil' => (string)($now + 5000),
+            'timecertified' => (string)$now,
+            'timerevoked' => null,
+        ];
+        $periodx = period::override_dates((object)$dateoverrides);
+
+        manual::assign_users($certification->id, $source->id, [$user1->id]);
+        $assignment1 = $DB->get_record('tool_mucertify_assignment', ['userid' => $user1->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
+
+        $period1 = $DB->get_record('tool_mucertify_period', ['userid' => $user1->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
+        $dateoverrides = [
+            'id' => $period1->id,
+            'timewindowstart' => (string)($now + 1500),
+            'timewindowdue' => (string)($now + 2000),
+            'timewindowend' => (string)($now + 3000),
+            'timefrom' => (string)($now + 1000),
+            'timeuntil' => (string)($now + 5000),
+            'timecertified' => null,
+            'timerevoked' => null,
+        ];
+        $period1 = period::override_dates((object)$dateoverrides);
+        $data = [
+            'assignmentid' => $assignment1->id,
+            'programid' => $program1->id,
+            'timewindowstart' => (string)($now + 4000),
+            'timewindowdue' => null,
+            'timewindowend' => null,
+            'timefrom' => (string)($now + 6000),
+            'timeuntil' => null,
+            'timecertified' => null,
+            'timerevoked' => null,
+        ];
+        $period2 = period::add((object)$data);
+        $data = [
+            'assignmentid' => $assignment1->id,
+            'programid' => $program1->id,
+            'timewindowstart' => (string)($now + 500),
+            'timewindowdue' => null,
+            'timewindowend' => null,
+            'timefrom' => (string)($now + 8000),
+            'timeuntil' => (string)($now + 9000),
+            'timecertified' => null,
+            'timerevoked' => null,
+        ];
+        $period3 = period::add((object)$data);
+
+        period::fix_flags($assignment1->certificationid, $assignment1->userid);
+        $assignment1 = $DB->get_record('tool_mucertify_assignment', ['userid' => $user1->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
+        $this->assertSame(null, $assignment1->timecertifiedtemp);
+        $this->assertSame(null, $assignment1->timecertifiedfrom);
+        $this->assertSame(null, $assignment1->timecertifieduntil);
+
+        $DB->set_field('tool_mucertify_period', 'timecertified', $now - 300, ['id' => $period1->id]);
+        period::fix_flags($assignment1->certificationid, $assignment1->userid);
+        $assignment1 = $DB->get_record('tool_mucertify_assignment', ['userid' => $user1->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
+        $this->assertSame(null, $assignment1->timecertifiedtemp);
+        $this->assertSame($period1->timefrom, $assignment1->timecertifiedfrom);
+        $this->assertSame($period1->timeuntil, $assignment1->timecertifieduntil);
+
+        $DB->set_field('tool_mucertify_period', 'timecertified', $now - 200, ['id' => $period2->id]);
+        period::fix_flags($assignment1->certificationid, $assignment1->userid);
+        $assignment1 = $DB->get_record('tool_mucertify_assignment', ['userid' => $user1->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
+        $this->assertSame(null, $assignment1->timecertifiedtemp);
+        $this->assertSame($period1->timefrom, $assignment1->timecertifiedfrom);
+        $this->assertSame((string)date_util::TIMESTAMP_FOREVER, $assignment1->timecertifieduntil);
+
+        $DB->set_field('tool_mucertify_period', 'timecertified', $now - 100, ['id' => $period3->id]);
+        period::fix_flags($assignment1->certificationid, $assignment1->userid);
+        $assignment1 = $DB->get_record('tool_mucertify_assignment', ['userid' => $user1->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
+        $this->assertSame(null, $assignment1->timecertifiedtemp);
+        $this->assertSame($period1->timefrom, $assignment1->timecertifiedfrom);
+        $this->assertSame((string)date_util::TIMESTAMP_FOREVER, $assignment1->timecertifieduntil);
+
+        $DB->set_field('tool_mucertify_period', 'timerevoked', $now, ['id' => $period2->id]);
+        period::fix_flags($assignment1->certificationid, $assignment1->userid);
+        $assignment1 = $DB->get_record('tool_mucertify_assignment', ['userid' => $user1->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
+        $this->assertSame(null, $assignment1->timecertifiedtemp);
+        $this->assertSame($period1->timefrom, $assignment1->timecertifiedfrom);
+        $this->assertSame($period3->timeuntil, $assignment1->timecertifieduntil);
+
+        $DB->set_field('tool_mucertify_assignment', 'timecertifiedtemp', $now - 100, ['id' => $assignment1->id]);
+        period::fix_flags($assignment1->certificationid, $assignment1->userid);
+        $assignment1 = $DB->get_record('tool_mucertify_assignment', ['userid' => $user1->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
+        $this->assertSame(null, $assignment1->timecertifiedtemp);
+        $this->assertSame($period1->timefrom, $assignment1->timecertifiedfrom);
+        $this->assertSame($period3->timeuntil, $assignment1->timecertifieduntil);
+
+        $DB->set_field('tool_mucertify_assignment', 'timecertifiedtemp', $now + YEARSECS, ['id' => $assignment1->id]);
+        period::fix_flags($assignment1->certificationid, $assignment1->userid);
+        $assignment1 = $DB->get_record('tool_mucertify_assignment', ['userid' => $user1->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
+        $this->assertSame((string)($now + YEARSECS), $assignment1->timecertifiedtemp);
+        $this->assertSame($period1->timefrom, $assignment1->timecertifiedfrom);
+        $this->assertSame($period3->timeuntil, $assignment1->timecertifieduntil);
+
+        $DB->set_field('tool_mucertify_assignment', 'timecertifiedtemp', null, ['id' => $assignment1->id]);
+        period::fix_flags($assignment1->certificationid, $assignment1->userid);
+        $assignment1 = $DB->get_record('tool_mucertify_assignment', ['userid' => $user1->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
+        $this->assertSame(null, $assignment1->timecertifiedtemp);
+        $this->assertSame($period1->timefrom, $assignment1->timecertifiedfrom);
+        $this->assertSame($period3->timeuntil, $assignment1->timecertifieduntil);
+
+        $DB->set_field('tool_mucertify_period', 'timecertified', null, ['id' => $period3->id]);
+        period::fix_flags($assignment1->certificationid, $assignment1->userid);
+        $assignment1 = $DB->get_record('tool_mucertify_assignment', ['userid' => $user1->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
+        $this->assertSame(null, $assignment1->timecertifiedtemp);
+        $this->assertSame($period1->timefrom, $assignment1->timecertifiedfrom);
+        $this->assertSame($period1->timeuntil, $assignment1->timecertifieduntil);
+
+        $DB->delete_records('tool_mucertify_period', ['userid' => $user1->id, 'certificationid' => $certification->id]);
+        period::fix_flags($assignment1->certificationid, $assignment1->userid);
+        $assignment1 = $DB->get_record('tool_mucertify_assignment', ['userid' => $user1->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
+        $this->assertSame(null, $assignment1->timecertifiedtemp);
+        $this->assertSame(null, $assignment1->timecertifiedfrom);
+        $this->assertSame(null, $assignment1->timecertifieduntil);
+
+        $DB->set_field('tool_mucertify_assignment', 'timecreated', $now - 10, ['id' => $assignment1->id]);
+        $DB->set_field('tool_mucertify_assignment', 'timecertifiedtemp', $now + WEEKSECS, ['id' => $assignment1->id]);
+        period::fix_flags($assignment1->certificationid, $assignment1->userid);
+        $assignment1 = $DB->get_record('tool_mucertify_assignment', ['userid' => $user1->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
+        $this->assertSame((string)($now + WEEKSECS), $assignment1->timecertifiedtemp);
+        $this->assertSame((string)($now - 10), $assignment1->timecertifiedfrom);
+        $this->assertSame($assignment1->timecertifiedtemp, $assignment1->timecertifieduntil);
+
+        $DB->set_field('tool_mucertify_assignment', 'timecreated', $now - 10, ['id' => $assignment1->id]);
+        $DB->set_field('tool_mucertify_assignment', 'timecertifiedtemp', $now + 10, ['id' => $assignment1->id]);
+        period::fix_flags($assignment1->certificationid, $assignment1->userid);
+        $assignment1 = $DB->get_record('tool_mucertify_assignment', ['userid' => $user1->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
+        $this->assertSame((string)($now + 10), $assignment1->timecertifiedtemp);
+        $this->assertSame((string)($assignment1->timecertifiedtemp - DAYSECS), $assignment1->timecertifiedfrom);
+        $this->assertSame($assignment1->timecertifiedtemp, $assignment1->timecertifieduntil);
+
+        $DB->set_field('tool_mucertify_assignment', 'timecertifiedtemp', null, ['id' => $assignment1->id]);
+        period::fix_flags($assignment1->certificationid, $assignment1->userid);
+        $assignment1 = $DB->get_record('tool_mucertify_assignment', ['userid' => $user1->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
+        $this->assertSame(null, $assignment1->timecertifiedtemp);
+        $this->assertSame(null, $assignment1->timecertifiedfrom);
+        $this->assertSame(null, $assignment1->timecertifieduntil);
+
+        $assignment2 = $DB->get_record('tool_mucertify_assignment', ['userid' => $user2->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
+        $this->assertSame(null, $assignment2->timecertifiedtemp);
+        $this->assertSame((string)($now + 1000), $assignment2->timecertifiedfrom);
+        $this->assertSame((string)($now + 5000), $assignment2->timecertifieduntil);
     }
 }

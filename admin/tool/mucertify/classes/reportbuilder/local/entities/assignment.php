@@ -96,7 +96,7 @@ final class assignment extends base {
         ))
             ->add_joins($this->get_joins())
             ->set_type(column::TYPE_TIMESTAMP)
-            ->add_field("{$assignmentalias}.timecertifieduntil")
+            ->add_field("COALESCE({$assignmentalias}.timecertifiedtemp, {$assignmentalias}.timecertifieduntil)", 'timecertifieduntil')
             ->set_is_sortable(true)
             ->add_callback([format::class, 'userdate'], $dateformat)
             ->add_callback(static function($value, \stdClass $row): string {
@@ -115,20 +115,22 @@ final class assignment extends base {
             ->set_type(column::TYPE_INTEGER)
             ->add_field(
                 "CASE
-                     WHEN {$assignmentalias}.archived = 1 THEN 4
-                     WHEN {$assignmentalias}.timecertifiedfrom IS NULL THEN 3
-                     WHEN {$assignmentalias}.timecertifieduntil < $now THEN 2
-                     WHEN {$assignmentalias}.timecertifiedfrom < $now AND {$assignmentalias}.timecertifieduntil > $now THEN 1
+                     WHEN {$assignmentalias}.archived = 1 THEN 5
+                     WHEN {$assignmentalias}.timecertifiedfrom IS NULL OR {$assignmentalias}.timecertifiedfrom > $now THEN 4
+                     WHEN COALESCE({$assignmentalias}.timecertifiedtemp, {$assignmentalias}.timecertifieduntil) < $now THEN 3
+                     WHEN {$assignmentalias}.timecertifiedtemp > $now THEN 2
+                     WHEN {$assignmentalias}.timecertifieduntil > $now THEN 1
                      ELSE 0
                  END", 'status')
             ->add_field('(' . "SELECT p.archived FROM {tool_mucertify_certification} p WHERE p.id = {$assignmentalias}.certificationid" . ')', 'certificationarchived')
             ->set_is_sortable(true)
             ->add_callback(static function($value, \stdClass $row): string {
                 switch ($row->status) {
-                    case 4: return '<span class="badge badge-dark">' . get_string('certificationstatus_archived', 'tool_mucertify') . '</span>';
-                    case 3: return '<span class="badge badge-light">' . get_string('certificationstatus_notcertified', 'tool_mucertify') . '</span>';
-                    case 2: return '<span class="badge badge-light">' . get_string('certificationstatus_expired', 'tool_mucertify') . '</span>';
-                    case 1: return '<span class="badge badge-success">' . get_string('certificationstatus_certified', 'tool_mucertify') . '</span>';
+                    case 5: return '<span class="badge badge-dark">' . get_string('certificationstatus_archived', 'tool_mucertify') . '</span>';
+                    case 4: return '<span class="badge badge-light">' . get_string('certificationstatus_notcertified', 'tool_mucertify') . '</span>';
+                    case 3: return '<span class="badge badge-light">' . get_string('certificationstatus_expired', 'tool_mucertify') . '</span>';
+                    case 2: return '<span class="badge badge-success">' . get_string('certificationstatus_temporary', 'tool_mucertify') . '</span>';
+                    case 1: return '<span class="badge badge-success">' . get_string('certificationstatus_valid', 'tool_mucertify') . '</span>';
                     default: return '';
                 }
             });
@@ -162,19 +164,21 @@ final class assignment extends base {
             new lang_string('certificationstatus', 'tool_mucertify'),
             $this->get_entity_name(),
                 "CASE
-                     WHEN {$assignmentalias}.archived = 1 THEN 4
-                     WHEN {$assignmentalias}.timecertifiedfrom IS NULL THEN 3
-                     WHEN {$assignmentalias}.timecertifieduntil < $now THEN 2
-                     WHEN {$assignmentalias}.timecertifiedfrom < $now AND {$assignmentalias}.timecertifieduntil > $now THEN 1
+                     WHEN {$assignmentalias}.archived = 1 THEN 5
+                     WHEN {$assignmentalias}.timecertifiedfrom IS NULL OR {$assignmentalias}.timecertifiedfrom > $now THEN 4
+                     WHEN COALESCE({$assignmentalias}.timecertifiedtemp, {$assignmentalias}.timecertifieduntil) < $now THEN 3
+                     WHEN {$assignmentalias}.timecertifiedtemp > $now THEN 2
+                     WHEN {$assignmentalias}.timecertifieduntil > $now THEN 1
                      ELSE 0
                  END"))
             ->add_joins($this->get_joins())
             ->set_options(
                 [
-                    1 => get_string('certificationstatus_certified', 'tool_mucertify'),
-                    2 => get_string('certificationstatus_expired', 'tool_mucertify'),
-                    3 => get_string('certificationstatus_notcertified', 'tool_mucertify'),
-                    4 => get_string('certificationstatus_archived', 'tool_mucertify'),
+                    5 => get_string('certificationstatus_archived', 'tool_mucertify'),
+                    4 => get_string('certificationstatus_notcertified', 'tool_mucertify'),
+                    3 => get_string('certificationstatus_expired', 'tool_mucertify'),
+                    2 => get_string('certificationstatus_temporary', 'tool_mucertify'),
+                    1 => get_string('certificationstatus_valid', 'tool_mucertify'),
                 ]
             );
 
@@ -209,7 +213,7 @@ final class assignment extends base {
             'timecertifieduntil',
             new lang_string('untildate', 'tool_mucertify'),
             $this->get_entity_name(),
-            "{$assignmentalias}.timecertifieduntil"
+            "COALESCE({$assignmentalias}.timecertifiedtemp, {$assignmentalias}.timecertifieduntil)"
         ))
             ->add_joins($this->get_joins())
             ->set_limited_operators([
