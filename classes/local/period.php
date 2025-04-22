@@ -33,29 +33,77 @@ use stdClass;
 final class period {
     /**
      * For first and canrecerfity flags for user certification periods.
+     *
+     * Also updates assignment caching flags and temporary certification end.
+     *
      * @param int $certificationid
      * @param int $userid
-     * @return void
+     * @return stdClass|null assignment record
      */
-    protected static function fix_flags(int $certificationid, int $userid): void {
+    public static function fix_flags(int $certificationid, int $userid): ?stdClass {
         global $DB;
 
-        $records = $DB->get_records('tool_mucertify_period',
+        $periods = $DB->get_records('tool_mucertify_period',
             ['certificationid' => $certificationid, 'userid' => $userid], 'timewindowstart ASC');
+
+        $assignment = $DB->get_record('tool_mucertify_assignment', ['certificationid' => $certificationid, 'userid' => $userid]);
+
+        if (!$periods) {
+            if ($assignment) {
+                if ($assignment->timecertifiedtemp) {
+                    $until = (string)$assignment->timecertifiedtemp;
+                    if ($assignment->timecertifiedtemp >= $assignment->timecreated + DAYSECS) {
+                        $from = (string)$assignment->timecreated;
+                    } else {
+                        $from = (string)($assignment->timecertifiedtemp - DAYSECS);
+                    }
+                } else {
+                    $until = null;
+                    $from = null;
+                }
+                if ($assignment->timecertifiedfrom !== $from || $assignment->timecertifieduntil !== $until) {
+                    $DB->update_record('tool_mucertify_assignment', [
+                        'id' => $assignment->id,
+                        'timecertifiedfrom' => $from,
+                        'timecertifieduntil' => $until,
+                    ]);
+                    $assignment = $DB->get_record('tool_mucertify_assignment',
+                        ['certificationid' => $certificationid, 'userid' => $userid], '*', MUST_EXIST);
+                }
+                return $assignment;
+            } else {
+                return null;
+            }
+        }
+
+        $from = null;
+        $until = null;
         $first = false;
         $hasrecertify = false;
-        foreach ($records as $record) {
-            if ($record->recertifiable) {
+        foreach ($periods as $period) {
+            if ($period->timecertified && !$period->timerevoked) {
+                if (!$from || $period->timefrom < $from) {
+                    $from = $period->timefrom;
+                }
+                if ($period->timeuntil) {
+                    if ($period->timeuntil > $until) {
+                        $until = $period->timeuntil;
+                    }
+                } else {
+                    $until = (string)\tool_mulib\local\date_util::TIMESTAMP_FOREVER;
+                }
+            }
+            if ($period->recertifiable) {
                 $hasrecertify = true;
             }
-            if ($first || $record->timerevoked) {
-                if ($record->first) {
-                    $DB->set_field('tool_mucertify_period', 'first', 0, ['id' => $record->id]);
+            if ($first || $period->timerevoked) {
+                if ($period->first) {
+                    $DB->set_field('tool_mucertify_period', 'first', 0, ['id' => $period->id]);
                 }
             } else {
                 $first = true;
-                if (!$record->first) {
-                    $DB->set_field('tool_mucertify_period', 'first', 1, ['id' => $record->id]);
+                if (!$period->first) {
+                    $DB->set_field('tool_mucertify_period', 'first', 1, ['id' => $period->id]);
                 }
             }
         }
@@ -63,19 +111,40 @@ final class period {
         if ($hasrecertify) {
             // Only move to the flag to the end, do not add it if not present in at least one period.
             $last = false;
-            $records = array_reverse($records);
-            foreach ($records as $record) {
-                if ($last || $record->timerevoked) {
-                    if ($record->recertifiable) {
-                        $DB->set_field('tool_mucertify_period', 'recertifiable', 0, ['id' => $record->id]);
+            $periods = array_reverse($periods);
+            foreach ($periods as $period) {
+                if ($last || $period->timerevoked) {
+                    if ($period->recertifiable) {
+                        $DB->set_field('tool_mucertify_period', 'recertifiable', 0, ['id' => $period->id]);
                     }
                 } else {
                     $last = true;
-                    if (!$record->recertifiable) {
-                        $DB->set_field('tool_mucertify_period', 'recertifiable', 1, ['id' => $record->id]);
+                    if (!$period->recertifiable) {
+                        $DB->set_field('tool_mucertify_period', 'recertifiable', 1, ['id' => $period->id]);
                     }
                 }
             }
+        }
+
+        if ($assignment) {
+            if ($assignment->timecertifiedfrom !== $from || $assignment->timecertifieduntil !== $until) {
+                $DB->update_record('tool_mucertify_assignment', [
+                    'id' => $assignment->id,
+                    'timecertifiedfrom' => $from,
+                    'timecertifieduntil' => $until,
+                ]);
+                $assignment = $DB->get_record('tool_mucertify_assignment',
+                    ['certificationid' => $certificationid, 'userid' => $userid], '*', MUST_EXIST);
+            }
+            if ($assignment->timecertifiedtemp && $until && $assignment->timecertifiedtemp <= $until) {
+                // Temporary certification must be after certification end,
+                // this is needed for performance reasons.
+                $DB->set_field('tool_mucertify_assignment', 'timecertifiedtemp', null, ['id' => $assignment->id]);
+                $assignment->timecertifiedtemp = null;
+            }
+            return $assignment;
+        } else {
+            return null;
         }
     }
 
@@ -317,13 +386,7 @@ final class period {
 
         $id = $DB->insert_record('tool_mucertify_period', $record);
 
-        self::fix_flags($record->certificationid, $record->userid);
-
-        if ($assignment) {
-            $assignment = assignment::fix_caches($assignment->id);
-        } else {
-            $assignment = null;
-        }
+        $assignment = self::fix_flags($record->certificationid, $record->userid);
 
         $period = $DB->get_record('tool_mucertify_period', ['id' => $id], '*', MUST_EXIST);
 
@@ -343,7 +406,7 @@ final class period {
      *
      * @param stdClass $assignment
      * @param array $dateoverrides
-     * @return null|stdClass assignment record
+     * @return null|stdClass period record
      */
     public static function add_first(stdClass $assignment, array $dateoverrides): ?stdClass {
         global $DB;
@@ -461,15 +524,7 @@ final class period {
         $trans = $DB->start_delegated_transaction();
 
         $DB->update_record('tool_mucertify_period', $record);
-        self::fix_flags($record->certificationid, $record->userid);
-
-        $assignment = $DB->get_record('tool_mucertify_assignment',
-            ['certificationid' => $record->certificationid, 'userid' => $record->userid]);
-        if ($assignment) {
-            $assignment = assignment::fix_caches($assignment->id);
-        } else {
-            $assignment = null;
-        }
+        $assignment = self::fix_flags($record->certificationid, $record->userid);
 
         if (!$oldrecord->timerevoked && $record->timerevoked && $record->certificateissueid) {
             certificate::revoke($record->id);
@@ -489,14 +544,14 @@ final class period {
     /**
      * Update recertification flag.
      *
+     * NOTE: this does not trigger assignment updated event.
+     *
      * @param stdClass $assignment
      * @param bool $stoprecertify
-     * @return void
+     * @return stdClass assignment record
      */
-    public static function update_recertifiable(stdClass $assignment, bool $stoprecertify): void {
+    public static function update_recertifiable(stdClass $assignment, bool $stoprecertify): stdClass {
         global $DB;
-
-        $certification = $DB->get_record('tool_mucertify_certification', ['id' => $assignment->certificationid], '*', MUST_EXIST);
 
         if ($stoprecertify) {
             $DB->set_field('tool_mucertify_period', 'recertifiable', 0,
@@ -505,9 +560,7 @@ final class period {
             $DB->set_field('tool_mucertify_period', 'recertifiable', 1,
                 ['certificationid' => $assignment->certificationid, 'userid' => $assignment->userid, 'timerevoked' => null]);
         }
-        self::fix_flags($assignment->certificationid, $assignment->userid);
-
-        \tool_mucertify\event\assignment_updated::create_from_assignment($certification, $assignment)->trigger();
+        return self::fix_flags($assignment->certificationid, $assignment->userid);
     }
 
     /**
@@ -534,15 +587,7 @@ final class period {
         \tool_mucertify\local\notification_manager::delete_period_notifications($record);
 
         $DB->delete_records('tool_mucertify_period', ['id' => $record->id]);
-        self::fix_flags($record->certificationid, $record->userid);
-
-        $assignment = $DB->get_record('tool_mucertify_assignment',
-            ['certificationid' => $record->certificationid, 'userid' => $record->userid]);
-        if ($assignment) {
-            $assignment = assignment::fix_caches($assignment->id);
-        } else {
-            $assignment = null;
-        }
+        $assignment = self::fix_flags($record->certificationid, $record->userid);
 
         $trans->allow_commit();
 
@@ -647,7 +692,8 @@ final class period {
 
         $DB->update_record('tool_mucertify_period', $period);
 
-        $assignment = assignment::fix_caches($assignment->id);
+        $assignment = self::fix_flags($assignment->certificationid, $assignment->userid);
+        $period = $DB->get_record('tool_mucertify_period', ['id' => $period->id], '*', MUST_EXIST);
 
         \tool_mucertify\event\period_certified::create_from_period($certification, $assignment, $period)->trigger();
 
@@ -936,8 +982,10 @@ final class period {
             if (isset($periodsettings->grace2) && $periodsettings->grace2 > 0) {
                 $graceuntil = $period->timeuntil + $periodsettings->grace2;
                 if ($graceuntil > time() && $graceuntil > (int)$assignment->timecertifiedtemp) {
-                    $DB->set_field('tool_mucertify_assignment', 'timecertifiedtemp', $graceuntil, ['id' => $assignment->id]);
-                    $assignment = assignment::fix_caches($assignment->id);
+                    $assignment = $DB->get_record('tool_mucertify_assignment', ['certificationid' => $certification->id, 'userid' => $period->userid]);
+                    if ($assignment && $graceuntil > $assignment->timecertifieduntil) {
+                        $DB->set_field('tool_mucertify_assignment', 'timecertifiedtemp', $graceuntil, ['id' => $assignment->id]);
+                    }
                 }
             }
             $trans->allow_commit();
@@ -1019,7 +1067,7 @@ final class period {
                 continue;
             }
 
-            $prevertrecertification = false;
+            $preventrecertification = false;
             $assignment = $DB->get_record('tool_mucertify_assignment', ['certificationid' => $certification->id, 'userid' => $user->id]);
             if ($assignment) {
                 if ($assign && $skipassigned) {
@@ -1043,7 +1091,7 @@ final class period {
                 }
                 $result['assigned']++;
                 // New periods are created as non-recertifiable.
-                $prevertrecertification = true;
+                $preventrecertification = true;
             }
             $evidence = '';
             if ($data->evidencecolumn !== '' && isset($row[$data->evidencecolumn])) {
@@ -1064,7 +1112,7 @@ final class period {
                 'evidencedetails' => $evidence,
             ]);
             $result['periods']++;
-            if ($prevertrecertification) {
+            if ($preventrecertification) {
                 self::update_recertifiable($assignment, true);
             }
         }

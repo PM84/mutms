@@ -223,7 +223,7 @@ class provider implements
             }
             /** @var \tool_mucertify\local\source\base $sourceclass */
             $sourceclass = $allclasses[$source->type];
-            $sourceclass::unassign_user($certification, $source, $assignment);
+            $sourceclass::assignment_delete($certification, $source, $assignment);
         }
         $rs->close();
     }
@@ -264,7 +264,7 @@ class provider implements
             }
             /** @var \tool_mucertify\local\source\base $sourceclass */
             $sourceclass = $allclasses[$source->type];
-            $sourceclass::unassign_user($certification, $source, $assignment);
+            $sourceclass::assignment_delete($certification, $source, $assignment);
         }
         $rs->close();
     }
@@ -302,7 +302,7 @@ class provider implements
             }
             /** @var \tool_mucertify\local\source\base $sourceclass */
             $sourceclass = $allclasses[$source->type];
-            $sourceclass::unassign_user($certification, $source, $assignment);
+            $sourceclass::assignment_delete($certification, $source, $assignment);
         }
         $rs->close();
     }

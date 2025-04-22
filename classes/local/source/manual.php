@@ -53,30 +53,6 @@ final class manual extends base {
     }
 
     /**
-     * Is it possible to manually edit user assignment?
-     *
-     * @param stdClass $certification
-     * @param stdClass $source
-     * @param stdClass $assignment
-     * @return bool
-     */
-    public static function assignment_edit_supported(stdClass $certification, stdClass $source, stdClass $assignment): bool {
-        return true;
-    }
-
-    /**
-     * Is it possible to manually delete user assignment?
-     *
-     * @param stdClass $certification
-     * @param stdClass $source
-     * @param stdClass $assignment
-     * @return bool
-     */
-    public static function assignment_delete_supported(stdClass $certification, stdClass $source, stdClass $assignment): bool {
-        return true;
-    }
-
-    /**
      * Is it possible to manually assign users to this certification?
      *
      * @param stdClass $certification
@@ -85,6 +61,9 @@ final class manual extends base {
      */
     public static function is_assignment_possible(stdClass $certification, stdClass $source): bool {
         global $DB;
+        if ($certification->id != $source->certificationid) {
+            throw new \coding_exception('invalid parameters');
+        }
         if ($certification->archived) {
             return false;
         }
@@ -119,6 +98,7 @@ final class manual extends base {
 
             $url = new \moodle_url('/admin/tool/mucertify/management/source_manual_upload.php', ['sourceid' => $source->id]);
             $link = new \tool_mulib\output\dialog_form\link($url, get_string('source_manual_uploadusers', 'tool_mucertify'));
+            $link->set_dialog_size('xl');
             $actions->get_dropdown()->add_dialog_form($link);
         }
     }
@@ -170,7 +150,7 @@ final class manual extends base {
                 // One assignment per certification only.
                 continue;
             }
-            self::assign_user($certification, $source, $user->id, [], $dateoverrides);
+            self::assignment_create($certification, $source, $user->id, [], $dateoverrides);
         }
 
         if (count($userids) === 1) {
@@ -256,7 +236,7 @@ final class manual extends base {
                 }
             }
 
-            if (!self::assign_user($certification, $source, $user->id, [], $dateoverrides)) {
+            if (!self::assignment_create($certification, $source, $user->id, [], $dateoverrides)) {
                 $result['errors']++;
                 continue;
             }

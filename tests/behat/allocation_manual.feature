@@ -48,6 +48,7 @@ Feature: Manual certification assignment tests
       | tool/mucertify:edit            | Allow      | pmanager | System       |           |
       | tool/mucertify:delete          | Allow      | pmanager | System       |           |
       | tool/mucertify:assign          | Allow      | pmanager | System       |           |
+      | tool/mucertify:unassign        | Allow      | pmanager | System       |           |
       | moodle/cohort:view             | Allow      | pmanager | System       |           |
     And the following "role assigns" exist:
       | user      | role          | contextlevel | reference |
@@ -96,6 +97,19 @@ Feature: Manual certification assignment tests
     And I should not see "Student 3"
     And I should not see "Student 4"
 
+    And I click on "Actions" "link" in the "Student 2" "table_row"
+    When I click on "Archive assignment" "link" in the "Student 2" "table_row"
+    And I press dialog form button "Archive assignment"
+    Then "Student 2" row "Archived" column of "reportbuilder-table" table should contain "Yes"
+
+    And I click on "Actions" "link" in the "Student 2" "table_row"
+    When I click on "Restore assignment" "link" in the "Student 2" "table_row"
+    And I press dialog form button "Restore assignment"
+    Then "Student 2" row "Archived" column of "reportbuilder-table" table should contain "No"
+
+    And I click on "Actions" "link" in the "Student 2" "table_row"
+    And I click on "Archive assignment" "link" in the "Student 2" "table_row"
+    And I press dialog form button "Archive assignment"
     And I click on "Actions" "link" in the "Student 2" "table_row"
     When I click on "Delete assignment" "link" in the "Student 2" "table_row"
     And I press dialog form button "Cancel"

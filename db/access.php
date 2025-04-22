@@ -38,8 +38,10 @@ $capabilities = [
         ],
     ],
 
-    /* Access the certification management UI - needed for certification management capabilities
-       this allows sidestepping of regular certification visibility rules */
+    /*
+     * Access the certification management UI - needed for certification management capabilities
+     * this allows sidestepping of regular certification visibility rules.
+     */
     'tool/mucertify:view' => [
         'captype' => 'read',
         'contextlevel' => CONTEXT_COURSECAT,
@@ -71,8 +73,10 @@ $capabilities = [
         ],
     ],
 
-    /* Assign (and unassign) certifications to users manually, used only when manual source enabled in certification,
-       applies to special cases such as unassigning suspended cohort auto-allocations after not a membership removal. */
+    /*
+     * Assign certifications to users manually and restore archived assignments if source allows it.
+     * Also used for approval of assignment requests.
+     */
     'tool/mucertify:assign' => [
         'riskbitmask' => RISK_DATALOSS,
         'captype' => 'write',
@@ -83,14 +87,34 @@ $capabilities = [
         ],
     ],
 
-    /* All other advanced functionality not intended for regular managers */
+    /*
+     * Manually delete user assignments and archive user assignments if source allows it
+     */
+    'tool/mucertify:unassign' => [
+        'riskbitmask' => RISK_DATALOSS,
+        'captype' => 'write',
+        'contextlevel' => CONTEXT_COURSECAT,
+        'archetypes' => [
+            'editingteacher' => CAP_ALLOW,
+            'manager' => CAP_ALLOW,
+        ],
+    ],
+
+    /*
+     * All other advanced functionality not intended for regular managers,
+     * such as temporary certification, stopping of recertification, uploading of history,
+     * and managing of certification periods.
+     */
     'tool/mucertify:admin' => [
         'riskbitmask' => RISK_CONFIG | RISK_DATALOSS,
         'captype' => 'write',
         'contextlevel' => CONTEXT_COURSECAT,
         'archetypes' => [
+            'manager' => CAP_ALLOW,
         ],
     ],
+
+    /* Configure certification custom fields. */
     'tool/mucertify:configurecustomfields' => [
         'riskbitmask' => RISK_CONFIG | RISK_DATALOSS,
         'captype' => 'write',

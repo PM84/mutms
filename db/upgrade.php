@@ -38,7 +38,7 @@ function xmldb_tool_mucertify_upgrade($oldversion) {
 
     $dbman = $DB->get_manager();
 
-    if ($oldversion < 2025041504) {
+    if ($oldversion < 2025042100) {
 
         $table = new xmldb_table('tool_mucertify_crt_snapshot');
         if ($dbman->table_exists($table)) {
@@ -50,7 +50,7 @@ function xmldb_tool_mucertify_upgrade($oldversion) {
             $dbman->drop_table($table);
         }
 
-        upgrade_plugin_savepoint(true, 2025041504, 'tool', 'mucertify');
+        upgrade_plugin_savepoint(true, 2025042100, 'tool', 'mucertify');
     }
 
     return true;

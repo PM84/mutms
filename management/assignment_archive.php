@@ -17,12 +17,10 @@
 // phpcs:disable moodle.Files.BoilerplateComment.CommentEndedTooSoon
 
 /**
- * certification management interface.
+ * Archive certification assignment.
  *
  * @package    tool_mucertify
- * @copyright  2023 Open LMS (https://www.openlms.net/)
  * @copyright  2025 Petr Skoda
- * @author     Petr Skoda
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -40,7 +38,6 @@ if (!empty($_SERVER['HTTP_X_MULIB_DIALOG_FORM_REQUEST'])) {
     define('AJAX_SCRIPT', true);
 }
 require('../../../../config.php');
-require_once($CFG->dirroot . '/lib/formslib.php');
 
 $id = required_param('id', PARAM_INT);
 
@@ -51,22 +48,22 @@ $certification = $DB->get_record('tool_mucertify_certification', ['id' => $assig
 $source = $DB->get_record('tool_mucertify_source', ['id' => $assignment->sourceid], '*', MUST_EXIST);
 
 $context = context::instance_by_id($certification->contextid);
-require_capability('tool/mucertify:admin', $context);
+require_capability('tool/mucertify:unassign', $context);
 
 $returnurl = new moodle_url('/admin/tool/mucertify/management/user_assignment.php', ['id' => $assignment->id]);
 
 $user = $DB->get_record('user', ['id' => $assignment->userid], '*', MUST_EXIST);
 
 $sourceclass = assignment::get_source_classname($source->type);
-if (!$sourceclass || !$sourceclass::assignment_edit_supported($certification, $source, $assignment)) {
+if (!$sourceclass || !$sourceclass::is_assignment_archive_possible($certification, $source, $assignment)) {
     redirect($returnurl);
 }
 
-$currenturl = new moodle_url('/admin/tool/mucertify/management/user_assignment_edit.php', ['id' => $assignment->id]);
+$currenturl = new moodle_url('/admin/tool/mucertify/management/assignment_archive.php', ['id' => $assignment->id]);
 
 management::setup_certification_page($currenturl, $context, $certification, 'certification_users');
 
-$form = new \tool_mucertify\local\form\user_assignment_edit(null,
+$form = new \tool_mucertify\local\form\assignment_archive(null,
     ['certification' => $certification, 'assignment' => $assignment, 'user' => $user, 'context' => $context]);
 
 if ($form->is_cancelled()) {
@@ -74,7 +71,7 @@ if ($form->is_cancelled()) {
 }
 
 if ($data = $form->get_data()) {
-    $sourceclass::update_assignment($data);
+    $sourceclass::assignment_archive($assignment->id);
     $form->redirect_submitted($returnurl);
 }
 

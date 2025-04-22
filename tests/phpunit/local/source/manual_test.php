@@ -63,26 +63,148 @@ final class manual_test extends \advanced_testcase {
         $this->assertFalse($result);
     }
 
-    public function test_assignment_edit_supported(): void {
-        $certification = new \stdClass();
-        $source = new \stdClass();
-        $assignment = new \stdClass();
-        $result = manual::assignment_edit_supported($certification, $source, $assignment);
-        $this->assertTrue($result);
+    public function test_is_assignment_update_possible(): void {
+        global $DB;
+
+        /** @var \tool_mucertify_generator $generator */
+        $generator = $this->getDataGenerator()->get_plugin_generator('tool_mucertify');
+        /** @var \tool_muprog_generator $programgenerator */
+        $programgenerator = $this->getDataGenerator()->get_plugin_generator('tool_muprog');
+
+        $program1 = $programgenerator->create_program();
+
+        $user1 = $this->getDataGenerator()->create_user();
+        $user2 = $this->getDataGenerator()->create_user();
+
+        $data = [
+            'sources' => ['manual' => []],
+            'programid1' => $program1->id,
+            'periods_due1' => DAYSECS,
+            'periods_windowend1' => ['since' => certification::SINCE_WINDOWSTART, 'delay' => 'P2D'],
+            'periods_expiration1' => ['since' => certification::SINCE_NEVER, 'delay' => null],
+        ];
+        $certification = $generator->create_certification($data);
+        $source = $DB->get_record('tool_mucertify_source',
+            ['type' => 'manual', 'certificationid' => $certification->id], '*', MUST_EXIST);
+        manual::assign_users($certification->id, $source->id, [$user1->id, $user2->id]);
+        $assignment1 = $DB->get_record('tool_mucertify_assignment', ['userid' => $user1->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
+        $assignment2 = $DB->get_record('tool_mucertify_assignment', ['userid' => $user1->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
+        $assignment2 = manual::assignment_archive($assignment2->id);
+
+        $this->assertTrue(manual::is_assignment_update_possible($certification, $source, $assignment1));
+        $this->assertFalse(manual::is_assignment_update_possible($certification, $source, $assignment2));
+
+        $certification = certification::archive($certification->id);
+        $this->assertFalse(manual::is_assignment_update_possible($certification, $source, $assignment1));
+        $this->assertFalse(manual::is_assignment_update_possible($certification, $source, $assignment2));
     }
 
-    public function test_assignment_delete_supported(): void {
-        $certification = new \stdClass();
-        $source = new \stdClass();
-        $assignment = new \stdClass();
+    public function test_is_assignment_archive_possible(): void {
+        global $DB;
 
-        $assignment->archived = '0';
-        $result = manual::assignment_delete_supported($certification, $source, $assignment);
-        $this->assertTrue($result);
+        /** @var \tool_mucertify_generator $generator */
+        $generator = $this->getDataGenerator()->get_plugin_generator('tool_mucertify');
+        /** @var \tool_muprog_generator $programgenerator */
+        $programgenerator = $this->getDataGenerator()->get_plugin_generator('tool_muprog');
 
-        $assignment->archived = '1';
-        $result = manual::assignment_delete_supported($certification, $source, $assignment);
-        $this->assertTrue($result);
+        $program1 = $programgenerator->create_program();
+
+        $user1 = $this->getDataGenerator()->create_user();
+        $user2 = $this->getDataGenerator()->create_user();
+
+        $data = [
+            'sources' => ['manual' => []],
+            'programid1' => $program1->id,
+            'periods_due1' => DAYSECS,
+            'periods_windowend1' => ['since' => certification::SINCE_WINDOWSTART, 'delay' => 'P2D'],
+            'periods_expiration1' => ['since' => certification::SINCE_NEVER, 'delay' => null],
+        ];
+        $certification = $generator->create_certification($data);
+        $source = $DB->get_record('tool_mucertify_source',
+            ['type' => 'manual', 'certificationid' => $certification->id], '*', MUST_EXIST);
+        manual::assign_users($certification->id, $source->id, [$user1->id, $user2->id]);
+        $assignment1 = $DB->get_record('tool_mucertify_assignment', ['userid' => $user1->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
+        $assignment2 = $DB->get_record('tool_mucertify_assignment', ['userid' => $user1->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
+        $assignment2 = manual::assignment_archive($assignment2->id);
+
+        $this->assertTrue(manual::is_assignment_archive_possible($certification, $source, $assignment1));
+        $this->assertFalse(manual::is_assignment_archive_possible($certification, $source, $assignment2));
+
+        $certification = certification::archive($certification->id);
+        $this->assertFalse(manual::is_assignment_archive_possible($certification, $source, $assignment1));
+        $this->assertFalse(manual::is_assignment_archive_possible($certification, $source, $assignment2));
+    }
+
+    public function test_is_assignment_restore_possible(): void {
+        global $DB;
+
+        /** @var \tool_mucertify_generator $generator */
+        $generator = $this->getDataGenerator()->get_plugin_generator('tool_mucertify');
+        /** @var \tool_muprog_generator $programgenerator */
+        $programgenerator = $this->getDataGenerator()->get_plugin_generator('tool_muprog');
+
+        $program1 = $programgenerator->create_program();
+
+        $user1 = $this->getDataGenerator()->create_user();
+        $user2 = $this->getDataGenerator()->create_user();
+
+        $data = [
+            'sources' => ['manual' => []],
+            'programid1' => $program1->id,
+            'periods_due1' => DAYSECS,
+            'periods_windowend1' => ['since' => certification::SINCE_WINDOWSTART, 'delay' => 'P2D'],
+            'periods_expiration1' => ['since' => certification::SINCE_NEVER, 'delay' => null],
+        ];
+        $certification = $generator->create_certification($data);
+        $source = $DB->get_record('tool_mucertify_source',
+            ['type' => 'manual', 'certificationid' => $certification->id], '*', MUST_EXIST);
+        manual::assign_users($certification->id, $source->id, [$user1->id, $user2->id]);
+        $assignment1 = $DB->get_record('tool_mucertify_assignment', ['userid' => $user1->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
+        $assignment2 = $DB->get_record('tool_mucertify_assignment', ['userid' => $user1->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
+        $assignment2 = manual::assignment_archive($assignment2->id);
+
+        $this->assertFalse(manual::is_assignment_restore_possible($certification, $source, $assignment1));
+        $this->assertTrue(manual::is_assignment_restore_possible($certification, $source, $assignment2));
+
+        $certification = certification::archive($certification->id);
+        $this->assertFalse(manual::is_assignment_restore_possible($certification, $source, $assignment1));
+        $this->assertFalse(manual::is_assignment_restore_possible($certification, $source, $assignment2));
+    }
+
+    public function test_is_assignment_delete_possible(): void {
+        global $DB;
+
+        /** @var \tool_mucertify_generator $generator */
+        $generator = $this->getDataGenerator()->get_plugin_generator('tool_mucertify');
+        /** @var \tool_muprog_generator $programgenerator */
+        $programgenerator = $this->getDataGenerator()->get_plugin_generator('tool_muprog');
+
+        $program1 = $programgenerator->create_program();
+
+        $user1 = $this->getDataGenerator()->create_user();
+        $user2 = $this->getDataGenerator()->create_user();
+
+        $data = [
+            'sources' => ['manual' => []],
+            'programid1' => $program1->id,
+            'periods_due1' => DAYSECS,
+            'periods_windowend1' => ['since' => certification::SINCE_WINDOWSTART, 'delay' => 'P2D'],
+            'periods_expiration1' => ['since' => certification::SINCE_NEVER, 'delay' => null],
+        ];
+        $certification = $generator->create_certification($data);
+        $source = $DB->get_record('tool_mucertify_source',
+            ['type' => 'manual', 'certificationid' => $certification->id], '*', MUST_EXIST);
+        manual::assign_users($certification->id, $source->id, [$user1->id, $user2->id]);
+        $assignment1 = $DB->get_record('tool_mucertify_assignment', ['userid' => $user1->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
+        $assignment2 = $DB->get_record('tool_mucertify_assignment', ['userid' => $user1->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
+        $assignment2 = manual::assignment_archive($assignment2->id);
+
+        $this->assertFalse(manual::is_assignment_delete_possible($certification, $source, $assignment1));
+        $this->assertTrue(manual::is_assignment_delete_possible($certification, $source, $assignment2));
+
+        $certification = certification::archive($certification->id);
+        $this->assertFalse(manual::is_assignment_delete_possible($certification, $source, $assignment1));
+        $this->assertFalse(manual::is_assignment_delete_possible($certification, $source, $assignment2));
     }
 
     public function test_is_assignment_possible(): void {
@@ -362,7 +484,7 @@ final class manual_test extends \advanced_testcase {
         $this->assertCount(1, $DB->get_records('tool_mucertify_period', ['userid' => $user4->id]));
     }
 
-    public function test_update_assignment(): void {
+    public function test_assignment_update(): void {
         global $DB;
 
         /** @var \tool_mucertify_generator $generator */
@@ -376,6 +498,7 @@ final class manual_test extends \advanced_testcase {
         $data = [
             'sources' => ['manual' => []],
             'programid1' => $program1->id,
+            'recertify' => '98765',
         ];
         $certification = $generator->create_certification($data);
         $source = $DB->get_record('tool_mucertify_source',
@@ -386,7 +509,7 @@ final class manual_test extends \advanced_testcase {
         $data = [
             'id' => $assignment->id,
         ];
-        manual::update_assignment((object)$data);
+        manual::assignment_update((object)$data);
         $assignment2 = $DB->get_record('tool_mucertify_assignment', ['userid' => $user1->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
         $this->assertSame((array)$assignment, (array)$assignment2);
 
@@ -395,38 +518,23 @@ final class manual_test extends \advanced_testcase {
             'id' => $assignment->id,
             'timecertifiedtemp' => (string)($now + WEEKSECS),
         ];
-        manual::update_assignment((object)$data);
+        manual::assignment_update((object)$data);
         $assignment2 = $DB->get_record('tool_mucertify_assignment', ['userid' => $user1->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
         $this->assertSame($data['timecertifiedtemp'], $assignment2->timecertifiedtemp);
-        $this->assertSame($assignment2->timecreated, $assignment2->timecertifiedfrom);
-        $this->assertSame($assignment2->timecertifiedtemp, $assignment2->timecertifieduntil);
+        $this->assertSame(null, $assignment2->timecertifiedfrom);
+        $this->assertSame(null, $assignment2->timecertifieduntil);
         $assignment->timecertifiedtemp = $assignment2->timecertifiedtemp;
-        $assignment->timecertifiedfrom = $assignment2->timecertifiedfrom;
-        $assignment->timecertifieduntil = $assignment2->timecertifieduntil;
         $this->assertSame((array)$assignment, (array)$assignment2);
 
         $data = [
             'id' => $assignment->id,
             'timecertifiedtemp' => null,
-            'archived' => '1',
         ];
-        manual::update_assignment((object)$data);
+        manual::assignment_update((object)$data);
         $assignment2 = $DB->get_record('tool_mucertify_assignment', ['userid' => $user1->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
-        $this->assertSame($data['archived'], $assignment2->archived);
         $this->assertSame(null, $assignment2->timecertifiedtemp);
         $this->assertSame(null, $assignment2->timecertifiedfrom);
         $this->assertSame(null, $assignment2->timecertifieduntil);
-
-        $data = [
-            'id' => $assignment->id,
-            'archived' => '0',
-        ];
-        manual::update_assignment((object)$data);
-        $assignment2 = $DB->get_record('tool_mucertify_assignment', ['userid' => $user1->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
-        $assignment->timecertifiedtemp = $assignment2->timecertifiedtemp;
-        $assignment->timecertifiedfrom = $assignment2->timecertifiedfrom;
-        $assignment->timecertifieduntil = $assignment2->timecertifieduntil;
-        $this->assertSame((array)$assignment, (array)$assignment2);
 
         $period = $DB->get_record('tool_mucertify_period', ['userid' => $user1->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
         $this->assertSame('1', $period->recertifiable);
@@ -434,7 +542,7 @@ final class manual_test extends \advanced_testcase {
             'id' => $assignment->id,
             'stoprecertify' => '1',
         ];
-        manual::update_assignment((object)$data);
+        manual::assignment_update((object)$data);
         $period = $DB->get_record('tool_mucertify_period', ['userid' => $user1->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
         $this->assertSame('0', $period->recertifiable);
 
@@ -442,12 +550,107 @@ final class manual_test extends \advanced_testcase {
             'id' => $assignment->id,
             'stoprecertify' => '0',
         ];
-        manual::update_assignment((object)$data);
+        manual::assignment_update((object)$data);
         $period = $DB->get_record('tool_mucertify_period', ['userid' => $user1->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
         $this->assertSame('1', $period->recertifiable);
+
+        $certification = certification::update_settings((object)['id' => $certification->id, 'recertify' => null]);
+        $data = [
+            'id' => $assignment->id,
+            'stoprecertify' => '1',
+        ];
+        manual::assignment_update((object)$data);
+        $period = $DB->get_record('tool_mucertify_period', ['userid' => $user1->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
+        $this->assertSame('1', $period->recertifiable);
+
+        $period = \tool_mucertify\local\period::override_dates((object)[
+            'id' => $period->id,
+            'timecertified' => $now,
+            'timefrom' => (string)($now + 10),
+            'timeuntil' => (string)($now + DAYSECS * 10),
+        ]);
+        $data = [
+            'id' => $assignment->id,
+            'timecertifiedtemp' => (string)($now + DAYSECS * 12),
+        ];
+        manual::assignment_update((object)$data);
+        $assignment2 = $DB->get_record('tool_mucertify_assignment', ['userid' => $user1->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
+        $this->assertSame($period->timefrom, $assignment2->timecertifiedfrom);
+        $this->assertSame($period->timeuntil, $assignment2->timecertifieduntil);
+        $this->assertSame($data['timecertifiedtemp'], $assignment2->timecertifiedtemp);
+
+        $data = [
+            'id' => $assignment->id,
+            'timecertifiedtemp' => (string)($now + DAYSECS * 9),
+        ];
+        $assignment2 = manual::assignment_update((object)$data);
+        $this->assertSame($period->timefrom, $assignment2->timecertifiedfrom);
+        $this->assertSame($period->timeuntil, $assignment2->timecertifieduntil);
+        $this->assertSame(null, $assignment2->timecertifiedtemp);
     }
 
-    public function test_unassign_user(): void {
+    public function test_assignment_archive(): void {
+        global $DB;
+
+        /** @var \tool_mucertify_generator $generator */
+        $generator = $this->getDataGenerator()->get_plugin_generator('tool_mucertify');
+        /** @var \tool_muprog_generator $programgenerator */
+        $programgenerator = $this->getDataGenerator()->get_plugin_generator('tool_muprog');
+
+        $program1 = $programgenerator->create_program();
+        $user1 = $this->getDataGenerator()->create_user();
+
+        $data = [
+            'sources' => ['manual' => []],
+            'programid1' => $program1->id,
+            'recertify' => '98765',
+        ];
+        $certification = $generator->create_certification($data);
+        $source = $DB->get_record('tool_mucertify_source',
+            ['type' => 'manual', 'certificationid' => $certification->id], '*', MUST_EXIST);
+        manual::assign_users($certification->id, $source->id, [$user1->id]);
+        $assignment = $DB->get_record('tool_mucertify_assignment', ['userid' => $user1->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
+        $this->assertSame('0', $assignment->archived);
+
+        $assignment = manual::assignment_archive($assignment->id);
+        $this->assertSame('1', $assignment->archived);
+
+        $assignment = manual::assignment_archive($assignment->id);
+        $this->assertSame('1', $assignment->archived);
+    }
+
+    public function test_assignment_restore(): void {
+        global $DB;
+
+        /** @var \tool_mucertify_generator $generator */
+        $generator = $this->getDataGenerator()->get_plugin_generator('tool_mucertify');
+        /** @var \tool_muprog_generator $programgenerator */
+        $programgenerator = $this->getDataGenerator()->get_plugin_generator('tool_muprog');
+
+        $program1 = $programgenerator->create_program();
+        $user1 = $this->getDataGenerator()->create_user();
+
+        $data = [
+            'sources' => ['manual' => []],
+            'programid1' => $program1->id,
+            'recertify' => '98765',
+            'archived' => '1',
+        ];
+        $certification = $generator->create_certification($data);
+        $source = $DB->get_record('tool_mucertify_source',
+            ['type' => 'manual', 'certificationid' => $certification->id], '*', MUST_EXIST);
+        manual::assign_users($certification->id, $source->id, [$user1->id]);
+        $assignment = $DB->get_record('tool_mucertify_assignment', ['userid' => $user1->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
+        $assignment = manual::assignment_archive($assignment->id);
+
+        $assignment = manual::assignment_restore($assignment->id);
+        $this->assertSame('0', $assignment->archived);
+
+        $assignment = manual::assignment_restore($assignment->id);
+        $this->assertSame('0', $assignment->archived);
+    }
+
+    public function test_assignment_delete(): void {
         global $DB;
 
         /** @var \tool_mucertify_generator $generator */
@@ -475,7 +678,7 @@ final class manual_test extends \advanced_testcase {
         $assignment = $DB->get_record('tool_mucertify_assignment', ['userid' => $user1->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
         $this->assertCount(1, $DB->get_records('tool_mucertify_period', ['userid' => $user1->id, 'certificationid' => $certification->id]));
 
-        manual::unassign_user($certification, $source, $assignment);
+        manual::assignment_delete($certification, $source, $assignment);
         $this->assertCount(0, $DB->get_records('tool_mucertify_assignment', ['userid' => $user1->id, 'certificationid' => $certification->id]));
         $this->assertCount(0, $DB->get_records('tool_mucertify_period', ['userid' => $user1->id, 'certificationid' => $certification->id]));
         $this->assertCount(1, $DB->get_records('tool_mucertify_assignment', ['userid' => $user2->id, 'certificationid' => $certification->id]));

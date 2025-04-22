@@ -19,6 +19,8 @@
 
 namespace tool_mucertify\phpunit\local\source;
 
+use tool_mucertify\local\source\cohort;
+
 /**
  * Certification cohort assignment source test.
  *
@@ -38,11 +40,11 @@ final class cohort_test extends \advanced_testcase {
     }
 
     public function test_get_type(): void {
-        $this->assertSame('cohort', \tool_mucertify\local\source\cohort::get_type());
+        $this->assertSame('cohort', cohort::get_type());
     }
 
     public function test_get_name(): void {
-        $this->assertSame('Automatic cohort assignment', \tool_mucertify\local\source\cohort::get_name());
+        $this->assertSame('Automatic cohort assignment', cohort::get_name());
     }
 
     public function test_is_new_allowed(): void {
@@ -50,14 +52,14 @@ final class cohort_test extends \advanced_testcase {
         $generator = $this->getDataGenerator()->get_plugin_generator('tool_mucertify');
         $certification = $generator->create_certification();
 
-        $this->assertTrue(\tool_mucertify\local\source\cohort::is_new_allowed($certification));
-        \set_config('source_cohort_allownew', 0, 'tool_mucertify');
-        $this->assertFalse(\tool_mucertify\local\source\cohort::is_new_allowed($certification));
+        $this->assertTrue(cohort::is_new_allowed($certification));
+        set_config('source_cohort_allownew', 0, 'tool_mucertify');
+        $this->assertFalse(cohort::is_new_allowed($certification));
     }
 
     public function test_is_update_allowed(): void {
         $certification = new \stdClass();
-        $this->assertSame(true, \tool_mucertify\local\source\cohort::is_update_allowed($certification));
+        $this->assertSame(true, cohort::is_update_allowed($certification));
     }
 
     public function test_fix_assignments(): void {
@@ -78,11 +80,11 @@ final class cohort_test extends \advanced_testcase {
         $cohort1 = $this->getDataGenerator()->create_cohort();
         $cohort2 = $this->getDataGenerator()->create_cohort();
         $cohort3 = $this->getDataGenerator()->create_cohort();
-        \cohort_add_member($cohort1->id, $user1->id);
-        \cohort_add_member($cohort1->id, $user2->id);
-        \cohort_add_member($cohort2->id, $user1->id);
-        \cohort_add_member($cohort2->id, $user2->id);
-        \cohort_add_member($cohort3->id, $user1->id);
+        cohort_add_member($cohort1->id, $user1->id);
+        cohort_add_member($cohort1->id, $user2->id);
+        cohort_add_member($cohort2->id, $user1->id);
+        cohort_add_member($cohort2->id, $user2->id);
+        cohort_add_member($cohort3->id, $user1->id);
 
         $data = [
             'sources' => ['cohort' => ['cohortids' => [$cohort1->id, $cohort2->id]]],
@@ -104,26 +106,26 @@ final class cohort_test extends \advanced_testcase {
         // Use low level DB edits to prevent cohort events interfering with tests.
 
         $DB->delete_records('tool_mucertify_assignment', ['id' => $assignment11->id]);
-        \tool_mucertify\local\source\cohort::fix_assignments($certification1->id, $user2->id);
+        cohort::fix_assignments($certification1->id, $user2->id);
         $this->assertFalse($DB->record_exists('tool_mucertify_assignment', ['userid' => $user1->id, 'certificationid' => $certification1->id]));
 
-        \tool_mucertify\local\source\cohort::fix_assignments($certification2->id, $user1->id);
+        cohort::fix_assignments($certification2->id, $user1->id);
         $this->assertFalse($DB->record_exists('tool_mucertify_assignment', ['userid' => $user1->id, 'certificationid' => $certification1->id]));
 
-        \tool_mucertify\local\source\cohort::fix_assignments(null, $user2->id);
+        cohort::fix_assignments(null, $user2->id);
         $this->assertFalse($DB->record_exists('tool_mucertify_assignment', ['userid' => $user1->id, 'certificationid' => $certification1->id]));
 
-        \tool_mucertify\local\source\cohort::fix_assignments($certification2->id, null);
+        cohort::fix_assignments($certification2->id, null);
         $this->assertFalse($DB->record_exists('tool_mucertify_assignment', ['userid' => $user1->id, 'certificationid' => $certification1->id]));
 
-        \tool_mucertify\local\source\cohort::fix_assignments($certification1->id, $user1->id);
+        cohort::fix_assignments($certification1->id, $user1->id);
         $assignment11 = $DB->get_record('tool_mucertify_assignment', ['userid' => $user1->id, 'certificationid' => $certification1->id], '*', MUST_EXIST);
         $assignment12 = $DB->get_record('tool_mucertify_assignment', ['userid' => $user2->id, 'certificationid' => $certification1->id], '*', MUST_EXIST);
         $assignment21 = $DB->get_record('tool_mucertify_assignment', ['userid' => $user1->id, 'certificationid' => $certification2->id], '*', MUST_EXIST);
         $assignment22 = $DB->get_record('tool_mucertify_assignment', ['userid' => $user2->id, 'certificationid' => $certification2->id], '*', MUST_EXIST);
 
         $DB->set_field('tool_mucertify_assignment', 'archived', 1, ['id' => $assignment11->id]);
-        \tool_mucertify\local\source\cohort::fix_assignments($certification1->id, $user1->id);
+        cohort::fix_assignments($certification1->id, $user1->id);
         $assignment11 = $DB->get_record('tool_mucertify_assignment', ['userid' => $user1->id, 'certificationid' => $certification1->id], '*', MUST_EXIST);
         $this->assertSame('0', $assignment11->archived);
         $assignment12 = $DB->get_record('tool_mucertify_assignment', ['userid' => $user2->id, 'certificationid' => $certification1->id], '*', MUST_EXIST);
@@ -134,7 +136,7 @@ final class cohort_test extends \advanced_testcase {
         $this->assertSame('0', $assignment22->archived);
 
         $DB->delete_records('cohort_members', ['cohortid' => $cohort2->id]);
-        \tool_mucertify\local\source\cohort::fix_assignments(null, null);
+        cohort::fix_assignments(null, null);
         $assignment11 = $DB->get_record('tool_mucertify_assignment', ['userid' => $user1->id, 'certificationid' => $certification1->id], '*', MUST_EXIST);
         $this->assertSame('0', $assignment11->archived);
         $assignment12 = $DB->get_record('tool_mucertify_assignment', ['userid' => $user2->id, 'certificationid' => $certification1->id], '*', MUST_EXIST);
@@ -147,7 +149,7 @@ final class cohort_test extends \advanced_testcase {
         $this->assertFalse($DB->record_exists('tool_mucertify_assignment', ['userid' => $user3->id, 'certificationid' => $certification2->id]));
 
         $DB->insert_record('cohort_members', ['cohortid' => $cohort1->id, 'userid' => $user3->id]);
-        \tool_mucertify\local\source\cohort::fix_assignments(null, null);
+        cohort::fix_assignments(null, null);
         $assignment11 = $DB->get_record('tool_mucertify_assignment', ['userid' => $user1->id, 'certificationid' => $certification1->id], '*', MUST_EXIST);
         $this->assertSame('0', $assignment11->archived);
         $assignment12 = $DB->get_record('tool_mucertify_assignment', ['userid' => $user2->id, 'certificationid' => $certification1->id], '*', MUST_EXIST);
@@ -161,42 +163,184 @@ final class cohort_test extends \advanced_testcase {
         $this->assertFalse($DB->record_exists('tool_mucertify_assignment', ['userid' => $user3->id, 'certificationid' => $certification2->id]));
     }
 
-    public function test_assignment_edit_supported(): void {
-        $certification = new \stdClass();
-        $source = new \stdClass();
-        $assignment = new \stdClass();
-        $result = \tool_mucertify\local\source\cohort::assignment_edit_supported($certification, $source, $assignment);
-        $this->assertTrue($result);
+    public function test_is_assignment_update_possible(): void {
+        global $DB;
+
+        /** @var \tool_mucertify_generator $generator */
+        $generator = $this->getDataGenerator()->get_plugin_generator('tool_mucertify');
+        /** @var \tool_muprog_generator $programgenerator */
+        $programgenerator = $this->getDataGenerator()->get_plugin_generator('tool_muprog');
+
+        $program1 = $programgenerator->create_program();
+        $program2 = $programgenerator->create_program();
+
+        $user1 = $this->getDataGenerator()->create_user();
+        $user2 = $this->getDataGenerator()->create_user();
+        $user3 = $this->getDataGenerator()->create_user();
+
+        $cohort1 = $this->getDataGenerator()->create_cohort();
+        cohort_add_member($cohort1->id, $user1->id);
+        cohort_add_member($cohort1->id, $user2->id);
+
+        $data = [
+            'sources' => ['cohort' => ['cohortids' => [$cohort1->id]]],
+            'programid1' => $program1->id,
+        ];
+        $certification = $generator->create_certification($data);
+        $source = $DB->get_record('tool_mucertify_source',
+            ['type' => 'cohort', 'certificationid' => $certification->id], '*', MUST_EXIST);
+        cohort_remove_member($cohort1->id, $user2->id);
+        cohort::fix_assignments(null, null);
+        $assignment1 = $DB->get_record('tool_mucertify_assignment', ['userid' => $user1->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
+        $assignment2 = $DB->get_record('tool_mucertify_assignment', ['userid' => $user2->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
+        $this->assertSame('0', $assignment1->archived);
+        $this->assertSame('1', $assignment2->archived);
+
+        $this->assertTrue(cohort::is_assignment_update_possible($certification, $source, $assignment1));
+        $this->assertFalse(cohort::is_assignment_update_possible($certification, $source, $assignment2));
+
+        $certification = \tool_mucertify\local\certification::archive($certification->id);
+        $this->assertFalse(cohort::is_assignment_update_possible($certification, $source, $assignment1));
+        $this->assertFalse(cohort::is_assignment_update_possible($certification, $source, $assignment2));
     }
 
-    public function test_assignment_delete_supported(): void {
-        $certification = new \stdClass();
-        $source = new \stdClass();
-        $assignment = new \stdClass();
+    public function test_is_assignment_archive_possible(): void {
+        global $DB;
 
-        $assignment->archived = '0';
-        $result = \tool_mucertify\local\source\cohort::assignment_delete_supported($certification, $source, $assignment);
-        $this->assertFalse($result);
+        /** @var \tool_mucertify_generator $generator */
+        $generator = $this->getDataGenerator()->get_plugin_generator('tool_mucertify');
+        /** @var \tool_muprog_generator $programgenerator */
+        $programgenerator = $this->getDataGenerator()->get_plugin_generator('tool_muprog');
 
-        $assignment->archived = '1';
-        $result = \tool_mucertify\local\source\cohort::assignment_delete_supported($certification, $source, $assignment);
-        $this->assertTrue($result);
+        $program1 = $programgenerator->create_program();
+        $program2 = $programgenerator->create_program();
+
+        $user1 = $this->getDataGenerator()->create_user();
+        $user2 = $this->getDataGenerator()->create_user();
+        $user3 = $this->getDataGenerator()->create_user();
+
+        $cohort1 = $this->getDataGenerator()->create_cohort();
+        cohort_add_member($cohort1->id, $user1->id);
+        cohort_add_member($cohort1->id, $user2->id);
+
+        $data = [
+            'sources' => ['cohort' => ['cohortids' => [$cohort1->id]]],
+            'programid1' => $program1->id,
+        ];
+        $certification = $generator->create_certification($data);
+        $source = $DB->get_record('tool_mucertify_source',
+            ['type' => 'cohort', 'certificationid' => $certification->id], '*', MUST_EXIST);
+        cohort_remove_member($cohort1->id, $user2->id);
+        cohort::fix_assignments(null, null);
+        $assignment1 = $DB->get_record('tool_mucertify_assignment', ['userid' => $user1->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
+        $assignment2 = $DB->get_record('tool_mucertify_assignment', ['userid' => $user2->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
+        $this->assertSame('0', $assignment1->archived);
+        $this->assertSame('1', $assignment2->archived);
+
+        $this->assertFalse(cohort::is_assignment_archive_possible($certification, $source, $assignment1));
+        $this->assertFalse(cohort::is_assignment_archive_possible($certification, $source, $assignment2));
+
+        $certification = \tool_mucertify\local\certification::archive($certification->id);
+        $this->assertFalse(cohort::is_assignment_archive_possible($certification, $source, $assignment1));
+        $this->assertFalse(cohort::is_assignment_archive_possible($certification, $source, $assignment2));
+    }
+
+    public function test_is_assignment_restore_possible(): void {
+        global $DB;
+
+        /** @var \tool_mucertify_generator $generator */
+        $generator = $this->getDataGenerator()->get_plugin_generator('tool_mucertify');
+        /** @var \tool_muprog_generator $programgenerator */
+        $programgenerator = $this->getDataGenerator()->get_plugin_generator('tool_muprog');
+
+        $program1 = $programgenerator->create_program();
+        $program2 = $programgenerator->create_program();
+
+        $user1 = $this->getDataGenerator()->create_user();
+        $user2 = $this->getDataGenerator()->create_user();
+        $user3 = $this->getDataGenerator()->create_user();
+
+        $cohort1 = $this->getDataGenerator()->create_cohort();
+        cohort_add_member($cohort1->id, $user1->id);
+        cohort_add_member($cohort1->id, $user2->id);
+
+        $data = [
+            'sources' => ['cohort' => ['cohortids' => [$cohort1->id]]],
+            'programid1' => $program1->id,
+        ];
+        $certification = $generator->create_certification($data);
+        $source = $DB->get_record('tool_mucertify_source',
+            ['type' => 'cohort', 'certificationid' => $certification->id], '*', MUST_EXIST);
+        cohort_remove_member($cohort1->id, $user2->id);
+        cohort::fix_assignments(null, null);
+        $assignment1 = $DB->get_record('tool_mucertify_assignment', ['userid' => $user1->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
+        $assignment2 = $DB->get_record('tool_mucertify_assignment', ['userid' => $user2->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
+        $this->assertSame('0', $assignment1->archived);
+        $this->assertSame('1', $assignment2->archived);
+
+        $this->assertFalse(cohort::is_assignment_restore_possible($certification, $source, $assignment1));
+        $this->assertFalse(cohort::is_assignment_restore_possible($certification, $source, $assignment2));
+
+        $certification = \tool_mucertify\local\certification::archive($certification->id);
+        $this->assertFalse(cohort::is_assignment_restore_possible($certification, $source, $assignment1));
+        $this->assertFalse(cohort::is_assignment_restore_possible($certification, $source, $assignment2));
+    }
+
+    public function test_is_assignment_delete_possible(): void {
+        global $DB;
+
+        /** @var \tool_mucertify_generator $generator */
+        $generator = $this->getDataGenerator()->get_plugin_generator('tool_mucertify');
+        /** @var \tool_muprog_generator $programgenerator */
+        $programgenerator = $this->getDataGenerator()->get_plugin_generator('tool_muprog');
+
+        $program1 = $programgenerator->create_program();
+        $program2 = $programgenerator->create_program();
+
+        $user1 = $this->getDataGenerator()->create_user();
+        $user2 = $this->getDataGenerator()->create_user();
+        $user3 = $this->getDataGenerator()->create_user();
+
+        $cohort1 = $this->getDataGenerator()->create_cohort();
+        cohort_add_member($cohort1->id, $user1->id);
+        cohort_add_member($cohort1->id, $user2->id);
+
+        $data = [
+            'sources' => ['cohort' => ['cohortids' => [$cohort1->id]]],
+            'programid1' => $program1->id,
+        ];
+        $certification = $generator->create_certification($data);
+        $source = $DB->get_record('tool_mucertify_source',
+            ['type' => 'cohort', 'certificationid' => $certification->id], '*', MUST_EXIST);
+        cohort_remove_member($cohort1->id, $user2->id);
+        cohort::fix_assignments(null, null);
+        $assignment1 = $DB->get_record('tool_mucertify_assignment', ['userid' => $user1->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
+        $assignment2 = $DB->get_record('tool_mucertify_assignment', ['userid' => $user2->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
+        $this->assertSame('0', $assignment1->archived);
+        $this->assertSame('1', $assignment2->archived);
+
+        $this->assertFalse(cohort::is_assignment_delete_possible($certification, $source, $assignment1));
+        $this->assertTrue(cohort::is_assignment_delete_possible($certification, $source, $assignment2));
+
+        $certification = \tool_mucertify\local\certification::archive($certification->id);
+        $this->assertFalse(cohort::is_assignment_delete_possible($certification, $source, $assignment1));
+        $this->assertFalse(cohort::is_assignment_delete_possible($certification, $source, $assignment2));
     }
 
     public function test_get_catalogue_actions(): void {
         $certification = new \stdClass();
         $source = new \stdClass();
-        $this->assertSame([], \tool_mucertify\local\source\cohort::get_catalogue_actions($certification, $source));
+        $this->assertSame([], cohort::get_catalogue_actions($certification, $source));
     }
 
     public function test_decode_datajson(): void {
         $source = new \stdClass();
-        $this->assertSame($source, \tool_mucertify\local\source\cohort::decode_datajson($source));
+        $this->assertSame($source, cohort::decode_datajson($source));
     }
 
     public function test_encode_datajson(): void {
         $formdata = new \stdClass();
-        $this->assertSame('[]', \tool_mucertify\local\source\cohort::encode_datajson($formdata));
+        $this->assertSame('[]', cohort::encode_datajson($formdata));
     }
 
     public function test_add_management_certification_users_actions(): void {
@@ -204,7 +348,7 @@ final class cohort_test extends \advanced_testcase {
         $source = new \stdClass();
 
         $actions = new \tool_mulib\output\header_actions('xyz');
-        \tool_mucertify\local\source\cohort::add_management_certification_users_actions($actions, $certification, $source);
+        cohort::add_management_certification_users_actions($actions, $certification, $source);
         $this->assertFalse($actions->has_items());
     }
 
@@ -231,7 +375,7 @@ final class cohort_test extends \advanced_testcase {
             'type' => 'cohort',
             'enable' => 0,
         ];
-        $source = \tool_mucertify\local\source\cohort::update_source((object)$data);
+        $source = cohort::update_source((object)$data);
         $this->assertSame(null, $source);
 
         $data = [
@@ -240,7 +384,7 @@ final class cohort_test extends \advanced_testcase {
             'enable' => 1,
             'cohortids' => [],
         ];
-        $source = \tool_mucertify\local\source\cohort::update_source((object)$data);
+        $source = cohort::update_source((object)$data);
         $this->assertSame($certification->id, $source->certificationid);
         $this->assertSame('cohort', $source->type);
 
@@ -250,7 +394,7 @@ final class cohort_test extends \advanced_testcase {
             'enable' => 1,
             'cohortids' => [$cohort1->id, $cohort3->id],
         ];
-        $source = \tool_mucertify\local\source\cohort::update_source((object)$data);
+        $source = cohort::update_source((object)$data);
         $this->assertSame($certification->id, $source->certificationid);
         $this->assertSame('cohort', $source->type);
         $cohorts = $DB->get_records_menu('tool_mucertify_src_cohort', ['sourceid' => $source->id], '', 'cohortid, id');
@@ -264,7 +408,7 @@ final class cohort_test extends \advanced_testcase {
             'enable' => 1,
             'cohortids' => [$cohort2->id, $cohort3->id],
         ];
-        $source = \tool_mucertify\local\source\cohort::update_source((object)$data);
+        $source = cohort::update_source((object)$data);
         $this->assertSame($certification->id, $source->certificationid);
         $this->assertSame('cohort', $source->type);
         $cohorts = $DB->get_records_menu('tool_mucertify_src_cohort', ['sourceid' => $source->id], '', 'cohortid, id');
@@ -278,7 +422,7 @@ final class cohort_test extends \advanced_testcase {
             'enable' => 0,
             'cohortids' => [$cohort2->id, $cohort3->id],
         ];
-        $source = \tool_mucertify\local\source\cohort::update_source((object)$data);
+        $source = cohort::update_source((object)$data);
         $this->assertSame(null, $source);
         $cohorts = $DB->get_records_menu('tool_mucertify_src_cohort', [], '', 'cohortid, id');
         $this->assertCount(0, $cohorts);
@@ -299,8 +443,8 @@ final class cohort_test extends \advanced_testcase {
         $cohort1 = $this->getDataGenerator()->create_cohort();
         $cohort2 = $this->getDataGenerator()->create_cohort();
 
-        \cohort_add_member($cohort1->id, $user1->id);
-        \cohort_add_member($cohort1->id, $user2->id);
+        cohort_add_member($cohort1->id, $user1->id);
+        cohort_add_member($cohort1->id, $user2->id);
 
         $data = [
             'sources' => ['cohort' => ['cohortids' => [$cohort1->id, $cohort2->id]]],
@@ -313,7 +457,7 @@ final class cohort_test extends \advanced_testcase {
         $assignment2 = $DB->get_record('tool_mucertify_assignment', ['userid' => $user1->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
         $this->assertCount(2, $DB->get_records('tool_mucertify_period', ['certificationid' => $certification->id]));
 
-        \tool_mucertify\local\source\cohort::unassign_user($certification, $source, $assignment1);
+        cohort::assignment_delete($certification, $source, $assignment1);
         $this->assertCount(0, $DB->get_records('tool_mucertify_assignment', ['userid' => $user1->id, 'certificationid' => $certification->id]));
         $this->assertCount(0, $DB->get_records('tool_mucertify_period', ['userid' => $user1->id, 'certificationid' => $certification->id]));
         $this->assertCount(1, $DB->get_records('tool_mucertify_assignment', ['userid' => $user2->id, 'certificationid' => $certification->id]));
@@ -333,7 +477,7 @@ final class cohort_test extends \advanced_testcase {
             'sources' => [],
             ];
         $certification = $generator->create_certification($data);
-        $this->assertSame('Inactive', \tool_mucertify\local\source\cohort::render_status_details($certification, null));
+        $this->assertSame('Inactive', cohort::render_status_details($certification, null));
 
         $data = [
             'sources' => ['cohort' => ['cohortids' => []]],
@@ -341,7 +485,7 @@ final class cohort_test extends \advanced_testcase {
         $certification = $generator->create_certification($data);
         $source = $DB->get_record('tool_mucertify_source',
             ['type' => 'cohort', 'certificationid' => $certification->id], '*', MUST_EXIST);
-        $this->assertSame('Active', \tool_mucertify\local\source\cohort::render_status_details($certification, $source));
+        $this->assertSame('Active', cohort::render_status_details($certification, $source));
 
         $data = [
             'sources' => ['cohort' => ['cohortids' => [$cohort1->id, $cohort2->id]]],
@@ -349,7 +493,7 @@ final class cohort_test extends \advanced_testcase {
         $certification = $generator->create_certification($data);
         $source = $DB->get_record('tool_mucertify_source',
             ['type' => 'cohort', 'certificationid' => $certification->id], '*', MUST_EXIST);
-        $this->assertSame('Active (Cohort 1, Cohort 2)', \tool_mucertify\local\source\cohort::render_status_details($certification, $source));
+        $this->assertSame('Active (Cohort 1, Cohort 2)', cohort::render_status_details($certification, $source));
     }
 
     public function test_render_status(): void {
@@ -378,14 +522,14 @@ final class cohort_test extends \advanced_testcase {
             ['type' => 'cohort', 'certificationid' => $certification->id], '*', MUST_EXIST);
 
         $this->setUser($user2);
-        $this->assertSame('Active', \tool_mucertify\local\source\cohort::render_status($certification, $source));
-        $this->assertSame('Inactive', \tool_mucertify\local\source\cohort::render_status($certification, null));
+        $this->assertSame('Active', cohort::render_status($certification, $source));
+        $this->assertSame('Inactive', cohort::render_status($certification, null));
 
         $this->setUser($user1);
-        $this->assertStringStartsWith('Active', \tool_mucertify\local\source\cohort::render_status($certification, $source));
-        $this->assertStringContainsString('"Update Automatic cohort assignment"', \tool_mucertify\local\source\cohort::render_status($certification, $source));
-        $this->assertStringStartsWith('Inactive', \tool_mucertify\local\source\cohort::render_status($certification, null));
-        $this->assertStringContainsString('"Update Automatic cohort assignment"', \tool_mucertify\local\source\cohort::render_status($certification, null));
+        $this->assertStringStartsWith('Active', cohort::render_status($certification, $source));
+        $this->assertStringContainsString('"Update Automatic cohort assignment"', cohort::render_status($certification, $source));
+        $this->assertStringStartsWith('Inactive', cohort::render_status($certification, null));
+        $this->assertStringContainsString('"Update Automatic cohort assignment"', cohort::render_status($certification, null));
     }
 
     public function test_get_assigner(): void {
@@ -402,7 +546,7 @@ final class cohort_test extends \advanced_testcase {
         $user2 = $this->getDataGenerator()->create_user();
         $admin = get_admin();
         $cohort1 = $this->getDataGenerator()->create_cohort();
-        \cohort_add_member($cohort1->id, $user1->id);
+        cohort_add_member($cohort1->id, $user1->id);
 
         $data = [
             'sources' => ['cohort' => ['cohortids' => [$cohort1->id]]],
@@ -414,15 +558,15 @@ final class cohort_test extends \advanced_testcase {
         $assignment = $DB->get_record('tool_mucertify_assignment', ['userid' => $user1->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
 
         $this->setUser(null);
-        $result = \tool_mucertify\local\source\cohort::get_assigner($certification, $source, $assignment);
+        $result = cohort::get_assigner($certification, $source, $assignment);
         $this->assertSame($admin->id, $result->id);
 
         $this->setUser($user2);
-        $result = \tool_mucertify\local\source\cohort::get_assigner($certification, $source, $assignment);
+        $result = cohort::get_assigner($certification, $source, $assignment);
         $this->assertSame($admin->id, $result->id);
 
         $this->setGuestUser();
-        $result = \tool_mucertify\local\source\cohort::get_assigner($certification, $source, $assignment);
+        $result = cohort::get_assigner($certification, $source, $assignment);
         $this->assertSame($admin->id, $result->id);
     }
 }

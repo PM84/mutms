@@ -241,7 +241,7 @@ final class certificate_test extends \advanced_testcase {
         $this->assertTrue(\tool_mucertify\local\certificate::issue($period1->id));
         $period1 = $DB->get_record('tool_mucertify_period', ['id' => $period1->id], '*', MUST_EXIST);
 
-        manual::unassign_user($certification1, $source1, $assignment1);
+        manual::assignment_delete($certification1, $source1, $assignment1);
         $this->assertFalse($DB->record_exists('tool_mucertify_period', ['id' => $period1->id]));
         $this->assertFalse($DB->record_exists('tool_certificate_issues', ['id' => $period1->certificateissueid]));
     }
@@ -392,7 +392,7 @@ final class certificate_test extends \advanced_testcase {
         $period5 = \tool_mucertify\local\period::override_dates((object)$dateoverrides);
         $assignment5 = $DB->get_record('tool_mucertify_assignment',
             ['certificationid' => $certification1->id, 'userid' => $user5->id], '*', MUST_EXIST);
-        $assignment5 = \tool_mucertify\local\source\base::update_assignment((object)['id' => $assignment5->id, 'archived' => 1]);
+        $assignment5 = \tool_mucertify\local\source\base::assignment_archive($assignment5->id);
         $period6 = $DB->get_record('tool_mucertify_period',
             ['certificationid' => $certification2->id, 'userid' => $user6->id], '*', MUST_EXIST);
         $dateoverrides = [

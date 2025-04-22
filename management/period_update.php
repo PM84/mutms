@@ -49,11 +49,16 @@ require_login();
 $period = $DB->get_record('tool_mucertify_period', ['id' => $id], '*', MUST_EXIST);
 $certification = $DB->get_record('tool_mucertify_certification', ['id' => $period->certificationid], '*', MUST_EXIST);
 $program = $DB->get_record('tool_muprog_program', ['id' => $period->programid]);
+$assignment = $DB->get_record('tool_mucertify_assignment', ['certificationid' => $certification->id, 'userid' => $period->userid]);
 
 $context = context::instance_by_id($certification->contextid);
 require_capability('tool/mucertify:admin', $context);
 
 $returnurl = new moodle_url('/admin/tool/mucertify/management/period.php', ['id' => $period->id]);
+
+if (($assignment && $assignment->archived) || $certification->archived) {
+    redirect($returnurl);
+}
 
 $user = $DB->get_record('user', ['id' => $period->userid], '*', MUST_EXIST);
 

@@ -43,33 +43,6 @@ final class selfassignment extends base {
     }
 
     /**
-     * Is it possible to manually edit user assignment?
-     *
-     * @param stdClass $certification
-     * @param stdClass $source
-     * @param stdClass $assignment
-     * @return bool
-     */
-    public static function assignment_edit_supported(stdClass $certification, stdClass $source, stdClass $assignment): bool {
-        return true;
-    }
-
-    /**
-     * Is it possible to manually delete user assignment?
-     *
-     * @param stdClass $certification
-     * @param stdClass $source
-     * @param stdClass $assignment
-     * @return bool
-     */
-    public static function assignment_delete_supported(stdClass $certification, stdClass $source, stdClass $assignment): bool {
-        if (!$assignment->archived) {
-            return false;
-        }
-        return true;
-    }
-
-    /**
      * Can the user request self-assignment?
      *
      * @param stdClass $certification
@@ -168,7 +141,7 @@ final class selfassignment extends base {
             return $assignment;
         }
 
-        $assignment = self::assign_user($certification, $source, $user->id, []);
+        $assignment = self::assignment_create($certification, $source, $user->id, []);
 
         \tool_muprog\local\source\mucertify::sync_certifications($certification->id, $user->id);
         \tool_mucertify\local\notification_manager::trigger_notifications($certification->id, $user->id);

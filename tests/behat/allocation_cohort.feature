@@ -44,6 +44,7 @@ Feature: Automatic cohorts assignments certification tests
       | tool/mucertify:edit            | Allow      | pmanager | System       |           |
       | tool/mucertify:delete          | Allow      | pmanager | System       |           |
       | tool/mucertify:assign          | Allow      | pmanager | System       |           |
+      | tool/mucertify:unassign        | Allow      | pmanager | System       |           |
       | moodle/cohort:view             | Allow      | pmanager | System       |           |
     And the following "role assigns" exist:
       | user      | role          | contextlevel | reference |
