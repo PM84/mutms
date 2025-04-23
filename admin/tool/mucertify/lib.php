@@ -84,7 +84,7 @@ function tool_mucertify_pluginfile($course, $cm, $context, $filearea, $args, $fo
 function tool_mucertify_myprofile_navigation(core_user\output\myprofile\tree $tree, $user, $iscurrentuser, $course) {
     global $USER;
 
-    if (!enrol_is_enabled('muprog')) {
+    if (!\tool_mucertify\local\util::is_mucertify_active()) {
         return;
     }
 
@@ -153,10 +153,6 @@ function tool_mucertify_get_tagged_certifications($tag, $exclusivemode = false, 
  * @param context $coursecategorycontext The context of the course category
  */
 function tool_mucertify_extend_navigation_category_settings($navigation, $coursecategorycontext): void {
-    if (!enrol_is_enabled('muprog')) {
-        return;
-    }
-
     if (!has_capability('tool/mucertify:view', $coursecategorycontext)) {
         return;
     }

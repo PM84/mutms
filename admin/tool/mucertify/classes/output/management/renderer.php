@@ -326,7 +326,7 @@ class renderer extends \plugin_renderer_base {
         $buttons = [];
         $backheading = '';
         if ($subpage) {
-            $backurl = new moodle_url('/admin/tool/mucertify/management/user_assignment.php', ['id' => $assignment->id]);
+            $backurl = new moodle_url('/admin/tool/mucertify/management/assignment.php', ['id' => $assignment->id]);
             $backheading = $this->output->heading(get_string('periods', 'tool_mucertify'), 3, ['h4']);
             $backheading = \html_writer::link($backurl, $backheading);
         } else {
@@ -418,10 +418,11 @@ class renderer extends \plugin_renderer_base {
     public function render_user_periods(stdClass $certification, stdClass $assignment): string {
         $result = $this->output->heading(get_string('periods', 'tool_mucertify'), 3, ['h4']);
 
-        $table = new \tool_mucertify\table\assignment_periods($certification, $assignment, $this->page->url);
-        ob_start();
-        $table->out($table->pagesize, false);
-        $result .= ob_get_clean();
+        $context = \context::instance_by_id($certification->contextid);
+        $report = \core_reportbuilder\system_report_factory::create(
+            \tool_mucertify\reportbuilder\local\systemreports\assignment_periods::class,
+            $context, parameters:['assignmentid' => $assignment->id]);
+        $result .= $report->output();
 
         return $result;
     }

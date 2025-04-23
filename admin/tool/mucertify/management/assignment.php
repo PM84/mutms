@@ -50,7 +50,7 @@ require_capability('tool/mucertify:view', $context);
 
 $user = $DB->get_record('user', ['id' => $assignment->userid], '*', MUST_EXIST);
 
-$currenturl = new moodle_url('/admin/tool/mucertify/management/user_assignment.php', ['id' => $assignment->id]);
+$currenturl = new moodle_url('/admin/tool/mucertify/management/assignment.php', ['id' => $assignment->id]);
 
 management::setup_certification_page($currenturl, $context, $certification, 'certification_users');
 

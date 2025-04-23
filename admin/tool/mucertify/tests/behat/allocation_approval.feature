@@ -125,7 +125,7 @@ Feature: Certification approval assignments tests
 
     When I log in as "student2"
     And I am on the "tool_mucertify > My certifications" page
-    And "Certification 001" row "Certification status" column of "my_certifications" table should contain "Not certified"
+    And "Certification 001" row "Certification status" column of "reportbuilder-table" table should contain "Not certified"
     And I log out
 
     When I log in as "allocator"

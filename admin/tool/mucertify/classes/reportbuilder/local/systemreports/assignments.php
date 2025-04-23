@@ -50,7 +50,9 @@ final class assignments extends system_report {
     #[\Override]
     protected function initialise(): void {
         global $DB;
-        $this->certification = $DB->get_record('tool_mucertify_certification', ['id' => $this->get_parameters()['certificationid']], '*', MUST_EXIST);
+        // Make sure certificationid and context match!
+        $this->certification = $DB->get_record('tool_mucertify_certification',
+            ['id' => $this->get_parameters()['certificationid'], 'contextid' => $this->get_context()->id], '*', MUST_EXIST);
 
         $this->assignmententity = new assignment();
         $assignmentalias = $this->assignmententity->get_table_alias('tool_mucertify_assignment');
@@ -102,7 +104,7 @@ final class assignments extends system_report {
         $column
             ->add_fields("$assignmentalias.id")
             ->add_callback(static function(string $fullname, \stdClass $row): string {
-                $url = new \moodle_url('/admin/tool/mucertify/management/user_assignment.php', ['id' => $row->id]);
+                $url = new \moodle_url('/admin/tool/mucertify/management/assignment.php', ['id' => $row->id]);
                 return \html_writer::link($url, $fullname);
             });
         $this->add_column($column);

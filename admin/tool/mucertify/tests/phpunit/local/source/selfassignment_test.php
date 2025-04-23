@@ -22,7 +22,7 @@ namespace tool_mucertify\phpunit\local\source;
 use tool_mucertify\local\certification;
 
 /**
- * Manual assignment source test.
+ * Self-assignment source test.
  *
  * @group      muTMS
  * @package    tool_mucertify

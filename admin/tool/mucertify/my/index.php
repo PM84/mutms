@@ -35,30 +35,19 @@
 
 require('../../../../config.php');
 
-$sort = optional_param('sort', 'fullname', PARAM_ALPHANUMEXT);
-$dir = optional_param('dir', 'ASC', PARAM_ALPHA);
-
 require_login();
 
 $usercontext = context_user::instance($USER->id);
 $PAGE->set_context($usercontext);
 
-if (!enrol_is_enabled('muprog')) {
+if (!\tool_mucertify\local\util::is_mucertify_active()) {
     redirect(new moodle_url('/'));
 }
 if (isguestuser()) {
     redirect(new moodle_url('/admin/tool/mucertify/catalogue/index.php'));
 }
 
-$pageparams = [];
-if ($sort !== 'fullname') {
-    $pageparams['sort'] = $sort;
-}
-if ($dir !== 'ASC') {
-    $pageparams['dir'] = $dir;
-}
-
-$currenturl = new moodle_url('/admin/tool/mucertify/my/index.php', $pageparams);
+$currenturl = new moodle_url('/admin/tool/mucertify/my/index.php');
 
 $title = get_string('mycertifications', 'tool_mucertify');
 $PAGE->navigation->extend_for_user($USER);
@@ -82,105 +71,9 @@ $PAGE->set_button($buttons . $PAGE->button);
 
 echo $OUTPUT->header();
 
-if ($sort === 'idnumber') {
-    $orderby = 'idnumber';
-} else {
-    $orderby = 'fullname';
-}
-if ($dir === 'ASC') {
-    $orderby .= ' ASC';
-} else {
-    $orderby .= ' DESC';
-}
-
-$sql = "SELECT p.*
-          FROM {tool_mucertify_certification} p
-          JOIN {tool_mucertify_assignment} pa ON pa.certificationid = p.id
-         WHERE p.archived = 0 AND pa.archived = 0
-               AND pa.userid = :userid
-      ORDER BY $orderby";
-$params = ['userid' => $USER->id];
-$certifications = $DB->get_records_sql($sql, $params);
-
-if (!$certifications) {
-    echo get_string('errornomycertifications', 'tool_mucertify');
-    echo $OUTPUT->footer();
-    die;
-}
-
-$data = [];
-
-$certificationicon = $OUTPUT->pix_icon('certification', '', 'tool_mucertify');
-$dateformat = get_string('strftimedatetimeshort');
-$strnotset = get_string('notset', 'tool_mucertify');
-
-foreach ($certifications as $certification) {
-    $assignment = $DB->get_record('tool_mucertify_assignment', ['certificationid' => $certification->id, 'userid' => $USER->id]);
-    $pcontext = context::instance_by_id($certification->contextid);
-    $row = [];
-    $fullname = $certificationicon . format_string($certification->fullname);
-    $detailurl = new moodle_url('/admin/tool/mucertify/my/certification.php', ['id' => $certification->id]);
-    $fullname = html_writer::link($detailurl, $fullname);
-    if ($CFG->usetags) {
-        $tags = core_tag_tag::get_item_tags('tool_mucertify', 'certification', $certification->id);
-        if ($tags) {
-            $fullname .= '<br />' . $OUTPUT->tag_list($tags, '', 'certification-tags');
-        }
-    }
-
-    $row[] = $fullname;
-    $row[] = s($certification->idnumber);
-    $description = file_rewrite_pluginfile_urls($certification->description, 'pluginfile.php', $pcontext->id, 'tool_mucertify', 'description', $certification->id);
-    $row[] = format_text($description, $certification->descriptionformat, ['context' => $pcontext]);
-
-    $row[] = \tool_mucertify\local\assignment::get_until_html($certification, $assignment);
-
-    $row[] = \tool_mucertify\local\assignment::get_status_html($certification, $assignment);
-
-    $data[] = $row;
-}
-
-$columns = [];
-
-$column = get_string('certificationname', 'tool_mucertify');
-$columndir = ($dir === "ASC" ? "DESC" : "ASC");
-$columnicon = ($dir === "ASC" ? "sort_asc" : "sort_desc");
-$columnicon = $OUTPUT->pix_icon('t/' . $columnicon, get_string(strtolower($columndir)), 'core',
-    ['class' => 'iconsort']);
-$changeurl = new moodle_url($currenturl);
-$changeurl->param('sort', 'fullname');
-$changeurl->param('dir', $columndir);
-$column = html_writer::link($changeurl, $column);
-if ($sort === 'fullname') {
-    $column .= $columnicon;
-}
-$columns[] = $column;
-
-$column = get_string('certificationidnumber', 'tool_mucertify');
-$columndir = ($dir === "ASC" ? "DESC" : "ASC");
-$columnicon = ($dir === "ASC" ? "sort_asc" : "sort_desc");
-$columnicon = $OUTPUT->pix_icon('t/' . $columnicon, get_string(strtolower($columndir)), 'core',
-    ['class' => 'iconsort']);
-$changeurl = new moodle_url($currenturl);
-$changeurl->param('sort', 'idnumber');
-$changeurl->param('dir', $columndir);
-$column = html_writer::link($changeurl, $column);
-if ($sort === 'idnumber') {
-    $column .= $columnicon;
-}
-$columns[] = $column;
-
-$columns[] = get_string('description');
-
-$columns[] = get_string('untildate', 'tool_mucertify');
-
-$columns[] = get_string('certificationstatus', 'tool_mucertify');
-
-$table = new html_table();
-$table->head = $columns;
-$table->id = 'my_certifications';
-$table->attributes['class'] = 'generaltable';
-$table->data = $data;
-echo html_writer::table($table);
+$report = \core_reportbuilder\system_report_factory::create(
+    \tool_mucertify\reportbuilder\local\systemreports\my_assignments::class,
+    $usercontext);
+echo $report->output();
 
 echo $OUTPUT->footer();

@@ -43,7 +43,6 @@ class renderer extends \plugin_renderer_base {
 
         $context = \context::instance_by_id($certification->contextid);
         $fullname = format_string($certification->fullname);
-        $certificationicon = $this->output->pix_icon('certification', '', 'tool_mucertify');
 
         $description = file_rewrite_pluginfile_urls($certification->description, 'pluginfile.php', $context->id, 'tool_mucertify', 'description', $certification->id);
         $description = format_text($description, $certification->descriptionformat, ['context' => $context]);
@@ -70,7 +69,7 @@ class renderer extends \plugin_renderer_base {
   $certificationimage
   <div class="info">
   <div class="info">
-    <h2 class="certificationname">{$certificationicon}{$fullname}</h2>
+    <h2 class="certificationname">{$fullname}</h2>
   </div>$tagsdiv
   <div class="content">
     <div class="summary">$description</div>
@@ -124,12 +123,15 @@ EOT;
      * @return string
      */
     public function render_user_periods(stdClass $certification, stdClass $assignment): string {
+        global $USER;
+
         $result = $this->output->heading(get_string('periods', 'tool_mucertify'), 4);
 
-        $table = new \tool_mucertify\table\certification_periods($certification, $assignment, $this->page->url);
-        ob_start();
-        $table->out($table->pagesize, false);
-        $result .= ob_get_clean();
+        $context = \context_user::instance($USER->id);
+        $report = \core_reportbuilder\system_report_factory::create(
+            \tool_mucertify\reportbuilder\local\systemreports\my_assignment_periods::class,
+            $context, parameters:['assignmentid' => $assignment->id]);
+        $result .= $report->output();
 
         return $result;
     }

@@ -50,7 +50,9 @@ final class requests extends system_report {
     #[\Override]
     protected function initialise(): void {
         global $DB;
-        $this->certification = $DB->get_record('tool_mucertify_certification', ['id' => $this->get_parameters()['certificationid']], '*', MUST_EXIST);
+        // Make sure certificationid and context match!
+        $this->certification = $DB->get_record('tool_mucertify_certification',
+            ['id' => $this->get_parameters()['certificationid'], 'contextid' => $this->get_context()->id], '*', MUST_EXIST);
 
         $this->requestentity = new request();
         $requestalias = $this->requestentity->get_table_alias('tool_mucertify_request');

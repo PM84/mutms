@@ -47,7 +47,7 @@ $PAGE->set_url(new moodle_url('/admin/tool/mucertify/catalogue/source_selfassign
 require_login();
 require_capability('tool/mucertify:viewcatalogue', context_system::instance());
 
-if (!enrol_is_enabled('muprog')) {
+if (!\tool_mucertify\local\util::is_mucertify_active()) {
     redirect(new moodle_url('/'));
 }
 

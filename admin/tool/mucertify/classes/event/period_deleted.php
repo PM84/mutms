@@ -80,7 +80,7 @@ final class period_deleted extends \core\event\base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/admin/tool/mucertify/management/user_assignment.php', ['id' => $this->other['assignmentid']]);
+        return new \moodle_url('/admin/tool/mucertify/management/assignment.php', ['id' => $this->other['assignmentid']]);
     }
 
     /**

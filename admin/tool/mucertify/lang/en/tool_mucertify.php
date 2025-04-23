@@ -146,6 +146,7 @@ $string['mucertify:view'] = 'View certifications';
 $string['mucertify:viewcatalogue'] = 'Access certifications catalogue';
 $string['mycertifications'] = 'My certifications';
 $string['never'] = 'Never';
+$string['noexpiration'] = 'No expiration';
 $string['notallocated'] = 'Not allocated';
 $string['notification_assignment'] = 'User assigned';
 $string['notification_assignment_body'] = 'Hello {$a->user_fullname},

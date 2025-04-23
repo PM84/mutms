@@ -32,6 +32,25 @@ use stdClass;
  */
 final class util {
     /**
+     * Cache existence of programs.
+     */
+    public static function fix_mucertify_active(): void {
+        global $DB;
+
+        $active = (int)$DB->record_exists('tool_mucertify_certification', ['archived' => 0]);
+        set_config('active', $active, 'tool_mucertify');
+    }
+
+    /**
+     * Are any programs present?
+     *
+     * @return bool
+     */
+    public static function is_mucertify_active(): bool {
+        return (bool)get_config('tool_mucertify', 'active');
+    }
+
+    /**
      * Is multi-tenancy available?
      *
      * @return bool

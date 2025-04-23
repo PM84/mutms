@@ -39,6 +39,54 @@ final class util_test extends \advanced_testcase {
         $this->resetAfterTest();
     }
 
+    public function test_fix_mucertify_active(): void {
+        global $DB;
+        /** @var \tool_mucertify_generator $generator */
+        $generator = $this->getDataGenerator()->get_plugin_generator('tool_mucertify');
+
+        $this->assertFalse(get_config('tool_mucertify', 'active'));
+
+        util::fix_mucertify_active();
+        $this->assertSame('0', get_config('tool_mucertify', 'active'));
+
+        $certification1 = $generator->create_certification(['archived' => 1]);
+        util::fix_mucertify_active();
+        $this->assertSame('0', get_config('tool_mucertify', 'active'));
+
+        $DB->set_field('tool_mucertify_certification', 'archived', 0, ['id' => $certification1->id]);
+        util::fix_mucertify_active();
+        $this->assertSame('1', get_config('tool_mucertify', 'active'));
+
+        $DB->set_field('tool_mucertify_certification', 'archived', 1, ['id' => $certification1->id]);
+        util::fix_mucertify_active();
+        $this->assertSame('0', get_config('tool_mucertify', 'active'));
+    }
+
+    public function test_is_mucertify_active(): void {
+        /** @var \tool_mucertify_generator $generator */
+        $generator = $this->getDataGenerator()->get_plugin_generator('tool_mucertify');
+
+        $this->assertFalse(util::is_mucertify_active());
+
+        $certification1 = $generator->create_certification(['archived' => 1]);
+        $this->assertFalse(util::is_mucertify_active());
+
+        $certification2 = $generator->create_certification(['archived' => 0]);
+        $this->assertTrue(util::is_mucertify_active());
+
+        $certification2 = \tool_mucertify\local\certification::archive($certification2->id);
+        $this->assertFalse(util::is_mucertify_active());
+
+        $certification2 = \tool_mucertify\local\certification::restore($certification2->id);
+        $this->assertTrue(util::is_mucertify_active());
+
+        \tool_mucertify\local\certification::delete($certification2->id);
+        $this->assertFalse(util::is_mucertify_active());
+
+        \tool_mucertify\local\certification::delete($certification1->id);
+        $this->assertFalse(util::is_mucertify_active());
+    }
+
     public function test_is_mutenancy_available(): void {
         $this->assertSame(
             file_exists(__DIR__ . '/../../../../../tool/mutenancy/version.php'),

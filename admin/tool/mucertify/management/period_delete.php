@@ -73,7 +73,7 @@ if ($form->is_cancelled()) {
 if ($data = $form->get_data()) {
     \tool_mucertify\local\period::delete($data->id);
     if ($assignment) {
-        $returnurl = new moodle_url('/admin/tool/mucertify/management/user_assignment.php', ['id' => $assignment->id]);
+        $returnurl = new moodle_url('/admin/tool/mucertify/management/assignment.php', ['id' => $assignment->id]);
     } else {
         $returnurl = new moodle_url('/admin/tool/mucertify/management/certification.php', ['id' => $certification->id]);
     }
