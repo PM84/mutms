@@ -41,7 +41,11 @@ class block_muprog_my extends block_base {
             return $this->content;
         }
 
-        if (!enrol_is_enabled('muprog') || !isloggedin() || isguestuser()) {
+        if (!isloggedin() || isguestuser()) {
+            return null;
+        }
+
+        if (!\tool_muprog\local\util::is_muprog_active()) {
             return null;
         }
 
