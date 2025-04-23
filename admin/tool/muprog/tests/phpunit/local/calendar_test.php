@@ -131,7 +131,7 @@ final class calendar_test extends \advanced_testcase {
         $program2->description = 'blah';
         $program2->format = (string)\FORMAT_MARKDOWN;
         $DB->update_record('tool_muprog_program', $program2);
-        $DB->set_field('event', 'visible', 0, ['component' => 'tool_muprog']);
+        $DB->set_field('tool_muprog_allocation', 'calendarupdated', 0, []);
         \tool_muprog\local\calendar::fix_allocation_events($allocation2x1, $program2);
         $this->assertCount(4, $DB->get_records('event', ['component' => 'tool_muprog']));
         $event = $DB->get_record('event',
@@ -182,7 +182,7 @@ final class calendar_test extends \advanced_testcase {
         $this->assertSame('0', $event->groupid);
         $this->assertSame('1', $event->visible);
 
-        $DB->set_field('event', 'visible', 0, ['component' => 'tool_muprog']);
+        $DB->set_field('tool_muprog_allocation', 'calendarupdated', 0, []);
         \tool_muprog\local\calendar::fix_allocation_events($allocation2x1, $program2);
         $this->assertCount(2, $DB->get_records('event', ['component' => 'tool_muprog']));
         $event = $DB->get_record('event',
@@ -484,7 +484,7 @@ final class calendar_test extends \advanced_testcase {
         $this->assertSame('0', $event->groupid);
         $this->assertSame('1', $event->visible);
 
-        $DB->set_field('event', 'visible', '0', ['id' => $event->id]);
+        $DB->set_field('tool_muprog_allocation', 'calendarupdated', 0, []);
         \tool_muprog\local\calendar::fix_program_events(null);
         $event = $DB->get_record('event',
             ['component' => 'tool_muprog', 'instance' => $allocation2x1->id, 'eventtype' => \tool_muprog\local\calendar::EVENTTYPE_START], '*', MUST_EXIST);
@@ -660,13 +660,17 @@ final class calendar_test extends \advanced_testcase {
         $this->assertCount(3, $DB->get_records('event', ['component' => 'tool_muprog', 'instance' => $allocation1x1->id]));
         $this->assertCount(1, $DB->get_records('event', ['component' => 'tool_muprog', 'instance' => $allocation2x1->id]));
         $this->assertCount(1, $DB->get_records('event', ['component' => 'tool_muprog', 'instance' => $allocation2x2->id]));
+        $this->assertCount(3, $DB->get_records('tool_muprog_allocation', ['calendarupdated' => 1]));
+        $this->assertCount(0, $DB->get_records('tool_muprog_allocation', ['calendarupdated' => 0]));
 
         \tool_muprog\local\calendar::invalidate_program_events($program2->id);
-        $this->assertCount(3, $DB->get_records('event', ['component' => 'tool_muprog', 'visible' => 1]));
-        $this->assertCount(2, $DB->get_records('event', ['component' => 'tool_muprog', 'visible' => 0]));
+        $this->assertCount(5, $DB->get_records('event', ['component' => 'tool_muprog', 'visible' => 1]));
         $this->assertCount(3, $DB->get_records('event', ['component' => 'tool_muprog', 'instance' => $allocation1x1->id]));
-        $this->assertCount(1, $DB->get_records('event', ['component' => 'tool_muprog', 'instance' => $allocation2x1->id, 'visible' => 0]));
-        $this->assertCount(1, $DB->get_records('event', ['component' => 'tool_muprog', 'instance' => $allocation2x2->id, 'visible' => 0]));
+        $this->assertCount(1, $DB->get_records('event', ['component' => 'tool_muprog', 'instance' => $allocation2x1->id]));
+        $this->assertCount(1, $DB->get_records('event', ['component' => 'tool_muprog', 'instance' => $allocation2x2->id]));
+        $this->assertCount(1, $DB->get_records('tool_muprog_allocation', ['calendarupdated' => 1]));
+        $this->assertCount(1, $DB->get_records('tool_muprog_allocation', ['calendarupdated' => 1, 'id' => $allocation1x1->id]));
+        $this->assertCount(2, $DB->get_records('tool_muprog_allocation', ['calendarupdated' => 0]));
     }
 
     public function test_update_general(): void {

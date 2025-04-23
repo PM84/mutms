@@ -157,6 +157,7 @@
         <FIELD NAME="timedue" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="Expected completion date"/>
         <FIELD NAME="timeend" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="Date when program closes for this user (progress is fronzen after this date and enrolments are suspended)"/>
         <FIELD NAME="timecompleted" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="User program completion date, NULL means program not completed"/>
+        <FIELD NAME="calendarupdated" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="1 means calendar needs update - used when program name or description changes"/>
         <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
       </FIELDS>
       <KEYS>

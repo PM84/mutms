@@ -67,6 +67,10 @@ final class calendar {
                 $calendarevent = \calendar_event::load($event);
                 $calendarevent->delete();
             }
+            if ($allocation->calendarupdated) {
+                $DB->set_field('tool_muprog_allocation', 'calendarupdated', 0, ['id' => $allocation->id]);
+                $allocation->calendarupdated = '0';
+            }
             return;
         }
 
@@ -150,15 +154,16 @@ final class calendar {
                     if ($event->timestart != $time) {
                         $data['timestart'] = $time;
                     }
-                    if ($event->visible != 1) {
-                        $data['visible'] = 1;
-                    }
 
                     if ($data) {
                         $calendarevent = \calendar_event::load($event);
                         $calendarevent->update($data, false);
                     }
                 }
+            }
+            if (!$allocation->calendarupdated) {
+                $DB->set_field('tool_muprog_allocation', 'calendarupdated', 1, ['id' => $allocation->id]);
+                $allocation->calendarupdated = '1';
             }
         } finally {
             self::revert_language();
@@ -231,9 +236,10 @@ final class calendar {
              LEFT JOIN {event} ee ON ee.instance = pa.id AND ee.component = 'tool_muprog' AND ee.eventtype = :pend
                  WHERE p.archived = 0 AND pa.archived = 0 AND pa.timecompleted IS NULL
                        AND (
-                           (es.visible = 0 OR es.timestart <> pa.timestart OR es.id IS NULL)
-                           OR (ed.visible = 0 OR (ed.timestart <> pa.timedue) OR (ed.id IS NULL AND pa.timedue IS NOT NULL) OR (ed.id IS NOT NULL AND pa.timedue IS NULL))
-                           OR (ee.visible = 0 OR (ee.timestart <> pa.timeend) OR (ee.id IS NULL AND pa.timeend IS NOT NULL) OR (ee.id IS NOT NULL AND pa.timeend IS NULL))
+                           pa.calendarupdated = 0
+                           OR (es.timestart <> pa.timestart OR es.id IS NULL)
+                           OR ((ed.timestart <> pa.timedue) OR (ed.id IS NULL AND pa.timedue IS NOT NULL) OR (ed.id IS NOT NULL AND pa.timedue IS NULL))
+                           OR ((ee.timestart <> pa.timeend) OR (ee.id IS NULL AND pa.timeend IS NOT NULL) OR (ee.id IS NOT NULL AND pa.timeend IS NULL))
                        )
                        $programselect
               ORDER BY p.id ASC, pa.id ASC";
@@ -298,16 +304,8 @@ final class calendar {
      */
     public static function invalidate_program_events(int $programid): void {
         global $DB;
-
-        // Do not use calendar API here for performance reasons, we will run proper event update soon enough.
-        $sql = "UPDATE {event}
-                   SET visible = 0
-                 WHERE component = 'tool_muprog' AND visible = 1
-                       AND instance IN (SELECT id FROM {tool_muprog_allocation} WHERE programid = :programid)";
-        $params = ['programid' => $programid];
-        $DB->execute($sql, $params);
+        $DB->set_field('tool_muprog_allocation', 'calendarupdated', 0, ['programid' => $programid, 'calendarupdated' => 1]);
     }
-
 
     /**
      * Temporarily force a different language for calendar events.
