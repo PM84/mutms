@@ -41,7 +41,11 @@ class block_mucertify_my extends block_base {
             return $this->content;
         }
 
-        if (!enrol_is_enabled('muprog') || !isloggedin() || isguestuser()) {
+        if (!isloggedin() || isguestuser()) {
+            return null;
+        }
+
+        if (!\tool_mucertify\local\util::is_mucertify_active()) {
             return null;
         }
 
