@@ -41,8 +41,6 @@ final class frameworks extends system_report {
 
     #[\Override]
     protected function initialise(): void {
-        $context = $this->get_context();
-
         $this->frameworkentity = new framework();
         $this->frameworkalias = $this->frameworkentity->get_table_alias('tool_mutrain_framework');
 
@@ -54,6 +52,8 @@ final class frameworks extends system_report {
         $contextalias = $this->frameworkentity->get_table_alias('context');
         $this->add_join($this->frameworkentity->get_context_join());
 
+        // Make sure only frameworks from context and its subcontexts are shown.
+        $context = $this->get_context();
         $paramlike = database::generate_param_name();
         $this->add_base_condition_sql("({$contextalias}.id = {$context->id} OR {$contextalias}.path LIKE :$paramlike)", [$paramlike => $context->path . '/%']);
 
@@ -66,6 +66,9 @@ final class frameworks extends system_report {
 
     #[\Override]
     protected function can_view(): bool {
+        if (isguestuser() || !isloggedin()) {
+            return false;
+        }
         return has_capability('tool/mutrain:viewframeworks', $this->get_context());
     }
 
