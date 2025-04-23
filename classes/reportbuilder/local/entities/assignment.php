@@ -16,7 +16,6 @@
 
 // phpcs:disable moodle.Files.BoilerplateComment.CommentEndedTooSoon
 // phpcs:disable moodle.Files.LineLength.TooLong
-// phpcs:disable Squiz.WhiteSpace.ScopeClosingBrace.ContentBefore
 
 namespace tool_mucertify\reportbuilder\local\entities;
 
@@ -103,7 +102,7 @@ final class assignment extends base {
                 if ($row->timecertifieduntil != \tool_mulib\local\date_util::TIMESTAMP_FOREVER) {
                     return $value;
                 }
-                return get_string('never', 'tool_mucertify');
+                return get_string('noexpiration', 'tool_mucertify');
             });
 
         $columns[] = (new column(
@@ -126,12 +125,18 @@ final class assignment extends base {
             ->set_is_sortable(true)
             ->add_callback(static function($value, \stdClass $row): string {
                 switch ($row->status) {
-                    case 5: return '<span class="badge badge-dark">' . get_string('certificationstatus_archived', 'tool_mucertify') . '</span>';
-                    case 4: return '<span class="badge badge-light">' . get_string('certificationstatus_notcertified', 'tool_mucertify') . '</span>';
-                    case 3: return '<span class="badge badge-light">' . get_string('certificationstatus_expired', 'tool_mucertify') . '</span>';
-                    case 2: return '<span class="badge badge-success">' . get_string('certificationstatus_temporary', 'tool_mucertify') . '</span>';
-                    case 1: return '<span class="badge badge-success">' . get_string('certificationstatus_valid', 'tool_mucertify') . '</span>';
-                    default: return '';
+                    case 5:
+                        return '<span class="badge badge-dark">' . get_string('certificationstatus_archived', 'tool_mucertify') . '</span>';
+                    case 4:
+                        return '<span class="badge badge-light">' . get_string('certificationstatus_notcertified', 'tool_mucertify') . '</span>';
+                    case 3:
+                        return '<span class="badge badge-light">' . get_string('certificationstatus_expired', 'tool_mucertify') . '</span>';
+                    case 2:
+                        return '<span class="badge badge-success">' . get_string('certificationstatus_temporary', 'tool_mucertify') . '</span>';
+                    case 1:
+                        return '<span class="badge badge-success">' . get_string('certificationstatus_valid', 'tool_mucertify') . '</span>';
+                    default:
+                        return '';
                 }
             });
 

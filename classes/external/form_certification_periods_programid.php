@@ -115,7 +115,7 @@ SQL;
 
             $list[] = [
                 'value' => $program->id,
-                'label' => format_text($program->fullname),
+                'label' => format_string($program->fullname),
             ];
         }
         $rs->close();

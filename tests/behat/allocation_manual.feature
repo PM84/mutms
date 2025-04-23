@@ -246,6 +246,6 @@ Feature: Manual certification assignment tests
     Then I should see "3 users were assigned to certification"
     And I should see "2 errors detected when assigning certification"
     And I click on "Student 1" "link"
-    And the following should exist in the "tool_mucertify_assignment_periods_table" table:
+    And the following should exist in the "reportbuilder-table" table:
       | Program     | Window opening  | Certification due | Window closing | Expiration  |
-      | Program 001 | 11/10/24, 00:00	| 2/01/25, 00:00    | 2/07/25, 00:00 | Never       |
+      | Program 001 | 11/10/24, 00:00	| 2/01/25, 00:00    | 2/07/25, 00:00 | Not set     |

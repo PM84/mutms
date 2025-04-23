@@ -1242,7 +1242,7 @@ final class period_test extends \advanced_testcase {
 
         // This should not happen.
         $period->timecertified = $now;
-        $this->assertSame('Never', period::get_from_html($certification, $assignment, $period));
+        $this->assertSame('Not set', period::get_from_html($certification, $assignment, $period));
     }
 
     public function test_get_until_html(): void {
@@ -1297,7 +1297,7 @@ final class period_test extends \advanced_testcase {
         $this->assertSame('31 days after Certification due', period::get_until_html($certification, $assignment, $period));
 
         $period->timecertified = $now;
-        $this->assertSame('Never', period::get_until_html($certification, $assignment, $period));
+        $this->assertSame('No expiration', period::get_until_html($certification, $assignment, $period));
 
         $data = [
             'id' => $certification->id,

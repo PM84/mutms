@@ -22,7 +22,7 @@ namespace tool_mucertify\phpunit\local;
 use tool_mucertify\local\source\manual;
 
 /**
- * Certification certificate util test.
+ * Certification notification manager test.
  *
  * @group      muTMS
  * @package    tool_mucertify

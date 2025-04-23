@@ -53,7 +53,7 @@ $source = $DB->get_record('tool_mucertify_source', ['id' => $assignment->sourcei
 $context = context::instance_by_id($certification->contextid);
 require_capability('tool/mucertify:admin', $context);
 
-$returnurl = new moodle_url('/admin/tool/mucertify/management/user_assignment.php', ['id' => $assignment->id]);
+$returnurl = new moodle_url('/admin/tool/mucertify/management/assignment.php', ['id' => $assignment->id]);
 
 $user = $DB->get_record('user', ['id' => $assignment->userid], '*', MUST_EXIST);
 

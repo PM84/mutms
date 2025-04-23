@@ -41,8 +41,6 @@ final class certifications extends system_report {
 
     #[\Override]
     protected function initialise(): void {
-        $context = $this->get_context();
-
         $this->certificationentity = new certification();
         $this->certificationalias = $this->certificationentity->get_table_alias('tool_mucertify_certification');
 
@@ -54,6 +52,8 @@ final class certifications extends system_report {
         $contextalias = $this->certificationentity->get_table_alias('context');
         $this->add_join($this->certificationentity->get_context_join());
 
+        // Make sure only certifications from context and its subcontexts are shown.
+        $context = $this->get_context();
         $paramlike = database::generate_param_name();
         $this->add_base_condition_sql("({$contextalias}.id = {$context->id} OR {$contextalias}.path LIKE :$paramlike)", [$paramlike => $context->path . '/%']);
 

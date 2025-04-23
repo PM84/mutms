@@ -164,6 +164,8 @@ final class certification {
 
         $trans->allow_commit();
 
+        util::fix_mucertify_active();
+
         \tool_mucertify\event\certification_created::create_from_certification($certification)->trigger();
 
         return $certification;
@@ -255,6 +257,8 @@ final class certification {
 
         $trans->allow_commit();
 
+        util::fix_mucertify_active();
+
         \tool_mucertify\event\certification_updated::create_from_certification($certification)->trigger();
 
         \tool_mucertify\local\assignment::fix_assignment_sources($certification->id, null);
@@ -315,6 +319,8 @@ final class certification {
 
         $trans->allow_commit();
 
+        util::fix_mucertify_active();
+
         \tool_mucertify\event\certification_archived::create_from_certification($certification)->trigger();
 
         \tool_mucertify\local\assignment::fix_assignment_sources($certification->id, null);
@@ -345,6 +351,8 @@ final class certification {
         $certification = $DB->get_record('tool_mucertify_certification', ['id' => $certification->id], '*', MUST_EXIST);
 
         $trans->allow_commit();
+
+        util::fix_mucertify_active();
 
         \tool_mucertify\event\certification_restored::create_from_certification($certification)->trigger();
 
@@ -659,6 +667,8 @@ final class certification {
         $handler->delete_instance($certification->id);
 
         $trans->allow_commit();
+
+        util::fix_mucertify_active();
 
         \tool_mucertify\event\certification_deleted::create_from_certification($certification)->trigger();
 

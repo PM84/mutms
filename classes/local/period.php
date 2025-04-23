@@ -829,7 +829,7 @@ final class period {
         }
         if ($period->timecertified) {
             // This should not happen.
-            return get_string('never', 'tool_mucertify');
+            return get_string('notset', 'tool_mucertify');
         }
 
         $settings = certification::get_periods_settings($certification);
@@ -861,7 +861,7 @@ final class period {
             return userdate($period->timeuntil, $format);
         }
         if ($period->timecertified) {
-            return get_string('never', 'tool_mucertify');
+            return get_string('noexpiration', 'tool_mucertify');
         }
 
         $settings = certification::get_periods_settings($certification);

@@ -24,7 +24,7 @@ use tool_muprog\local\allocation;
 use tool_muprog\local\program;
 
 /**
- * Program helper test.
+ * Certification event observer test.
  *
  * @group      muTMS
  * @package    tool_mucertify

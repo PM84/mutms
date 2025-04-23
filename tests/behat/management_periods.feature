@@ -276,10 +276,10 @@ Feature: Certification periods settings management tests
       | timeuntil[hour]          | 09          |
       | timeuntil[minute]        | 00          |
     And I press dialog form button "Add period"
-    Then the following should exist in the "tool_mucertify_assignment_periods_table" table:
-      | Program     | Window opening | Window closing | Expiration                                    | Re-certify automatically |
-      | Program 002 | 5/10/23        | Not set        |                                               | 5/09/24                  |
-      | Program 001 | 5/10/22        | Not set        | 12 months after Certification completion date | No                       |
+    Then the following should exist in the "reportbuilder-table" table:
+      | Program     | Window opening | Window closing | Expiration         | Re-certify automatically |
+      | Program 001 | 5/10/22        | Not set        | Not set            | No                       |
+      | Program 002 | 5/10/23        | Not set        | 5/10/24            | 5/09/24                  |
 
     When I follow "5/10/22"
     And I press "Override period dates"
@@ -330,7 +330,7 @@ Feature: Certification periods settings management tests
     And I press dialog form button "Override period dates"
     And I press "Delete period"
     And I press dialog form button "Delete period"
-    Then the following should exist in the "tool_mucertify_assignment_periods_table" table:
-      | Program     | Window opening | Window closing | Expiration                                    | Re-certify automatically |
-      | Program 002 | 5/10/23        | Not set        |                                               | 5/09/24                  |
+    Then the following should exist in the "reportbuilder-table" table:
+      | Program     | Window opening | Window closing | Expiration                 | Re-certify automatically |
+      | Program 002 | 5/10/23        | Not set        | 5/10/24                    | 5/09/24                  |
     And I should not see "Program 001"
