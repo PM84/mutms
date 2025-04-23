@@ -127,7 +127,7 @@ Feature: Program approval allocations tests
 
     When I log in as "student2"
     And I am on the "tool_muprog > My programs" page
-    And "Program 001" row "Program status" column of "my_programs" table should contain "Open"
+    And "Program 001" row "Program status" column of "reportbuilder-table" table should contain "Open"
     And I log out
 
     When I log in as "allocator"

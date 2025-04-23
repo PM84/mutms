@@ -303,9 +303,9 @@ abstract class base {
 
         \tool_muprog\event\allocation_created::create_from_allocation($allocation, $program)->trigger();
 
-        \tool_muprog\local\notification\allocation::notify_now($user, $program, $source, $allocation);
-
         \tool_muprog\local\calendar::fix_allocation_events($allocation, $program);
+
+        \tool_muprog\local\notification\allocation::notify_now($user, $program, $source, $allocation);
 
         return $allocation;
     }
@@ -599,6 +599,7 @@ abstract class base {
         allocation::fix_allocation_sources($allocation->programid, $allocation->userid);
         allocation::fix_user_enrolments($allocation->programid, $allocation->userid);
         \tool_muprog\local\calendar::fix_allocation_events($allocation, $program);
+        $allocation = $DB->get_record('tool_muprog_allocation', ['id' => $allocation->id], '*', MUST_EXIST);
 
         \tool_muprog\local\notification_manager::trigger_notifications($allocation->programid, $allocation->userid);
 
