@@ -60,7 +60,7 @@ class behat_tool_mucertify extends behat_base {
     protected function resolve_page_instance_url(string $type, string $identifier): moodle_url {
         global $DB;
         switch (strtolower($type)) {
-            case 'certifications management':
+            case 'certification management':
                 if (strtolower($identifier) === 'system') {
                     $syscontext = context_system::instance();
                     return new moodle_url('/admin/tool/mucertify/management/index.php', ['contextid' => $syscontext->id]);

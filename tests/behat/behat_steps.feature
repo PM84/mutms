@@ -53,13 +53,13 @@ Feature: Certifications navigation behat steps test
     And I should see "Certification 002"
     And I should see "Certification 003"
 
-    When I am on the "System" "tool_mucertify > Certifications management" page
+    When I am on the "System" "tool_mucertify > Certification management" page
     Then I should see "Certification 000"
     And I should see "Certification 001"
     And I should see "Certification 002"
     And I should see "Certification 003"
 
-    When I am on the "Cat 1" "tool_mucertify > Certifications management" page
+    When I am on the "Cat 1" "tool_mucertify > Certification management" page
     Then I should not see "Certification 000"
     And I should see "Certification 001"
     And I should not see "Certification 002"
@@ -69,7 +69,7 @@ Feature: Certifications navigation behat steps test
   Scenario: Admin navigates to certifications the normal way
     Given I log in as "admin"
 
-    When I navigate to "Certifications > Certifications management" in site administration
+    When I navigate to "Certifications > Certification management" in site administration
     Then I should see "Certification 000"
     And I should see "Certification 001"
     And I should see "Certification 002"
@@ -110,13 +110,13 @@ Feature: Certifications navigation behat steps test
     And I should see "Certification 002"
     And I should see "Certification 003"
 
-    When I am on the "System" "tool_mucertify > Certifications management" page
+    When I am on the "System" "tool_mucertify > Certification management" page
     Then I should see "Certification 000"
     And I should see "Certification 001"
     And I should see "Certification 002"
     And I should see "Certification 003"
 
-    When I am on the "Cat 1" "tool_mucertify > Certifications management" page
+    When I am on the "Cat 1" "tool_mucertify > Certification management" page
     Then I should not see "Certification 000"
     And I should see "Certification 001"
     And I should not see "Certification 002"
@@ -125,7 +125,7 @@ Feature: Certifications navigation behat steps test
   Scenario: Category manager navigates to certifications via behat step
     Given I log in as "manager2"
 
-    When I am on the "Cat 1" "tool_mucertify > Certifications management" page
+    When I am on the "Cat 1" "tool_mucertify > Certification management" page
     Then I should not see "Certification 000"
     And I should see "Certification 001"
     And I should not see "Certification 002"
@@ -140,13 +140,13 @@ Feature: Certifications navigation behat steps test
     And I should see "Certification 002"
     And I should see "Certification 003"
 
-    When I am on the "System" "tool_mucertify > Certifications management" page
+    When I am on the "System" "tool_mucertify > Certification management" page
     Then I should see "Certification 000"
     And I should see "Certification 001"
     And I should see "Certification 002"
     And I should see "Certification 003"
 
-    When I am on the "Cat 1" "tool_mucertify > Certifications management" page
+    When I am on the "Cat 1" "tool_mucertify > Certification management" page
     Then I should not see "Certification 000"
     And I should see "Certification 001"
     And I should not see "Certification 002"
@@ -155,7 +155,7 @@ Feature: Certifications navigation behat steps test
   Scenario: Category viewer navigates to certifications via behat step
     Given I log in as "viewer2"
 
-    When I am on the "Cat 1" "tool_mucertify > Certifications management" page
+    When I am on the "Cat 1" "tool_mucertify > Certification management" page
     Then I should not see "Certification 000"
     And I should see "Certification 001"
     And I should not see "Certification 002"

@@ -41,6 +41,7 @@ $syscontext = context_system::instance();
 
 $PAGE->set_url(new moodle_url('/admin/tool/mucertify/catalogue/certification.php', ['id' => $id]));
 $PAGE->set_context(context_system::instance());
+$PAGE->set_secondary_navigation(false);
 
 require_login();
 require_capability('tool/mucertify:viewcatalogue', context_system::instance());
@@ -81,18 +82,22 @@ if (!\tool_mucertify\local\catalogue::is_certification_visible($certification)) 
     }
 }
 
-if (has_capability('tool/mucertify:view', $certificationcontext)) {
-    $manageurl = new moodle_url('/admin/tool/mucertify/management/certification.php', ['id' => $certification->id]);
-    $button = html_writer::link($manageurl, get_string('management', 'tool_mucertify'), ['class' => 'btn btn-secondary']);
-    $PAGE->set_button($button . $PAGE->button);
+$actions = new \tool_mulib\output\header_actions(get_string('catalogue_actions', 'tool_mucertify'));
+
+$manageurl = \tool_mucertify\local\management::get_management_url();
+if ($manageurl) {
+    $actions->get_dropdown()->add_item(get_string('management', 'tool_mucertify'), $manageurl);
+}
+
+if ($actions->has_items()) {
+    $PAGE->set_button($PAGE->button . $OUTPUT->render($actions));
 }
 
 /** @var \tool_mucertify\output\catalogue\renderer $catalogueoutput */
 $catalogueoutput = $PAGE->get_renderer('tool_mucertify', 'catalogue');
 
-$PAGE->set_heading(get_string('catalogue', 'tool_mucertify'));
-$PAGE->navigation->override_active_url(new moodle_url('/admin/tool/mucertify/catalogue/index.php'));
 $PAGE->set_title(get_string('catalogue', 'tool_mucertify'));
+$PAGE->navbar->add(get_string('catalogue', 'tool_mucertify'), new moodle_url('/admin/tool/mucertify/catalogue/'));
 $PAGE->navbar->add(format_string($certification->fullname));
 
 echo $OUTPUT->header();

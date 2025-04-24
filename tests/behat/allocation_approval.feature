@@ -112,7 +112,7 @@ Feature: Certification approval assignments tests
     And I log out
 
     When I log in as "allocator"
-    And I am on the "Cat 1" "tool_mucertify > Certifications management" page
+    And I am on the "Cat 1" "tool_mucertify > Certification management" page
     And I follow "Certification 001"
     And I click on "Requests" "link" in the ".secondary-navigation" "css_element"
     And I click on "Actions" "link" in the "Student 2" "table_row"
@@ -129,7 +129,7 @@ Feature: Certification approval assignments tests
     And I log out
 
     When I log in as "allocator"
-    And I am on the "Cat 1" "tool_mucertify > Certifications management" page
+    And I am on the "Cat 1" "tool_mucertify > Certification management" page
     And I follow "Certification 001"
     And I follow "Users"
     And I click on "Actions" "link" in the "Student 2" "table_row"
@@ -169,7 +169,7 @@ Feature: Certification approval assignments tests
     And I log out
 
     When I log in as "allocator"
-    And I am on the "Cat 1" "tool_mucertify > Certifications management" page
+    And I am on the "Cat 1" "tool_mucertify > Certification management" page
     And I follow "Certification 001"
     And I click on "Requests" "link" in the ".secondary-navigation" "css_element"
     And I click on "Actions" "link" in the "Student 2" "table_row"
@@ -189,7 +189,7 @@ Feature: Certification approval assignments tests
     And I log out
 
     When I log in as "allocator"
-    And I am on the "Cat 1" "tool_mucertify > Certifications management" page
+    And I am on the "Cat 1" "tool_mucertify > Certification management" page
     And I follow "Certification 001"
     And I click on "Requests" "link" in the ".secondary-navigation" "css_element"
     And I click on "Actions" "link" in the "Student 2" "table_row"

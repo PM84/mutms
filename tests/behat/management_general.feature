@@ -1,5 +1,5 @@
 @tool @tool_mucertify @muTMS
-Feature: General Certifications management tests
+Feature: General Certification management tests
 
   Background:
     Given unnecessary Admin bookmarks block gets deleted
@@ -90,7 +90,7 @@ Feature: General Certifications management tests
     And I should see "No" in the "Archived" definition list item
     And I should see "Mathematics" in the "Tags" definition list item
     And I should see "Algebra" in the "Tags" definition list item
-    And I am on the "Cat 2" "tool_mucertify > Certifications management" page
+    And I am on the "Cat 2" "tool_mucertify > Certification management" page
     And "CT01" row "Public" column of "reportbuilder-table" table should contain "No"
     And "CT01" row "Assignments" column of "reportbuilder-table" table should contain "0"
 

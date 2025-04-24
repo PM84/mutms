@@ -155,7 +155,6 @@ final class catalogue {
             return get_string('errornocertifications', 'tool_mucertify');
         }
 
-        $certificationicon = $OUTPUT->pix_icon('certification', '', 'tool_mucertify');
         $currenturl = $this->get_current_url();
 
         $result = '';
@@ -177,31 +176,15 @@ final class catalogue {
 
         $result .= $OUTPUT->paging_bar($totalcount, $this->page, $this->perpage, $currenturl);
         $result .= '<div class="certifications">';
-        $i = 0;
-        $count = count($certifications);
         foreach ($certifications as $certification) {
             $assignment = $DB->get_record('tool_mucertify_assignment', ['certificationid' => $certification->id, 'userid' => $USER->id, 'archived' => 0]);
             $context = \context::instance_by_id($certification->contextid);
-            $classes = ['certificationbox', 'clearfix'];
-            if ($i % 2 === 0) {
-                $classes[] = 'odd';
-            } else {
-                $classes[] = 'even';
-            }
-            if ($i == 0) {
-                $classes[] = 'first';
-            }
-            if ($i == $count - 1) {
-                $classes[] = 'last';
-            }
-            $classes = implode(' ', $classes);
             $fullname = format_string($certification->fullname);
             if ($assignment) {
                 $url = new \moodle_url('/admin/tool/mucertify/my/certification.php', ['id' => $certification->id]);
             } else {
                 $url = new \moodle_url('/admin/tool/mucertify/catalogue/certification.php', ['id' => $certification->id]);
             }
-            $url = $url->out(true);
 
             $description = file_rewrite_pluginfile_urls($certification->description, 'pluginfile.php', $context->id, 'tool_mucertify', 'description', $certification->id);
             $description = format_text($description, $certification->descriptionformat, ['context' => $context]);
@@ -224,22 +207,18 @@ final class catalogue {
             if (!empty($presentation['image'])) {
                 $imageurl = \moodle_url::make_file_url("$CFG->wwwroot/pluginfile.php",
                     '/' . $context->id . '/tool_mucertify/image/' . $certification->id . '/'. $presentation['image'], false);
-                $certificationimage = '<div class="float-end certificationimage">' . \html_writer::img($imageurl, '') . '</div>';
+                $certificationimage = \html_writer::img($imageurl, '', ['class' => 'certificationimage']);
             }
 
-            $result .= <<<EOT
-<div class="$classes" data-certificationid="$certification->id">
-  $certificationimage
-  <div class="info">
-    <h3 class="certificationname"><a class="aalink" href="$url">{$certificationicon}{$fullname}<a/></h3>
-  </div>$tagsdiv
-  <div class="content">
-    <div class="summary">$description</div>
-  </div>
-  <div class="assignment">$assignmentinfo</div>
-</div>
-EOT;
-            $i++;
+            $data = [
+                'url' => $url->out(false),
+                'fullname' => $fullname,
+                'description' => $description,
+                'tags' => $tagsdiv,
+                'image' => $certificationimage,
+                'sourceinfo' => $assignmentinfo,
+            ];
+            $result .= $OUTPUT->render_from_template('tool_mucertify/catalogue/certification', $data);
         }
 
         $result .= '</div>';
@@ -287,7 +266,6 @@ EOT;
 
         $searchwhere = '';
         if (isset($this->searchtext)) {
-            // NOTE: We should add better search similar to get_courses_search().
             $concat = $DB->sql_concat_join("' '", ['p.fullname', 'p.description', 'p.idnumber']);
             $searchwhere = 'AND ' . $DB->sql_like("($concat)", ':searchtext', false, false);
             $params['searchtext'] = '%' . $DB->sql_like_escape($this->searchtext) . '%';

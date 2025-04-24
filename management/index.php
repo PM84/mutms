@@ -17,7 +17,7 @@
 // phpcs:disable moodle.Files.BoilerplateComment.CommentEndedTooSoon
 
 /**
- * Certifications management interface.
+ * Certification management interface.
  *
  * @package    tool_mucertify
  * @copyright  2023 Open LMS (https://www.openlms.net/)
