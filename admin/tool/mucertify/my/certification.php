@@ -94,10 +94,15 @@ $PAGE->navbar->add(get_string('profile'), new moodle_url('/user/profile.php', ['
 $PAGE->navbar->add($title, new moodle_url('/admin/tool/mucertify/my/index.php'));
 $PAGE->navbar->add(format_string($certification->fullname));
 
+$actions = new \tool_mulib\output\header_actions(get_string('certification_actions', 'tool_mucertify'));
+
 if (has_capability('tool/mucertify:view', $certificationcontext)) {
     $manageurl = new moodle_url('/admin/tool/mucertify/management/certification.php', ['id' => $certification->id]);
-    $button = html_writer::link($manageurl, get_string('management', 'tool_mucertify'), ['class' => 'btn btn-secondary']);
-    $PAGE->set_button($button . $PAGE->button);
+    $actions->get_dropdown()->add_item(get_string('management', 'tool_mucertify'), $manageurl);
+}
+
+if ($actions->has_items()) {
+    $PAGE->set_button($PAGE->button . $OUTPUT->render($actions));
 }
 
 /** @var \tool_mucertify\output\my\renderer $myouput */

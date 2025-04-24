@@ -42,7 +42,6 @@ class renderer extends \plugin_renderer_base {
 
         $context = \context::instance_by_id($certification->contextid);
         $fullname = format_string($certification->fullname);
-        $certificationicon = $this->output->pix_icon('certification', '', 'tool_mucertify');
 
         $description = file_rewrite_pluginfile_urls($certification->description, 'pluginfile.php', $context->id, 'tool_mucertify', 'description', $certification->id);
         $description = format_text($description, $certification->descriptionformat, ['context' => $context]);
@@ -51,7 +50,7 @@ class renderer extends \plugin_renderer_base {
         if ($CFG->usetags) {
             $tags = \core_tag_tag::get_item_tags('tool_mucertify', 'certification', $certification->id);
             if ($tags) {
-                $tagsdiv = $this->output->tag_list($tags, '', 'certification-tags');
+                $tagsdiv = $this->output->tag_list($tags, '', 'certification-tags mb-3');
             }
         }
 
@@ -60,22 +59,12 @@ class renderer extends \plugin_renderer_base {
         if (!empty($presentation['image'])) {
             $imageurl = \moodle_url::make_file_url("$CFG->wwwroot/pluginfile.php",
                 '/' . $context->id . '/tool_mucertify/image/' . $certification->id . '/'. $presentation['image'], false);
-            $certificationimage = '<div class="float-end certificationimage">' . \html_writer::img($imageurl, '') . '</div>';
+            $certificationimage = '<div class="certificationimage">' . \html_writer::img($imageurl, '') . '</div>';
         }
 
-        $result = '';
-        $result .= <<<EOT
-<div class="certificationbox clearfix" data-certificationid="$certification->id">
-  $certificationimage
-  <div class="info">
-  <div class="info">
-    <h2 class="certificationname">{$certificationicon}{$fullname}</h2>
-  </div>$tagsdiv
-  <div class="content">
-    <div class="summary">$description</div>
-  </div>
-</div>
-EOT;
+        $result = $this->output->heading($fullname);
+        $result .= $tagsdiv;
+        $result .= "<div class='d-flex'><div class='w-100'>$description</div><div class='flex-shrink-1'>$certificationimage</div></div>";
 
         $details = [];
         $details[] = ['property' => get_string('certificationstatus', 'tool_mucertify'),

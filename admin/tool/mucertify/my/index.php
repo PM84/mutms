@@ -57,17 +57,21 @@ $PAGE->set_pagelayout('report');
 $PAGE->navbar->add(get_string('profile'), new moodle_url('/user/profile.php', ['id' => $USER->id]));
 $PAGE->navbar->add($title);
 
-$buttons = [];
+$actions = new \tool_mulib\output\header_actions(get_string('certification_actions', 'tool_mucertify'));
+
 $manageurl = \tool_mucertify\local\management::get_management_url();
 if ($manageurl) {
-    $buttons[] = html_writer::link($manageurl, get_string('management', 'tool_mucertify'), ['class' => 'btn btn-secondary']);
+    $actions->get_dropdown()->add_item(get_string('management', 'tool_mucertify'), $manageurl);
 }
 $catalogueurl = \tool_mucertify\local\catalogue::get_catalogue_url();
 if ($catalogueurl) {
-    $buttons[] = html_writer::link($catalogueurl, get_string('catalogue', 'tool_mucertify'), ['class' => 'btn btn-secondary']);
+    $button = html_writer::link($catalogueurl, get_string('catalogue', 'tool_mucertify'), ['class' => 'btn btn-secondary']);
+    $actions->add_button($button);
 }
-$buttons = implode('&nbsp;', $buttons);
-$PAGE->set_button($buttons . $PAGE->button);
+
+if ($actions->has_items()) {
+    $PAGE->set_button($PAGE->button . $OUTPUT->render($actions));
+}
 
 echo $OUTPUT->header();
 

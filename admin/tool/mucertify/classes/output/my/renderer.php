@@ -60,22 +60,12 @@ class renderer extends \plugin_renderer_base {
         if (!empty($presentation['image'])) {
             $imageurl = \moodle_url::make_file_url("$CFG->wwwroot/pluginfile.php",
                 '/' . $context->id . '/tool_mucertify/image/' . $certification->id . '/'. $presentation['image'], false);
-            $certificationimage = '<div class="float-end certificationimage">' . \html_writer::img($imageurl, '') . '</div>';
+            $certificationimage = '<div class="certificationimage">' . \html_writer::img($imageurl, '') . '</div>';
         }
 
-        $result = '';
-        $result .= <<<EOT
-<div class="certificationbox clearfix" data-certificationid="$certification->id">
-  $certificationimage
-  <div class="info">
-  <div class="info">
-    <h2 class="certificationname">{$fullname}</h2>
-  </div>$tagsdiv
-  <div class="content">
-    <div class="summary">$description</div>
-  </div>
-</div>
-EOT;
+        $result = $this->output->heading($fullname);
+        $result .= $tagsdiv;
+        $result .= "<div class='d-flex'><div class='w-100'>$description</div><div class='flex-shrink-1'>$certificationimage</div></div>";
 
         return $result;
     }
@@ -125,7 +115,7 @@ EOT;
     public function render_user_periods(stdClass $certification, stdClass $assignment): string {
         global $USER;
 
-        $result = $this->output->heading(get_string('periods', 'tool_mucertify'), 4);
+        $result = $this->output->heading(get_string('periods', 'tool_mucertify'), 3);
 
         $context = \context_user::instance($USER->id);
         $report = \core_reportbuilder\system_report_factory::create(

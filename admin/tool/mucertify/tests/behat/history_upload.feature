@@ -55,7 +55,7 @@ Feature: Import of historic certification periods
   @javascript @_file_upload
   Scenario: Manager may upload historic certification periods using csv with header
     Given I log in as "manager1"
-    And I am on the "Cat 1" "tool_mucertify > Certifications management" page
+    And I am on the "Cat 1" "tool_mucertify > Certification management" page
     And I follow "Certification 001"
     And I click on "Assignment settings" "link" in the ".secondary-navigation" "css_element"
     And I click on "Update Manual assignment" "link"
@@ -159,7 +159,7 @@ Feature: Import of historic certification periods
   @javascript @_file_upload
   Scenario: Manager may upload historic certification periods using csv without header
     Given I log in as "manager1"
-    And I am on the "Cat 1" "tool_mucertify > Certifications management" page
+    And I am on the "Cat 1" "tool_mucertify > Certification management" page
     And I follow "Certification 001"
     And I click on "Assignment settings" "link" in the ".secondary-navigation" "css_element"
     And I click on "Update Manual assignment" "link"

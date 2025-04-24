@@ -1,10 +1,13 @@
 # Certifications for Moodle™
 
-_Certifications_ is a set of plugins
-designed to simplify the process for your employees and serve
-as a seamless solution for your compliance training needs. 
+![Moodle Plugin CI](https://github.com/mutms/moodle-tool_mucertify/actions/workflows/moodle-ci.yml/badge.svg)
 
-This plugin requires following:
+_Certifications_ is a set of plugins designed to simplify the certification process for your employees
+and serve as a seamless solution for your compliance training needs. 
+
+# Installation and requirements
+
+This plugin requires following plugins:
 
 * [Additional tools library plugin](https://github.com/mutms/moodle-tool_mulib)
 * [Programs plugin](https://github.com/mutms/moodle-tool_muprog)
@@ -20,4 +23,8 @@ Other recommended plugins:
 * [Certification fields for Certificate plugin](https://github.com/mutms/moodle-certificateelement_mucertify)
 * [Program fields for Certificate plugin](https://github.com/mutms/moodle-certificateelement_muprog)
 
-This plugin is compatible with [Multi-tenancy for Moodle™](https://github.com/mutms/moodle-tool_mutenancy).
+This plugin is fully compatible with [Multi-tenancy for Moodle™](https://github.com/mutms/moodle-tool_mutenancy).
+
+## Documentation
+
+See [online documentation](https://github.com/mutms/moodle-tool_mucertify/wiki) for more information.

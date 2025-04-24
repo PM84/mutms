@@ -41,6 +41,7 @@ $syscontext = context_system::instance();
 
 $PAGE->set_url($catalogue->get_current_url());
 $PAGE->set_context($syscontext);
+$PAGE->set_secondary_navigation(false);
 
 require_login();
 require_capability('tool/mucertify:viewcatalogue', $syscontext);
@@ -49,17 +50,21 @@ if (!\tool_mucertify\local\util::is_mucertify_active()) {
     redirect(new moodle_url('/'));
 }
 
-$buttons = [];
+$actions = new \tool_mulib\output\header_actions(get_string('catalogue_actions', 'tool_mucertify'));
+
 $manageurl = \tool_mucertify\local\management::get_management_url();
 if ($manageurl) {
-    $buttons[] = html_writer::link($manageurl, get_string('management', 'tool_mucertify'), ['class' => 'btn btn-secondary']);
+    $actions->get_dropdown()->add_item(get_string('management', 'tool_mucertify'), $manageurl);
 }
-if (!isguestuser()) {
+if (!isguestuser() && isloggedin()) {
     $mycertificationsurl = new moodle_url('/admin/tool/mucertify/my/index.php');
-    $buttons[] = html_writer::link($mycertificationsurl, get_string('mycertifications', 'tool_mucertify'), ['class' => 'btn btn-secondary']);
+    $button = html_writer::link($mycertificationsurl, get_string('mycertifications', 'tool_mucertify'), ['class' => 'btn btn-secondary']);
+    $actions->add_button($button);
 }
-$buttons = implode('&nbsp;', $buttons);
-$PAGE->set_button($buttons . $PAGE->button);
+
+if ($actions->has_items()) {
+    $PAGE->set_button($PAGE->button . $OUTPUT->render($actions));
+}
 
 $PAGE->set_heading(get_string('catalogue', 'tool_mucertify'));
 $PAGE->set_title(get_string('catalogue', 'tool_mucertify'));

@@ -19,6 +19,8 @@
 
 namespace tool_mucertify\phpunit\local;
 
+use tool_mucertify\local\management;
+
 /**
  * certification management helper test.
  *
@@ -47,14 +49,6 @@ final class management_test extends \advanced_testcase {
         $category2 = $this->getDataGenerator()->create_category([]);
         $catcontext2 = \context_coursecat::instance($category2->id);
 
-        /** @var \tool_mucertify_generator $generator */
-        $generator = $this->getDataGenerator()->get_plugin_generator('tool_mucertify');
-
-        $certification1 = $generator->create_certification();
-        $certification2 = $generator->create_certification(['contextid' => $catcontext1->id]);
-        $certification3 = $generator->create_certification(['contextid' => $catcontext1->id]);
-        $certification4 = $generator->create_certification(['contextid' => $catcontext2->id]);
-
         $admin = get_admin();
         $guest = guest_user();
         $manager = $this->getDataGenerator()->create_user();
@@ -67,22 +61,51 @@ final class management_test extends \advanced_testcase {
         \role_assign($viewerroleid, $viewer->id, $catcontext1->id);
 
         $this->setUser(null);
-        $this->assertNull(\tool_mucertify\local\management::get_management_url());
+        $this->assertNull(management::get_management_url());
 
         $this->setUser($guest);
-        $this->assertNull(\tool_mucertify\local\management::get_management_url());
+        $this->assertNull(management::get_management_url());
 
         $this->setUser($admin);
         $expected = new \moodle_url('/admin/tool/mucertify/management/index.php');
-        $this->assertSame((string)$expected, (string)\tool_mucertify\local\management::get_management_url());
+        $this->assertSame((string)$expected, (string)management::get_management_url());
 
         $this->setUser($manager);
-        $expected = new \moodle_url('/admin/tool/mucertify/management/index.php', ['contextid' => $catcontext2->id]);
-        $this->assertSame((string)$expected, (string)\tool_mucertify\local\management::get_management_url());
+        $this->assertNull(management::get_management_url());
 
         $this->setUser($viewer);
-        $expected = new \moodle_url('/admin/tool/mucertify/management/index.php', ['contextid' => $catcontext1->id]);
-        $this->assertSame((string)$expected, (string)\tool_mucertify\local\management::get_management_url());
+        $this->assertNull(management::get_management_url());
+    }
+
+    public function test_get_management_url_tenant(): void {
+        if (!\tool_mucertify\local\util::is_mutenancy_available()) {
+            $this->markTestSkipped('multitenancy not available');
+        }
+        \tool_mutenancy\local\tenancy::activate();
+
+        /** @var \tool_mutenancy_generator $tenantgenerator */
+        $tenantgenerator = $this->getDataGenerator()->get_plugin_generator('tool_mutenancy');
+
+        $tenant = $tenantgenerator->create_tenant();
+        $tenantcatcontext = \context_coursecat::instance($tenant->categoryid);
+        $syscontext = \context_system::instance();
+
+        $viewerroleid = $this->getDataGenerator()->create_role();
+        assign_capability('tool/mucertify:view', CAP_ALLOW, $viewerroleid, $syscontext);
+
+        $viewer0 = $this->getDataGenerator()->create_user();
+        role_assign($viewerroleid, $viewer0->id, $syscontext->id);
+
+        $viewer1 = $this->getDataGenerator()->create_user(['tenantid' => $tenant->id]);
+        role_assign($viewerroleid, $viewer1->id, $tenantcatcontext->id);
+
+        $this->setUser($viewer0);
+        $expected = new \moodle_url('/admin/tool/mucertify/management/index.php');
+        $this->assertSame((string)$expected, (string)management::get_management_url());
+
+        $this->setUser($viewer1);
+        $expected = new \moodle_url('/admin/tool/mucertify/management/index.php', ['contextid' => $tenantcatcontext->id]);
+        $this->assertSame((string)$expected, (string)management::get_management_url());
     }
 
     public function test_fetch_certifications(): void {
@@ -104,7 +127,7 @@ final class management_test extends \advanced_testcase {
         $certification3 = \tool_mucertify\local\certification::archive($certification3->id);
         $certification5 = \tool_mucertify\local\certification::archive($certification5->id);
 
-        $result = \tool_mucertify\local\management::fetch_certifications(null, false, '', 0, 100, 'id ASC');
+        $result = management::fetch_certifications(null, false, '', 0, 100, 'id ASC');
         $this->assertCount(2, $result);
         $this->assertCount(4, $result['certifications']);
         $this->assertSame(4, $result['totalcount']);
@@ -114,14 +137,14 @@ final class management_test extends \advanced_testcase {
         $this->assertArrayHasKey($certification4->id, $certifications);
         $this->assertArrayHasKey($certification6->id, $certifications);
 
-        $result = \tool_mucertify\local\management::fetch_certifications(null, false, 'hokus', 0, 100, 'id ASC');
+        $result = management::fetch_certifications(null, false, 'hokus', 0, 100, 'id ASC');
         $this->assertCount(2, $result);
         $this->assertCount(1, $result['certifications']);
         $this->assertSame(1, $result['totalcount']);
         $certifications = $result['certifications'];
         $this->assertArrayHasKey($certification1->id, $certifications);
 
-        $result = \tool_mucertify\local\management::fetch_certifications(null, false, 'okus', 0, 100, 'id ASC');
+        $result = management::fetch_certifications(null, false, 'okus', 0, 100, 'id ASC');
         $this->assertCount(2, $result);
         $this->assertCount(2, $result['certifications']);
         $this->assertSame(2, $result['totalcount']);
@@ -129,7 +152,7 @@ final class management_test extends \advanced_testcase {
         $this->assertArrayHasKey($certification1->id, $certifications);
         $this->assertArrayHasKey($certification2->id, $certifications);
 
-        $result = \tool_mucertify\local\management::fetch_certifications(null, true, '', 0, 100, 'id ASC');
+        $result = management::fetch_certifications(null, true, '', 0, 100, 'id ASC');
         $this->assertCount(2, $result);
         $this->assertCount(2, $result['certifications']);
         $this->assertSame(2, $result['totalcount']);
@@ -137,14 +160,14 @@ final class management_test extends \advanced_testcase {
         $this->assertArrayHasKey($certification3->id, $certifications);
         $this->assertArrayHasKey($certification5->id, $certifications);
 
-        $result = \tool_mucertify\local\management::fetch_certifications($catcontext1, false, '', 0, 100, 'id ASC');
+        $result = management::fetch_certifications($catcontext1, false, '', 0, 100, 'id ASC');
         $this->assertCount(2, $result);
         $this->assertCount(1, $result['certifications']);
         $this->assertSame(1, $result['totalcount']);
         $certifications = $result['certifications'];
         $this->assertArrayHasKey($certification4->id, $certifications);
 
-        $result = \tool_mucertify\local\management::fetch_certifications(null, false, '', 1, 2, 'id ASC');
+        $result = management::fetch_certifications(null, false, '', 1, 2, 'id ASC');
         $this->assertCount(2, $result);
         $this->assertCount(2, $result['certifications']);
         $this->assertSame(4, $result['totalcount']);
@@ -152,7 +175,7 @@ final class management_test extends \advanced_testcase {
         $this->assertArrayHasKey($certification4->id, $certifications);
         $this->assertArrayHasKey($certification6->id, $certifications);
 
-        $result = \tool_mucertify\local\management::fetch_certifications(null, false, '', 3, 1, 'id ASC');
+        $result = management::fetch_certifications(null, false, '', 3, 1, 'id ASC');
         $this->assertCount(2, $result);
         $this->assertCount(1, $result['certifications']);
         $this->assertSame(4, $result['totalcount']);
@@ -198,7 +221,7 @@ final class management_test extends \advanced_testcase {
             $catcontext1->id => $category1->name . ' (2)',
             $catcontext2->id => $category2->name . ' (1)',
         ];
-        $contexts = \tool_mucertify\local\management::get_used_contexts_menu($syscontext);
+        $contexts = management::get_used_contexts_menu($syscontext);
         $this->assertSame($expected, $contexts);
 
         $expected = [
@@ -208,7 +231,7 @@ final class management_test extends \advanced_testcase {
             $catcontext2->id => $category2->name . ' (1)',
             $catcontext3->id => $category3->name,
         ];
-        $contexts = \tool_mucertify\local\management::get_used_contexts_menu($catcontext3);
+        $contexts = management::get_used_contexts_menu($catcontext3);
         $this->assertSame($expected, $contexts);
 
         $this->setUser($user);
@@ -217,14 +240,14 @@ final class management_test extends \advanced_testcase {
         $expected = [
             $catcontext1->id => $category1->name . ' (2)',
         ];
-        $contexts = \tool_mucertify\local\management::get_used_contexts_menu($catcontext1);
+        $contexts = management::get_used_contexts_menu($catcontext1);
         $this->assertSame($expected, $contexts);
 
         $expected = [
             $catcontext1->id => $category1->name . ' (2)',
             $catcontext3->id => $category3->name,
         ];
-        $contexts = \tool_mucertify\local\management::get_used_contexts_menu($catcontext3);
+        $contexts = management::get_used_contexts_menu($catcontext3);
         $this->assertSame($expected, $contexts);
     }
 
@@ -255,10 +278,10 @@ final class management_test extends \advanced_testcase {
             $cohort1->id => $cohort1->name,
             $cohort2->id => $cohort2->name,
         ];
-        $menu = \tool_mucertify\local\management::fetch_current_cohorts_menu($certification1->id);
+        $menu = management::fetch_current_cohorts_menu($certification1->id);
         $this->assertSame($expected, $menu);
 
-        $menu = \tool_mucertify\local\management::fetch_current_cohorts_menu($certification3->id);
+        $menu = management::fetch_current_cohorts_menu($certification3->id);
         $this->assertSame([], $menu);
     }
 
@@ -274,14 +297,14 @@ final class management_test extends \advanced_testcase {
         $user = $this->getDataGenerator()->create_user();
 
         $PAGE = new \moodle_page();
-        \tool_mucertify\local\management::setup_index_page(
+        management::setup_index_page(
             new \moodle_url('/admin/tool/mucertify/management/index.php'),
             $syscontext
         );
 
         $this->setUser($user);
         $PAGE = new \moodle_page();
-        \tool_mucertify\local\management::setup_index_page(
+        management::setup_index_page(
             new \moodle_url('/admin/tool/mucertify/management/index.php'),
             $syscontext
         );
@@ -299,7 +322,7 @@ final class management_test extends \advanced_testcase {
         $user = $this->getDataGenerator()->create_user();
 
         $PAGE = new \moodle_page();
-        \tool_mucertify\local\management::setup_certification_page(
+        management::setup_certification_page(
             new \moodle_url('/admin/tool/mucertify/management/new.php'),
             $syscontext,
             $certification1,
@@ -308,7 +331,7 @@ final class management_test extends \advanced_testcase {
 
         $this->setUser($user);
         $PAGE = new \moodle_page();
-        \tool_mucertify\local\management::setup_certification_page(
+        management::setup_certification_page(
             new \moodle_url('/admin/tool/mucertify/management/new.php'),
             $syscontext,
             $certification1,

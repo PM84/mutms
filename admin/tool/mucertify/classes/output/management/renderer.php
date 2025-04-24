@@ -54,7 +54,7 @@ class renderer extends \plugin_renderer_base {
         if (!empty($presentation['image'])) {
             $imageurl = moodle_url::make_file_url("$CFG->wwwroot/pluginfile.php",
                 '/' . $context->id . '/tool_mucertify/image/' . $certification->id . '/'. $presentation['image'], false);
-            $certificationimage = '<div class="float-end certificationimage">' . html_writer::img($imageurl, '') . '</div>';
+            $certificationimage = '<div class="certificationimage">' . html_writer::img($imageurl, '') . '</div>';
         }
 
         $details = [];
@@ -93,7 +93,14 @@ class renderer extends \plugin_renderer_base {
         foreach ($handler->get_instance_data($certification->id) as $data) {
             $details[] = ['property' => $data->get_field()->get('name'), 'value' => $data->export_value()];
         }
-        return $certificationimage . $this->output->render_from_template('tool_mulib/entity_details', ['details' => $details]);
+
+        $result = $this->output->render_from_template('tool_mulib/entity_details', ['details' => $details]);
+
+        if (!$certificationimage) {
+            return $result;
+        }
+
+        return "<div class='d-flex'><div class='w-100'>$result</div><div class='flex-shrink-1'>$certificationimage</div></div>";
     }
 
     /**
