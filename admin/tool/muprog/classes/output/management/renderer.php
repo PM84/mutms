@@ -32,7 +32,7 @@ use tool_muprog\local\content\item,
 use stdClass, moodle_url, html_writer;
 
 /**
- * Programs management renderer.
+ * Program management renderer.
  *
  * @package    tool_muprog
  * @copyright  2022 Open LMS (https://www.openlms.net/)
@@ -57,7 +57,7 @@ class renderer extends \plugin_renderer_base {
         if (!empty($presentation['image'])) {
             $imageurl = moodle_url::make_file_url("$CFG->wwwroot/pluginfile.php",
                 '/' . $context->id . '/tool_muprog/image/' . $program->id . '/'. $presentation['image'], false);
-            $programimage = '<div class="float-end programimage">' . html_writer::img($imageurl, '') . '</div>';
+            $programimage = '<div class="programimage">' . html_writer::img($imageurl, '') . '</div>';
         }
 
         $details = [];
@@ -98,7 +98,13 @@ class renderer extends \plugin_renderer_base {
             $details[] = ['property' => $data->get_field()->get('name'), 'value' => $data->export_value()];
         }
 
-        return $programimage . $this->output->render_from_template('tool_mulib/entity_details', ['details' => $details]);
+        $result = $this->output->render_from_template('tool_mulib/entity_details', ['details' => $details]);
+
+        if (!$programimage) {
+            return $result;
+        }
+
+        return "<div class='d-flex'><div class='w-100'>$result</div><div class='flex-shrink-1'>$programimage</div></div>";
     }
 
     /**

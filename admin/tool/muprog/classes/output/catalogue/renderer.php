@@ -51,7 +51,6 @@ class renderer extends \plugin_renderer_base {
 
         $context = \context::instance_by_id($program->contextid);
         $fullname = format_string($program->fullname);
-        $programicon = $this->output->pix_icon('program', '', 'tool_muprog');
 
         $description = file_rewrite_pluginfile_urls($program->description, 'pluginfile.php', $context->id, 'tool_muprog', 'description', $program->id);
         $description = format_text($description, $program->descriptionformat, ['context' => $context]);
@@ -60,7 +59,7 @@ class renderer extends \plugin_renderer_base {
         if ($CFG->usetags) {
             $tags = \core_tag_tag::get_item_tags('tool_muprog', 'program', $program->id);
             if ($tags) {
-                $tagsdiv = $this->output->tag_list($tags, '', 'program-tags');
+                $tagsdiv = $this->output->tag_list($tags, '', 'program-tags mb-3');
             }
         }
 
@@ -69,22 +68,12 @@ class renderer extends \plugin_renderer_base {
         if (!empty($presentation['image'])) {
             $imageurl = \moodle_url::make_file_url("$CFG->wwwroot/pluginfile.php",
                 '/' . $context->id . '/tool_muprog/image/' . $program->id . '/'. $presentation['image'], false);
-            $programimage = '<div class="float-end programimage">' . \html_writer::img($imageurl, '') . '</div>';
+            $programimage = '<div class="programimage">' . \html_writer::img($imageurl, '') . '</div>';
         }
 
-        $result = '';
-        $result .= <<<EOT
-<div class="programbox clearfix" data-programid="$program->id">
-  $programimage
-  <div class="info">
-  <div class="info">
-    <h2 class="programname">{$programicon}{$fullname}</h2>
-  </div>$tagsdiv
-  <div class="content">
-    <div class="summary">$description</div>
-  </div>
-</div>
-EOT;
+        $result = $this->output->heading($fullname);
+        $result .= $tagsdiv;
+        $result .= "<div class='d-flex'><div class='w-100'>$description</div><div class='flex-shrink-1'>$programimage</div></div>";
 
         $details = [];
 

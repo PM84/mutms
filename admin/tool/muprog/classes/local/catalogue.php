@@ -146,8 +146,6 @@ final class catalogue {
     public function render_programs(): string {
         global $OUTPUT, $CFG, $DB, $USER, $PAGE;
 
-        $catalogueoutput = $PAGE->get_renderer('tool_muprog', 'catalogue');
-
         $totalcount = $this->count_programs();
         $programs = $this->get_programs();
 
@@ -155,7 +153,6 @@ final class catalogue {
             return get_string('errornoprograms', 'tool_muprog');
         }
 
-        $programicon = $OUTPUT->pix_icon('program', '', 'tool_muprog');
         $currenturl = $this->get_current_url();
 
         $result = '';
@@ -177,31 +174,15 @@ final class catalogue {
 
         $result .= $OUTPUT->paging_bar($totalcount, $this->page, $this->perpage, $currenturl);
         $result .= '<div class="programs">';
-        $i = 0;
-        $count = count($programs);
         foreach ($programs as $program) {
             $allocation = $DB->get_record('tool_muprog_allocation', ['programid' => $program->id, 'userid' => $USER->id, 'archived' => 0]);
             $context = \context::instance_by_id($program->contextid);
-            $classes = ['programbox', 'clearfix'];
-            if ($i % 2 === 0) {
-                $classes[] = 'odd';
-            } else {
-                $classes[] = 'even';
-            }
-            if ($i == 0) {
-                $classes[] = 'first';
-            }
-            if ($i == $count - 1) {
-                $classes[] = 'last';
-            }
-            $classes = implode(' ', $classes);
             $fullname = format_string($program->fullname);
             if ($allocation) {
                 $url = new \moodle_url('/admin/tool/muprog/my/program.php', ['id' => $program->id]);
             } else {
                 $url = new \moodle_url('/admin/tool/muprog/catalogue/program.php', ['id' => $program->id]);
             }
-            $url = $url->out(true);
 
             $description = file_rewrite_pluginfile_urls($program->description, 'pluginfile.php', $context->id, 'tool_muprog', 'description', $program->id);
             $description = format_text($description, $program->descriptionformat, ['context' => $context]);
@@ -224,22 +205,18 @@ final class catalogue {
             if (!empty($presentation['image'])) {
                 $imageurl = \moodle_url::make_file_url("$CFG->wwwroot/pluginfile.php",
                     '/' . $context->id . '/tool_muprog/image/' . $program->id . '/'. $presentation['image'], false);
-                $programimage = '<div class="float-end programimage">' . \html_writer::img($imageurl, '') . '</div>';
+                $programimage = \html_writer::img($imageurl, '', ['class' => 'programimage']);
             }
 
-            $result .= <<<EOT
-<div class="$classes" data-programid="$program->id">
-  $programimage
-  <div class="info">
-    <h3 class="programname"><a class="aalink" href="$url">{$programicon}{$fullname}<a/></h3>
-  </div>$tagsdiv
-  <div class="content">
-    <div class="summary">$description</div>
-  </div>
-  <div class="allocation">$allocationinfo</div>
-</div>
-EOT;
-            $i++;
+            $data = [
+                'url' => $url->out(false),
+                'fullname' => $fullname,
+                'description' => $description,
+                'tags' => $tagsdiv,
+                'image' => $programimage,
+                'sourceinfo' => $allocationinfo,
+            ];
+            $result .= $OUTPUT->render_from_template('tool_muprog/catalogue/program', $data);
         }
 
         $result .= '</div>';
@@ -287,7 +264,6 @@ EOT;
 
         $searchwhere = '';
         if (isset($this->searchtext)) {
-            // NOTE: We should add better search similar to get_courses_search().
             $concat = $DB->sql_concat_join("' '", ['p.fullname', 'p.description', 'p.idnumber']);
             $searchwhere = 'AND ' . $DB->sql_like("($concat)", ':searchtext', false, false);
             $params['searchtext'] = '%' . $DB->sql_like_escape($this->searchtext) . '%';
