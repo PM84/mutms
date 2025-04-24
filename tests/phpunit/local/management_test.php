@@ -19,6 +19,8 @@
 
 namespace tool_mutrain\phpunit\local;
 
+use tool_mutrain\local\management;
+
 /**
  * Training management helper test.
  *
@@ -47,16 +49,8 @@ final class management_test extends \advanced_testcase {
         $category2 = $this->getDataGenerator()->create_category([]);
         $catcontext2 = \context_coursecat::instance($category2->id);
 
-        /** @var \tool_mutrain_generator $generator */
-        $generator = $this->getDataGenerator()->get_plugin_generator('tool_mutrain');
-
-        $framework1 = $generator->create_framework();
-        $framework2 = $generator->create_framework(['contextid' => $catcontext1->id]);
-        $framework3 = $generator->create_framework(['contextid' => $catcontext1->id]);
-        $framework4 = $generator->create_framework(['contextid' => $catcontext2->id]);
-
-        $admin = \get_admin();
-        $guest = \guest_user();
+        $admin = get_admin();
+        $guest = guest_user();
         $manager = $this->getDataGenerator()->create_user();
         $managerrole = $DB->get_record('role', ['shortname' => 'manager']);
         \role_assign($managerrole->id, $manager->id, $catcontext2->id);
@@ -67,22 +61,51 @@ final class management_test extends \advanced_testcase {
         \role_assign($viewerroleid, $viewer->id, $catcontext1->id);
 
         $this->setUser(null);
-        $this->assertNull(\tool_mutrain\local\management::get_management_url());
+        $this->assertNull(management::get_management_url());
 
         $this->setUser($guest);
-        $this->assertNull(\tool_mutrain\local\management::get_management_url());
+        $this->assertNull(management::get_management_url());
 
         $this->setUser($admin);
         $expected = new \moodle_url('/admin/tool/mutrain/management/index.php');
-        $this->assertSame((string)$expected, (string)\tool_mutrain\local\management::get_management_url());
+        $this->assertSame((string)$expected, (string)management::get_management_url());
 
         $this->setUser($manager);
-        $expected = new \moodle_url('/admin/tool/mutrain/management/index.php', ['contextid' => $catcontext2->id]);
-        $this->assertSame((string)$expected, (string)\tool_mutrain\local\management::get_management_url());
+        $this->assertNull(management::get_management_url());
 
         $this->setUser($viewer);
-        $expected = new \moodle_url('/admin/tool/mutrain/management/index.php', ['contextid' => $catcontext1->id]);
-        $this->assertSame((string)$expected, (string)\tool_mutrain\local\management::get_management_url());
+        $this->assertNull(management::get_management_url());
+    }
+
+    public function test_get_management_url_tenant(): void {
+        if (!\tool_mutrain\local\util::is_mutenancy_available()) {
+            $this->markTestSkipped('multitenancy not available');
+        }
+        \tool_mutenancy\local\tenancy::activate();
+
+        /** @var \tool_mutenancy_generator $tenantgenerator */
+        $tenantgenerator = $this->getDataGenerator()->get_plugin_generator('tool_mutenancy');
+
+        $tenant = $tenantgenerator->create_tenant();
+        $tenantcatcontext = \context_coursecat::instance($tenant->categoryid);
+        $syscontext = \context_system::instance();
+
+        $viewerroleid = $this->getDataGenerator()->create_role();
+        assign_capability('tool/mutrain:viewframeworks', CAP_ALLOW, $viewerroleid, $syscontext);
+
+        $viewer0 = $this->getDataGenerator()->create_user();
+        role_assign($viewerroleid, $viewer0->id, $syscontext->id);
+
+        $viewer1 = $this->getDataGenerator()->create_user(['tenantid' => $tenant->id]);
+        role_assign($viewerroleid, $viewer1->id, $tenantcatcontext->id);
+
+        $this->setUser($viewer0);
+        $expected = new \moodle_url('/admin/tool/mutrain/management/index.php');
+        $this->assertSame((string)$expected, (string)management::get_management_url());
+
+        $this->setUser($viewer1);
+        $expected = new \moodle_url('/admin/tool/mutrain/management/index.php', ['contextid' => $tenantcatcontext->id]);
+        $this->assertSame((string)$expected, (string)management::get_management_url());
     }
 
     public function test_fetch_frameworks(): void {
@@ -101,7 +124,7 @@ final class management_test extends \advanced_testcase {
         $framework5 = $generator->create_framework(['contextid' => $catcontext1->id, 'archived' => 1]);
         $framework6 = $generator->create_framework(['contextid' => $catcontext2->id]);
 
-        $result = \tool_mutrain\local\management::fetch_frameworks(null, false, '', 0, 100, 'id ASC');
+        $result = management::fetch_frameworks(null, false, '', 0, 100, 'id ASC');
         $this->assertCount(2, $result);
         $this->assertCount(4, $result['frameworks']);
         $this->assertSame(4, $result['totalcount']);
@@ -111,14 +134,14 @@ final class management_test extends \advanced_testcase {
         $this->assertArrayHasKey($framework4->id, $frameworks);
         $this->assertArrayHasKey($framework6->id, $frameworks);
 
-        $result = \tool_mutrain\local\management::fetch_frameworks(null, false, 'hokus', 0, 100, 'id ASC');
+        $result = management::fetch_frameworks(null, false, 'hokus', 0, 100, 'id ASC');
         $this->assertCount(2, $result);
         $this->assertCount(1, $result['frameworks']);
         $this->assertSame(1, $result['totalcount']);
         $frameworks = $result['frameworks'];
         $this->assertArrayHasKey($framework1->id, $frameworks);
 
-        $result = \tool_mutrain\local\management::fetch_frameworks(null, false, 'okus', 0, 100, 'id ASC');
+        $result = management::fetch_frameworks(null, false, 'okus', 0, 100, 'id ASC');
         $this->assertCount(2, $result);
         $this->assertCount(2, $result['frameworks']);
         $this->assertSame(2, $result['totalcount']);
@@ -126,7 +149,7 @@ final class management_test extends \advanced_testcase {
         $this->assertArrayHasKey($framework1->id, $frameworks);
         $this->assertArrayHasKey($framework2->id, $frameworks);
 
-        $result = \tool_mutrain\local\management::fetch_frameworks(null, true, '', 0, 100, 'id ASC');
+        $result = management::fetch_frameworks(null, true, '', 0, 100, 'id ASC');
         $this->assertCount(2, $result);
         $this->assertCount(2, $result['frameworks']);
         $this->assertSame(2, $result['totalcount']);
@@ -134,14 +157,14 @@ final class management_test extends \advanced_testcase {
         $this->assertArrayHasKey($framework3->id, $frameworks);
         $this->assertArrayHasKey($framework5->id, $frameworks);
 
-        $result = \tool_mutrain\local\management::fetch_frameworks($catcontext1, false, '', 0, 100, 'id ASC');
+        $result = management::fetch_frameworks($catcontext1, false, '', 0, 100, 'id ASC');
         $this->assertCount(2, $result);
         $this->assertCount(1, $result['frameworks']);
         $this->assertSame(1, $result['totalcount']);
         $frameworks = $result['frameworks'];
         $this->assertArrayHasKey($framework4->id, $frameworks);
 
-        $result = \tool_mutrain\local\management::fetch_frameworks(null, false, '', 1, 2, 'id ASC');
+        $result = management::fetch_frameworks(null, false, '', 1, 2, 'id ASC');
         $this->assertCount(2, $result);
         $this->assertCount(2, $result['frameworks']);
         $this->assertSame(4, $result['totalcount']);
@@ -149,7 +172,7 @@ final class management_test extends \advanced_testcase {
         $this->assertArrayHasKey($framework4->id, $frameworks);
         $this->assertArrayHasKey($framework6->id, $frameworks);
 
-        $result = \tool_mutrain\local\management::fetch_frameworks(null, false, '', 3, 1, 'id ASC');
+        $result = management::fetch_frameworks(null, false, '', 3, 1, 'id ASC');
         $this->assertCount(2, $result);
         $this->assertCount(1, $result['frameworks']);
         $this->assertSame(4, $result['totalcount']);
@@ -195,7 +218,7 @@ final class management_test extends \advanced_testcase {
             $catcontext1->id => $category1->name . ' (2)',
             $catcontext2->id => $category2->name . ' (1)',
         ];
-        $contexts = \tool_mutrain\local\management::get_used_contexts_menu($syscontext);
+        $contexts = management::get_used_contexts_menu($syscontext);
         $this->assertSame($expected, $contexts);
 
         $expected = [
@@ -205,7 +228,7 @@ final class management_test extends \advanced_testcase {
             $catcontext2->id => $category2->name . ' (1)',
             $catcontext3->id => $category3->name,
         ];
-        $contexts = \tool_mutrain\local\management::get_used_contexts_menu($catcontext3);
+        $contexts = management::get_used_contexts_menu($catcontext3);
         $this->assertSame($expected, $contexts);
 
         $this->setUser($user);
@@ -214,14 +237,14 @@ final class management_test extends \advanced_testcase {
         $expected = [
             $catcontext1->id => $category1->name . ' (2)',
         ];
-        $contexts = \tool_mutrain\local\management::get_used_contexts_menu($catcontext1);
+        $contexts = management::get_used_contexts_menu($catcontext1);
         $this->assertSame($expected, $contexts);
 
         $expected = [
             $catcontext1->id => $category1->name . ' (2)',
             $catcontext3->id => $category3->name,
         ];
-        $contexts = \tool_mutrain\local\management::get_used_contexts_menu($catcontext3);
+        $contexts = management::get_used_contexts_menu($catcontext3);
         $this->assertSame($expected, $contexts);
     }
 
@@ -238,39 +261,39 @@ final class management_test extends \advanced_testcase {
         $framework2 = $generator->create_framework(['name' => 'Second framework', 'idnumber' => 'PRG2', 'description' => 'druhy popis']);
         $framework3 = $generator->create_framework(['name' => 'Third framework', 'idnumber' => 'PR3', 'description' => 'treti popis', 'contextid' => $catcontext1->id]);
 
-        list($search, $params) = \tool_mutrain\local\management::get_framework_search_query(null, 'First', 'p');
+        list($search, $params) = management::get_framework_search_query(null, 'First', 'p');
         $frameworkids = $DB->get_fieldset_sql("SELECT p.* FROM {tool_mutrain_framework} AS p WHERE $search ORDER BY p.id ASC", $params);
         $this->assertSame([$framework1->id], $frameworkids);
 
-        list($search, $params) = \tool_mutrain\local\management::get_framework_search_query(null, 'First', '');
+        list($search, $params) = management::get_framework_search_query(null, 'First', '');
         $frameworkids = $DB->get_fieldset_sql("SELECT * FROM {tool_mutrain_framework} WHERE $search ORDER BY id ASC", $params);
         $this->assertSame([$framework1->id], $frameworkids);
 
-        list($search, $params) = \tool_mutrain\local\management::get_framework_search_query(null, 'PRG', 'p');
+        list($search, $params) = management::get_framework_search_query(null, 'PRG', 'p');
         $frameworkids = $DB->get_fieldset_sql("SELECT p.* FROM {tool_mutrain_framework} AS p WHERE $search ORDER BY p.id ASC", $params);
         $this->assertSame([$framework1->id, $framework2->id], $frameworkids);
 
-        list($search, $params) = \tool_mutrain\local\management::get_framework_search_query(null, 'popis', 'p');
+        list($search, $params) = management::get_framework_search_query(null, 'popis', 'p');
         $frameworkids = $DB->get_fieldset_sql("SELECT p.* FROM {tool_mutrain_framework} AS p WHERE $search ORDER BY p.id ASC", $params);
         $this->assertSame([$framework1->id, $framework2->id, $framework3->id], $frameworkids);
 
-        list($search, $params) = \tool_mutrain\local\management::get_framework_search_query(null, '', 'p');
+        list($search, $params) = management::get_framework_search_query(null, '', 'p');
         $frameworkids = $DB->get_fieldset_sql("SELECT p.* FROM {tool_mutrain_framework} AS p WHERE $search ORDER BY p.id ASC", $params);
         $this->assertSame([$framework1->id, $framework2->id, $framework3->id], $frameworkids);
 
-        list($search, $params) = \tool_mutrain\local\management::get_framework_search_query($catcontext1, '', 'p');
+        list($search, $params) = management::get_framework_search_query($catcontext1, '', 'p');
         $frameworkids = $DB->get_fieldset_sql("SELECT p.* FROM {tool_mutrain_framework} AS p WHERE $search ORDER BY p.id ASC", $params);
         $this->assertSame([$framework3->id], $frameworkids);
 
-        list($search, $params) = \tool_mutrain\local\management::get_framework_search_query($catcontext1, 'PR', 'p');
+        list($search, $params) = management::get_framework_search_query($catcontext1, 'PR', 'p');
         $frameworkids = $DB->get_fieldset_sql("SELECT p.* FROM {tool_mutrain_framework} AS p WHERE $search ORDER BY p.id ASC", $params);
         $this->assertSame([$framework3->id], $frameworkids);
 
-        list($search, $params) = \tool_mutrain\local\management::get_framework_search_query($catcontext1, 'PR', '');
+        list($search, $params) = management::get_framework_search_query($catcontext1, 'PR', '');
         $frameworkids = $DB->get_fieldset_sql("SELECT * FROM {tool_mutrain_framework} WHERE $search ORDER BY id ASC", $params);
         $this->assertSame([$framework3->id], $frameworkids);
 
-        list($search, $params) = \tool_mutrain\local\management::get_framework_search_query($catcontext1, 'PRG', 'p');
+        list($search, $params) = management::get_framework_search_query($catcontext1, 'PRG', 'p');
         $frameworkids = $DB->get_fieldset_sql("SELECT p.* FROM {tool_mutrain_framework} AS p WHERE $search ORDER BY p.id ASC", $params);
         $this->assertSame([], $frameworkids);
     }
@@ -287,14 +310,14 @@ final class management_test extends \advanced_testcase {
         $user = $this->getDataGenerator()->create_user();
 
         $PAGE = new \moodle_page();
-        \tool_mutrain\local\management::setup_index_page(
+        management::setup_index_page(
             new \moodle_url('/admin/tool/mutrain/management/index.php'),
             $syscontext
         );
 
         $this->setUser($user);
         $PAGE = new \moodle_page();
-        \tool_mutrain\local\management::setup_index_page(
+        management::setup_index_page(
             new \moodle_url('/admin/tool/mutrain/management/index.php'),
             $syscontext
         );
@@ -312,7 +335,7 @@ final class management_test extends \advanced_testcase {
         $user = $this->getDataGenerator()->create_user();
 
         $PAGE = new \moodle_page();
-        \tool_mutrain\local\management::setup_framework_page(
+        management::setup_framework_page(
             new \moodle_url('/admin/tool/mutrain/management/new.php'),
             $syscontext,
             $framework1
@@ -320,7 +343,7 @@ final class management_test extends \advanced_testcase {
 
         $this->setUser($user);
         $PAGE = new \moodle_page();
-        \tool_mutrain\local\management::setup_framework_page(
+        management::setup_framework_page(
             new \moodle_url('/admin/tool/mutrain/management/new.php'),
             $syscontext,
             $framework1
