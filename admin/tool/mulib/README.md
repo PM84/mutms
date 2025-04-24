@@ -1,5 +1,7 @@
 # Additional muTMS libraries plugin for Moodle™
 
+![Moodle Plugin CI](https://github.com/mutms/moodle-tool_mulib/actions/workflows/moodle-ci.yml/badge.svg)
+
 This plugin is required by all other muTMS plugins.
 
 ## Known Limitations
