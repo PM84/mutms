@@ -19,6 +19,7 @@
 
 namespace tool_mutrain\local;
 
+use tool_mutrain\local\util;
 use moodle_url, stdClass;
 
 /**
@@ -40,22 +41,25 @@ final class management {
         if (isguestuser() || !isloggedin()) {
             return null;
         }
+
+        // NOTE: this has to be very fast, do NOT loop all categories here!
+
         if (has_capability('tool/mutrain:viewframeworks', \context_system::instance())) {
             return new moodle_url('/admin/tool/mutrain/management/index.php');
-        } else {
-            // This is not very fast, but we need to let users somehow access framework
-            // management if they can do so in course category only.
-            $categories = \core_course_category::make_categories_list('tool/mutrain:viewframeworks');
-            // NOTE: Add some better logic here looking for categories with frameworks or remember which one was accessed before.
-            if ($categories) {
-                foreach ($categories as $cid => $unusedname) {
-                    $catcontext = \context_coursecat::instance($cid, IGNORE_MISSING);
-                    if ($catcontext) {
+
+        } else if (util::is_mutenancy_active()) {
+            $tenantid = \tool_mutenancy\local\tenancy::get_current_tenantid();
+            if ($tenantid) {
+                $tenant = \tool_mutenancy\local\tenant::fetch($tenantid);
+                if ($tenant) {
+                    $catcontext = \context_coursecat::instance($tenant->categoryid);
+                    if (has_capability('tool/mutrain:viewframeworks', $catcontext)) {
                         return new moodle_url('/admin/tool/mutrain/management/index.php', ['contextid' => $catcontext->id]);
                     }
                 }
             }
         }
+
         return null;
     }
 

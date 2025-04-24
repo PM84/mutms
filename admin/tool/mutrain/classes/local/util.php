@@ -16,25 +16,34 @@
 
 // phpcs:disable moodle.Files.BoilerplateComment.CommentEndedTooSoon
 
+namespace tool_mutrain\local;
+
 /**
- * Training plugin.
+ * Utility class for training.
  *
  * @package    tool_mutrain
  * @copyright  2025 Petr Skoda
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+final class util {
+    /**
+     * Is multi-tenancy available?
+     *
+     * @return bool
+     */
+    public static function is_mutenancy_available(): bool {
+        return class_exists(\tool_mutenancy\local\tenancy::class);
+    }
 
-defined('MOODLE_INTERNAL') || die();
-
-/** @var stdClass $plugin */
-$plugin->component = 'tool_mutrain';
-$plugin->version   = 2025042400;
-$plugin->requires  = 2024091700.00;
-$plugin->maturity  = MATURITY_ALPHA;
-$plugin->supported = [405, 405];
-$plugin->release   = 'mu-4.5.4-06';
-
-$plugin->dependencies = [
-    'tool_mulib' => 2025042400,
-    'customfield_mutrain' => 2025042400,
-];
+    /**
+     * Is multi-tenancy active?
+     *
+     * @return bool
+     */
+    public static function is_mutenancy_active(): bool {
+        if (!self::is_mutenancy_available()) {
+            return false;
+        }
+        return \tool_mutenancy\local\tenancy::is_active();
+    }
+}
