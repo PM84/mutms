@@ -17,7 +17,7 @@
 // phpcs:disable moodle.Files.BoilerplateComment.CommentEndedTooSoon
 
 /**
- * Programs management interface.
+ * Program management interface.
  *
  * @package    tool_muprog
  * @copyright  2024 Open LMS (https://www.openlms.net/)

@@ -67,22 +67,12 @@ class renderer extends \plugin_renderer_base {
         if (!empty($presentation['image'])) {
             $imageurl = \moodle_url::make_file_url("$CFG->wwwroot/pluginfile.php",
                 '/' . $context->id . '/tool_muprog/image/' . $program->id . '/'. $presentation['image'], false);
-            $programimage = '<div class="float-end programimage">' . \html_writer::img($imageurl, '') . '</div>';
+            $programimage = '<div class="programimage">' . \html_writer::img($imageurl, '') . '</div>';
         }
 
-        $result = '';
-        $result .= <<<EOT
-<div class="programbox clearfix" data-programid="$program->id">
-  $programimage
-  <div class="info">
-  <div class="info">
-    <h2 class="programname">{$fullname}</h2>
-  </div>$tagsdiv
-  <div class="content">
-    <div class="summary">$description</div>
-  </div>
-</div>
-EOT;
+        $result = $this->output->heading($fullname);
+        $result .= $tagsdiv;
+        $result .= "<div class='d-flex'><div class='w-100'>$description</div><div class='flex-shrink-1'>$programimage</div></div>";
 
         return $result;
     }

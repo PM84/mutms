@@ -58,7 +58,7 @@ class behat_tool_muprog extends behat_base {
     protected function resolve_page_instance_url(string $type, string $identifier): moodle_url {
         global $DB;
         switch (strtolower($type)) {
-            case 'programs management':
+            case 'program management':
                 if (strtolower($identifier) === 'system') {
                     $syscontext = context_system::instance();
                     return new moodle_url('/admin/tool/muprog/management/index.php', ['contextid' => $syscontext->id]);

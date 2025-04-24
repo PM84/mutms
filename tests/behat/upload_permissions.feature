@@ -36,7 +36,7 @@ Feature: Program upload permissions tests
   @_file_upload
   Scenario: Category manager can upload all programs into specified category
     Given I log in as "manager2"
-    And I am on the "Category 2" "tool_muprog > Programs management" page
+    And I am on the "Category 2" "tool_muprog > Program management" page
 
     When I click on "Programs actions" "link"
     And I click on "Upload programs" "link"
@@ -81,7 +81,7 @@ Feature: Program upload permissions tests
     And I should see "Active; Requests are allowed" in the "Requests with approval" definition list item
     And I should see "Inactive" in the "Automatic cohort allocation" definition list item
 
-    And I am on the "Category 2" "tool_muprog > Programs management" page
+    And I am on the "Category 2" "tool_muprog > Program management" page
     And I follow "Program 01"
     And I follow "Content"
     And the following should exist in the "program_content" table:
@@ -101,7 +101,7 @@ Feature: Program upload permissions tests
     And I should see "Inactive" in the "Requests with approval" definition list item
     And I should see "Inactive" in the "Automatic cohort allocation" definition list item
 
-    And I am on the "Category 2" "tool_muprog > Programs management" page
+    And I am on the "Category 2" "tool_muprog > Program management" page
     And I follow "Program 02"
     And I follow "Content"
     And the following should exist in the "program_content" table:

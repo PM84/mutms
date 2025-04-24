@@ -36,7 +36,7 @@ Feature: Program minimal upload tests
   @_file_upload
   Scenario: Program manager can upload minimal programs via JSON
     Given I log in as "manager2"
-    And I am on the "Category 2" "tool_muprog > Programs management" page
+    And I am on the "Category 2" "tool_muprog > Program management" page
 
     When I click on "Programs actions" "link"
     And I click on "Upload programs" "link"
@@ -79,7 +79,7 @@ Feature: Program minimal upload tests
   @_file_upload
   Scenario: Program manager can upload minimal programs via CSV
     Given I log in as "manager2"
-    And I am on the "Category 2" "tool_muprog > Programs management" page
+    And I am on the "Category 2" "tool_muprog > Program management" page
 
     When I click on "Programs actions" "link"
     And I click on "Upload programs" "link"

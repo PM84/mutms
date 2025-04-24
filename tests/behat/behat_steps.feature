@@ -67,14 +67,14 @@ Feature: Programs navigation behat steps test
     And I should not see "Program 002"
     And I should see "Program 003"
 
-    When I am on the "System" "tool_muprog > Programs management" page
+    When I am on the "System" "tool_muprog > Program management" page
     Then I should see "Programs"
     And I should see "Program 000"
     And I should not see "Program 001"
     And I should not see "Program 002"
     And I should see "Program 003"
 
-    When I am on the "Cat 1" "tool_muprog > Programs management" page
+    When I am on the "Cat 1" "tool_muprog > Program management" page
     Then I should see "Programs"
     And I should not see "Program 000"
     And I should see "Program 001"
@@ -84,7 +84,7 @@ Feature: Programs navigation behat steps test
   Scenario: Admin navigates to programs the normal way
     Given I log in as "admin"
 
-    When I navigate to "Programs > Programs management" in site administration
+    When I navigate to "Programs > Program management" in site administration
     Then I should see "Programs"
     And I should see "Program 000"
     And I should see "Program 001"
@@ -108,14 +108,14 @@ Feature: Programs navigation behat steps test
     And I should see "Program 002"
     And I should see "Program 003"
 
-    When I am on the "system" "tool_muprog > Programs management" page
+    When I am on the "system" "tool_muprog > Program management" page
     Then I should see "Programs"
     And I should see "Program 000"
     And I should see "Program 001"
     And I should see "Program 002"
     And I should see "Program 003"
 
-    When I am on the "Cat 1" "tool_muprog > Programs management" page
+    When I am on the "Cat 1" "tool_muprog > Program management" page
     Then I should see "Programs"
     And I should not see "Program 000"
     And I should see "Program 001"
@@ -125,7 +125,7 @@ Feature: Programs navigation behat steps test
   Scenario: Full manager navigates to programs the normal way
     Given I log in as "manager1"
 
-    When I navigate to "Programs > Programs management" in site administration
+    When I navigate to "Programs > Program management" in site administration
     Then I should see "Programs"
     And I should see "Program 000"
     And I should see "Program 001"
@@ -142,7 +142,7 @@ Feature: Programs navigation behat steps test
   Scenario: Category manager navigates to programs via behat step
     Given I log in as "manager2"
 
-    When I am on the "Cat 1" "tool_muprog > Programs management" page
+    When I am on the "Cat 1" "tool_muprog > Program management" page
     Then I should see "Programs"
     And I should not see "Program 000"
     And I should see "Program 001"
@@ -162,14 +162,14 @@ Feature: Programs navigation behat steps test
     And I should see "Program 002"
     And I should see "Program 003"
 
-    When I am on the "system" "tool_muprog > Programs management" page
+    When I am on the "system" "tool_muprog > Program management" page
     Then I should see "Programs"
     And I should see "Program 000"
     And I should see "Program 001"
     And I should see "Program 002"
     And I should see "Program 003"
 
-    When I am on the "Cat 1" "tool_muprog > Programs management" page
+    When I am on the "Cat 1" "tool_muprog > Program management" page
     Then I should see "Programs"
     And I should not see "Program 000"
     And I should see "Program 001"
@@ -179,7 +179,7 @@ Feature: Programs navigation behat steps test
   Scenario: Full viewer navigates to programs the normal way
     Given I log in as "viewer1"
 
-    When I navigate to "Programs > Programs management" in site administration
+    When I navigate to "Programs > Program management" in site administration
     Then I should see "Programs"
     And I should see "Program 000"
     And I should see "Program 001"
@@ -206,7 +206,7 @@ Feature: Programs navigation behat steps test
   Scenario: Category viewer navigates to programs via behat step
     Given I log in as "viewer2"
 
-    When I am on the "Cat 1" "tool_muprog > Programs management" page
+    When I am on the "Cat 1" "tool_muprog > Program management" page
     Then I should see "Programs"
     And I should not see "Program 000"
     And I should see "Program 001"

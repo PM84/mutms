@@ -75,7 +75,7 @@ Feature: Program export tests
 
   Scenario: Category program manager max export programs
     Given I log in as "manager1"
-    And I am on the "Category 2" "tool_muprog > Programs management" page
+    And I am on the "Category 2" "tool_muprog > Program management" page
 
     When I click on "Programs actions" "link"
     And I click on "Export programs" "link"
@@ -93,7 +93,7 @@ Feature: Program export tests
     And I wait "1" seconds
 
     When I press "Back"
-    And I am on the "Category 2" "tool_muprog > Programs management" page
+    And I am on the "Category 2" "tool_muprog > Program management" page
     And I should see "Program 002"
     And I follow "Program 002"
     And I click on "Program actions" "link"

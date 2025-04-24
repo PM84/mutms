@@ -106,7 +106,7 @@ Feature: General programs management tests
     And I should see "No" in the "Archived" definition list item
     And I should see "Mathematics" in the "Tags" definition list item
     And I should see "Algebra" in the "Tags" definition list item
-    And I am on the "Cat 2" "tool_muprog > Programs management" page
+    And I am on the "Cat 2" "tool_muprog > Program management" page
     And "PR01" row "Program name" column of "reportbuilder-table" table should contain "Program 001"
     And "PR01" row "Public" column of "reportbuilder-table" table should contain "No"
     And "PR01" row "Courses" column of "reportbuilder-table" table should contain "0"
@@ -202,7 +202,7 @@ Feature: General programs management tests
   @javascript
   Scenario: Set up and edit custom fields of programs
     Given I log in as "manager3"
-    And I navigate to "Programs > Programs custom fields" in site administration
+    And I navigate to "Programs > Program custom fields" in site administration
     And I press "Add a new category"
     And I click on "Add a new custom field" "link"
     And I click on "Short text" "link"

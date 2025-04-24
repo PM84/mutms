@@ -41,6 +41,7 @@ $syscontext = context_system::instance();
 
 $PAGE->set_url(new moodle_url('/admin/tool/muprog/catalogue/program.php', ['id' => $id]));
 $PAGE->set_context(context_system::instance());
+$PAGE->set_secondary_navigation(false);
 
 require_login();
 require_capability('tool/muprog:viewcatalogue', context_system::instance());
@@ -81,18 +82,22 @@ if (!\tool_muprog\local\catalogue::is_program_visible($program)) {
     }
 }
 
-if (has_capability('tool/muprog:view', $programcontext)) {
-    $manageurl = new moodle_url('/admin/tool/muprog/management/program.php', ['id' => $program->id]);
-    $button = html_writer::link($manageurl, get_string('management', 'tool_muprog'), ['class' => 'btn btn-secondary']);
-    $PAGE->set_button($button . $PAGE->button);
+$actions = new \tool_mulib\output\header_actions(get_string('catalogue_actions', 'tool_muprog'));
+
+$manageurl = \tool_muprog\local\management::get_management_url();
+if ($manageurl) {
+    $actions->get_dropdown()->add_item(get_string('management', 'tool_muprog'), $manageurl);
+}
+
+if ($actions->has_items()) {
+    $PAGE->set_button($PAGE->button . $OUTPUT->render($actions));
 }
 
 /** @var \tool_muprog\output\catalogue\renderer $catalogueoutput */
 $catalogueoutput = $PAGE->get_renderer('tool_muprog', 'catalogue');
 
-$PAGE->set_heading(get_string('catalogue', 'tool_muprog'));
-$PAGE->navigation->override_active_url(new moodle_url('/admin/tool/muprog/catalogue/index.php'));
 $PAGE->set_title(get_string('catalogue', 'tool_muprog'));
+$PAGE->navbar->add(get_string('catalogue', 'tool_muprog'), new moodle_url('/admin/tool/muprog/catalogue/'));
 $PAGE->navbar->add(format_string($program->fullname));
 
 echo $OUTPUT->header();

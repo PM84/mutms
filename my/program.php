@@ -101,10 +101,15 @@ $PAGE->navbar->add(get_string('profile'), new moodle_url('/user/profile.php', ['
 $PAGE->navbar->add($title, new moodle_url('/admin/tool/muprog/my/index.php'));
 $PAGE->navbar->add(format_string($program->fullname));
 
+$actions = new \tool_mulib\output\header_actions(get_string('program_actions', 'tool_muprog'));
+
 if (has_capability('tool/muprog:view', $programcontext)) {
     $manageurl = new moodle_url('/admin/tool/muprog/management/program.php', ['id' => $program->id]);
-    $button = html_writer::link($manageurl, get_string('management', 'tool_muprog'), ['class' => 'btn btn-secondary']);
-    $PAGE->set_button($button . $PAGE->button);
+    $actions->get_dropdown()->add_item(get_string('management', 'tool_muprog'), $manageurl);
+}
+
+if ($actions->has_items()) {
+    $PAGE->set_button($PAGE->button . $OUTPUT->render($actions));
 }
 
 /** @var \tool_muprog\output\my\renderer $myouput */

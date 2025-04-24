@@ -114,7 +114,7 @@ Feature: Program approval allocations tests
     And I log out
 
     When I log in as "allocator"
-    And I am on the "Cat 1" "tool_muprog > Programs management" page
+    And I am on the "Cat 1" "tool_muprog > Program management" page
     And I follow "Program 001"
     And I follow "Requests"
     And I click on "Actions" "link" in the "Student 2" "table_row"
@@ -131,7 +131,7 @@ Feature: Program approval allocations tests
     And I log out
 
     When I log in as "allocator"
-    And I am on the "Cat 1" "tool_muprog > Programs management" page
+    And I am on the "Cat 1" "tool_muprog > Program management" page
     And I follow "Program 001"
     And I follow "Users"
     And I click on "Actions" "link" in the "Student 2" "table_row"
@@ -168,7 +168,7 @@ Feature: Program approval allocations tests
     And I log out
 
     When I log in as "allocator"
-    And I am on the "Cat 1" "tool_muprog > Programs management" page
+    And I am on the "Cat 1" "tool_muprog > Program management" page
     And I follow "Program 001"
     And I follow "Requests"
     And I click on "Actions" "link" in the "Student 2" "table_row"
@@ -188,7 +188,7 @@ Feature: Program approval allocations tests
     And I log out
 
     When I log in as "allocator"
-    And I am on the "Cat 1" "tool_muprog > Programs management" page
+    And I am on the "Cat 1" "tool_muprog > Program management" page
     And I follow "Program 001"
     And I follow "Requests"
     And I click on "Actions" "link" in the "Student 2" "table_row"

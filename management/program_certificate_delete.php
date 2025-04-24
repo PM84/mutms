@@ -17,7 +17,7 @@
 // phpcs:disable moodle.Files.BoilerplateComment.CommentEndedTooSoon
 
 /**
- * Programs management interface - certificate editing.
+ * Program management interface - certificate editing.
  *
  * @package    tool_muprog
  * @copyright  2022 Open LMS (https://www.openlms.net/)
