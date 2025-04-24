@@ -61,7 +61,7 @@ Feature: Being able to manage programs elements in a certificate template
   Scenario: Add and edit custom field programs elements in a certificate template
     Given I log in as "admin"
     And I change window size to "large"
-    And I navigate to "Programs > Programs custom fields" in site administration
+    And I navigate to "Programs > Program custom fields" in site administration
     And I press "Add a new category"
     And I click on "Add a new custom field" "link"
     And I click on "Short text" "link"
