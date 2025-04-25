@@ -23,7 +23,7 @@ Other recommended plugins:
 * [Certification fields for Certificate plugin](https://github.com/mutms/moodle-certificateelement_mucertify)
 * [Program fields for Certificate plugin](https://github.com/mutms/moodle-certificateelement_muprog)
 
-This plugin is fully compatible with [Multi-tenancy for Moodle™](https://github.com/mutms/moodle-tool_mutenancy).
+This plugin is fully compatible with [Multi-tenancy](https://github.com/mutms/moodle-tool_mutenancy) for Moodle™.
 
 ## Documentation
 
