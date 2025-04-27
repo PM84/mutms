@@ -304,4 +304,51 @@ class behat_tool_mulib extends behat_base {
         $message = "<colour:lightRed>Press Enter/Return after confirming that: <colour:normal>$assert";
         behat_util::pause($this->getSession(), $message);
     }
+
+    /**
+     * @Given site is prepared for documentation screenshots
+     */
+    public function prepare_for_documentation_screenshots() {
+        global $DB;
+        $this->delete_admin_bookmarks_block();
+        $this->execute('behat_general::i_change_window_size_to', ['window', '1208x780']);
+        $DB->set_field('course', 'shortname', 'muTMS', ['category' => 0]);
+        $DB->set_field('course', 'fullname', 'muTMS test site', ['category' => 0]);
+
+        if (defined('BEHAT_MULIB_UPDATE_SCREENSHOTS') && BEHAT_MULIB_UPDATE_SCREENSHOTS) {
+            // Do not mess with theme unless we are going to take the screenshots.
+            set_config('scss', '#page-footer { display: none }', 'theme_boost');
+            purge_all_caches();
+            theme_build_css_for_themes([theme_config::load('boost')], ['ltr']);
+        }
+
+        $this->getSession()->reload();
+    }
+
+    /**
+     * Take screenshot for and save it as image for plugin documentation.
+     *
+     * NOTE: does nothing if BEHAT_MULIB_UPDATE_SCREENSHOTS not defined in config
+     *
+     * @When I make documentation screenshot :image for :plugin plugin
+     *
+     * @param string $image
+     * @param string $plugin
+     * @return void
+     */
+    public function create_documentation_screenshot(string $image, string $plugin) {
+        if (!defined('BEHAT_MULIB_UPDATE_SCREENSHOTS') || !BEHAT_MULIB_UPDATE_SCREENSHOTS) {
+            return;
+        }
+        $basedir = core_component::get_component_directory($plugin);
+        if (!file_exists("$basedir/docs/en")) {
+            throw new Exception('Plugin does not have docs directory');
+        }
+        $imagedir = "$basedir/docs/en/img";
+        if (!file_exists($imagedir)) {
+            mkdir($imagedir);
+        }
+
+        file_put_contents("$imagedir/$image", $this->getSession()->getScreenshot());
+    }
 }
