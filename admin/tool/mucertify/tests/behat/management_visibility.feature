@@ -50,7 +50,7 @@ Feature: Certification visibility management tests
       | viewer1   | pviewer       | System       |           |
 
   @javascript
-  Scenario: Manager may update certification visibility settings
+  Scenario: Manager may update certification Catalogue visibility
     Given the following "tool_mucertify > certifications" exist:
       | fullname          | idnumber | category |
       | Certification 000 | CT0      |          |
@@ -65,7 +65,7 @@ Feature: Certification visibility management tests
     And "Certification 003" row "Public" column of "reportbuilder-table" table should contain "No"
 
     When I follow "Certification 000"
-    And I click on "Visibility settings" "link" in the ".secondary-navigation" "css_element"
+    And I click on "Catalogue visibility" "link" in the ".secondary-navigation" "css_element"
     And I press "Edit"
     And the following fields match these values:
       | Public             | No             |
@@ -95,7 +95,7 @@ Feature: Certification visibility management tests
     And "Certification 001" row "Public" column of "reportbuilder-table" table should contain "No"
 
     When I follow "Certification 002"
-    And I click on "Visibility settings" "link" in the ".secondary-navigation" "css_element"
+    And I click on "Catalogue visibility" "link" in the ".secondary-navigation" "css_element"
     And I press "Edit"
     And I set the following fields to these values:
       | Visible to cohorts | Cohort 2, Cohort 1 |

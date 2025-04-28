@@ -521,9 +521,10 @@ final class manual_test extends \advanced_testcase {
         manual::assignment_update((object)$data);
         $assignment2 = $DB->get_record('tool_mucertify_assignment', ['userid' => $user1->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
         $this->assertSame($data['timecertifiedtemp'], $assignment2->timecertifiedtemp);
-        $this->assertSame(null, $assignment2->timecertifiedfrom);
+        $this->assertSame($assignment->timecreated, $assignment2->timecertifiedfrom);
         $this->assertSame(null, $assignment2->timecertifieduntil);
         $assignment->timecertifiedtemp = $assignment2->timecertifiedtemp;
+        $assignment->timecertifiedfrom = $assignment2->timecreated;
         $this->assertSame((array)$assignment, (array)$assignment2);
 
         $data = [

@@ -66,7 +66,7 @@ Feature: Certifications behat generator tests
     And I should see "Never" in the "Expiration" definition list item
     And I should see "Standard course purge" in the "Certification program reset" definition list item
     And I should see "No" in the "Re-certify automatically" definition list item
-    And I click on "Visibility settings" "link" in the ".secondary-navigation" "css_element"
+    And I click on "Catalogue visibility" "link" in the ".secondary-navigation" "css_element"
     And I should see "No" in the "Public" definition list item
     And I should see "Cohort 1, Cohort 2" in the "Visible to cohorts" definition list item
     And I should not see "Cohort 3"
@@ -90,7 +90,7 @@ Feature: Certifications behat generator tests
     And I should see "Never" in the "Expiration" definition list item
     And I should see "Standard course purge" in the "Certification program reset" definition list item
     And I should see "No" in the "Re-certify automatically" definition list item
-    And I click on "Visibility settings" "link" in the ".secondary-navigation" "css_element"
+    And I click on "Catalogue visibility" "link" in the ".secondary-navigation" "css_element"
     And I should see "Yes" in the "Public" definition list item
     And I should not see "Cohort 1"
     And I should not see "Cohort 2"
@@ -100,3 +100,24 @@ Feature: Certifications behat generator tests
     And I should see "Inactive" in the "Automatic cohort assignment" definition list item
     And I should see "Inactive" in the "Self assignment" definition list item
     And I should see "Inactive" in the "Requests with approval" definition list item
+
+  Scenario: Certifications Behat generator creates certification assignments
+    Given the following "tool_mucertify > certifications" exist:
+      | fullname          | idnumber | program1 |
+      | Certification 000 | CT0      | PR0      |
+      | Certification 001 | CT1      |          |
+
+    When the following "tool_mucertify > certification_assignments" exist:
+      | user     | certification     |
+      | student1 | Certification 000 |
+    And the following "tool_mucertify > certification_assignments" exist:
+      | user     | certification     | timecreated            | timecertifiedtemp      |
+      | student2 | Certification 000 | ## 2025-01-01 10:00 ## | ## 2025-03-10 10:00 ## |
+    And I log in as "viewer1"
+    And I am on the "tool_mucertify > All certifications management" page
+    And I follow "Certification 000"
+    And I follow "Users"
+    Then the following should exist in the "reportbuilder-table" table:
+      | First name | Valid from | Expiration | Certification status | Source            | Archived |
+      | Student 1  |            |            | Not certified        | Manual assignment | No       |
+      | Student 2  | 1/01/25    | 10/03/25   | Expired              | Manual assignment | No       |

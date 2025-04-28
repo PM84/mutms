@@ -374,9 +374,15 @@ final class assignment_test extends \advanced_testcase {
         $this->assertSame(null, $assignment->timecertifiedfrom);
         $this->assertSame(null, $assignment->timecertifieduntil);
 
-        $assignment = \tool_mucertify\local\source\base::assignment_update((object)['id' => $assignment->id, 'timecertifiedtemp' => $now + DAYSECS]);
-        $this->assertSame(null, $assignment->timecertifiedfrom);
+        $assignment = \tool_mucertify\local\source\base::assignment_update((object)['id' => $assignment->id, 'timecertifiedtemp' => $now - DAYSECS]);
+        $this->assertSame((string)($now - DAYSECS - DAYSECS), $assignment->timecertifiedfrom);
         $this->assertSame(null, $assignment->timecertifieduntil);
+        $this->assertSame((string)($now - DAYSECS), $assignment->timecertifiedtemp);
+
+        $assignment = \tool_mucertify\local\source\base::assignment_update((object)['id' => $assignment->id, 'timecertifiedtemp' => $now + (DAYSECS * 2)]);
+        $this->assertSame($assignment->timecreated, $assignment->timecertifiedfrom);
+        $this->assertSame(null, $assignment->timecertifieduntil);
+        $this->assertSame((string)($now + (DAYSECS * 2)), $assignment->timecertifiedtemp);
 
         $assignment = \tool_mucertify\local\source\base::assignment_update((object)['id' => $assignment->id, 'timecertifiedtemp' => null]);
         $period1 = $DB->get_record('tool_mucertify_period', ['userid' => $user1->id, 'certificationid' => $certification->id], '*', MUST_EXIST);

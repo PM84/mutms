@@ -1967,7 +1967,7 @@ final class period_test extends \advanced_testcase {
         $assignment1 = $DB->get_record('tool_mucertify_assignment', ['userid' => $user1->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
         $this->assertSame((string)($now + WEEKSECS), $assignment1->timecertifiedtemp);
         $this->assertSame((string)($now - 10), $assignment1->timecertifiedfrom);
-        $this->assertSame($assignment1->timecertifiedtemp, $assignment1->timecertifieduntil);
+        $this->assertSame(null, $assignment1->timecertifieduntil);
 
         $DB->set_field('tool_mucertify_assignment', 'timecreated', $now - 10, ['id' => $assignment1->id]);
         $DB->set_field('tool_mucertify_assignment', 'timecertifiedtemp', $now + 10, ['id' => $assignment1->id]);
@@ -1975,7 +1975,7 @@ final class period_test extends \advanced_testcase {
         $assignment1 = $DB->get_record('tool_mucertify_assignment', ['userid' => $user1->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
         $this->assertSame((string)($now + 10), $assignment1->timecertifiedtemp);
         $this->assertSame((string)($assignment1->timecertifiedtemp - DAYSECS), $assignment1->timecertifiedfrom);
-        $this->assertSame($assignment1->timecertifiedtemp, $assignment1->timecertifieduntil);
+        $this->assertSame(null, $assignment1->timecertifieduntil);
 
         $DB->set_field('tool_mucertify_assignment', 'timecertifiedtemp', null, ['id' => $assignment1->id]);
         period::fix_flags($assignment1->certificationid, $assignment1->userid);

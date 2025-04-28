@@ -39,6 +39,11 @@ class behat_tool_mucertify_generator extends behat_generator_base {
                 'datagenerator' => 'certification',
                 'required' => [],
             ],
+            'certification_assignments' => [
+                'singular' => 'certification_assignment',
+                'datagenerator' => 'certification_assignment',
+                'required' => ['user', 'certification'],
+            ],
         ];
     }
 }

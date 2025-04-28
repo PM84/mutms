@@ -49,6 +49,7 @@ require_capability('tool/mucertify:view', $context);
 $currenturl = new moodle_url('/admin/tool/mucertify/management/certification.php', ['id' => $id]);
 
 management::setup_certification_page($currenturl, $context, $certification, 'certification_general');
+\tool_mulib\local\plugindocs::set_path('tool_mucertify', 'management_certification.md');
 
 /** @var \tool_mucertify\output\management\renderer $managementoutput */
 $managementoutput = $PAGE->get_renderer('tool_mucertify', 'management');

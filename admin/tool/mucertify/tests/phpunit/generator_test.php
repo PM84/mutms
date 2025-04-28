@@ -156,4 +156,69 @@ final class generator_test extends \advanced_testcase {
         $this->assertSame($data->periods_due1, $periods['due1']);
         $this->assertSame($data->periods_windowend1, $periods['windowend1']);
     }
+
+    public function test_create_certification_assignment(): void {
+        global $DB;
+
+        /** @var \tool_mucertify_generator $generator */
+        $generator = $this->getDataGenerator()->get_plugin_generator('tool_mucertify');
+        $this->assertInstanceOf('tool_mucertify_generator', $generator);
+
+        /** @var \tool_muprog_generator $programgenerator */
+        $programgenerator = $this->getDataGenerator()->get_plugin_generator('tool_muprog');
+        $program1 = $programgenerator->create_program();
+
+        $certification1 = $generator->create_certification(['programid1' => $program1->id]);
+
+        $user1 = $this->getDataGenerator()->create_user();
+        $user2 = $this->getDataGenerator()->create_user();
+        $user3 = $this->getDataGenerator()->create_user();
+        $user4 = $this->getDataGenerator()->create_user();
+        $user5 = $this->getDataGenerator()->create_user();
+
+        $this->setCurrentTimeStart();
+        $assignment1 = $generator->create_certification_assignment(
+            ['certificationid' => $certification1->id, 'userid' => $user1->id]);
+        $this->assertSame($user1->id, $assignment1->userid);
+        $this->assertSame($certification1->id, $assignment1->certificationid);
+        $this->assertSame(null, $assignment1->timecertifiedtemp);
+        $this->assertTimeCurrent($assignment1->timecreated);
+
+        $assignment2 = $generator->create_certification_assignment(
+            ['certification' => $certification1->fullname, 'user' => $user2->username]);
+        $this->assertSame($user2->id, $assignment2->userid);
+        $this->assertSame($certification1->id, $assignment2->certificationid);
+        $this->assertSame(null, $assignment2->timecertifiedtemp);
+
+        $now = time();
+        $data = (object)[
+            'certificationid' => $certification1->id,
+            'userid' => $user3->id,
+            'timecreated' => (string)($now - DAYSECS),
+            'timecertifiedtemp' => (string)($now + WEEKSECS),
+        ];
+        $assignment3 = $generator->create_certification_assignment($data);
+        $this->assertSame($user3->id, $assignment3->userid);
+        $this->assertSame($certification1->id, $assignment3->certificationid);
+        $this->assertSame($data->timecertifiedtemp, $assignment3->timecertifiedtemp);
+        $this->assertSame($data->timecreated, $assignment3->timecreated);
+
+        $data = (object)[
+            'certificationid' => $certification1->id,
+            'userid' => $user4->id,
+            'noperiod' => '1',
+        ];
+        $assignment4 = $generator->create_certification_assignment($data);
+        $this->assertFalse($DB->record_exists('tool_mucertify_period',
+            ['certificationid' => $certification1->id, 'userid' => $user4->id]));
+
+        $data = (object)[
+            'certificationid' => $certification1->id,
+            'userid' => $user5->id,
+            'noperiod' => '',
+        ];
+        $assignment5 = $generator->create_certification_assignment($data);
+        $this->assertTrue($DB->record_exists('tool_mucertify_period',
+            ['certificationid' => $certification1->id, 'userid' => $user5->id]));
+    }
 }

@@ -40,9 +40,9 @@ final class assignment {
         // Note: in theory this could be extended to load arbitrary classes.
         $types = [
             source\manual::get_type() => source\manual::class,
-            source\cohort::get_type() => source\cohort::class,
             source\selfassignment::get_type() => source\selfassignment::class,
             source\approval::get_type() => source\approval::class,
+            source\cohort::get_type() => source\cohort::class,
         ];
 
         return $types;

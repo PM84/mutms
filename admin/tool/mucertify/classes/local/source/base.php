@@ -325,7 +325,7 @@ abstract class base {
             $record->timecertifiedtemp = $dateoverrides['timecertifiedtemp'];
         }
         $record->evidencejson = \tool_mucertify\local\util::json_encode([]);
-        $record->timecreated = $now;
+        $record->timecreated = empty($dateoverrides['timecreated']) ? $now : $dateoverrides['timecreated'];
 
         $trans = $DB->start_delegated_transaction();
 
