@@ -1,11 +1,22 @@
-# Certifications for Moodle™
+# Certifications plugin for Moodle™
 
 ![Moodle Plugin CI](https://github.com/mutms/moodle-tool_mucertify/actions/workflows/moodle-ci.yml/badge.svg)
 
-_Certifications_ is a set of plugins designed to simplify the certification process for your employees
-and serve as a seamless solution for your compliance training needs. 
+Certifications is a versatile suite of plugins designed to simplify and optimize the certification process for organizations.
+It provides an effective and user-friendly solution to meet compliance training requirements, ensuring that your workforce 
+remains aligned with critical industry standards and regulations.
 
-# Installation and requirements
+## Key features
+
+* tracking of compliance through certification periods tied to designated programs,
+* multiple sources for assigning certifications,
+* advanced recertification rules to match organizational needs,
+* intuitive _Certification management_ interface,
+* _Certification catalogue_ where users may browse all available certifications,
+* dedicated _My certifications profile page_,
+* _My certifications dashboard block_ for quick access to details.
+
+## Requirements
 
 This plugin requires following plugins:
 
@@ -22,9 +33,9 @@ Other recommended plugins:
 * [Certificate plugin](https://github.com/moodleworkplace/moodle-tool_certificate)
 * [Certification fields for Certificate plugin](https://github.com/mutms/moodle-certificateelement_mucertify)
 * [Program fields for Certificate plugin](https://github.com/mutms/moodle-certificateelement_muprog)
-
-This plugin is fully compatible with [Multi-tenancy](https://github.com/mutms/moodle-tool_mutenancy) for Moodle™.
+* [Multi-tenancy](https://github.com/mutms/moodle-tool_mutenancy).
 
 ## Documentation
 
-See [online documentation](https://github.com/mutms/moodle-tool_mucertify/wiki) for more information.
+See [plugin documentation](https://github.com/mutms/moodle-tool_mucertify/blob/MOODLE_405_STABLE/docs/en/index.md)
+and [Wiki pages](https://github.com/mutms/moodle-tool_mucertify/wiki) for more information.

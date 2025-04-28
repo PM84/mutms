@@ -137,7 +137,7 @@ final class form_certification_periods_programid_test extends \advanced_testcase
             $this->fail('Exception excepted');
         } catch (\moodle_exception $ex) {
             $this->assertInstanceOf(\required_capability_exception::class, $ex);
-            $this->assertSame('Sorry, but you do not currently have permissions to do that (Update certifications).',
+            $this->assertSame('Sorry, but you do not currently have permissions to do that (Add and update certifications).',
                 $ex->getMessage());
         }
     }
@@ -241,7 +241,7 @@ final class form_certification_periods_programid_test extends \advanced_testcase
             $this->fail('Exception excepted');
         } catch (\moodle_exception $ex) {
             $this->assertInstanceOf(\required_capability_exception::class, $ex);
-            $this->assertSame('Sorry, but you do not currently have permissions to do that (Update certifications).',
+            $this->assertSame('Sorry, but you do not currently have permissions to do that (Add and update certifications).',
                 $ex->getMessage());
         }
     }

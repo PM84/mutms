@@ -73,7 +73,7 @@ Feature: Automatic cohorts assignments certification tests
     And I click on "Assignment settings" "link" in the ".secondary-navigation" "css_element"
     And I click on "Update Automatic cohort assignment" "link"
     And I set the following fields to these values:
-      | Active         | Yes                |
+      | Active            | Yes                |
       | Assign to cohorts | Cohort 1, Cohort 2 |
     And I press dialog form button "Update"
     Then I should see "Active (Cohort 1, Cohort 2)" in the "Automatic cohort assignment" definition list item

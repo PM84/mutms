@@ -43,22 +43,22 @@ final class period {
     public static function fix_flags(int $certificationid, int $userid): ?stdClass {
         global $DB;
 
-        $periods = $DB->get_records('tool_mucertify_period',
-            ['certificationid' => $certificationid, 'userid' => $userid], 'timewindowstart ASC');
-
         $assignment = $DB->get_record('tool_mucertify_assignment', ['certificationid' => $certificationid, 'userid' => $userid]);
 
-        if (!$periods) {
+        $hascertifiedperiod = $DB->record_exists_select('tool_mucertify_period',
+            "certificationid = :certificationid AND userid = :userid AND timecertified IS NOT NULL AND timerevoked IS NULL",
+            ['certificationid' => $certificationid, 'userid' => $userid]);
+
+        if (!$hascertifiedperiod) {
             if ($assignment) {
+                $until = null;
                 if ($assignment->timecertifiedtemp) {
-                    $until = (string)$assignment->timecertifiedtemp;
                     if ($assignment->timecertifiedtemp >= $assignment->timecreated + DAYSECS) {
                         $from = (string)$assignment->timecreated;
                     } else {
                         $from = (string)($assignment->timecertifiedtemp - DAYSECS);
                     }
                 } else {
-                    $until = null;
                     $from = null;
                 }
                 if ($assignment->timecertifiedfrom !== $from || $assignment->timecertifieduntil !== $until) {
@@ -70,6 +70,14 @@ final class period {
                     $assignment = $DB->get_record('tool_mucertify_assignment',
                         ['certificationid' => $certificationid, 'userid' => $userid], '*', MUST_EXIST);
                 }
+            }
+        }
+
+        $periods = $DB->get_records('tool_mucertify_period',
+            ['certificationid' => $certificationid, 'userid' => $userid], 'timewindowstart ASC');
+
+        if (!$periods) {
+            if ($assignment) {
                 return $assignment;
             } else {
                 return null;
@@ -126,26 +134,35 @@ final class period {
             }
         }
 
-        if ($assignment) {
-            if ($assignment->timecertifiedfrom !== $from || $assignment->timecertifieduntil !== $until) {
-                $DB->update_record('tool_mucertify_assignment', [
-                    'id' => $assignment->id,
-                    'timecertifiedfrom' => $from,
-                    'timecertifieduntil' => $until,
-                ]);
-                $assignment = $DB->get_record('tool_mucertify_assignment',
-                    ['certificationid' => $certificationid, 'userid' => $userid], '*', MUST_EXIST);
-            }
-            if ($assignment->timecertifiedtemp && $until && $assignment->timecertifiedtemp <= $until) {
-                // Temporary certification must be after certification end,
-                // this is needed for performance reasons.
-                $DB->set_field('tool_mucertify_assignment', 'timecertifiedtemp', null, ['id' => $assignment->id]);
-                $assignment->timecertifiedtemp = null;
-            }
-            return $assignment;
-        } else {
+        if (!$assignment) {
             return null;
         }
+
+        $update = [];
+        if ($assignment->timecertifiedtemp) {
+            if ($until && $assignment->timecertifiedtemp < $until) {
+                // Remove temporary certification if it is before normal expiration.
+                $update['timecertifiedtemp'] = null;
+            } else if ($assignment->timecertifiedtemp && !$from) {
+                if ($assignment->timecertifiedtemp >= $assignment->timecreated + DAYSECS) {
+                    $from = (string)$assignment->timecreated;
+                } else {
+                    $from = (string)($assignment->timecertifiedtemp - DAYSECS);
+                }
+            }
+        }
+        if ($assignment->timecertifiedfrom !== $from || $assignment->timecertifieduntil !== $until) {
+            $update['timecertifiedfrom'] = $from;
+            $update['timecertifieduntil'] = $until;
+        }
+
+        if ($update) {
+            $update['id'] = $assignment->id;
+            $DB->update_record('tool_mucertify_assignment', $update);
+            $assignment = $DB->get_record('tool_mucertify_assignment',
+                ['certificationid' => $certificationid, 'userid' => $userid], '*', MUST_EXIST);
+        }
+        return $assignment;
     }
 
     /**

@@ -158,6 +158,9 @@ class renderer extends \plugin_renderer_base {
         }
         $details[] = ['property' => get_string('program', 'tool_muprog'), 'value' => $program1str];
 
+        $resettypes = certification::get_resettype_options();
+        $details[] = ['property' => get_string('resettype1', 'tool_mucertify'), 'value' => $resettypes[$settings->resettype1]];
+
         if ($settings->due1) {
             $due = util::format_duration($settings->due1);
         } else {
@@ -189,9 +192,6 @@ class renderer extends \plugin_renderer_base {
             $expiration = get_string('delayafter', 'tool_mucertify', $a);
         }
         $details[] = ['property' => get_string('untildate', 'tool_mucertify'), 'value' => $expiration];
-
-        $resettypes = certification::get_resettype_options();
-        $details[] = ['property' => get_string('resettype1', 'tool_mucertify'), 'value' => $resettypes[$settings->resettype1]];
 
         if ($settings->recertify === null) {
             $recertifystr = get_string('no');
@@ -239,15 +239,15 @@ class renderer extends \plugin_renderer_base {
         }
         $details[] = ['property' => get_string('program', 'tool_muprog'), 'value' => $program2str];
 
+        $resettypes = certification::get_resettype_options();
+        $details[] = ['property' => get_string('resettype2', 'tool_mucertify'), 'value' => $resettypes[$settings->resettype2]];
+
         if ($settings->grace2) {
             $grace = util::format_duration($settings->grace2);
         } else {
             $grace = get_string('notset', 'tool_mucertify');
         }
         $details[] = ['property' => get_string('graceperiod', 'tool_mucertify'), 'value' => $grace];
-
-        $resettypes = certification::get_resettype_options();
-        $details[] = ['property' => get_string('resettype2', 'tool_mucertify'), 'value' => $resettypes[$settings->resettype2]];
 
         $since = certification::get_valid_options();
         $details[] = ['property' => get_string('fromdate', 'tool_mucertify'), 'value' => $since[$settings->valid2]];

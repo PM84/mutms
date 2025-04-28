@@ -52,7 +52,7 @@ $capabilities = [
         ],
     ],
 
-    /* Add and update certifications. */
+    /* Add and Add and update certifications. */
     'tool/mucertify:edit' => [
         'captype' => 'write',
         'contextlevel' => CONTEXT_COURSECAT,

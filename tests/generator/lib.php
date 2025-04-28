@@ -51,7 +51,7 @@ class tool_mucertify_generator extends component_generator_base {
      * @return stdClass
      */
     public function create_certification($record = null): stdClass {
-        global $DB;
+        global $DB, $CFG;
 
         $this->certificationcount++;
 
@@ -71,7 +71,10 @@ class tool_mucertify_generator extends component_generator_base {
         }
         if (!isset($record->contextid)) {
             if (!empty($record->category)) {
-                $category = $DB->get_record('course_categories', ['name' => $record->category], '*', MUST_EXIST);
+                $category = $DB->get_record('course_categories', ['name' => $record->category]);
+                if (!$category) {
+                    $category = $DB->get_record('course_categories', ['idnumber' => $record->category], '*', MUST_EXIST);
+                }
                 $context = context_coursecat::instance($category->id);
                 $record->contextid = $context->id;
             } else {
@@ -116,7 +119,13 @@ class tool_mucertify_generator extends component_generator_base {
             $cohorts = $record->cohorts;
         }
         unset($record->cohorts);
-        unset($record->cohortods);
+        unset($record->cohortids);
+
+        $image = null;
+        if (!empty($record->image)) {
+            $image = $record->image;
+        }
+        unset($record->image);
 
         $periodsdefauls = (array)certification::get_periods_defaults();
         $periods = [];
@@ -164,9 +173,77 @@ class tool_mucertify_generator extends component_generator_base {
             \tool_mucertify\local\source\base::update_source($data);
         }
 
+        if ($image) {
+            $imagefile = $CFG->dirroot . '/' . ltrim($image, '/');
+            if (!file_exists($imagefile)) {
+                throw new Exception('Certification image file does not exist');
+            }
+            $context = \context::instance_by_id($certification->contextid);
+            $fs = get_file_storage();
+            $filerecord = [
+                'contextid' => $context->id,
+                'component' => 'tool_mucertify',
+                'filearea' => 'image',
+                'itemid' => $certification->id,
+                'filepath' => '/',
+                'filename' => basename($image),
+            ];
+            $file = $fs->create_file_from_pathname($filerecord, $imagefile);
+            $presenation = (array)json_decode($certification->presentationjson);
+            $presenation['image'] = $file->get_filename();
+            $DB->set_field('tool_mucertify_certification', 'presentationjson',
+                \tool_mucertify\local\util::json_encode($presenation), ['id' => $certification->id]);
+            $certification = $DB->get_record('tool_mucertify_certification', ['id' => $certification->id], '*', MUST_EXIST);
+        }
+
         return $certification;
     }
 
+    /**
+     * Manually assign user to certification.
+     *
+     * @param mixed $record
+     * @return \stdClass assignment record
+     */
+    public function create_certification_assignment($record): stdClass {
+        global $DB;
+
+        $record = (object)(array)$record;
+
+        if (!empty($record->certificationid)) {
+            $certification = $DB->get_record('tool_mucertify_certification', ['id' => $record->certificationid], '*', MUST_EXIST);
+        } else {
+            $certification = $DB->get_record('tool_mucertify_certification', ['fullname' => $record->certification], '*', MUST_EXIST);
+        }
+
+        if (!empty($record->userid)) {
+            $user = $DB->get_record('user', ['id' => $record->userid], '*', MUST_EXIST);
+        } else {
+            $user = $DB->get_record('user', ['username' => $record->user], '*', MUST_EXIST);
+        }
+
+        $source = $DB->get_record('tool_mucertify_source', ['type' => 'manual', 'certificationid' => $certification->id]);
+        if (!$source) {
+            $data = [];
+            $data['enable'] = 1;
+            $data['certificationid'] = $certification->id;
+            $data['type'] = 'manual';
+            $data = (object)$data;
+            $source = \tool_mucertify\local\source\manual::update_source($data);
+        }
+
+        $overridable = ['timecreated', 'timecertifiedtemp', 'noperiod'];
+        $dateoverrides = [];
+        foreach ($overridable as $override) {
+            if (!empty($record->{$override}) && is_number($record->{$override})) {
+                $dateoverrides[$override] = $record->{$override};
+            }
+        }
+
+        \tool_mucertify\local\source\manual::assign_users($certification->id, $source->id, [$user->id], $dateoverrides);
+
+        return $DB->get_record('tool_mucertify_assignment', ['certificationid' => $certification->id, 'userid' => $user->id], '*', MUST_EXIST);
+    }
     /**
      * Add certification notification.
      *

@@ -59,6 +59,7 @@ if ($context->contextlevel == CONTEXT_SYSTEM) {
 $currenturl = new moodle_url('/admin/tool/mucertify/management/index.php', ['contextid' => $context->id]);
 
 management::setup_index_page($currenturl, $context);
+\tool_mulib\local\plugindocs::set_path('tool_mucertify', 'management_index.md');
 
 $actions = new header_actions(get_string('management_index_actions', 'tool_muprog'));
 
