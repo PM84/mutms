@@ -30,7 +30,7 @@ defined('MOODLE_INTERNAL') || die();
 
 /** @var admin_root $ADMIN */
 
-$ADMIN->add('root', new admin_category('tool_mutrain', new lang_string('pluginname', 'tool_mutrain')));
+$ADMIN->add('root', new admin_category('tool_mutrain', new lang_string('training', 'tool_mutrain')));
 
 $ADMIN->add('tool_mutrain', new admin_externalpage('tool_mutrain_framework',
     get_string('management_frameworks', 'tool_mutrain'),
