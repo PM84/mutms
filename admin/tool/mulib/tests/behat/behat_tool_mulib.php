@@ -316,8 +316,26 @@ class behat_tool_mulib extends behat_base {
         $DB->set_field('course', 'fullname', 'muTMS test site', ['category' => 0]);
 
         if (defined('BEHAT_MULIB_UPDATE_SCREENSHOTS') && BEHAT_MULIB_UPDATE_SCREENSHOTS) {
-            // Do not mess with theme unless we are going to take the screenshots.
+            // Hide theme footer only if actually taking the screenshot.
+            purge_all_caches();
+            $this->getSession()->reload();
+
             set_config('scss', '#page-footer { display: none }', 'theme_boost');
+
+            purge_all_caches();
+            theme_build_css_for_themes([theme_config::load('boost')], ['ltr']);
+        }
+
+        $this->getSession()->reload();
+    }
+
+    /**
+     * @Then site is restored after documentation screenshots
+     */
+    public function restore_for_documentation_screenshots() {
+        if (defined('BEHAT_MULIB_UPDATE_SCREENSHOTS') && BEHAT_MULIB_UPDATE_SCREENSHOTS) {
+            // Undo hiding of footer to prevent other tests from failing.
+            set_config('scss', '', 'theme_boost');
             purge_all_caches();
             theme_build_css_for_themes([theme_config::load('boost')], ['ltr']);
         }
