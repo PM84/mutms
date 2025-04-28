@@ -2,7 +2,7 @@
 
 # Program content
 
-## Program Structure and Completion Criteria
+## Program structure and completion criteria
 
 Program content is organized into a hierarchical course set structure. Each course set may include individual courses,
 training frameworks, or other nested course sets.
