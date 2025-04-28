@@ -28,8 +28,8 @@ defined('MOODLE_INTERNAL') || die();
 
 /** @var stdClass $plugin */
 $plugin->component = 'enrol_muprog';
-$plugin->version   = 2025042400;
+$plugin->version   = 2025042800;
 $plugin->requires  = 2024100700;
 $plugin->maturity  = MATURITY_ALPHA;
 $plugin->supported = [405, 405];
-$plugin->release   = 'mu-4.5.4-06';
+$plugin->release   = 'mu-4.5.4-07';
