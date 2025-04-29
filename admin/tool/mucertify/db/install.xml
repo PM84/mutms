@@ -91,8 +91,8 @@
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
         <KEY NAME="sourceid" TYPE="foreign" FIELDS="sourceid" REFTABLE="tool_mucertify_source" REFFIELDS="id"/>
-        <KEY NAME="userid" TYPE="foreign" FIELDS="userid" REFTABLE="users" REFFIELDS="id"/>
-        <KEY NAME="rejectedby" TYPE="foreign" FIELDS="rejectedby" REFTABLE="users" REFFIELDS="id"/>
+        <KEY NAME="userid" TYPE="foreign" FIELDS="userid" REFTABLE="user" REFFIELDS="id"/>
+        <KEY NAME="rejectedby" TYPE="foreign" FIELDS="rejectedby" REFTABLE="user" REFFIELDS="id"/>
       </KEYS>
       <INDEXES>
         <INDEX NAME="sourceid-userid" UNIQUE="true" FIELDS="sourceid, userid" COMMENT="Only one request for assignment of user per source, delete rejection if they are allowed to retry"/>
@@ -115,7 +115,7 @@
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
         <KEY NAME="certificationid" TYPE="foreign" FIELDS="certificationid" REFTABLE="tool_mucertify_certification" REFFIELDS="id"/>
-        <KEY NAME="userid" TYPE="foreign" FIELDS="userid" REFTABLE="users" REFFIELDS="id"/>
+        <KEY NAME="userid" TYPE="foreign" FIELDS="userid" REFTABLE="user" REFFIELDS="id"/>
         <KEY NAME="sourceid" TYPE="foreign" FIELDS="sourceid" REFTABLE="tool_mucertify_source" REFFIELDS="id"/>
       </KEYS>
       <INDEXES>
@@ -144,7 +144,7 @@
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
         <KEY NAME="certificationid" TYPE="foreign" FIELDS="certificationid" REFTABLE="tool_mucertify_certification" REFFIELDS="id"/>
-        <KEY NAME="userid" TYPE="foreign" FIELDS="userid" REFTABLE="users" REFFIELDS="id"/>
+        <KEY NAME="userid" TYPE="foreign" FIELDS="userid" REFTABLE="user" REFFIELDS="id"/>
         <KEY NAME="programid" TYPE="foreign" FIELDS="programid" REFTABLE="tool_muprog_program" REFFIELDS="id"/>
       </KEYS>
       <INDEXES>

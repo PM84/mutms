@@ -53,6 +53,7 @@ $user = $DB->get_record('user', ['id' => $assignment->userid], '*', MUST_EXIST);
 $currenturl = new moodle_url('/admin/tool/mucertify/management/assignment.php', ['id' => $assignment->id]);
 
 management::setup_certification_page($currenturl, $context, $certification, 'certification_users');
+\tool_mulib\local\plugindocs::set_path('tool_mucertify', 'management_assignment.md');
 
 /** @var \tool_mucertify\output\management\renderer $managementoutput */
 $managementoutput = $PAGE->get_renderer('tool_mucertify', 'management');
