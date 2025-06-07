@@ -1,5 +1,5 @@
 <?php
-// This file is part of Certifications fields plugin for Certificate plugin for Moodle™.
+// This file is part of MuTMS suite of plugins for Moodle™ LMS.
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -45,7 +45,7 @@ final class element extends \tool_certificate\element {
             'timeuntil' => get_string('untildate', 'tool_mucertify'),
         ];
 
-        $handler = \tool_mucertify\customfield\fields_handler::create();
+        $handler = \tool_mucertify\customfield\certification_handler::create();
         if ($handler->get_fields()) {
             $fields['customfield'] = get_string('customfield', 'core_customfield');
         }
@@ -175,7 +175,7 @@ final class element extends \tool_certificate\element {
      */
     public function get_customfields(): array {
         if ($this->fields === null) {
-            $handler = \tool_mucertify\customfield\fields_handler::create();
+            $handler = \tool_mucertify\customfield\certification_handler::create();
             $this->fields = $handler->get_fields();
         }
         return $this->fields;

@@ -1,5 +1,5 @@
 <?php
-// This file is part of Certifications fields plugin for Certificate plugin for Moodle™.
+// This file is part of MuTMS suite of plugins for Moodle™ LMS.
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -28,13 +28,13 @@ defined('MOODLE_INTERNAL') || die();
 
 /** @var stdClass $plugin */
 $plugin->component = 'certificateelement_mucertify';
-$plugin->version   = 2025050100;
+$plugin->version   = 2025052300;
 $plugin->requires  = 2024091700.00;
 $plugin->maturity  = MATURITY_ALPHA;
 $plugin->supported = [405, 405];
-$plugin->release   = 'mu-4.5.4-10';
+$plugin->release   = 'mu-4.5.4-10+';
 
 $plugin->dependencies = [
-    'tool_mucertify' => 2025050100,
+    'tool_mucertify' => 2025052300,
     'tool_certificate' => 2025031800,
 ];
