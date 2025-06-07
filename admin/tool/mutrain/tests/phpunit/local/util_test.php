@@ -23,7 +23,7 @@ namespace tool_mutrain\phpunit\local;
 use tool_mutrain\local\util;
 
 /**
- * Program helper test.
+ * Training framework helper test.
  *
  * @group      MuTMS
  * @package    tool_mutrain
