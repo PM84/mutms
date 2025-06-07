@@ -57,7 +57,7 @@ final class element_test extends \advanced_testcase {
 
         $fieldcategory = $this->getDataGenerator()->create_custom_field_category([
             'component' => 'tool_muprog',
-            'area' => 'fields',
+            'area' => 'program',
             'name' => 'Program custom fields',
         ]);
         $field1 = $this->getDataGenerator()->create_custom_field([
@@ -194,7 +194,7 @@ final class element_test extends \advanced_testcase {
 
         $fieldcategory = $this->getDataGenerator()->create_custom_field_category([
             'component' => 'tool_muprog',
-            'area' => 'fields',
+            'area' => 'program',
             'name' => 'Program custom fields',
         ]);
         $field1 = $this->getDataGenerator()->create_custom_field([
@@ -247,7 +247,7 @@ final class element_test extends \advanced_testcase {
 
         $fieldcategory = $this->getDataGenerator()->create_custom_field_category([
             'component' => 'tool_muprog',
-            'area' => 'fields',
+            'area' => 'program',
             'name' => 'Program custom fields',
         ]);
         $field1 = $this->getDataGenerator()->create_custom_field([
@@ -292,7 +292,7 @@ final class element_test extends \advanced_testcase {
 
         $fieldcategory = $this->getDataGenerator()->create_custom_field_category([
             'component' => 'tool_muprog',
-            'area' => 'fields',
+            'area' => 'program',
             'name' => 'Program custom fields',
         ]);
         $field1 = $this->getDataGenerator()->create_custom_field([
@@ -353,7 +353,7 @@ final class element_test extends \advanced_testcase {
         $user2 = $this->getDataGenerator()->create_user();
         $fieldcategory = $this->getDataGenerator()->create_custom_field_category([
             'component' => 'tool_muprog',
-            'area' => 'fields',
+            'area' => 'program',
             'name' => 'Program custom fields',
         ]);
         $field1 = $this->getDataGenerator()->create_custom_field([
