@@ -1,4 +1,4 @@
-# Training frameworks plugin for Moodle™
+# Training frameworks plugin for Moodle™ LMS
 
 ![Moodle Plugin CI](https://github.com/mutms/moodle-tool_mutrain/actions/workflows/moodle-ci.yml/badge.svg)
 
@@ -8,7 +8,14 @@ to courses and other entities via Training value custom fields.
 Programs completion may be set up to depend on training points users obtain
 by completing courses and other activities.
 
-To use this plugin you need to install [Programs plugin for Moodle™](https://github.com/mutms/moodle-tool_muprog) 
-and [Training value custom field for Moodle™](https://github.com/mutms/moodle-customfield_mutrain) plugins.
+To use this plugin you need to install [Programs plugin for Moodle™ LMS](https://github.com/mutms/moodle-tool_muprog) 
+and [Training value custom field for Moodle™ LMS](https://github.com/mutms/moodle-customfield_mutrain) plugins.
 
 See [online documentation](https://github.com/mutms/moodle-tool_mutrain/wiki) for more information.
+
+## Acknowledgement
+
+This plugin is a fork of [Training value custom field by Open LMS](https://github.com/open-lms-open-source/moodle-customfield_training)
+and exists thanks to Open LMS's decision to release it to the public under the GPL 3.0 license.
+
+MuTMS suite of plugins is not associated with Moodle HQ or Open LMS in any way.

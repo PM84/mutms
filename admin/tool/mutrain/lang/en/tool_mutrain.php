@@ -1,5 +1,5 @@
 <?php
-// This file is part of Training plugin for Moodle™.
+// This file is part of MuTMS suite of plugins for Moodle™ LMS.
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -48,7 +48,7 @@ $string['framework_restore'] = 'Restore framework';
 $string['framework_update'] = 'Update framework';
 $string['frameworks'] = 'Training frameworks';
 $string['management_framework_actions'] = 'Framework actions';
-$string['management_frameworks'] = 'Manage training frameworks';
+$string['management_frameworks'] = 'Training frameworks';
 $string['mutrain:manageframeworks'] = 'Manage training frameworks';
 $string['mutrain:viewframeworks'] = 'View training frameworks';
 $string['notset'] = 'Not set';
