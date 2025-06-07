@@ -1,5 +1,5 @@
 <?php
-// This file is part of Programs for Moodle™.
+// This file is part of MuTMS suite of plugins for Moodle™ LMS.
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -83,7 +83,7 @@ class renderer extends \plugin_renderer_base {
             'value' => (isset($program->timeallocationstart) ? userdate($program->timeallocationstart) : $strnotset)];
         $details[] = ['property' => get_string('allocationend', 'tool_muprog'),
             'value' => (isset($program->timeallocationend) ? userdate($program->timeallocationend) : $strnotset)];
-        $handler = \tool_muprog\customfield\fields_handler::create();
+        $handler = \tool_muprog\customfield\program_handler::create();
         foreach ($handler->get_instance_data($program->id) as $data) {
             $details[] = ['property' => $data->get_field()->get('name'), 'value' => $data->export_value()];
         }

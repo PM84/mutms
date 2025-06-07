@@ -1,4 +1,4 @@
-# Programs plugin for Moodle™
+# Programs plugin for Moodle™ LMS
 
 ![Moodle Plugin CI](https://github.com/mutms/moodle-tool_muprog/actions/workflows/moodle-ci.yml/badge.svg)
 
@@ -10,7 +10,7 @@ or training offerings.
 
 Programs enhance Moodle's core functionality by bridging gaps in traditional course management.
 They offer solutions for challenges such as organizing courses across categories, managing multi-tenancy for course roles,
-and scheduling individualized course access. With seamless integration into Moodle™, Programs provide a scalable and
+and scheduling individualized course access. With seamless integration into Moodle™ LMS, Programs provide a scalable and
 efficient way to manage both small-scale and large-scale learning initiatives and training.
 
 ## Key features
@@ -44,3 +44,15 @@ Other recommended plugins:
 
 See [plugin documentation](https://github.com/mutms/moodle-tool_muprog/blob/MOODLE_405_STABLE/docs/en/index.md)
 and [Wiki pages](https://github.com/mutms/moodle-tool_muprog/wiki) for more information.
+
+## Acknowledgement
+
+This plugin is a fork of [Programs by Open LMS](https://github.com/open-lms-open-source/moodle-enrol_programs)
+and exists thanks to Open LMS's decision to release it to the public under the GPL 3.0 license.
+
+Note that the current code is still under development and is not suitable for production use.
+If you require a stable version for a production environment or commercial support,
+please consider [Open LMS Work](https://www.openlms.net/open-lms-work/).
+This plugin is not suitable for existing customers of Open LMS due to the lack of upgrade path.
+
+MuTMS suite of plugins is not associated with Moodle HQ or Open LMS in any way.

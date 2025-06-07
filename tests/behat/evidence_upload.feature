@@ -91,7 +91,7 @@ Feature: Upload program completion evidence using csv
       | User mapping via           | Username |
       | First line is header       | 1        |
     And I press dialog form button "Upload allocations"
-    And I should see "5 users were assigned to program."
+    And I should see "5 users were allocated to program."
     And I click on "Users actions" "link"
     And I should see "Upload completion evidences"
 

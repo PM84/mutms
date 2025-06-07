@@ -1,5 +1,5 @@
 <?php
-// This file is part of Programs for Moodle™.
+// This file is part of MuTMS suite of plugins for Moodle™ LMS.
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -72,8 +72,6 @@ final class form_source_manual_allocate_users extends \tool_mulib\external\form_
         self::validate_context($context);
         require_capability('tool/muprog:allocate', $context);
 
-        $hasviewfullnames = has_capability('moodle/site:viewfullnames', $context);
-
         $fields = \core_user\fields::for_name()->with_identity($context, false);
         $extrafields = $fields->get_required_fields([\core_user\fields::PURPOSE_IDENTITY]);
 
@@ -99,40 +97,7 @@ SQL;
 
         $rs = $DB->get_recordset_sql($sqlquery, $params, 0, $CFG->maxusersperpage + 1);
 
-        $count = 0;
-        $list = [];
-        $notice = null;
-
-        foreach ($rs as $record) {
-            $count++;
-            if ($count > $CFG->maxusersperpage) {
-                $notice = get_string('toomanyuserstoshow', 'core', $CFG->maxusersperpage);
-                break;
-            }
-
-            $user = (object) [
-                'id' => $record->id,
-                'fullname' => fullname($record, $hasviewfullnames),
-                'extrafields' => [],
-            ];
-            foreach ($extrafields as $extrafield) {
-                // Sanitize the extra fields to prevent potential XSS exploit.
-                $user->extrafields[] = (object) [
-                    'name' => $extrafield,
-                    'value' => s($record->$extrafield),
-                ];
-            }
-            $list[] = [
-                'value' => $record->id,
-                'label' => clean_text($OUTPUT->render_from_template('core_user/form_user_selector_suggestion', $user)),
-            ];
-        }
-        $rs->close();
-
-        return [
-            'notice' => $notice,
-            'list' => $list,
-        ];
+        return self::prepare_user_list($rs, $extrafields);
     }
 
     /**
@@ -143,33 +108,13 @@ SQL;
      */
     public static function get_label_callback(array $arguments): callable {
         return function($value) use ($arguments): string {
-            global $OUTPUT, $DB;
+            global $DB;
 
-            $program = $DB->get_record('tool_muprog_program', ['id' => $arguments['programid']], '*', MUST_EXIST);
-            $context = \context::instance_by_id($program->contextid);
+            $record = $DB->get_record('user', ['id' => $value]);
 
-            $error = ''; // This is not pretty, but luckily there is a low chance this will happen.
-            if (static::validate_form_value($arguments, $value, $context) !== null) {
-                $error = ' (' . get_string('error') .')';
-            }
+            $context = \context_tenant::instance($arguments['tenantid']);
 
-            $fields = \core_user\fields::for_name()->with_identity($context, false);
-            $record = \core_user::get_user($value, 'id' . $fields->get_sql()->selects, MUST_EXIST);
-
-            $user = (object) [
-                'id' => $record->id,
-                'fullname' => fullname($record, has_capability('moodle/site:viewfullnames', $context)),
-                'extrafields' => [],
-            ];
-
-            foreach ($fields->get_required_fields([\core_user\fields::PURPOSE_IDENTITY]) as $extrafield) {
-                $user->extrafields[] = (object) [
-                    'name' => $extrafield,
-                    'value' => s($record->$extrafield),
-                ];
-            }
-
-            return $OUTPUT->render_from_template('core_user/form_user_selector_suggestion', $user) . $error;
+            return self::prepare_user_label($record, $context);
         };
     }
 

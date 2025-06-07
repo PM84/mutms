@@ -1,5 +1,5 @@
 <?php
-// This file is part of Programs for Moodle™.
+// This file is part of MuTMS suite of plugins for Moodle™ LMS.
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -68,8 +68,10 @@ $string['creategroups'] = 'Course groups';
 $string['creategroups_help'] = 'If enabled a group will be created in each course added to program and all allocated users will be added as group members.';
 $string['currentcontextonly'] = 'Exclude sub-categories';
 $string['customfields'] = 'Program custom fields';
-$string['customfieldsettings'] = 'Commmon programs custom fields settings';
+$string['customfields_allocation'] = 'Program allocation custom fields';
+$string['customfieldsettings'] = 'Common programs custom fields settings';
 $string['customfieldvisible:allocated'] = 'Users allocated to programs';
+$string['customfieldvisible:allocatee'] = 'Allocatee';
 $string['customfieldvisible:everyone'] = 'Everybody who can see other program details';
 $string['customfieldvisible:viewcapability'] = 'Users with view programs capability';
 $string['customfieldvisibleto'] = 'Field content is visible to';
@@ -392,9 +394,9 @@ $string['source_manual_csvfile'] = 'CSV file';
 $string['source_manual_hasheaders'] = 'First line is header';
 $string['source_manual_potusers'] = 'Allocation candidates';
 $string['source_manual_potusersmatching'] = 'Matching allocation candidates';
-$string['source_manual_result_assigned'] = '{$a} users were assigned to program.';
-$string['source_manual_result_errors'] = '{$a} errors detected when assigning programs.';
-$string['source_manual_result_skipped'] = '{$a} users were already assigned to program.';
+$string['source_manual_result_assigned'] = '{$a} users were allocated to program.';
+$string['source_manual_result_errors'] = '{$a} errors detected when allocating programs.';
+$string['source_manual_result_skipped'] = '{$a} users were already allocated to program.';
 $string['source_manual_timeduecolumn'] = 'Time due column';
 $string['source_manual_timeendcolumn'] = 'Time end column';
 $string['source_manual_timestartcolumn'] = 'Time start column';

@@ -1,5 +1,5 @@
 <?php
-// This file is part of Programs for Moodle™.
+// This file is part of MuTMS suite of plugins for Moodle™ LMS.
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -30,12 +30,12 @@
 require('../../../../config.php');
 require_once($CFG->libdir.'/adminlib.php');
 
-admin_externalpage_setup('tool_muprog_customfield');
+admin_externalpage_setup('tool_muprog_customfield_program');
 
 /** @var \core_customfield\output\renderer $output */
 $output = $PAGE->get_renderer('core_customfield');
 
-$handler = \tool_muprog\customfield\fields_handler::create();
+$handler = \tool_muprog\customfield\program_handler::create();
 $outputpage = new \core_customfield\output\management($handler);
 
 echo $output->header(),

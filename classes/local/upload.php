@@ -1,5 +1,5 @@
 <?php
-// This file is part of Programs for Moodle™.
+// This file is part of MuTMS suite of plugins for Moodle™ LMS.
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -77,7 +77,7 @@ final class upload {
                 }
             }
 
-            $cfhandler = \tool_muprog\customfield\fields_handler::create();
+            $cfhandler = \tool_muprog\customfield\program_handler::create();
             foreach ($cfhandler->get_fields() as $cfield) {
                 $cfname = 'customfield_' . $cfield->get('shortname');
                 if (isset($rawprogram->$cfname)) {
@@ -187,7 +187,7 @@ final class upload {
             'enddate',
             'sources',
         ];
-        $cfhandler = \tool_muprog\customfield\fields_handler::create();
+        $cfhandler = \tool_muprog\customfield\program_handler::create();
         foreach ($cfhandler->get_fields() as $cfield) {
             $columns[] = 'customfield_' . $cfield->get('shortname');
         }
