@@ -1,4 +1,4 @@
-name: muTMS PHPUnit
+name: MuTMS PHPUnit
 
 on:
   workflow_dispatch:
