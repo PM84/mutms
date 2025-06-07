@@ -1,5 +1,5 @@
 <?php
-// This file is part of Programs for Moodle™.
+// This file is part of MuTMS suite of plugins for Moodle™ LMS.
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -268,7 +268,14 @@ class tool_muprog_generator extends component_generator_base {
             }
         }
 
-        \tool_muprog\local\source\manual::allocate_users($program->id, $source->id, [$user->id], $dateoverrides);
+        $allocationids = \tool_muprog\local\source\manual::allocate_users($program->id, $source->id, [$user->id], $dateoverrides);
+        foreach ($allocationids as $allocationid) {
+            $data = (object)(array)$record;
+            /** @var \tool_muprog\customfield\allocation_handler $handler */
+            $handler = \tool_muprog\customfield\allocation_handler::create();
+            $data->id = $allocationid;
+            $handler->instance_form_save($data);
+        }
 
         return $DB->get_record('tool_muprog_allocation', ['programid' => $program->id, 'userid' => $user->id], '*', MUST_EXIST);
     }

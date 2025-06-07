@@ -1,5 +1,5 @@
 <?php
-// This file is part of Programs for Moodle™.
+// This file is part of MuTMS suite of plugins for Moodle™ LMS.
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -91,6 +91,11 @@ class renderer extends \plugin_renderer_base {
 
         $details = [];
 
+        $handler = \tool_muprog\customfield\program_handler::create();
+        foreach ($handler->get_instance_data($program->id) as $data) {
+            $details[] = ['property' => $data->get_field()->get('name'), 'value' => $data->export_value()];
+        }
+
         $details[] = ['property' => get_string('programstatus', 'tool_muprog'),
             'value' => allocation::get_completion_status_html($program, $allocation)];
         $details[] = ['property' => get_string('source', 'tool_muprog'),
@@ -105,9 +110,14 @@ class renderer extends \plugin_renderer_base {
             'value' => (isset($allocation->timeend) ? userdate($allocation->timeend) : $strnotset)];
         $details[] = ['property' => get_string('completiondate', 'tool_muprog'),
             'value' => (isset($allocation->timecompleted) ? userdate($allocation->timecompleted) : $strnotset)];
-        $handler = \tool_muprog\customfield\fields_handler::create();
-        foreach ($handler->get_instance_data($program->id) as $data) {
-            $details[] = ['property' => $data->get_field()->get('name'), 'value' => $data->export_value()];
+
+        $handler = \tool_muprog\customfield\allocation_handler::create();
+        foreach ($handler->get_instance_data($allocation->id) as $data) {
+            $value = $data->export_value();
+            if ($value === null || $value === '') {
+                continue;
+            }
+            $details[] = ['property' => $data->get_field()->get('name'), 'value' => $value];
         }
 
         return $this->output->render_from_template('tool_mulib/entity_details', ['details' => $details]);

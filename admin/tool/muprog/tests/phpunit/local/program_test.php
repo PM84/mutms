@@ -1,5 +1,5 @@
 <?php
-// This file is part of Programs for Moodle™.
+// This file is part of MuTMS suite of plugins for Moodle™ LMS.
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -602,58 +602,5 @@ final class program_test extends \advanced_testcase {
         $this->assertSame((string)$syscontext->id, $program1->contextid);
         $program2 = $DB->get_record('tool_muprog_program', ['id' => $program2->id], '*', MUST_EXIST);
         $this->assertSame((string)$syscontext->id, $program2->contextid);
-    }
-
-    public function test_programs_customfields(): void {
-        global $DB;
-
-        /** @var \tool_muprog_generator $generator */
-        $generator = $this->getDataGenerator()->get_plugin_generator('tool_muprog');
-        $this->setAdminUser();
-        $fieldcategory = $this->getDataGenerator()->create_custom_field_category([
-            'component' => 'tool_muprog',
-            'area' => 'fields',
-            'name' => 'Other custom fields',
-        ]);
-
-        $field1 = $this->getDataGenerator()->create_custom_field([
-            'shortname' => 'testfield1',
-            'name' => 'Custom field',
-            'type' => 'text',
-            'categoryid' => $fieldcategory->get('id'),
-        ]);
-        $field2 = $this->getDataGenerator()->create_custom_field([
-            'shortname' => 'testfield2',
-            'name' => 'Custom field',
-            'type' => 'text',
-            'categoryid' => $fieldcategory->get('id'),
-            'configdata' => ['visibilitymanagers' => true],
-        ]);
-
-        $program1 = $generator->create_program(['customfield_testfield1' => 'Test value 1']);
-        $program2 = $generator->create_program(['customfield_testfield1' => 'hocus', 'customfield_testfield2' => 'pocus']);
-
-        $this->assertTrue($DB->record_exists('customfield_data', ['instanceid' => $program1->id, 'fieldid' => $field1->get('id')]));
-
-        $handler = \tool_muprog\customfield\fields_handler::create();
-        $customfieldsdata = $handler->export_instance_data_object($program1->id);
-        $this->assertEquals('Test value 1', $customfieldsdata->testfield1);
-
-        $customfieldsdata = $handler->export_instance_data_object($program2->id);
-        $this->assertEquals('hocus', $customfieldsdata->testfield1);
-
-        $customfieldsdata = $handler->export_instance_data_object($program2->id);
-        $this->assertEquals('pocus', $customfieldsdata->testfield2);
-
-        $program2->customfield_testfield1 = 'hocus-pocus';
-        program::update_general($program2);
-
-        $customfieldsdata = $handler->export_instance_data_object($program2->id);
-        $this->assertEquals('hocus-pocus', $customfieldsdata->testfield1);
-
-        program::delete($program1->id);
-
-        $this->assertFalse($DB->record_exists('customfield_data', ['instanceid' => $program1->id, 'fieldid' => $field1->get('id')]));
-
     }
 }

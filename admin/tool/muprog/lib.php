@@ -1,5 +1,5 @@
 <?php
-// This file is part of Programs for Moodle™.
+// This file is part of MuTMS suite of plugins for Moodle™ LMS.
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -17,7 +17,7 @@
 // phpcs:disable moodle.Files.BoilerplateComment.CommentEndedTooSoon
 
 /**
- * Program enrolment plugin lib functions and enrol class.
+ * Programs plugin lib functions.
  *
  * @package    tool_muprog
  * @copyright  2022 Open LMS (https://www.openlms.net/)

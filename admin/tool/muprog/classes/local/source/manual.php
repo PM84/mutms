@@ -1,5 +1,5 @@
 <?php
-// This file is part of Programs for Moodle™.
+// This file is part of MuTMS suite of plugins for Moodle™ LMS.
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -173,17 +173,19 @@ final class manual extends base {
      * @param int $sourceid
      * @param array $userids
      * @param array $dateoverrides
-     * @return void
+     * @return array list of allocation ides
      */
-    public static function allocate_users(int $programid, int $sourceid, array $userids, array $dateoverrides = []): void {
+    public static function allocate_users(int $programid, int $sourceid, array $userids, array $dateoverrides = []): array {
         global $DB;
+
+        $result = [];
 
         $program = $DB->get_record('tool_muprog_program', ['id' => $programid], '*', MUST_EXIST);
         $source = $DB->get_record('tool_muprog_source',
             ['id' => $sourceid, 'type' => static::get_type(), 'programid' => $program->id], '*', MUST_EXIST);
 
         if (count($userids) === 0) {
-            return;
+            return $result;
         }
 
         foreach ($userids as $userid) {
@@ -192,7 +194,8 @@ final class manual extends base {
                 // One allocation per program only.
                 continue;
             }
-            self::allocation_create($program, $source, $user->id, [], $dateoverrides);
+            $allocation = self::allocation_create($program, $source, $user->id, [], $dateoverrides);
+            $result[] = $allocation->id;
         }
 
         if (count($userids) === 1) {
@@ -202,6 +205,8 @@ final class manual extends base {
         }
         \tool_muprog\local\allocation::fix_user_enrolments($programid, $userid);
         \tool_muprog\local\notification_manager::trigger_notifications($programid, $userid);
+
+        return $result;
     }
 
     /**
