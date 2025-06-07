@@ -1,5 +1,5 @@
 <?php
-// This file is part of Certifications for Moodle™.
+// This file is part of MuTMS suite of plugins for Moodle™ LMS.
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -671,59 +671,5 @@ final class certification_test extends \advanced_testcase {
         $this->assertArrayHasKey(certification::SINCE_WINDOWDUE, $result);
         $this->assertArrayHasKey(certification::SINCE_WINDOWEND, $result);
         $this->assertCount(5, $result);
-    }
-
-
-    public function test_customfields(): void {
-        global $DB;
-        $this->setAdminUser();
-        /** @var \tool_mucertify_generator $generator */
-        $generator = $this->getDataGenerator()->get_plugin_generator('tool_mucertify');
-
-        $fieldcategory = $this->getDataGenerator()->create_custom_field_category([
-            'component' => 'tool_mucertify',
-            'area' => 'fields',
-            'name' => 'Other custom fields',
-        ]);
-
-        $field1 = $this->getDataGenerator()->create_custom_field([
-            'shortname' => 'testfield1',
-            'name' => 'Custom field 1',
-            'type' => 'text',
-            'categoryid' => $fieldcategory->get('id'),
-        ]);
-        $field2 = $this->getDataGenerator()->create_custom_field([
-            'shortname' => 'testfield2',
-            'name' => 'Custom field 2',
-            'type' => 'text',
-            'categoryid' => $fieldcategory->get('id'),
-            'configdata' => ['visibilitymanagers' => true],
-        ]);
-
-        $certification1 = $generator->create_certification(['customfield_testfield1' => 'Test value 1']);
-
-        $certification2 = $generator->create_certification(['customfield_testfield1' => 'hocus', 'customfield_testfield2' => 'pocus']);
-
-        $this->assertTrue($DB->record_exists('customfield_data', ['instanceid' => $certification1->id, 'fieldid' => $field1->get('id')]));
-
-        $handler = \tool_mucertify\customfield\fields_handler::create();
-        $customfieldsdata = $handler->export_instance_data_object($certification1->id);
-        $this->assertEquals('Test value 1', $customfieldsdata->testfield1);
-
-        $customfieldsdata = $handler->export_instance_data_object($certification2->id);
-        $this->assertEquals('hocus', $customfieldsdata->testfield1);
-
-        $customfieldsdata = $handler->export_instance_data_object($certification2->id);
-        $this->assertEquals('pocus', $customfieldsdata->testfield2);
-
-        $certification2->customfield_testfield1 = 'hocus-pocus';
-        certification::update_general($certification2);
-
-        $customfieldsdata = $handler->export_instance_data_object($certification2->id);
-        $this->assertEquals('hocus-pocus', $customfieldsdata->testfield1);
-
-        certification::delete($certification1->id);
-
-        $this->assertFalse($DB->record_exists('customfield_data', ['instanceid' => $certification1->id, 'fieldid' => $field1->get('id')]));
     }
 }

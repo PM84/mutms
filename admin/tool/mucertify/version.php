@@ -1,5 +1,5 @@
 <?php
-// This file is part of Certifications for Moodle™.
+// This file is part of MuTMS suite of plugins for Moodle™ LMS.
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -20,7 +20,9 @@
  * Certifications plugin version.
  *
  * @package     tool_mucertify
+ * @copyright   2023 Open LMS (https://www.openlms.net/)
  * @copyright   2025 Petr Skoda
+ * @author      Petr Skoda
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -28,11 +30,11 @@ defined('MOODLE_INTERNAL') || die();
 
 /** @var stdClass $plugin */
 $plugin->component = 'tool_mucertify';
-$plugin->version   = 2025050100;
+$plugin->version   = 2025052300;
 $plugin->requires  = 2024091700.00;
 $plugin->maturity  = MATURITY_ALPHA;
 $plugin->supported = [405, 405];
-$plugin->release   = 'mu-4.5.4-10';
+$plugin->release   = 'mu-4.5.4-10+';
 
 $plugin->dependencies = [
     'tool_muprog' => 2025050100,

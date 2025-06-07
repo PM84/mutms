@@ -1,5 +1,5 @@
 <?php
-// This file is part of Certifications for Moodle™.
+// This file is part of MuTMS suite of plugins for Moodle™ LMS.
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -29,6 +29,9 @@ namespace tool_mucertify\local\form;
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 final class assignment_update extends \tool_mulib\local\dialog_form {
+    /** @var \tool_mucertify\customfield\assignment_handler */
+    protected $handler;
+
     #[\Override]
     protected function definition() {
         global $DB;
@@ -59,6 +62,33 @@ final class assignment_update extends \tool_mulib\local\dialog_form {
         $mform->setType('id', PARAM_INT);
         $mform->setDefault('id', $assignment->id);
 
+        // Add custom fields to the form.
+        $this->handler = \tool_mucertify\customfield\assignment_handler::create();
+        $this->handler->instance_form_definition($mform);
+
         $this->add_action_buttons(true, get_string('assignment_update', 'tool_mucertify'));
+
+        // Prepare custom fields data.
+        $data = (object)['id' => $assignment->id];
+        $this->handler->instance_form_before_set_data($data);
+        $this->set_data($data);
+    }
+
+    #[\Override]
+    public function definition_after_data() {
+        parent::definition_after_data();
+        $mform = $this->_form;
+        $assignment = $this->_customdata['assignment'];
+        $this->handler->instance_form_definition_after_data($mform, $assignment->id);
+    }
+
+    #[\Override]
+    public function validation($data, $files) {
+        $errors = parent::validation($data, $files);
+
+        // Add the custom fields validation.
+        $errors = array_merge($errors, $this->handler->instance_form_validation($data, $files));
+
+        return $errors;
     }
 }

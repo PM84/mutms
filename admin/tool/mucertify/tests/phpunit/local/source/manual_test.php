@@ -1,5 +1,5 @@
 <?php
-// This file is part of Certifications for Moodle™.
+// This file is part of MuTMS suite of plugins for Moodle™ LMS.
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -368,7 +368,7 @@ final class manual_test extends \advanced_testcase {
             ['type' => 'manual', 'certificationid' => $certification->id], '*', MUST_EXIST);
 
         $this->setCurrentTimeStart();
-        manual::assign_users($certification->id, $source->id, [$user1->id]);
+        $result = manual::assign_users($certification->id, $source->id, [$user1->id]);
         $assignment = $DB->get_record('tool_mucertify_assignment', ['userid' => $user1->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
         $this->assertSame($source->id, $assignment->sourceid);
         $this->assertSame('[]', $assignment->sourcedatajson);
@@ -388,10 +388,12 @@ final class manual_test extends \advanced_testcase {
         $this->assertSame(null, $period->timerevoked);
         $this->assertSame('1', $period->first);
         $this->assertSame('1', $period->recertifiable);
+        $this->assertCount(1, $result);
+        $this->assertSame($assignment->id, $result[0]);
 
         $now = time();
         $this->setCurrentTimeStart();
-        manual::assign_users($certification->id, $source->id, [$user2->id], [
+        $result = manual::assign_users($certification->id, $source->id, [$user1->id, $user2->id], [
             'timewindowstart' => $now - DAYSECS,
             'timewindowdue' => null,
             'timewindowend' => $now + DAYSECS,
@@ -415,6 +417,8 @@ final class manual_test extends \advanced_testcase {
         $this->assertSame(null, $period->timerevoked);
         $this->assertSame('1', $period->first);
         $this->assertSame('1', $period->recertifiable);
+        $this->assertCount(1, $result);
+        $this->assertSame($assignment->id, $result[0]);
 
         $data = [
             'sources' => ['manual' => []],

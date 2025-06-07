@@ -1,5 +1,5 @@
 <?php
-// This file is part of Certifications for Moodle™.
+// This file is part of MuTMS suite of plugins for Moodle™ LMS.
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -33,6 +33,8 @@ final class source_manual_assign extends \tool_mulib\local\dialog_form {
     protected $arguments;
     /** @var bool is due date optional? */
     protected $dueoptional = true;
+    /** @var \tool_mucertify\customfield\assignment_handler */
+    protected $handler;
 
     #[\Override]
     protected function definition() {
@@ -78,7 +80,24 @@ final class source_manual_assign extends \tool_mulib\local\dialog_form {
         $mform->setType('sourceid', PARAM_INT);
         $mform->setDefault('sourceid', $source->id);
 
+        // Add custom fields to the form.
+        $this->handler = \tool_mucertify\customfield\assignment_handler::create();
+        $this->handler->set_new_item_context($context);
+        $this->handler->instance_form_definition($mform);
+
         $this->add_action_buttons(true, get_string('source_manual_assignusers', 'tool_mucertify'));
+
+        // Prepare custom fields data.
+        $data = (object)[];
+        $this->handler->instance_form_before_set_data($data);
+        $this->set_data($data);
+    }
+
+    #[\Override]
+    public function definition_after_data() {
+        parent::definition_after_data();
+        $mform = $this->_form;
+        $this->handler->instance_form_definition_after_data($mform, 0);
     }
 
     #[\Override]
@@ -113,6 +132,9 @@ final class source_manual_assign extends \tool_mulib\local\dialog_form {
                 }
             }
         }
+
+        // Add the custom fields validation.
+        $errors = array_merge($errors, $this->handler->instance_form_validation($data, $files));
 
         return $errors;
     }

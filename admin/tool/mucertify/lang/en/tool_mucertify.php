@@ -1,5 +1,5 @@
 <?php
-// This file is part of Certifications for Moodle™.
+// This file is part of MuTMS suite of plugins for Moodle™ LMS.
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -86,8 +86,10 @@ Visibility status does not affect already assigned certifications.';
 $string['columnusedalready'] = 'Column is used already';
 $string['currentcontextonly'] = 'Exclude sub-categories';
 $string['customfields'] = 'Certification custom fields';
-$string['customfieldsettings'] = 'Commmon certification custom fields settings';
+$string['customfields_assignment'] = 'Certification assignment custom fields';
+$string['customfieldsettings'] = 'Common certification custom fields settings';
 $string['customfieldvisible:assigned'] = 'Users assigned to certification';
+$string['customfieldvisible:assignee'] = 'Assignee';
 $string['customfieldvisible:everyone'] = 'Everybody who can see other certification details';
 $string['customfieldvisible:viewcapability'] = 'Users with view certification capability';
 $string['customfieldvisibleto'] = 'Field content is visible to';

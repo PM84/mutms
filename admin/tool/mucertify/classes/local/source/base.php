@@ -1,5 +1,5 @@
 <?php
-// This file is part of Certifications for Moodle™.
+// This file is part of MuTMS suite of plugins for Moodle™ LMS.
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -394,19 +394,17 @@ abstract class base {
             }
         }
 
-        if (!$update) {
-            // Nothing changed.
-            $trans->allow_commit();
-            return $assignment;
-        }
+        $handler = \tool_mucertify\customfield\assignment_handler::create();
+        $handler->instance_form_save($data);
 
         \tool_mucertify\event\assignment_updated::create_from_assignment($certification, $assignment)->trigger();
 
         $trans->allow_commit();
 
-        \tool_muprog\local\source\mucertify::sync_certifications($assignment->certificationid, $assignment->userid);
-
-        notification_manager::trigger_notifications($assignment->certificationid, $assignment->userid);
+        if ($update) {
+            \tool_muprog\local\source\mucertify::sync_certifications($assignment->certificationid, $assignment->userid);
+            notification_manager::trigger_notifications($assignment->certificationid, $assignment->userid);
+        }
 
         return $DB->get_record('tool_mucertify_assignment', ['id' => $assignment->id], '*', MUST_EXIST);
     }

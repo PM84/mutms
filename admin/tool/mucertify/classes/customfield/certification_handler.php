@@ -1,5 +1,5 @@
 <?php
-// This file is part of Certifications for Moodle™.
+// This file is part of MuTMS suite of plugins for Moodle™ LMS.
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -37,7 +37,7 @@ use core_customfield\field_controller;
  * @author     Farhan Karmali
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class fields_handler extends \core_customfield\handler {
+final class certification_handler extends \core_customfield\handler {
 
     /**
      * Context that should be used for new categories created by this handler.
@@ -54,7 +54,7 @@ class fields_handler extends \core_customfield\handler {
      * @return \moodle_url The URL to configure custom fields for this component
      */
     public function get_configuration_url(): \moodle_url {
-        return new \moodle_url('/admin/tool/mucertify/management/customfield.php', []);
+        return new \moodle_url('/admin/tool/mucertify/management/customfield_certification.php', []);
     }
 
     /**
@@ -104,24 +104,25 @@ class fields_handler extends \core_customfield\handler {
     public function can_view(\core_customfield\field_controller $field, int $instanceid): bool {
         global $USER, $DB;
         $context = $this->get_instance_context($instanceid);
-        $certification = $DB->get_record('tool_mucertify_certification', ['id' => $instanceid]);
+
         if ($field->get_configdata_property('visibilitymanagers')) {
             if (has_capability('tool/mucertify:view', $context)) {
                 return true;
             }
         }
+
         if ($field->get_configdata_property('visibilityassigned')) {
-            $assigned = $DB->get_record('tool_mucertify_assignment', ['certificationid' => $certification->id, 'userid' => $USER->id]);
+            $assigned = $DB->get_record('tool_mucertify_assignment', ['certificationid' => $instanceid, 'userid' => $USER->id]);
             if ($assigned && !$assigned->archived) {
                 return true;
             }
         }
 
         if ($field->get_configdata_property('visibilityeveryone')) {
-            if (\tool_mucertify\local\catalogue::is_certification_visible($certification)) {
-                return true;
-            }
+            // Anyone who gets to place that displays custom fields can see them.
+            return true;
         }
+
         // Fall back to tool/mucertify:edit in case the visibility is not configured.
         return has_capability('tool/mucertify:edit', $context);
     }
@@ -132,15 +133,17 @@ class fields_handler extends \core_customfield\handler {
      * @param \MoodleQuickForm $mform
      */
     public function config_form_definition(\MoodleQuickForm $mform) {
-        $mform->addElement('header', 'certifycustomfields', get_string('customfieldsettings', 'tool_mucertify'));
-        $mform->setExpanded('certifycustomfields', true);
+        $mform->addElement('header', 'customfield_mucertify', get_string('customfieldsettings', 'tool_mucertify'));
+        $mform->setExpanded('customfield_mucertify', true);
         $mform->addElement('html', get_string('customfieldvisibleto', 'tool_mucertify'));
+
         $mform->addElement('advcheckbox', 'configdata[visibilitymanagers]',
             '', get_string('customfieldvisible:viewcapability', 'tool_mucertify'), ['group' => 1]);
+
         $mform->addElement('advcheckbox', 'configdata[visibilityassigned]',
             '', get_string('customfieldvisible:assigned', 'tool_mucertify'), ['group' => 1]);
+
         $mform->addElement('advcheckbox', 'configdata[visibilityeveryone]',
             '', get_string('customfieldvisible:everyone', 'tool_mucertify'), ['group' => 1]);
     }
-
 }

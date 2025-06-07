@@ -1,5 +1,5 @@
 <?php
-// This file is part of Certifications for Moodle™.
+// This file is part of MuTMS suite of plugins for Moodle™ LMS.
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -68,6 +68,7 @@ if ($form->is_cancelled()) {
 
 if ($data = $form->get_data()) {
     $userids = [];
+    $assignmentids = [];
     if ($data->cohortid) {
         $userids = $DB->get_fieldset_select('cohort_members', 'userid', "cohortid = ?", [$data->cohortid]);
     }
@@ -77,8 +78,17 @@ if ($data = $form->get_data()) {
     }
     if ($userids) {
         $dateoverrides = ['timewindowstart' => $data->timewindowstart, 'timewindowdue' => $data->timewindowdue];
-        manual::assign_users($certification->id, $source->id, $userids, $dateoverrides);
+        $assignmentids = manual::assign_users($certification->id, $source->id, $userids, $dateoverrides);
     }
+
+    // Save custom fields.
+    foreach ($assignmentids as $assignmentid) {
+        /** @var \tool_mucertify\customfield\assignment_handler $handler */
+        $handler = \tool_mucertify\customfield\assignment_handler::create();
+        $data->id = $assignmentid;
+        $handler->instance_form_save($data);
+    }
+
     $form->redirect_submitted($returnurl);
 }
 

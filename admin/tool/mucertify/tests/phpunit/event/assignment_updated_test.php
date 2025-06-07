@@ -1,5 +1,5 @@
 <?php
-// This file is part of Certifications for Moodle™.
+// This file is part of MuTMS suite of plugins for Moodle™ LMS.
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -60,15 +60,16 @@ final class assignment_updated_test extends \advanced_testcase {
         $sink = $this->redirectEvents();
         \tool_mucertify\local\source\base::assignment_update($assignment);
         $events = $sink->get_events();
-        $this->assertCount(0, $events);
+        $this->assertCount(1, $events);
+        $this->assertSame(\tool_mucertify\event\assignment_updated::class, get_class($events[0]));
 
+        $sink->clear();
         $assignment->timecertifiedtemp = time() + YEARSECS;
         \tool_mucertify\local\source\base::assignment_update($assignment);
         $events = $sink->get_events();
         $this->assertCount(1, $events);
         $sink->close();
 
-        $this->assertCount(1, $events);
         $event = reset($events);
         $this->assertInstanceOf(\tool_mucertify\event\assignment_updated::class, $event);
         $this->assertEquals($syscontext->id, $event->contextid);
