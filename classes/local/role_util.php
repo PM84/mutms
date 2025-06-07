@@ -15,40 +15,33 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 // phpcs:disable moodle.Files.BoilerplateComment.CommentEndedTooSoon
-// phpcs:disable moodle.Files.LineLength.TooLong
-// phpcs:disable moodle.Commenting.DocblockDescription.Missing
 
-namespace tool_mulib\phpunit\local\notification;
+namespace tool_mulib\local;
 
 /**
- * Notification manager base tests.
+ * Role related helper code.
  *
- * @group       MuTMS
  * @package     tool_mulib
- * @copyright   2023 Open LMS
  * @copyright   2025 Petr Skoda
- * @author      Petr Skoda
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- *
- * @coversDefaultClass \tool_mulib\local\notification\manager
  */
-final class manager_test extends \advanced_testcase {
-    protected function setUp(): void {
-        parent::setUp();
-        $this->resetAfterTest();
-    }
-
+final class role_util {
     /**
-     * @covers ::get_component
+     * Returns menu of roles assignable in context level.
+     *
+     * @param int $contextlevel
+     * @return array roleid => role name
      */
-    public function test_get_component(): void {
-        $this->assertSame('tool_mulib', \tool_mulib\local\notification\manager::get_component());
-    }
+    public static function get_contextlevel_roles_menu(int $contextlevel): array {
+        global $DB;
 
-    /**
-     * @covers ::is_import_supported
-     */
-    public function test_is_import_supported(): void {
-        $this->assertFalse(\tool_mulib\local\notification\manager::is_import_supported());
+        $sql = "SELECT r.*
+                  FROM {role} r
+                  JOIN {role_context_levels} rcl ON rcl.roleid = r.id
+                 WHERE rcl.contextlevel = :contextlevel
+              ORDER BY r.sortorder ASC";
+        $params = ['contextlevel' => $contextlevel];
+        $roles = $DB->get_records_sql($sql, $params);
+        return role_fix_names($roles, null, ROLENAME_ORIGINAL, true);
     }
 }

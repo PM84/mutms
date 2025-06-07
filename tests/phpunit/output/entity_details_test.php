@@ -15,40 +15,44 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 // phpcs:disable moodle.Files.BoilerplateComment.CommentEndedTooSoon
-// phpcs:disable moodle.Files.LineLength.TooLong
-// phpcs:disable moodle.Commenting.DocblockDescription.Missing
 
-namespace tool_mulib\phpunit\local\notification;
+namespace tool_mulib\phpunit\output;
+
+use tool_mulib\output\entity_details;
 
 /**
- * Notification manager base tests.
+ * Entity details rendering tests.
  *
  * @group       MuTMS
  * @package     tool_mulib
- * @copyright   2023 Open LMS
  * @copyright   2025 Petr Skoda
- * @author      Petr Skoda
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
- * @coversDefaultClass \tool_mulib\local\notification\manager
+ * @covers \tool_mulib\output\entity_details
  */
-final class manager_test extends \advanced_testcase {
+final class entity_details_test extends \advanced_testcase {
     protected function setUp(): void {
         parent::setUp();
         $this->resetAfterTest();
     }
 
-    /**
-     * @covers ::get_component
-     */
-    public function test_get_component(): void {
-        $this->assertSame('tool_mulib', \tool_mulib\local\notification\manager::get_component());
+    public function test_has_details(): void {
+        $details = new entity_details();
+        $this->assertFalse($details->has_details());
+
+        $details->add('Hello', 'World');
+        $this->assertTrue($details->has_details());
     }
 
-    /**
-     * @covers ::is_import_supported
-     */
-    public function test_is_import_supported(): void {
-        $this->assertFalse(\tool_mulib\local\notification\manager::is_import_supported());
+    public function test_render(): void {
+        global $OUTPUT;
+
+        $details = new entity_details();
+        $this->assertSame("<dl class=\"row\">\n</dl>", $OUTPUT->render($details));
+
+        $details->add('Hello', 'World');
+        $this->assertSame(
+            "<dl class=\"row\">\n    <dt class=\"col-3\">Hello</dt><dd class=\"col-9\">World</dd>\n</dl>",
+            $OUTPUT->render($details));
     }
 }

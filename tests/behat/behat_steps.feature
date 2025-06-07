@@ -24,7 +24,7 @@ Feature: Test tool_mulib behat steps
       | Tenant 1 | ten1     |
       | Tenant 2 | ten2     |
     And I log in as "admin"
-    And I navigate to "Tenants" in site administration
+    And I navigate to "Multi-tenancy > Tenants" in site administration
     When I follow "Tenant 1"
     Then I should see "Tenant 1" in the "Tenant name" definition list item
   # Uncomment following to test a failure.
@@ -37,7 +37,7 @@ Feature: Test tool_mulib behat steps
       | Tenant 1 | ten1     |
       | Tenant 2 | ten2     |
     And I log in as "admin"
-    And I navigate to "Tenants" in site administration
+    And I navigate to "Multi-tenancy > Tenants" in site administration
     When I follow "Tenant 1"
     Then I should not see "tenant" in the "Tenant name" definition list item
   # Uncomment following to test a failure.
