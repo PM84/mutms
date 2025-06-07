@@ -20,10 +20,9 @@
 namespace tool_mucertify\phpunit\customfield;
 
 use tool_mucertify\customfield\assignment_handler;
-use tool_mucertify\local\assignment;
 
 /**
- * Certification custom fields test.
+ * Certification assignment custom fields test.
  *
  * @group      MuTMS
  * @package    tool_mucertify

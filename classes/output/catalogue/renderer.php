@@ -66,14 +66,13 @@ class renderer extends \plugin_renderer_base {
         $result .= $tagsdiv;
         $result .= "<div class='d-flex'><div class='w-100'>$description</div><div class='flex-shrink-1'>$certificationimage</div></div>";
 
-        $details = [];
-        $details[] = ['property' => get_string('certificationstatus', 'tool_mucertify'),
-            'value' => get_string('errornoassignment', 'tool_mucertify')];
+        $details = new \tool_mulib\output\entity_details();
+        $details->add(get_string('certificationstatus', 'tool_mucertify'), get_string('errornoassignment', 'tool_mucertify'));
         $handler = \tool_mucertify\customfield\certification_handler::create();
         foreach ($handler->get_instance_data($certification->id) as $data) {
-            $details[] = ['property' => $data->get_field()->get('name'), 'value' => $data->export_value()];
+            $details->add($data->get_field()->get('name'), $data->export_value());
         }
-        $result .= $this->output->render_from_template('tool_mulib/entity_details', ['details' => $details]);
+        $result .= $this->output->render($details);
 
         $actions = [];
         /** @var \tool_mucertify\local\source\base[] $sourceclasses */ // Type hack.
