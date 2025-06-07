@@ -28,6 +28,8 @@
 namespace tool_mucertify\customfield;
 
 use core_customfield\field_controller;
+use moodle_url, context;
+use MoodleQuickForm;
 
 /**
  * Custom fields handler for certifications.
@@ -42,32 +44,32 @@ final class certification_handler extends \core_customfield\handler {
     /**
      * Context that should be used for new categories created by this handler.
      *
-     * @return \context the context for configuration
+     * @return context the context for configuration
      */
-    public function get_configuration_context(): \context {
+    public function get_configuration_context(): context {
         return \context_system::instance();
     }
 
     /**
      * URL for configuration of the fields on this handler.
      *
-     * @return \moodle_url The URL to configure custom fields for this component
+     * @return moodle_url The URL to configure custom fields for this component
      */
-    public function get_configuration_url(): \moodle_url {
-        return new \moodle_url('/admin/tool/mucertify/management/customfield_certification.php', []);
+    public function get_configuration_url(): moodle_url {
+        return new moodle_url('/admin/tool/mucertify/management/customfield_certification.php', []);
     }
 
     /**
      * Returns the context for the data associated with the given instanceid.
      *
      * @param int $instanceid id of the record to get the context for
-     * @return \context the context for the given record, returns system context if instanceid = 0 when created
+     * @return context the context for the given record, returns system context if instanceid = 0 when created
      */
-    public function get_instance_context(int $instanceid = 0): \context {
+    public function get_instance_context(int $instanceid = 0): context {
         global $DB;
         if ($instanceid > 0) {
             $certification = $DB->get_record('tool_mucertify_certification', ['id' => $instanceid], '*', MUST_EXIST);
-            $context = \context::instance_by_id($certification->contextid);
+            $context = context::instance_by_id($certification->contextid);
             return $context;
         } else {
             return \context_system::instance();
@@ -103,6 +105,12 @@ final class certification_handler extends \core_customfield\handler {
      */
     public function can_view(\core_customfield\field_controller $field, int $instanceid): bool {
         global $USER, $DB;
+
+        if ($field->get_configdata_property('visibilityeveryone')) {
+            // Anyone who gets to place that displays custom fields can see them.
+            return true;
+        }
+
         $context = $this->get_instance_context($instanceid);
 
         if ($field->get_configdata_property('visibilitymanagers')) {
@@ -118,11 +126,6 @@ final class certification_handler extends \core_customfield\handler {
             }
         }
 
-        if ($field->get_configdata_property('visibilityeveryone')) {
-            // Anyone who gets to place that displays custom fields can see them.
-            return true;
-        }
-
         // Fall back to tool/mucertify:edit in case the visibility is not configured.
         return has_capability('tool/mucertify:edit', $context);
     }
@@ -130,9 +133,9 @@ final class certification_handler extends \core_customfield\handler {
     /**
      * Allows to add custom controls to the field configuration form that will be saved in configdata
      *
-     * @param \MoodleQuickForm $mform
+     * @param MoodleQuickForm $mform
      */
-    public function config_form_definition(\MoodleQuickForm $mform) {
+    public function config_form_definition(MoodleQuickForm $mform): void {
         $mform->addElement('header', 'customfield_mucertify', get_string('customfieldsettings', 'tool_mucertify'));
         $mform->setExpanded('customfield_mucertify', true);
         $mform->addElement('html', get_string('customfieldvisibleto', 'tool_mucertify'));

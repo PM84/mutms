@@ -35,7 +35,7 @@ final class assignment_handler extends \core_customfield\handler {
     protected $newitemcontext;
 
     /**
-     * Set context of certification for creation of new items.
+     * Set context of certification for creation of new assignments.
      *
      * @param context|null $context certification context
      * @return void
@@ -114,6 +114,12 @@ final class assignment_handler extends \core_customfield\handler {
      */
     public function can_view(field_controller $field, int $instanceid): bool {
         global $USER, $DB;
+
+        if ($field->get_configdata_property('visibilityeveryone')) {
+            // Anyone who gets to place that displays custom fields can see them.
+            return true;
+        }
+
         $context = $this->get_instance_context($instanceid);
 
         if ($field->get_configdata_property('visibilitymanagers')) {
@@ -127,11 +133,6 @@ final class assignment_handler extends \core_customfield\handler {
             if ($assignment && $USER->id == $assignment->userid && !$assignment->archived) {
                 return true;
             }
-        }
-
-        if ($field->get_configdata_property('visibilityeveryone')) {
-            // Anyone who gets to place that displays custom fields can see them.
-            return true;
         }
 
         // Fall back to editing capabilities in case the visibility is not configured.

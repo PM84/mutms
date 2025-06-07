@@ -80,14 +80,14 @@ class renderer extends \plugin_renderer_base {
     public function render_user_assignment(stdClass $certification, stdClass $assignment): string {
         global $DB;
 
-        $details = [];
+        $details = new \tool_mulib\output\entity_details();
 
         $handler = \tool_mucertify\customfield\certification_handler::create();
         foreach ($handler->get_instance_data($certification->id) as $data) {
-            $details[] = ['property' => $data->get_field()->get('name'), 'value' => $data->export_value()];
+            $details->add($data->get_field()->get('name'), $data->export_value());
         }
 
-        $details[] = ['property' => get_string('certificationstatus', 'tool_mucertify'), 'value' => assignment::get_status_html($certification, $assignment)];
+        $details->add(get_string('certificationstatus', 'tool_mucertify'), assignment::get_status_html($certification, $assignment));
 
         if ($certification->recertify && !$certification->archived && !$assignment->archived) {
             $stoprecertify = !$DB->record_exists('tool_mucertify_period', [
@@ -95,11 +95,11 @@ class renderer extends \plugin_renderer_base {
                 'userid' => $assignment->userid,
                 'recertifiable' => 1,
             ]);
-            $details[] = ['property' => get_string('stoprecertify', 'tool_mucertify'), 'value' => ($stoprecertify ? get_string('yes') : get_string('no'))];
+            $details->add(get_string('stoprecertify', 'tool_mucertify'), ($stoprecertify ? get_string('yes') : get_string('no')));
         }
 
         if ($assignment->timecertifiedtemp) {
-            $details[] = ['property' => get_string('certifieduntiltemporary', 'tool_mucertify'), 'value' => userdate($assignment->timecertifiedtemp)];
+            $details->add(get_string('certifieduntiltemporary', 'tool_mucertify'), userdate($assignment->timecertifiedtemp));
         }
 
         $handler = \tool_mucertify\customfield\assignment_handler::create();
@@ -108,10 +108,10 @@ class renderer extends \plugin_renderer_base {
             if ($value === null || $value === '') {
                 continue;
             }
-            $details[] = ['property' => $data->get_field()->get('name'), 'value' => $value];
+            $details->add($data->get_field()->get('name'), $value);
         }
 
-        return $this->output->render_from_template('tool_mulib/entity_details', ['details' => $details]);
+        return $this->output->render($details);
     }
 
     /**
