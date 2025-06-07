@@ -1,5 +1,5 @@
 <?php
-// This file is part of Program enrolment plugin for Moodle™.
+// This file is part of MuTMS suite of plugins for Moodle™ LMS.
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -32,4 +32,4 @@ $plugin->version   = 2025050100;
 $plugin->requires  = 2024100700;
 $plugin->maturity  = MATURITY_ALPHA;
 $plugin->supported = [405, 405];
-$plugin->release   = 'mu-4.5.4-10';
+$plugin->release   = 'mu-4.5.4-10+';
