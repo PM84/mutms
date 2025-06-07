@@ -16,39 +16,40 @@
 
 // phpcs:disable moodle.Files.BoilerplateComment.CommentEndedTooSoon
 // phpcs:disable moodle.Files.LineLength.TooLong
-// phpcs:disable moodle.Commenting.DocblockDescription.Missing
 
-namespace tool_mulib\phpunit\local\notification;
+namespace tool_mulib\phpunit\local;
+
+use tool_mulib\local\role_util;
 
 /**
- * Notification manager base tests.
+ * Date helper tests.
  *
  * @group       MuTMS
  * @package     tool_mulib
- * @copyright   2023 Open LMS
  * @copyright   2025 Petr Skoda
- * @author      Petr Skoda
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
- * @coversDefaultClass \tool_mulib\local\notification\manager
+ * @covers \tool_mulib\local\role_util
  */
-final class manager_test extends \advanced_testcase {
+final class role_util_test extends \advanced_testcase {
     protected function setUp(): void {
         parent::setUp();
         $this->resetAfterTest();
     }
 
-    /**
-     * @covers ::get_component
-     */
-    public function test_get_component(): void {
-        $this->assertSame('tool_mulib', \tool_mulib\local\notification\manager::get_component());
-    }
+    public function test_get_contextlevel_roles_menu(): void {
+        global $DB;
 
-    /**
-     * @covers ::is_import_supported
-     */
-    public function test_is_import_supported(): void {
-        $this->assertFalse(\tool_mulib\local\notification\manager::is_import_supported());
+        $this->assertSame([], role_util::get_contextlevel_roles_menu(CONTEXT_USER));
+
+        $roleid = $this->getDataGenerator()->create_role(['shortname' => 'somerole', 'name' => 'Some role']);
+        $manager = $DB->get_record('role', ['shortname' => 'manager']);
+
+        $this->assertSame([$roleid => 'Some role'], role_util::get_contextlevel_roles_menu(CONTEXT_USER));
+
+        $DB->insert_record('role_context_levels', ['roleid' => $manager->id, 'contextlevel' => CONTEXT_USER]);
+        $this->assertSame(
+            [$manager->id => 'Manager', $roleid => 'Some role'],
+            role_util::get_contextlevel_roles_menu(CONTEXT_USER));
     }
 }

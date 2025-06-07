@@ -1,5 +1,5 @@
 <?php
-// This file is part of Additional tools library for Moodle™.
+// This file is part of MuTMS suite of plugins for Moodle™ LMS.
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -29,6 +29,7 @@ $string['environment_64bit_required'] = 'PHP does not support 64-bit integers an
 $string['environment_mssql_unsupported'] = 'MS SQL Server database is not supported for use with MuTMS plugins.';
 $string['environment_oracle_incompatible'] = 'Oracle Database is not compatible with MuTMS plugins.';
 $string['environment_windows_unsupported'] = 'MS Windows is not supported as web server for use with MuTMS plugins. ';
+$string['lang_string_a'] = '{$a}';
 $string['notification'] = 'Notification';
 $string['notification_body'] = 'Message';
 $string['notification_create'] = 'Add notification';
@@ -46,6 +47,7 @@ $string['notification_types'] = 'Notification types';
 $string['notification_update'] = 'Update notification';
 $string['notification_view'] = 'Notification details';
 $string['notifications'] = 'Notifications';
+$string['notset'] = 'Not set';
 $string['plugindocs'] = '{$a} documentation';
 $string['pluginname'] = 'Additional tools library';
 $string['privacy:metadata:notificationid'] = 'Notification id';

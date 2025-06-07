@@ -1,5 +1,5 @@
 <?php
-// This file is part of Additional tools library for Moodle™.
+// This file is part of MuTMS suite of plugins for Moodle™ LMS.
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@ namespace tool_mulib\local;
  * @author      Petr Skoda
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class date_util {
+final class date_util {
     /** @var int Unix timestamp indicating forever value */
     public const TIMESTAMP_FOREVER = 9999999999;
 

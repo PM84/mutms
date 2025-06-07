@@ -1,5 +1,5 @@
 <?php
-// This file is part of Additional tools library for Moodle™.
+// This file is part of MuTMS suite of plugins for Moodle™ LMS.
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -166,13 +166,17 @@ abstract class form_autocomplete_field extends \core_external\external_api {
      *
      * @param false|stdClass $record user record
      * @param \context $context
+     * @param string|null $error extra error message
      * @return string
      */
-    public static function prepare_user_label($record, \context $context): string {
+    public static function prepare_user_label($record, \context $context, ?string $error = null): string {
         global $OUTPUT;
 
+        // For now just append the error, do not apply any classes here.
+        $error = (string)$error;
+
         if (empty($record->id)) {
-            return '';
+            return $error;
         }
 
         if ($record->deleted) {
@@ -195,7 +199,7 @@ abstract class form_autocomplete_field extends \core_external\external_api {
             ];
         }
 
-        return $OUTPUT->render_from_template('core_user/form_user_selector_suggestion', $user);
+        return $OUTPUT->render_from_template('core_user/form_user_selector_suggestion', $user) . $error;
     }
 
     /**
