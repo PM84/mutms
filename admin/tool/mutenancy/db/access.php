@@ -1,5 +1,5 @@
 <?php
-// This file is part of Multi-tenancy plugin for Moodle™.
+// This file is part of MuTMS suite of plugins for Moodle™ LMS.
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -65,7 +65,7 @@ $capabilities = [
     // Create new user account for tenant member.
     'tool/mutenancy:membercreate' => [
         'captype' => 'write',
-        'contextlevel' => CONTEXT_TENANT | RISK_PERSONAL,
+        'contextlevel' => CONTEXT_TENANT,
         'archetypes' => [
             'manager' => CAP_ALLOW,
         ],

@@ -18,49 +18,42 @@
 // phpcs:disable moodle.Files.LineLength.TooLong
 // phpcs:disable moodle.Commenting.DocblockDescription.Missing
 
-namespace tool_mutenancy\phpunit\patch;
+namespace tool_mutenancy\phpunit\hook;
 
+use tool_mutenancy\hook\tenant_manager_capabilities;
 use tool_mutenancy\local\tenancy;
 
 /**
- * Multi-tenancy upstream patch test.
+ * Multi-tenancy tenant manager capabilities hook tests.
  *
  * @group       MuTMS
  * @package     tool_mutenancy
  * @copyright   2025 Petr Skoda
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
- * @coversDefaultClass \core\session\manager
+ * @covers \tool_mutenancy\hook\tenant_manager_capabilities
  */
-final class core_session_manager_test extends \advanced_testcase {
+final class tenant_manager_capabilities_test extends \advanced_testcase {
     public function setUp(): void {
         parent::setUp();
         $this->resetAfterTest();
     }
 
-    /**
-     * @covers ::set_user
-     */
-    public function test_set_user(): void {
-        /** @var \tool_mutenancy_generator $generator */
-        $generator = $this->getDataGenerator()->get_plugin_generator('tool_mutenancy');
-
+    public function test_hook(): void {
         tenancy::activate();
 
-        $tenant1 = $generator->create_tenant();
-        $tenant2 = $generator->create_tenant();
+        $corecaps = [
+            'some/plugin:whatever' => CAP_ALLOW,
+            'other/plugin:something' => CAP_PROHIBIT,
+        ];
+        $hook = new tenant_manager_capabilities($corecaps);
 
-        $user0 = $this->getDataGenerator()->create_user();
-        $user1 = $this->getDataGenerator()->create_user(['tenantid' => $tenant1->id]);
-        $user2 = $this->getDataGenerator()->create_user(['tenantid' => $tenant2->id]);
+        $hook->add_capability('my/plugin:view', CAP_ALLOW);
+        $hook->remove_capability('other/plugin:something');
 
-        \core\session\manager::set_user($user0);
-        $this->assertSame(null, tenancy::get_current_tenantid());
-
-        \core\session\manager::set_user($user1);
-        $this->assertSame((int)$tenant1->id, tenancy::get_current_tenantid());
-
-        \core\session\manager::set_user($user2);
-        $this->assertSame((int)$tenant2->id, tenancy::get_current_tenantid());
+        $this->assertSame([
+            'some/plugin:whatever' => CAP_ALLOW,
+            'my/plugin:view' => CAP_ALLOW,
+        ], $hook->get_capabilities());
     }
 }
