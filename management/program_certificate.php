@@ -77,16 +77,14 @@ if (has_capability('tool/muprog:edit', $context)) {
 
 $cert = $DB->get_record('tool_muprog_cert', ['programid' => $program->id]);
 
-$details = [];
+$details = new \tool_mulib\output\entity_details();
 
 if ($cert) {
     $template = $DB->get_record('tool_certificate_templates', ['id' => $cert->templateid]);
     if (!$template) {
-        $details[] = ['property' => get_string('certificatetemplate', 'tool_certificate'),
-            'value' => get_string('error')];
+        $details->add(get_string('certificatetemplate', 'tool_certificate'), get_string('error'));
     } else {
-        $details[] = ['property' => get_string('certificatetemplate', 'tool_certificate'),
-            'value' => format_string($template->name)];
+        $details->add(get_string('certificatetemplate', 'tool_certificate'), format_string($template->name));
         if ($cert->expirydatetype == 1) {
             $expiry = userdate($cert->expirydateoffset);
         } else if ($cert->expirydatetype == 2) {
@@ -94,14 +92,13 @@ if ($cert) {
         } else {
             $expiry = get_string('never', 'tool_certificate');
         }
-        $details[] = ['property' => get_string('expirydate', 'tool_certificate'), 'value' => $expiry];
+        $details->add(get_string('expirydate', 'tool_certificate'), $expiry);
     }
 } else {
-    $details[] = ['property' => get_string('certificatetemplate', 'tool_certificate'),
-        'value' => get_string('notset', 'tool_muprog')];
+    $details->add(get_string('certificatetemplate', 'tool_certificate'), get_string('notset', 'tool_muprog'));
 }
 
-echo $OUTPUT->render_from_template('tool_mulib/entity_details', ['details' => $details]);
+echo $OUTPUT->render($details);
 
 if ($buttons) {
     $buttons = implode(' ', $buttons);

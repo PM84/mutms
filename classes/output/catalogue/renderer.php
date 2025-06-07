@@ -75,20 +75,20 @@ class renderer extends \plugin_renderer_base {
         $result .= $tagsdiv;
         $result .= "<div class='d-flex'><div class='w-100'>$description</div><div class='flex-shrink-1'>$programimage</div></div>";
 
-        $details = [];
+        $details = new \tool_mulib\output\entity_details();
 
-        $details[] = ['property' => get_string('programstatus', 'tool_muprog'),
-            'value' => get_string('errornoallocation', 'tool_muprog')];
-        $details[] = ['property' => get_string('allocationstart', 'tool_muprog'),
-            'value' => (isset($program->timeallocationstart) ? userdate($program->timeallocationstart) : $strnotset)];
-        $details[] = ['property' => get_string('allocationend', 'tool_muprog'),
-            'value' => (isset($program->timeallocationend) ? userdate($program->timeallocationend) : $strnotset)];
+        $details->add(get_string('programstatus', 'tool_muprog'),
+            get_string('errornoallocation', 'tool_muprog'));
+        $details->add(get_string('allocationstart', 'tool_muprog'),
+            (isset($program->timeallocationstart) ? userdate($program->timeallocationstart) : $strnotset));
+        $details->add(get_string('allocationend', 'tool_muprog'),
+            (isset($program->timeallocationend) ? userdate($program->timeallocationend) : $strnotset));
         $handler = \tool_muprog\customfield\program_handler::create();
         foreach ($handler->get_instance_data($program->id) as $data) {
-            $details[] = ['property' => $data->get_field()->get('name'), 'value' => $data->export_value()];
+            $details->add($data->get_field()->get('name'), $data->export_value());
         }
 
-        $result .= $this->output->render_from_template('tool_mulib/entity_details', ['details' => $details]);
+        $result .= $this->output->render($details);
 
         $actions = [];
         /** @var \tool_muprog\local\source\base[] $sourceclasses */ // Type hack.
