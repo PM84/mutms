@@ -71,29 +71,29 @@ if (!$classname || !class_exists($classname)) {
 
 $manager::setup_view_page($notification);
 
-$details = [];
+$details = new \tool_mulib\output\entity_details();
 
 $name = $classname::get_name();
-$details[] = ['property' => get_string('notification', 'tool_mulib'), 'value' => $name];
+$details->add(get_string('notification', 'tool_mulib'), $name);
 $instancename = $manager::get_instance_name($notification->instanceid);
 $manageurl = $manager::get_instance_management_url($notification->instanceid);
 if ($manageurl) {
     $instancename = html_writer::link($manageurl, $instancename);
 }
-$details[] = ['property' => get_string('notification_instance', 'tool_mulib'), 'value' => $instancename];
+$details->add(get_string('notification_instance', 'tool_mulib'), $instancename);
 $description = $classname::get_description();
 $enabled = $notification->enabled ? get_string('yes') : get_string('no');
-$details[] = ['property' => get_string('notification_enabled', 'tool_mulib'), 'value' => $enabled ];
-$details[] = ['property' => get_string('description'), 'value' => $description ];
+$details->add(get_string('notification_enabled', 'tool_mulib'), $enabled);
+$details->add(get_string('description'), $description);
 $custom = $notification->custom ? get_string('yes') : get_string('no');
-$details[] = ['property' => get_string('notification_custom', 'tool_mulib'), 'value' => $custom ];
+$details->add(get_string('notification_custom', 'tool_mulib'), $custom);
 $a = [];
 $subject = $classname::get_subject($notification, $a);
-$details[] = ['property' => get_string('notification_subject', 'tool_mulib'), 'value' => $subject ];
+$details->add(get_string('notification_subject', 'tool_mulib'), $subject);
 $body = $classname::get_body($notification, $a);
-$details[] = ['property' => get_string('notification_body', 'tool_mulib'), 'value' => $body ];
+$details->add(get_string('notification_body', 'tool_mulib'), $body);
 
-echo $OUTPUT->render_from_template('tool_mulib/entity_details', ['details' => $details]);
+echo $OUTPUT->render($details);
 
 $buttons = [];
 
