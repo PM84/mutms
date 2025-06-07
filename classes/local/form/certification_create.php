@@ -1,5 +1,5 @@
 <?php
-// This file is part of Certifications for Moodle™.
+// This file is part of MuTMS suite of plugins for Moodle™ LMS.
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -29,6 +29,9 @@ namespace tool_mucertify\local\form;
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 final class certification_create extends \tool_mulib\local\dialog_form {
+    /** @var \tool_mucertify\customfield\certification_handler */
+    protected $handler;
+
     #[\Override]
     protected function definition() {
         global $CFG;
@@ -59,12 +62,13 @@ final class certification_create extends \tool_mulib\local\dialog_form {
         $mform->setType('description_editor', PARAM_RAW);
 
         // Add custom fields to the form.
-        $handler = \tool_mucertify\customfield\fields_handler::create();
-        $handler->instance_form_definition($mform);
+        $this->handler = \tool_mucertify\customfield\certification_handler::create();
+        $this->handler->instance_form_definition($mform);
 
         $this->add_action_buttons(true, get_string('certification_create', 'tool_mucertify'));
+
         // Prepare custom fields data.
-        $handler->instance_form_before_set_data($data);
+        $this->handler->instance_form_before_set_data($data);
         $this->set_data($data);
     }
 
@@ -72,8 +76,7 @@ final class certification_create extends \tool_mulib\local\dialog_form {
     public function definition_after_data() {
         parent::definition_after_data();
         $mform = $this->_form;
-        $handler  = \tool_mucertify\customfield\fields_handler::create();
-        $handler->instance_form_definition_after_data($mform, 0);
+        $this->handler->instance_form_definition_after_data($mform, 0);
     }
 
     #[\Override]
@@ -105,9 +108,9 @@ final class certification_create extends \tool_mulib\local\dialog_form {
             // There is a problem in category caching it seems.
             $errors['contextid'] = get_string('error');
         }
+
         // Add the custom fields validation.
-        $handler = \tool_mucertify\customfield\fields_handler::create();
-        $errors  = array_merge($errors, $handler->instance_form_validation($data, $files));
+        $errors = array_merge($errors, $this->handler->instance_form_validation($data, $files));
 
         return $errors;
     }

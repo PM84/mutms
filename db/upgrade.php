@@ -1,5 +1,5 @@
 <?php
-// This file is part of Certifications for Moodle™.
+// This file is part of MuTMS suite of plugins for Moodle™ LMS.
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -51,6 +51,13 @@ function xmldb_tool_mucertify_upgrade($oldversion) {
         }
 
         upgrade_plugin_savepoint(true, 2025042300, 'tool', 'mucertify');
+    }
+
+    if ($oldversion < 2025052300) {
+        // Fix certification fields area.
+        $DB->set_field('customfield_category', 'area', 'certification', ['component' => 'tool_mucertify', 'area' => 'fields']);
+
+        upgrade_plugin_savepoint(true, 2025052300, 'tool', 'mucertify');
     }
 
     return true;

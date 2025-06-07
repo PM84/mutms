@@ -42,14 +42,16 @@ Feature: Manual certification assignment tests
       | certification viewer  | pviewer   |
       | certification manager | pmanager  |
     And the following "permission overrides" exist:
-      | capability                     | permission | role     | contextlevel | reference |
-      | tool/mucertify:view            | Allow      | pviewer  | System       |           |
-      | tool/mucertify:view            | Allow      | pmanager | System       |           |
-      | tool/mucertify:edit            | Allow      | pmanager | System       |           |
-      | tool/mucertify:delete          | Allow      | pmanager | System       |           |
-      | tool/mucertify:assign          | Allow      | pmanager | System       |           |
-      | tool/mucertify:unassign        | Allow      | pmanager | System       |           |
-      | moodle/cohort:view             | Allow      | pmanager | System       |           |
+      | capability                           | permission | role     | contextlevel | reference |
+      | tool/mucertify:view                  | Allow      | pviewer  | System       |           |
+      | tool/mucertify:view                  | Allow      | pmanager | System       |           |
+      | tool/mucertify:edit                  | Allow      | pmanager | System       |           |
+      | tool/mucertify:delete                | Allow      | pmanager | System       |           |
+      | tool/mucertify:assign                | Allow      | pmanager | System       |           |
+      | tool/mucertify:unassign              | Allow      | pmanager | System       |           |
+      | moodle/cohort:view                   | Allow      | pmanager | System       |           |
+      | moodle/site:configview               | Allow      | pmanager | System       |           |
+      | tool/mucertify:configurecustomfields | Allow      | pmanager | System       |           |
     And the following "role assigns" exist:
       | user      | role          | contextlevel | reference |
       | manager   | manager       | System       |           |
@@ -249,3 +251,59 @@ Feature: Manual certification assignment tests
     And the following should exist in the "reportbuilder-table" table:
       | Program     | Window opening  | Certification due | Window closing | Expiration  |
       | Program 001 | 11/10/24, 00:00	| 2/01/25, 00:00    | 2/07/25, 00:00 | Not set     |
+
+  @javascript
+  Scenario: Set up, add and update custom fields for certification assignments
+    And the following "permission overrides" exist:
+      | capability                           | permission | role     | contextlevel | reference |
+      | tool/mucertify:admin                 | Allow      | pmanager | System       |           |
+    And I log in as "manager1"
+    And I navigate to "Certifications > Certification assignment custom fields" in site administration
+    And I press "Add a new category"
+    And I click on "Add a new custom field" "link"
+    And I click on "Short text" "link"
+    And I set the following fields to these values:
+      | Name                                     | Test field 1 |
+      | Short name                               | testfield1   |
+    And I click on "Save changes" "button" in the "Adding a new Short text" "dialogue"
+    And I click on "Add a new custom field" "link"
+    And I click on "Short text" "link"
+    And I set the following fields to these values:
+      | Name                                     | Test field 2 |
+      | Short name                               | testfield2   |
+      | Assignee                                 | 1            |
+    And I click on "Save changes" "button" in the "Adding a new Short text" "dialogue"
+
+    And I am on the "tool_mucertify > All certifications management" page
+    And I follow "Certification 000"
+    And I click on "Assignment settings" "link" in the ".secondary-navigation" "css_element"
+    And I click on "Update Manual assignment" "link"
+    And I set the following fields to these values:
+      | Active | Yes |
+    And I press dialog form button "Update"
+    And I should see "Active" in the "Manual assignment" definition list item
+    And I click on "Users" "link" in the ".secondary-navigation" "css_element"
+
+    When I press "Assign users"
+    And I set the following fields to these values:
+      | Users        | Student 1 |
+      | Test field 1 | Prvni     |
+      | Test field 2 | ASF2     |
+    And I press dialog form button "Assign users"
+    And I follow "Student 1"
+    Then I should see "Prvni" in the "Test field 1" definition list item
+    And I should see "ASF2" in the "Test field 2" definition list item
+
+    When I press "Update assignment"
+    And I set the following fields to these values:
+      | Test field 1 | Druhy     |
+    And I press dialog form button "Update assignment"
+    Then I should see "Druhy" in the "Test field 1" definition list item
+    And I should see "ASF2" in the "Test field 2" definition list item
+
+    And I log out
+    When I log in as "student1"
+    And I am on the "tool_mucertify > My certifications" page
+    And I follow "Certification 000"
+    Then I should see "ASF2" in the "Test field 2" definition list item
+    And I should not see "Test field 1"

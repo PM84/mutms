@@ -1,5 +1,5 @@
 <?php
-// This file is part of Certifications for Moodle™.
+// This file is part of MuTMS suite of plugins for Moodle™ LMS.
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -131,17 +131,19 @@ final class manual extends base {
      * @param int $sourceid
      * @param array $userids
      * @param array $dateoverrides
-     * @return void
+     * @return array assignment ids
      */
-    public static function assign_users(int $certificationid, int $sourceid, array $userids, array $dateoverrides = []): void {
+    public static function assign_users(int $certificationid, int $sourceid, array $userids, array $dateoverrides = []): array {
         global $DB;
+
+        $result = [];
 
         $certification = $DB->get_record('tool_mucertify_certification', ['id' => $certificationid], '*', MUST_EXIST);
         $source = $DB->get_record('tool_mucertify_source',
             ['id' => $sourceid, 'type' => static::get_type(), 'certificationid' => $certification->id], '*', MUST_EXIST);
 
         if (count($userids) === 0) {
-            return;
+            return $result;
         }
 
         foreach ($userids as $userid) {
@@ -150,7 +152,8 @@ final class manual extends base {
                 // One assignment per certification only.
                 continue;
             }
-            self::assignment_create($certification, $source, $user->id, [], $dateoverrides);
+            $assignment = self::assignment_create($certification, $source, $user->id, [], $dateoverrides);
+            $result[] = $assignment->id;
         }
 
         if (count($userids) === 1) {
@@ -161,6 +164,8 @@ final class manual extends base {
 
         \tool_muprog\local\source\mucertify::sync_certifications($certification->id, $userid);
         \tool_mucertify\local\notification_manager::trigger_notifications($certification->id, $userid);
+
+        return $result;
     }
 
     /**
