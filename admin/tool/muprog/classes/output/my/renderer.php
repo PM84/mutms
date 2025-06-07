@@ -89,27 +89,27 @@ class renderer extends \plugin_renderer_base {
         $strnotset = get_string('notset', 'tool_muprog');
         $sourceclass = allocation::get_source_classname($source->type);
 
-        $details = [];
+        $details = new \tool_mulib\output\entity_details();
 
         $handler = \tool_muprog\customfield\program_handler::create();
         foreach ($handler->get_instance_data($program->id) as $data) {
-            $details[] = ['property' => $data->get_field()->get('name'), 'value' => $data->export_value()];
+            $details->add($data->get_field()->get('name'), $data->export_value());
         }
 
-        $details[] = ['property' => get_string('programstatus', 'tool_muprog'),
-            'value' => allocation::get_completion_status_html($program, $allocation)];
-        $details[] = ['property' => get_string('source', 'tool_muprog'),
-            'value' => $sourceclass::render_allocation_source($program, $source, $allocation)];
-        $details[] = ['property' => get_string('allocationdate', 'tool_muprog'),
-            'value' => userdate($allocation->timeallocated)];
-        $details[] = ['property' => get_string('programstart', 'tool_muprog'),
-            'value' => userdate($allocation->timestart)];
-        $details[] = ['property' => get_string('programdue', 'tool_muprog'),
-            'value' => (isset($allocation->timedue) ? userdate($allocation->timedue) : $strnotset)];
-        $details[] = ['property' => get_string('programend', 'tool_muprog'),
-            'value' => (isset($allocation->timeend) ? userdate($allocation->timeend) : $strnotset)];
-        $details[] = ['property' => get_string('completiondate', 'tool_muprog'),
-            'value' => (isset($allocation->timecompleted) ? userdate($allocation->timecompleted) : $strnotset)];
+        $details->add(get_string('programstatus', 'tool_muprog'),
+            allocation::get_completion_status_html($program, $allocation));
+        $details->add(get_string('source', 'tool_muprog'),
+            $sourceclass::render_allocation_source($program, $source, $allocation));
+        $details->add(get_string('allocationdate', 'tool_muprog'),
+            userdate($allocation->timeallocated));
+        $details->add(get_string('programstart', 'tool_muprog'),
+            userdate($allocation->timestart));
+        $details->add(get_string('programdue', 'tool_muprog'),
+            (isset($allocation->timedue) ? userdate($allocation->timedue) : $strnotset));
+        $details->add(get_string('programend', 'tool_muprog'),
+            (isset($allocation->timeend) ? userdate($allocation->timeend) : $strnotset));
+        $details->add(get_string('completiondate', 'tool_muprog'),
+            (isset($allocation->timecompleted) ? userdate($allocation->timecompleted) : $strnotset));
 
         $handler = \tool_muprog\customfield\allocation_handler::create();
         foreach ($handler->get_instance_data($allocation->id) as $data) {
@@ -117,10 +117,10 @@ class renderer extends \plugin_renderer_base {
             if ($value === null || $value === '') {
                 continue;
             }
-            $details[] = ['property' => $data->get_field()->get('name'), 'value' => $value];
+            $details->add($data->get_field()->get('name'), $value);
         }
 
-        return $this->output->render_from_template('tool_mulib/entity_details', ['details' => $details]);
+        return $this->output->render($details);
     }
 
     /**
