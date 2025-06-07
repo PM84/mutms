@@ -1,5 +1,5 @@
 <?php
-// This file is part of Multi-tenancy plugin for Moodle™.
+// This file is part of MuTMS suite of plugins for Moodle™ LMS.
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -68,8 +68,10 @@ final class manager {
         unset($defaults['moodle/user:delete']);
 
         // Add extra capabilities here if necessary.
+        $hook = new \tool_mutenancy\hook\tenant_manager_capabilities($defaults);
+        \core\di::get(\core\hook\manager::class)->dispatch($hook);
 
-        return $defaults;
+        return $hook->get_capabilities();
     }
 
     /**

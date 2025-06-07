@@ -1,5 +1,5 @@
 <?php
-// This file is part of Multi-tenancy plugin for Moodle™.
+// This file is part of MuTMS suite of plugins for Moodle™ LMS.
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -39,6 +39,8 @@ function xmldb_tool_mutenancy_uninstall() {
     if (tenancy::is_active()) {
         tenancy::deactivate();
     }
+
+    $DB->set_field('capabilities', 'contextlevel', CONTEXT_SYSTEM, ['contextlevel' => 12]);
 
     $table = new xmldb_table('context');
     $index = new xmldb_index('tenantid', XMLDB_INDEX_NOTUNIQUE, ['tenantid']);
