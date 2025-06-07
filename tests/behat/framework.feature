@@ -42,7 +42,7 @@ Feature: Managers can manage training frameworks
 
   Scenario: Create, update and delete training framework as manager
     Given I log in as "manager1"
-    And I navigate to "Training > Manage training frameworks" in site administration
+    And I navigate to "Training > Training frameworks" in site administration
 
     When I press "Add framework"
     And I set the following fields in the ".modal-dialog" "css_element" to these values:
@@ -101,7 +101,7 @@ Feature: Managers can manage training frameworks
     And I should see "No" in the "Restricted completion validity" definition list item
     And I should see "No" in the "Archived" definition list item
 
-    And I navigate to "Training > Manage training frameworks" in site administration
+    And I navigate to "Training > Training frameworks" in site administration
     When I follow "Framework X"
     And I press "Update framework"
     And the following fields in the ".modal-dialog" "css_element" match these values:
@@ -149,7 +149,7 @@ Feature: Managers can manage training frameworks
 
   Scenario: Add and remove training framework fields
     Given I log in as "manager1"
-    And I navigate to "Training > Manage training frameworks" in site administration
+    And I navigate to "Training > Training frameworks" in site administration
     And I press "Add framework"
     And I set the following fields in the ".modal-dialog" "css_element" to these values:
       | Framework name          | Framework 1 |
@@ -177,7 +177,7 @@ Feature: Managers can manage training frameworks
       | name           | category | fields    |
       | Framework 004  | Cat 2    | training3 |
     And I log in as "manager1"
-    And I navigate to "Training > Manage training frameworks" in site administration
+    And I navigate to "Training > Training frameworks" in site administration
     Then the following should exist in the "reportbuilder-table" table:
       | Framework name | Framework ID | Custom fields | Public | Required training total | Restricted completion validity | Category |
       | Framework 001  |              | 2             | No     | 100                     | No                             | System   |

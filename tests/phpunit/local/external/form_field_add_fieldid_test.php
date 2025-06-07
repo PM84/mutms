@@ -1,5 +1,5 @@
 <?php
-// This file is part of Training plugin for Moodle™.
+// This file is part of MuTMS suite of plugins for Moodle™ LMS.
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -31,7 +31,6 @@ use tool_mutrain\local\framework;
  * @author     Petr Skoda
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
- * @runTestsInSeparateProcesses
  * @covers \tool_mutrain\external\form_field_add_fieldid
  */
 final class form_field_add_fieldid_test extends \advanced_testcase {

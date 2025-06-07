@@ -1,5 +1,5 @@
 <?php
-// This file is part of Training plugin for Moodle™.
+// This file is part of MuTMS suite of plugins for Moodle™ LMS.
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -36,7 +36,7 @@ final class framework_restore extends \tool_mulib\local\dialog_form {
         $mform->setDefault('id', $data->id);
 
         $mform->addElement('static', 'name', get_string('framework_name', 'tool_mutrain'), format_string($data->name));
-        $mform->addElement('static', 'idnumber', get_string('framework_idnumber', 'tool_mutrain'), format_string($data->idnumber));
+        $mform->addElement('static', 'idnumber', get_string('framework_idnumber', 'tool_mutrain'), s($data->idnumber));
 
         $this->add_action_buttons(true, get_string('framework_restore', 'tool_mutrain'));
     }

@@ -1,5 +1,5 @@
 <?php
-// This file is part of Training plugin for Moodle™.
+// This file is part of MuTMS suite of plugins for Moodle™ LMS.
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -93,7 +93,7 @@ final class framework extends base {
         ))
             ->add_joins($this->get_joins())
             ->set_type(column::TYPE_TEXT)
-            ->add_fields("{$frameworkalias}.id, {$frameworkalias}.name, {$frameworkalias}.contextid")
+            ->add_fields("{$frameworkalias}.name, {$frameworkalias}.id, {$frameworkalias}.contextid")
             ->set_is_sortable(true)
             ->set_callback(static function(?string $value, \stdClass $row): string {
                 if (!$row->id) {

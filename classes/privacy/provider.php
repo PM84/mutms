@@ -1,5 +1,5 @@
 <?php
-// This file is part of Training plugin for Moodle™.
+// This file is part of MuTMS suite of plugins for Moodle™ LMS.
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -18,8 +18,6 @@
 
 namespace tool_mutrain\privacy;
 
-use core_customfield\data_controller;
-use core_privacy\local\request\writer;
 use core_privacy\local\metadata\collection;
 
 /**
