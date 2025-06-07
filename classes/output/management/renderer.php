@@ -44,24 +44,19 @@ class renderer extends \plugin_renderer_base {
             $description = $this->output->box($description);
         }
 
-        $details = [];
+        $details = new \tool_mulib\output\entity_details();
 
-        $details[] = ['property' => get_string('framework_name', 'tool_mutrain'),
-            'value' => format_string($framework->name)];
+        $details->add(get_string('framework_name', 'tool_mutrain'), format_string($framework->name));
         if ($framework->idnumber === null) {
             $idnumber = get_string('notset', 'tool_mutrain');
         } else {
             $idnumber = s($framework->idnumber);
         }
-        $details[] = ['property' => get_string('framework_idnumber', 'tool_mutrain'), 'value' => $idnumber];
-        $details[] = ['property' => get_string('public', 'tool_mutrain'),
-            'value' => ($framework->public ? get_string('yes') : get_string('no'))];
-        $details[] = ['property' => get_string('context', 'role'),
-            'value' => $context->get_context_name(false)];
-        $details[] = ['property' => get_string('requiredtraining', 'tool_mutrain'),
-            'value' => number_format($framework->requiredtraining, 0, '', ' ')];
-        $details[] = ['property' => get_string('restrictedcompletion', 'tool_mutrain'),
-            'value' => ($framework->restrictedcompletion ? get_string('yes') : get_string('no'))];
+        $details->add(get_string('framework_idnumber', 'tool_mutrain'), $idnumber);
+        $details->add(get_string('public', 'tool_mutrain'), ($framework->public ? get_string('yes') : get_string('no')));
+        $details->add(get_string('context', 'role'), $context->get_context_name(false));
+        $details->add(get_string('requiredtraining', 'tool_mutrain'), number_format($framework->requiredtraining, 0, '', ' '));
+        $details->add(get_string('restrictedcompletion', 'tool_mutrain'), ($framework->restrictedcompletion ? get_string('yes') : get_string('no')));
         $archived = $framework->archived ? get_string('yes') : get_string('no');
         if (has_capability('tool/mutrain:manageframeworks', $context)) {
             if ($framework->archived) {
@@ -71,11 +66,11 @@ class renderer extends \plugin_renderer_base {
                 $url = new moodle_url('/admin/tool/mutrain/management/framework_archive.php', ['id' => $framework->id]);
                 $action = new \tool_mulib\output\dialog_form\icon($url, get_string('framework_archive', 'tool_mutrain'), 'i/settings');
             }
-            $action->set_dialog_size('');
+            $action->set_dialog_size('sm');
             $archived .= $this->output->render($action);
         }
-        $details[] = ['property' => get_string('archived', 'tool_mutrain'), 'value' => $archived];
+        $details->add(get_string('archived', 'tool_mutrain'), $archived);
 
-        return $description . $this->output->render_from_template('tool_mulib/entity_details', ['details' => $details]);
+        return $description . $this->output->render($details);
     }
 }
