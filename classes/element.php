@@ -1,5 +1,5 @@
 <?php
-// This file is part of Programs fields plugin for Certificate plugin for Moodle™.
+// This file is part of MuTMS suite of plugins for Moodle™ LMS.
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -43,7 +43,7 @@ final class element extends \tool_certificate\element {
             'timecompleted' => get_string('programcompletion', 'tool_muprog'),
         ];
 
-        $handler = \tool_muprog\customfield\fields_handler::create();
+        $handler = \tool_muprog\customfield\program_handler::create();
         if ($handler->get_fields()) {
             $fields['customfield'] = get_string('customfield', 'core_customfield');
         }
@@ -173,7 +173,7 @@ final class element extends \tool_certificate\element {
      */
     public function get_customfields(): array {
         if ($this->fields === null) {
-            $handler = \tool_muprog\customfield\fields_handler::create();
+            $handler = \tool_muprog\customfield\program_handler::create();
             $this->fields = $handler->get_fields();
         }
         return $this->fields;

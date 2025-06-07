@@ -1,5 +1,5 @@
 <?php
-// This file is part of Programs fields plugin for Certificate plugin for Moodle™.
+// This file is part of MuTMS suite of plugins for Moodle™ LMS.
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -32,7 +32,7 @@ $plugin->version   = 2025050100;
 $plugin->requires  = 2024091700.00;
 $plugin->maturity  = MATURITY_ALPHA;
 $plugin->supported = [405, 405];
-$plugin->release   = 'mu-4.5.4-10';
+$plugin->release   = 'mu-4.5.4-10+';
 
 $plugin->dependencies = [
     'tool_muprog' => 2025050100,
