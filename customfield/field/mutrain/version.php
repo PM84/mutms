@@ -29,8 +29,8 @@ defined('MOODLE_INTERNAL') || die();
 
 /** @var stdClass $plugin */
 $plugin->component = 'customfield_mutrain';
-$plugin->version   = 2025050100;
+$plugin->version   = 2025060900;
 $plugin->requires  = 2024091700.00; // 4.5.0
 $plugin->maturity  = MATURITY_ALPHA;
 $plugin->supported = [405, 405];
-$plugin->release   = 'mu-4.5.4-10+';
+$plugin->release   = 'mu-4.5.5-1';
