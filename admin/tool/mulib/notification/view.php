@@ -52,7 +52,7 @@ if (!$manager) {
 }
 
 if (!$manager::can_view($notification->instanceid)) {
-    redirect('/');
+    redirect(new moodle_url('/'));
 }
 
 $context = $manager::get_instance_context($notification->instanceid);
