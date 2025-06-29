@@ -735,34 +735,34 @@ final class period {
         $now = time();
 
         if (!$assignment || $certification->archived || $assignment->archived) {
-            return '<span class="badge badge-dark">' . get_string('periodstatus_archived', 'tool_mucertify') . '</span>';
+            return '<span class="badge bg-dark">' . get_string('periodstatus_archived', 'tool_mucertify') . '</span>';
         }
 
         if ($period->timerevoked) {
-            return '<span class="badge badge-danger">' . get_string('periodstatus_revoked', 'tool_mucertify') . '</span>';
+            return '<span class="badge bg-danger">' . get_string('periodstatus_revoked', 'tool_mucertify') . '</span>';
         }
 
         if ($period->timecertified) {
             if (!$period->timeuntil || $period->timeuntil > $now) {
-                return '<span class="badge badge-success">' . get_string('periodstatus_certified', 'tool_mucertify') . '</span>';
+                return '<span class="badge bg-success">' . get_string('periodstatus_certified', 'tool_mucertify') . '</span>';
             } else {
-                return '<span class="badge badge-light">' . get_string('periodstatus_expired', 'tool_mucertify') . '</span>';
+                return '<span class="badge bg-light text-dark">' . get_string('periodstatus_expired', 'tool_mucertify') . '</span>';
             }
         }
 
         if ($period->timewindowend && $period->timewindowend < $now) {
-            return '<span class="badge badge-danger">' . get_string('periodstatus_failed', 'tool_mucertify') . '</span>';
+            return '<span class="badge bg-danger">' . get_string('periodstatus_failed', 'tool_mucertify') . '</span>';
         }
 
         if ($period->timewindowdue && $period->timewindowdue < $now) {
-            return '<span class="badge badge-danger">' . get_string('periodstatus_overdue', 'tool_mucertify') . '</span>';
+            return '<span class="badge bg-danger">' . get_string('periodstatus_overdue', 'tool_mucertify') . '</span>';
         }
 
         if ($period->timewindowstart > $now) {
-            return '<span class="badge badge-light">' . get_string('periodstatus_future', 'tool_mucertify') . '</span>';
+            return '<span class="badge bg-light text-dark">' . get_string('periodstatus_future', 'tool_mucertify') . '</span>';
         }
 
-        return '<span class="badge badge-warning">' . get_string('periodstatus_pending', 'tool_mucertify') . '</span>';
+        return '<span class="badge bg-warning text-dark">' . get_string('periodstatus_pending', 'tool_mucertify') . '</span>';
     }
 
     /**

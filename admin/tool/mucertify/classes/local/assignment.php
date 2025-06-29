@@ -135,23 +135,23 @@ final class assignment {
         $now = time();
 
         if ($certification->archived || $assignment->archived) {
-            return '<span class="badge badge-dark">' . get_string('certificationstatus_archived', 'tool_mucertify') . '</span>';
+            return '<span class="badge bg-dark">' . get_string('certificationstatus_archived', 'tool_mucertify') . '</span>';
         }
 
         if (!$assignment->timecertifiedfrom || $assignment->timecertifiedfrom > $now) {
-            return '<span class="badge badge-light">' . get_string('certificationstatus_notcertified', 'tool_mucertify') . '</span>';
+            return '<span class="badge bg-light text-dark">' . get_string('certificationstatus_notcertified', 'tool_mucertify') . '</span>';
         }
 
         if (($assignment->timecertifiedtemp ?? $assignment->timecertifieduntil) < $now) {
-            return '<span class="badge badge-light">' . get_string('certificationstatus_expired', 'tool_mucertify') . '</span>';
+            return '<span class="badge bg-light text-dark">' . get_string('certificationstatus_expired', 'tool_mucertify') . '</span>';
         }
 
         if ($assignment->timecertifiedtemp && $assignment->timecertifiedtemp > $now) {
-            return '<span class="badge badge-success">' . get_string('certificationstatus_temporary', 'tool_mucertify') . '</span>';
+            return '<span class="badge bg-success">' . get_string('certificationstatus_temporary', 'tool_mucertify') . '</span>';
         }
 
         if ($assignment->timecertifieduntil > $now) {
-            return '<span class="badge badge-success">' . get_string('certificationstatus_valid', 'tool_mucertify') . '</span>';
+            return '<span class="badge bg-success">' . get_string('certificationstatus_valid', 'tool_mucertify') . '</span>';
         }
 
         debugging('Invalid certification status', DEBUG_DEVELOPER);

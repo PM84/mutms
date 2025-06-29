@@ -147,13 +147,13 @@ class renderer extends \plugin_renderer_base {
                     $program1str = html_writer::link($url, $program1str);
                 }
                 if (!$DB->record_exists('tool_muprog_source', ['programid' => $program1->id, 'type' => 'mucertify'])) {
-                    $program1str = '<span class="badge badge-danger">' . $program1str . '</span>';
+                    $program1str = '<span class="badge bg-danger">' . $program1str . '</span>';
                 }
             } else {
-                $program1str = '<span class="badge badge-danger">' . get_string('error') . '</span>';
+                $program1str = '<span class="badge bg-danger">' . get_string('error') . '</span>';
             }
         } else {
-            $program1str = '<span class="badge badge-danger">' . get_string('notset', 'tool_mucertify') . '</span>';
+            $program1str = '<span class="badge bg-danger">' . get_string('notset', 'tool_mucertify') . '</span>';
         }
         $details->add(get_string('program', 'tool_muprog'), $program1str);
 
@@ -228,13 +228,13 @@ class renderer extends \plugin_renderer_base {
                     $program2str = html_writer::link($url, $program2str);
                 }
                 if (!$DB->record_exists('tool_muprog_source', ['programid' => $program2->id, 'type' => 'mucertify'])) {
-                    $program2str = '<span class="badge badge-danger">' . $program2str . '</span>';
+                    $program2str = '<span class="badge bg-danger">' . $program2str . '</span>';
                 }
             } else {
-                $program2str = '<span class="badge badge-danger">' . get_string('error') . '</span>';
+                $program2str = '<span class="badge bg-danger">' . get_string('error') . '</span>';
             }
         } else {
-            $program2str = '<span class="badge badge-danger">' . get_string('notset', 'tool_mucertify') . '</span>';
+            $program2str = '<span class="badge bg-danger">' . get_string('notset', 'tool_mucertify') . '</span>';
         }
         $details->add(get_string('program', 'tool_muprog'), $program2str);
 
