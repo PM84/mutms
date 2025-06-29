@@ -202,8 +202,7 @@ Feature: Manual certification assignment tests
     And I press dialog form button "Update"
     And I click on "Users" "link" in the ".secondary-navigation" "css_element"
 
-    When I click on "User actions" "link"
-    And I click on "Upload assignments" "link"
+    When I click on "Upload assignments" action from "User actions" dropdown
     And I upload "admin/tool/mucertify/tests/fixtures/assign.csv" file to "CSV file" filemanager
     And I press dialog form button "Continue"
     And the following fields match these values:
@@ -214,8 +213,7 @@ Feature: Manual certification assignment tests
     Then I should see "4 users were assigned to certification"
     And I should see "1 errors detected when assigning certification"
 
-    When I click on "User actions" "link"
-    And I click on "Upload assignments" "link"
+    When I click on "Upload assignments" action from "User actions" dropdown
     And I upload "admin/tool/mucertify/tests/fixtures/assign.csv" file to "CSV file" filemanager
     And I press dialog form button "Continue"
     And I set the following fields to these values:
@@ -236,8 +234,7 @@ Feature: Manual certification assignment tests
     And I press dialog form button "Update"
     And I click on "Users" "link" in the ".secondary-navigation" "css_element"
 
-    When I click on "User actions" "link"
-    And I click on "Upload assignments" "link"
+    When I click on "Upload assignments" action from "User actions" dropdown
     And I upload "admin/tool/mucertify/tests/fixtures/assign.csv" file to "CSV file" filemanager
     And I press dialog form button "Continue"
     And I set the following fields to these values:
