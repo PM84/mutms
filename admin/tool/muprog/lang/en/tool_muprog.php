@@ -99,6 +99,7 @@ $string['event_allocation_created'] = 'User allocated to program';
 $string['event_allocation_deleted'] = 'User deallocated from program';
 $string['event_allocation_restored'] = 'User allocation restored';
 $string['event_allocation_updated'] = 'User program allocation updated';
+$string['event_catalogue_program_viewed'] = 'Program catalogue viewed';
 $string['event_program_archived'] = 'Program archived';
 $string['event_program_created'] = 'Program created';
 $string['event_program_deleted'] = 'Program deleted';

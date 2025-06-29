@@ -45,8 +45,7 @@ Feature: Program export tests
     Given I log in as "manager1"
     And I am on the "tool_muprog > All programs management" page
 
-    When I click on "Programs actions" "link"
-    And I click on "Export programs" "link"
+    When I click on "Export programs" action from "Programs actions" dropdown
     And the following fields match these values:
       | Context     | All programs |
       | archived    | 0            |
@@ -63,8 +62,7 @@ Feature: Program export tests
     When I press "Back"
     And I should see "Program 001"
     And I follow "Program 001"
-    And I click on "Program actions" "link"
-    And I click on "Export programs" "link"
+    And I click on "Export programs" action from "Program actions" dropdown
     Then I press "Export programs"
     And I wait "1" seconds
 
