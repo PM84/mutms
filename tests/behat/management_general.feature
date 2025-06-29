@@ -164,8 +164,7 @@ Feature: General programs management tests
     And I press dialog form button "Archive program"
     And I should see "Yes" in the "Archived" definition list item
 
-    When I click on "Program actions" "link"
-    And I click on "Delete program" "link"
+    When I click on "Delete program" action from "Program actions" dropdown
     And I press dialog form button "Delete program"
     Then I should see "No programs found"
 

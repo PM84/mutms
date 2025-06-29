@@ -75,8 +75,7 @@ Feature: Program export tests
     Given I log in as "manager1"
     And I am on the "Category 2" "tool_muprog > Program management" page
 
-    When I click on "Programs actions" "link"
-    And I click on "Export programs" "link"
+    When I click on "Export programs" action from "Programs actions" dropdown
     And the following fields match these values:
       | Context     | Category 2   |
       | archived    | 0            |
@@ -94,8 +93,7 @@ Feature: Program export tests
     And I am on the "Category 2" "tool_muprog > Program management" page
     And I should see "Program 002"
     And I follow "Program 002"
-    And I click on "Program actions" "link"
-    And I click on "Export programs" "link"
+    And I click on "Export programs" action from "Program actions" dropdown
     Then I press "Export programs"
     And I wait "1" seconds
 

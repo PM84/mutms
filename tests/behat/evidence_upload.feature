@@ -96,13 +96,11 @@ Feature: Upload program completion evidence using csv
     And I should see "Upload completion evidences"
 
     And I follow "Student 3"
-    And I click on "Allocation actions" "link"
-    And I click on "Archive" "link"
+    And I click on "Archive" action from "Allocation actions" dropdown
     And I press dialog form button "Archive"
     And I click on "Users" "link" in the ".secondary-navigation" "css_element"
-    And I click on "Users actions" "link"
 
-    When I click on "Upload completion evidences" "link"
+    When I click on "Upload completion evidences" action from "Users actions" dropdown
     And I upload "admin/tool/muprog/tests/fixtures/evidence1.csv" file to "CSV file" filemanager
     And I set the following fields in the ".modal-dialog" "css_element" to these values:
       | CSV separator | ,     |
@@ -140,9 +138,8 @@ Feature: Upload program completion evidence using csv
       | Completion date | Other evidence |
       | 12/03/23, 00:00 | EvidenceX      |
     And I click on "Users" "link" in the ".secondary-navigation" "css_element"
-    And I click on "Users actions" "link"
 
-    When I click on "Upload completion evidences" "link"
+    When I click on "Upload completion evidences" action from "Users actions" dropdown
     And I upload "admin/tool/muprog/tests/fixtures/evidence2.csv" file to "CSV file" filemanager
     And I set the following fields to these values:
       | CSV separator | ,     |

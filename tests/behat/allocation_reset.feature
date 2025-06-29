@@ -68,16 +68,14 @@ Feature: Program progress reset by managers tests
     And I follow "Program 000"
     And I follow "Users"
     And I follow "Student 1"
-    And I click on "Allocation actions" "link"
-    And I click on "Reset program progress" "link"
+    And I click on "Reset program progress" action from "Allocation actions" dropdown
     And I set the following fields to these values:
       | Reset type         | Standard course purge |
       | Update allocation  | 0                     |
     And I press dialog form button "Reset program progress"
     Then I should see "Not set" in the "Program completion date" definition list item
 
-    When I click on "Allocation actions" "link"
-    And I click on "Reset program progress" "link"
+    When I click on "Reset program progress" action from "Allocation actions" dropdown
     And I set the following fields to these values:
       | Reset type         | Full course purge |
       | Update allocation  | 1                 |
@@ -104,8 +102,7 @@ Feature: Program progress reset by managers tests
     And I should see "Monday, 22 January 2024, 9:00 AM" in the "Program due" definition list item
     And I should see "Tuesday, 31 December 2030, 9:00 AM" in the "Program end" definition list item
 
-    When I click on "Allocation actions" "link"
-    And I click on "Reset program progress" "link"
+    When I click on "Reset program progress" action from "Allocation actions" dropdown
     And I set the following fields to these values:
       | Update allocation  | 1    |
       | timestart[year]    | 2024 |

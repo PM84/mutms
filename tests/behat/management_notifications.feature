@@ -147,8 +147,7 @@ Feature: Program notifications management tests
       | Customised             | 1   |
     And I press dialog form button "Update notification"
 
-    When I click on "Notification actions" "link"
-    And I follow "Import notifications"
+    When I click on "Import notifications" action from "Notification actions" dropdown
     And I set the following fields in the ".modal-dialog" "css_element" to these values:
       | Import from           | Program 000   |
     And I press dialog form button "Continue"

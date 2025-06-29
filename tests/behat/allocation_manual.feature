@@ -195,8 +195,7 @@ Feature: Manual program allocation tests
     And I should see "Active" in the "Manual allocation" definition list item
     And I click on "Users" "link" in the ".secondary-navigation" "css_element"
 
-    When I click on "Users actions" "link"
-    And I click on "Upload allocations" "link"
+    When I click on "Upload allocations" action from "Users actions" dropdown
     And I upload "admin/tool/muprog/tests/fixtures/upload1.csv" file to "CSV file" filemanager
     And I set the following fields in the ".modal-dialog" "css_element" to these values:
       | CSV separator | ,     |
@@ -212,8 +211,7 @@ Feature: Manual program allocation tests
     And "Student 2" row "Source" column of "reportbuilder-table" table should contain "Manual allocation"
     And "Student 3" row "Source" column of "reportbuilder-table" table should contain "Manual allocation"
 
-    When I click on "Users actions" "link"
-    And I click on "Upload allocations" "link"
+    When I click on "Upload allocations" action from "Users actions" dropdown
     And I upload "admin/tool/muprog/tests/fixtures/upload2.csv" file to "CSV file" filemanager
     And I set the following fields in the ".modal-dialog" "css_element" to these values:
       | CSV separator | ,     |
@@ -234,8 +232,7 @@ Feature: Manual program allocation tests
     And "Student 3" row "Source" column of "reportbuilder-table" table should contain "Manual allocation"
     And "Student 4" row "Source" column of "reportbuilder-table" table should contain "Manual allocation"
 
-    When I click on "Users actions" "link"
-    And I click on "Upload allocations" "link"
+    When I click on "Upload allocations" action from "Users actions" dropdown
     And I upload "admin/tool/muprog/tests/fixtures/upload3.csv" file to "CSV file" filemanager
     And I set the following fields in the ".modal-dialog" "css_element" to these values:
       | CSV separator | ;     |
@@ -288,8 +285,7 @@ Feature: Manual program allocation tests
     And I should see "Active" in the "Manual allocation" definition list item
     And I click on "Users" "link" in the ".secondary-navigation" "css_element"
 
-    When I click on "Users actions" "link"
-    And I click on "Upload allocations" "link"
+    When I click on "Upload allocations" action from "Users actions" dropdown
     And I upload "admin/tool/muprog/tests/fixtures/upload4.csv" file to "CSV file" filemanager
     And I set the following fields to these values:
       | CSV separator | ,     |
@@ -379,8 +375,7 @@ Feature: Manual program allocation tests
     Then I should see "Prvni" in the "Test field 1" definition list item
     And I should see "ASF2" in the "Test field 2" definition list item
 
-    When I click on "Allocation actions" "link"
-    And I click on "Update allocation" "link"
+    When I click on "Update allocation" action from "Allocation actions" dropdown
     And I set the following fields to these values:
       | Test field 1 | Druhy     |
     And I press dialog form button "Update allocation"
