@@ -197,7 +197,6 @@ Feature: General Certification management tests
     And I press dialog form button "Archive certification"
     And I should see "Yes" in the "Archived" definition list item
 
-    When I click on "Certification actions" "link"
-    And I click on "Delete certification" "link"
+    When I click on "Delete certification" action from "Certification actions" dropdown
     And I press dialog form button "Delete certification"
     Then I should see "No certifications found"

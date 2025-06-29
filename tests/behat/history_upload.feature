@@ -69,8 +69,7 @@ Feature: Import of historic certification periods
     And I press dialog form button "Update"
 
     When I click on "Users" "link" in the ".secondary-navigation" "css_element"
-    And I click on "User actions" "link"
-    And I click on "Upload history" "link"
+    And I click on "Upload history" action from "User actions" dropdown
     And I upload "admin/tool/mucertify/tests/fixtures/history1.csv" file to "CSV file" filemanager
     And I press dialog form button "Continue"
     And I press dialog form button "Upload history"
@@ -82,8 +81,7 @@ Feature: Import of historic certification periods
       | Student 2  | 1/03/20, 00:00 | 31/05/20, 00:00 | Expired              | Automatic cohort assignment |
     And I should not see "Student 3"
 
-    When I click on "User actions" "link"
-    And I click on "Upload history" "link"
+    When I click on "Upload history" action from "User actions" dropdown
     And I upload "admin/tool/mucertify/tests/fixtures/history1.csv" file to "CSV file" filemanager
     And I press dialog form button "Continue"
     And I set the following fields to these values:
@@ -98,8 +96,7 @@ Feature: Import of historic certification periods
       | Student 2  | 1/03/20, 00:00 | 31/05/20, 00:00 | Expired              | Automatic cohort assignment |
       | Student 3  | 1/03/19, 00:00 | 31/05/19, 00:00 | Expired              | Manual assignment           |
 
-    When I click on "User actions" "link"
-    And I click on "Upload history" "link"
+    When I click on "Upload history" action from "User actions" dropdown
     And I upload "admin/tool/mucertify/tests/fixtures/history2.txt" file to "CSV file" filemanager
     And I press dialog form button "Continue"
     And I set the following fields to these values:
@@ -116,8 +113,7 @@ Feature: Import of historic certification periods
       | Student 3  | 1/03/19, 00:00 | 31/05/19, 00:00 | Expired              | Manual assignment           |
       | Student 4  | 1/03/20, 00:00 | 31/05/20, 00:00 | Expired              | Manual assignment           |
 
-    When I click on "User actions" "link"
-    And I click on "Upload history" "link"
+    When I click on "Upload history" action from "User actions" dropdown
     And I upload "admin/tool/mucertify/tests/fixtures/history1.csv" file to "CSV file" filemanager
     And I press dialog form button "Continue"
     And I set the following fields to these values:
@@ -173,8 +169,7 @@ Feature: Import of historic certification periods
     And I press dialog form button "Update"
 
     When I click on "Users" "link" in the ".secondary-navigation" "css_element"
-    And I click on "User actions" "link"
-    And I click on "Upload history" "link"
+    And I click on "Upload history" action from "User actions" dropdown
     And I upload "admin/tool/mucertify/tests/fixtures/history3.csv" file to "CSV file" filemanager
     And I press dialog form button "Continue"
     And I set the following fields to these values:
