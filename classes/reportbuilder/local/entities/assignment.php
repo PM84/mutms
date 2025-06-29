@@ -126,15 +126,15 @@ final class assignment extends base {
             ->add_callback(static function($value, \stdClass $row): string {
                 switch ($row->status) {
                     case 5:
-                        return '<span class="badge badge-dark">' . get_string('certificationstatus_archived', 'tool_mucertify') . '</span>';
+                        return '<span class="badge bg-dark">' . get_string('certificationstatus_archived', 'tool_mucertify') . '</span>';
                     case 4:
-                        return '<span class="badge badge-light">' . get_string('certificationstatus_notcertified', 'tool_mucertify') . '</span>';
+                        return '<span class="badge bg-light text-dark">' . get_string('certificationstatus_notcertified', 'tool_mucertify') . '</span>';
                     case 3:
-                        return '<span class="badge badge-light">' . get_string('certificationstatus_expired', 'tool_mucertify') . '</span>';
+                        return '<span class="badge bg-light text-dark">' . get_string('certificationstatus_expired', 'tool_mucertify') . '</span>';
                     case 2:
-                        return '<span class="badge badge-success">' . get_string('certificationstatus_temporary', 'tool_mucertify') . '</span>';
+                        return '<span class="badge bg-success">' . get_string('certificationstatus_temporary', 'tool_mucertify') . '</span>';
                     case 1:
-                        return '<span class="badge badge-success">' . get_string('certificationstatus_valid', 'tool_mucertify') . '</span>';
+                        return '<span class="badge bg-success">' . get_string('certificationstatus_valid', 'tool_mucertify') . '</span>';
                     default:
                         return '';
                 }

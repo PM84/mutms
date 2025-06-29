@@ -242,21 +242,21 @@ final class period extends base {
             ->add_callback(static function($value, \stdClass $row): string {
                 switch ($row->status) {
                     case 7:
-                        return '<span class="badge badge-dark">' . get_string('periodstatus_archived', 'tool_mucertify') . '</span>';
+                        return '<span class="badge bg-dark">' . get_string('periodstatus_archived', 'tool_mucertify') . '</span>';
                     case 6:
-                        return '<span class="badge badge-danger">' . get_string('periodstatus_revoked', 'tool_mucertify') . '</span>';
+                        return '<span class="badge bg-danger">' . get_string('periodstatus_revoked', 'tool_mucertify') . '</span>';
                     case 5:
-                        return '<span class="badge badge-success">' . get_string('periodstatus_certified', 'tool_mucertify') . '</span>';
+                        return '<span class="badge bg-success">' . get_string('periodstatus_certified', 'tool_mucertify') . '</span>';
                     case 4:
-                        return '<span class="badge badge-light">' . get_string('periodstatus_expired', 'tool_mucertify') . '</span>';
+                        return '<span class="badge bg-light text-dark">' . get_string('periodstatus_expired', 'tool_mucertify') . '</span>';
                     case 3:
-                        return '<span class="badge badge-danger">' . get_string('periodstatus_failed', 'tool_mucertify') . '</span>';
+                        return '<span class="badge bg-danger">' . get_string('periodstatus_failed', 'tool_mucertify') . '</span>';
                     case 2:
-                        return '<span class="badge badge-danger">' . get_string('periodstatus_overdue', 'tool_mucertify') . '</span>';
+                        return '<span class="badge bg-danger">' . get_string('periodstatus_overdue', 'tool_mucertify') . '</span>';
                     case 1:
-                        return '<span class="badge badge-light">' . get_string('periodstatus_future', 'tool_mucertify') . '</span>';
+                        return '<span class="badge bg-light text-dark">' . get_string('periodstatus_future', 'tool_mucertify') . '</span>';
                     default:
-                        return '<span class="badge badge-warning">' . get_string('periodstatus_pending', 'tool_mucertify') . '</span>';
+                        return '<span class="badge bg-warning text-dark">' . get_string('periodstatus_pending', 'tool_mucertify') . '</span>';
                 }
             });
 
