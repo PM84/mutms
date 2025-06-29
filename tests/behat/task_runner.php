@@ -43,7 +43,6 @@ $CFG->debug = (E_ALL | E_STRICT);
 $CFG->debugdisplay = 1;
 
 require_once($CFG->libdir.'/clilib.php');
-require_once($CFG->libdir.'/cronlib.php');
 
 \core\session\manager::write_close();
 
