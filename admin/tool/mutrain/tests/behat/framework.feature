@@ -141,8 +141,7 @@ Feature: Managers can manage training frameworks
     And I press dialog form button "Archive framework"
     And I should see "Yes" in the "Archived" definition list item
 
-    When I click on "Framework actions" "link"
-    And I click on "Delete framework" "link"
+    When I click on "Delete framework" action from "Framework actions" dropdown
     And I press dialog form button "Delete framework"
     Then I should see "Framework 1"
     And I should not see "Framework 2"
