@@ -134,8 +134,7 @@ Feature: Import allocation settings
     And I should see "Inactive" in the "Requests with approval" definition list item
     And I should see "Inactive" in the "Automatic cohort allocation" definition list item
 
-    When I click on "Allocation settings actions" "link"
-    And I click on "Import allocation settings" "link"
+    When I click on "Import allocation settings" action from "Allocation settings actions" dropdown
     And I set the following fields to these values:
       | Select program | Program 000 |
     And I press dialog form button "Continue"
@@ -152,8 +151,7 @@ Feature: Import allocation settings
     And I should see "Inactive" in the "Requests with approval" definition list item
     And I should see "Inactive" in the "Automatic cohort allocation" definition list item
 
-    When I click on "Allocation settings actions" "link"
-    And I click on "Import allocation settings" "link"
+    When I click on "Import allocation settings" action from "Allocation settings actions" dropdown
     And I set the following fields to these values:
       | Select program | Program 000 |
     And I press dialog form button "Continue"

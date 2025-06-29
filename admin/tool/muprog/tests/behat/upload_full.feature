@@ -38,8 +38,7 @@ Feature: Program upload full tests
     Given I log in as "manager1"
     And I am on the "tool_muprog > All programs management" page
 
-    When I click on "Programs actions" "link"
-    And I click on "Upload programs" "link"
+    When I click on "Upload programs" action from "Programs actions" dropdown
     And I upload "admin/tool/muprog/tests/fixtures/upload/programs_json.zip" file to "Files" filemanager
     And I press "Continue"
     And the following fields match these values:
@@ -121,8 +120,7 @@ Feature: Program upload full tests
     Given I log in as "manager1"
     And I am on the "tool_muprog > All programs management" page
 
-    When I click on "Programs actions" "link"
-    And I click on "Upload programs" "link"
+    When I click on "Upload programs" action from "Programs actions" dropdown
     And I upload "admin/tool/muprog/tests/fixtures/upload/programs.json" file to "Files" filemanager
     And I press "Continue"
     And the following fields match these values:
@@ -210,8 +208,7 @@ Feature: Program upload full tests
     And I log in as "manager1"
     And I am on the "tool_muprog > All programs management" page
 
-    When I click on "Programs actions" "link"
-    And I click on "Upload programs" "link"
+    When I click on "Upload programs" action from "Programs actions" dropdown
     And I upload "admin/tool/muprog/tests/fixtures/upload/programs_training.json" file to "Files" filemanager
     And I press "Continue"
     And the following fields match these values:
@@ -297,8 +294,7 @@ Feature: Program upload full tests
     Given I log in as "manager1"
     And I am on the "tool_muprog > All programs management" page
 
-    When I click on "Programs actions" "link"
-    And I click on "Upload programs" "link"
+    When I click on "Upload programs" action from "Programs actions" dropdown
     And I upload "admin/tool/muprog/tests/fixtures/upload/programs_csv_comma.zip" file to "Files" filemanager
     And I press "Continue"
     And the following fields match these values:
@@ -381,8 +377,7 @@ Feature: Program upload full tests
     Given I log in as "manager1"
     And I am on the "tool_muprog > All programs management" page
 
-    When I click on "Programs actions" "link"
-    And I click on "Upload programs" "link"
+    When I click on "Upload programs" action from "Programs actions" dropdown
     And I upload "admin/tool/muprog/tests/fixtures/upload/programs_csv_semicolon.zip" file to "Files" filemanager
     And I press "Continue"
     And the following fields match these values:
@@ -465,8 +460,7 @@ Feature: Program upload full tests
     Given I log in as "manager1"
     And I am on the "tool_muprog > All programs management" page
 
-    When I click on "Programs actions" "link"
-    And I click on "Upload programs" "link"
+    When I click on "Upload programs" action from "Programs actions" dropdown
     And I upload "admin/tool/muprog/tests/fixtures/upload/programs_csv_tab.zip" file to "Files" filemanager
     And I press "Continue"
     And the following fields match these values:
@@ -549,8 +543,7 @@ Feature: Program upload full tests
     Given I log in as "manager1"
     And I am on the "tool_muprog > All programs management" page
 
-    When I click on "Programs actions" "link"
-    And I click on "Upload programs" "link"
+    When I click on "Upload programs" action from "Programs actions" dropdown
     And I upload "admin/tool/muprog/tests/fixtures/upload/programs.csv" file to "Files" filemanager
     And I upload "admin/tool/muprog/tests/fixtures/upload/programs_contents.csv" file to "Files" filemanager
     And I upload "admin/tool/muprog/tests/fixtures/upload/programs_sources.csv" file to "Files" filemanager
@@ -640,8 +633,7 @@ Feature: Program upload full tests
     And I log in as "manager1"
     And I am on the "tool_muprog > All programs management" page
 
-    When I click on "Programs actions" "link"
-    And I click on "Upload programs" "link"
+    When I click on "Upload programs" action from "Programs actions" dropdown
     And I upload "admin/tool/muprog/tests/fixtures/upload/programs.csv" file to "Files" filemanager
     And I upload "admin/tool/muprog/tests/fixtures/upload/programs_contents_training.csv" file to "Files" filemanager
     And I upload "admin/tool/muprog/tests/fixtures/upload/programs_sources.csv" file to "Files" filemanager

@@ -38,8 +38,7 @@ Feature: Program upload permissions tests
     Given I log in as "manager2"
     And I am on the "Category 2" "tool_muprog > Program management" page
 
-    When I click on "Programs actions" "link"
-    And I click on "Upload programs" "link"
+    When I click on "Upload programs" action from "Programs actions" dropdown
     And I upload "admin/tool/muprog/tests/fixtures/upload/programs_json.zip" file to "Files" filemanager
     And I press "Continue"
     And the following fields match these values:
