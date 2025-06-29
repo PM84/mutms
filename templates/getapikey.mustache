@@ -1,0 +1,58 @@
+{{!
+    This file is part of plugin tool_vault - https://lmsvault.io
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template tool_vault/getapikey
+
+    Header for the main Vault page when user did not enter API key
+
+    Example context (json):
+    {
+        "vaulturl": "https://lmsvault.io",
+        "loginsrc": "https://lmsvault.io/getapikey"
+    }
+}}
+<div class="tool_vault-apikeyrequired">
+    <p>{{#str}} loginexplanation, tool_vault, {{vaulturl}} {{/str}}</p>
+    <div>
+        <input type="button" id="getapikey_signin" data-target="{{loginsrc}}" value="{{#str}} remotesignin, tool_vault {{/str}}" >
+        <input type="button" id="getapikey_signup" data-target="{{loginsrc}}&tab=signup" value="{{#str}} remotesignup, tool_vault {{/str}}" >
+        <input type="button" id="getapikey_enterapikey" value="{{#str}} enterapikey, tool_vault {{/str}}" >
+    </div>
+    <div>
+        <iframe id="getapikey_iframe" src="about:blank" width="800" height="500" style="display:none">
+        </iframe>
+    </div>
+    <div id="getapikey_formplaceholder"></div>
+    {{#islegacy}}
+    <div id="getapikey_legacyform" class="pt-3 {{^showlegacyform}}hidden{{/showlegacyform}}">
+        {{{legacyform}}}
+    </div>
+    {{/islegacy}}
+</div>
+
+{{#js}}
+{{#islegacy}}
+require(['tool_vault/apikey_legacy'], function(apikey) {
+    apikey.init();
+});
+{{/islegacy}}
+{{^islegacy}}
+require(['tool_vault/apikey'], function(apikey) {
+    apikey.init();
+});
+{{/islegacy}}
+{{/js}}
