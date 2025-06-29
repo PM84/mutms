@@ -406,7 +406,7 @@ if (isloggedin() and !isguestuser()) {
     if (mutenancy_is_active()) {
         $tenantselect = new \tool_mutenancy\output\logintenantselector();
         if ($tenantselect->has_items()) {
-            echo '<div class="float-right">';
+            echo '<div class="float-end">';
             echo $OUTPUT->render($tenantselect);
             echo '</div>';
         }
