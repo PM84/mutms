@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 // phpcs:disable moodle.Files.BoilerplateComment.CommentEndedTooSoon
+// phpcs:disable moodle.Files.LineLength.TooLong
 
 /**
  * Add program.
@@ -26,21 +27,17 @@
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use tool_muprog\local\program;
+
 /** @var moodle_database $DB */
 /** @var moodle_page $PAGE */
 /** @var core_renderer $OUTPUT */
 /** @var stdClass $CFG */
 /** @var stdClass $COURSE */
 
-use tool_muprog\local\program;
-use tool_muprog\local\management;
+define('AJAX_SCRIPT', true);
 
-// phpcs:ignoreFile moodle.Files.MoodleInternal.MoodleInternalGlobalState
-if (!empty($_SERVER['HTTP_X_MULIB_DIALOG_FORM_REQUEST'])) {
-    define('AJAX_SCRIPT', true);
-}
 require('../../../../config.php');
-require_once($CFG->dirroot . '/lib/formslib.php');
 
 $contextid = required_param('contextid', PARAM_INT);
 $context = context::instance_by_id($contextid);
@@ -53,7 +50,8 @@ if ($context->contextlevel != CONTEXT_SYSTEM && $context->contextlevel != CONTEX
 }
 
 $currenturl = new moodle_url('/admin/tool/muprog/management/program_create.php', ['contextid' => $context->id]);
-management::setup_index_page($currenturl, $context);
+$PAGE->set_context($context);
+$PAGE->set_url($currenturl);
 
 $program = new stdClass();
 $program->contextid = $context->id;
@@ -73,13 +71,8 @@ if ($form->is_cancelled()) {
 
 if ($data = $form->get_data()) {
     $program = program::create($data);
-    $returlurl = new moodle_url('/admin/tool/muprog/management/program.php', ['id' => $program->id]);
-    $form->redirect_submitted($returlurl);
+    $returnurl = new moodle_url('/admin/tool/muprog/management/program.php', ['id' => $program->id]);
+    $form->ajax_form_submitted($returnurl);
 }
 
-echo $OUTPUT->header();
-echo $OUTPUT->heading(get_string('program_create', 'tool_muprog'));
-
-echo $form->render();
-
-echo $OUTPUT->footer();
+$form->ajax_form_render();

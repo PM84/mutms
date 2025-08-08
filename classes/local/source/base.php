@@ -21,7 +21,6 @@ namespace tool_muprog\local\source;
 
 use tool_muprog\local\allocation;
 use tool_mulib\output\header_actions;
-
 use stdClass;
 
 /**
@@ -114,7 +113,8 @@ abstract class base {
      * @return bool
      */
     public static function is_allocation_update_possible(stdClass $program, stdClass $source, stdClass $allocation): bool {
-        if ($program->id != $source->programid
+        if (
+            $program->id != $source->programid
             || $program->id != $allocation->programid
             || $source->id != $allocation->sourceid
         ) {
@@ -138,7 +138,8 @@ abstract class base {
      * @return bool
      */
     public static function is_allocation_archive_possible(stdClass $program, stdClass $source, stdClass $allocation): bool {
-        if ($program->id != $source->programid
+        if (
+            $program->id != $source->programid
             || $program->id != $allocation->programid
             || $source->id != $allocation->sourceid
         ) {
@@ -162,7 +163,8 @@ abstract class base {
      * @return bool
      */
     public static function is_allocation_restore_possible(stdClass $program, stdClass $source, stdClass $allocation): bool {
-        if ($program->id != $source->programid
+        if (
+            $program->id != $source->programid
             || $program->id != $allocation->programid
             || $source->id != $allocation->sourceid
         ) {
@@ -186,7 +188,8 @@ abstract class base {
      * @return bool
      */
     public static function is_allocation_delete_possible(stdClass $program, stdClass $source, stdClass $allocation): bool {
-        if ($program->id != $source->programid
+        if (
+            $program->id != $source->programid
             || $program->id != $allocation->programid
             || $source->id != $allocation->sourceid
         ) {
@@ -258,8 +261,14 @@ abstract class base {
      * @param int|null $sourceinstanceid
      * @return stdClass user allocation record
      */
-    final protected static function allocation_create(\stdClass $program, \stdClass $source, int $userid,
-                                                  array $sourcedata, array $dateoverrides = [], ?int $sourceinstanceid = null): \stdClass {
+    final protected static function allocation_create(
+        \stdClass $program,
+        \stdClass $source,
+        int $userid,
+        array $sourcedata,
+        array $dateoverrides = [],
+        ?int $sourceinstanceid = null
+    ): \stdClass {
         global $DB;
 
         if ($userid <= 0 || isguestuser($userid)) {
@@ -378,10 +387,16 @@ abstract class base {
     public static function import_source_data(int $fromprogramid, int $targetprogramid): stdClass {
         global $DB;
 
-        $fromsource = $DB->get_record('tool_muprog_source',
-            ['programid' => $fromprogramid, 'type' => static::get_type()], '*', MUST_EXIST);
-        $targetsource = $DB->get_record('tool_muprog_source',
-            ['programid' => $targetprogramid, 'type' => static::get_type()]);
+        $fromsource = $DB->get_record(
+            'tool_muprog_source',
+            ['programid' => $fromprogramid, 'type' => static::get_type()],
+            '*',
+            MUST_EXIST
+        );
+        $targetsource = $DB->get_record(
+            'tool_muprog_source',
+            ['programid' => $targetprogramid, 'type' => static::get_type()]
+        );
 
         if ($targetsource) {
             $fromsource->id = $targetsource->id;
@@ -393,8 +408,12 @@ abstract class base {
             $DB->insert_record('tool_muprog_source', $fromsource);
         }
 
-        return $DB->get_record('tool_muprog_source',
-            ['programid' => $targetprogramid, 'type' => static::get_type()], '*', MUST_EXIST);
+        return $DB->get_record(
+            'tool_muprog_source',
+            ['programid' => $targetprogramid, 'type' => static::get_type()],
+            '*',
+            MUST_EXIST
+        );
     }
 
     /**
@@ -430,8 +449,8 @@ abstract class base {
         if (has_capability('tool/muprog:edit', $context) && static::is_update_allowed($program)) {
             $label = get_string('updatesource', 'tool_muprog', static::get_name());
             $editurl = new \moodle_url('/admin/tool/muprog/management/program_source_edit.php', ['programid' => $program->id, 'type' => $type]);
-            $editbutton = new \tool_mulib\output\dialog_form\icon($editurl, $label, 'i/settings');
-            $editbutton->set_dialog_name(static::get_name());
+            $editbutton = new \tool_mulib\output\ajax_form\icon($editurl, $label, 'i/settings');
+            $editbutton->set_modal_title(static::get_name());
             $result .= ' ' . $OUTPUT->render($editbutton);
         }
 

@@ -20,7 +20,6 @@
 namespace tool_muprog\local\form;
 
 use tool_muprog\local\program;
-use tool_muprog\local\allocation;
 
 /**
  * Edit program scheduling settings.
@@ -31,7 +30,7 @@ use tool_muprog\local\allocation;
  * @author     Petr Skoda
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-final class program_scheduling_edit extends \tool_mulib\local\dialog_form {
+final class program_scheduling_edit extends \tool_mulib\local\ajax_form {
     #[\Override]
     protected function definition() {
         $mform = $this->_form;
@@ -84,8 +83,8 @@ final class program_scheduling_edit extends \tool_mulib\local\dialog_form {
 
         $datetypes = program::{'get_program_' . $name . 'date_types'}();
 
-        $mform->addElement('select', 'program' . $name. '_type', get_string('program' . $name, 'tool_muprog'), $datetypes);
-        $mform->addHelpButton('program' . $name. '_type', 'program' . $name, 'tool_muprog');
+        $mform->addElement('select', 'program' . $name . '_type', get_string('program' . $name, 'tool_muprog'), $datetypes);
+        $mform->addHelpButton('program' . $name . '_type', 'program' . $name, 'tool_muprog');
         $mform->addElement('date_time_selector', 'program' . $name . '_date', get_string('program' . $name . '_date', 'tool_muprog'), ['optional' => false]);
         $mform->hideIf('program' . $name . '_date', 'program' . $name . '_type', 'notequal', 'date');
         $dvalue = $mform->createElement('text', 'value', '');

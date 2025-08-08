@@ -18,6 +18,8 @@
 
 namespace tool_muprog\local\form;
 
+use tool_muprog\external\form_autocomplete\program_allocation_import_fromprogram;
+
 /**
  * Import allocation settings - program selection step.
  *
@@ -26,36 +28,43 @@ namespace tool_muprog\local\form;
  * @author     Farhan Karmali
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-final class program_allocation_import extends \tool_mulib\local\dialog_form {
+final class program_allocation_import extends \tool_mulib\local\ajax_form {
     #[\Override]
     protected function definition() {
         $mform = $this->_form;
-        $customdata = $this->_customdata;
+        $targetprogram = $this->_customdata['targetprogram'];
+        $context = $this->_customdata['context'];
 
-        $arguments = ['programid' => $customdata['id']];
-        \tool_muprog\external\form_program_allocation_import_fromprogram::add_form_element(
-            $mform, $arguments, 'fromprogram', get_string('importselectprogram', 'tool_muprog'));
+        $args = ['programid' => $targetprogram->id];
+
+        program_allocation_import_fromprogram::add_element(
+            $mform,
+            $args,
+            'fromprogram',
+            get_string('importselectprogram', 'tool_muprog'),
+            $context
+        );
         $mform->addRule('fromprogram', null, 'required', null, 'client');
 
         $mform->addElement('hidden', 'id');
         $mform->setType('id', PARAM_INT);
-        $mform->setDefault('id', $customdata['id']);
+        $mform->setDefault('id', $targetprogram->id);
 
         $this->add_action_buttons(true, get_string('continue'));
     }
 
     #[\Override]
     public function validation($data, $files) {
-        global $DB;
         $errors = parent::validation($data, $files);
+        $targetprogram = $this->_customdata['targetprogram'];
+        $context = $this->_customdata['context'];
 
-        // Check if the user has capability to copy the selected program.
-        $programid = $data['fromprogram'];
-        $programcontextid = $DB->get_field('tool_muprog_program', 'contextid', ['id' => $programid]);
-        $context = \context::instance_by_id($programcontextid);
-        if (!has_capability('tool/muprog:clone', $context )) {
-            $errors['fromprogram'] = get_string('error');
+        $args = ['programid' => $targetprogram->id];
+        $error = program_allocation_import_fromprogram::validate_value($data['fromprogram'], $args, $context);
+        if ($error !== null) {
+            $errors['fromprogram'] = $error;
         }
+
         return $errors;
     }
 }

@@ -31,7 +31,7 @@ use tool_muprog\local\course_reset;
  * @author     Petr Skoda
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-final class allocation_reset extends \tool_mulib\local\dialog_form {
+final class allocation_reset extends \tool_mulib\local\ajax_form {
     /** @var bool editing supported*/
     private $editsupported;
 
@@ -81,7 +81,10 @@ final class allocation_reset extends \tool_mulib\local\dialog_form {
 
         if ($this->editsupported && $data['updateallocation']) {
             $errors = array_merge($errors, \tool_muprog\local\allocation::validate_allocation_dates(
-                $data['timestart'], $data['timedue'], $data['timeend']));
+                $data['timestart'],
+                $data['timedue'],
+                $data['timeend']
+            ));
         }
 
         return $errors;
