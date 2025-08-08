@@ -120,11 +120,9 @@ final class element extends \tool_certificate\element {
     public static function decode_programfield_data(?string $data): \stdClass {
         if ($data === null || $data === '') {
             $fd = (object)['programfield' => null];
-
         } else if (substr($data, 0, 1) !== '{') {
             // Original field value is program field.
             $fd = (object)['programfield' => $data];
-
         } else {
             $fd = json_decode($data);
             if (!is_object($fd)) {
@@ -304,7 +302,7 @@ final class element extends \tool_certificate\element {
             foreach ($this->get_customfields() as $cf) {
                 if ($cf->get('id') == $pf->customfieldid) {
                     // It is not easy to guess what it would look like, so just use placeholder like value.
-                    $value = '[' . $cf->get_formatted_name() .']';
+                    $value = '[' . $cf->get_formatted_name() . ']';
                     break;
                 }
             }
@@ -367,7 +365,9 @@ final class element extends \tool_certificate\element {
                 if (isset($cfs[$pf->customfieldid]) && isset($data->programid)) {
                     // Ignore the visibility here and use lower level API.
                     $cfdata = \core_customfield\api::get_instance_fields_data(
-                        [$pf->customfieldid => $cfs[$pf->customfieldid]], $data->programid);
+                        [$pf->customfieldid => $cfs[$pf->customfieldid]],
+                        $data->programid
+                    );
                     if (count($cfdata) === 1) {
                         $cfdata = reset($cfdata);
                         $value = (string)$cfdata->export_value();
