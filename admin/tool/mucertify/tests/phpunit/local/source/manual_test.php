@@ -84,8 +84,12 @@ final class manual_test extends \advanced_testcase {
             'periods_expiration1' => ['since' => certification::SINCE_NEVER, 'delay' => null],
         ];
         $certification = $generator->create_certification($data);
-        $source = $DB->get_record('tool_mucertify_source',
-            ['type' => 'manual', 'certificationid' => $certification->id], '*', MUST_EXIST);
+        $source = $DB->get_record(
+            'tool_mucertify_source',
+            ['type' => 'manual', 'certificationid' => $certification->id],
+            '*',
+            MUST_EXIST
+        );
         manual::assign_users($certification->id, $source->id, [$user1->id, $user2->id]);
         $assignment1 = $DB->get_record('tool_mucertify_assignment', ['userid' => $user1->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
         $assignment2 = $DB->get_record('tool_mucertify_assignment', ['userid' => $user1->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
@@ -120,8 +124,12 @@ final class manual_test extends \advanced_testcase {
             'periods_expiration1' => ['since' => certification::SINCE_NEVER, 'delay' => null],
         ];
         $certification = $generator->create_certification($data);
-        $source = $DB->get_record('tool_mucertify_source',
-            ['type' => 'manual', 'certificationid' => $certification->id], '*', MUST_EXIST);
+        $source = $DB->get_record(
+            'tool_mucertify_source',
+            ['type' => 'manual', 'certificationid' => $certification->id],
+            '*',
+            MUST_EXIST
+        );
         manual::assign_users($certification->id, $source->id, [$user1->id, $user2->id]);
         $assignment1 = $DB->get_record('tool_mucertify_assignment', ['userid' => $user1->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
         $assignment2 = $DB->get_record('tool_mucertify_assignment', ['userid' => $user1->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
@@ -156,8 +164,12 @@ final class manual_test extends \advanced_testcase {
             'periods_expiration1' => ['since' => certification::SINCE_NEVER, 'delay' => null],
         ];
         $certification = $generator->create_certification($data);
-        $source = $DB->get_record('tool_mucertify_source',
-            ['type' => 'manual', 'certificationid' => $certification->id], '*', MUST_EXIST);
+        $source = $DB->get_record(
+            'tool_mucertify_source',
+            ['type' => 'manual', 'certificationid' => $certification->id],
+            '*',
+            MUST_EXIST
+        );
         manual::assign_users($certification->id, $source->id, [$user1->id, $user2->id]);
         $assignment1 = $DB->get_record('tool_mucertify_assignment', ['userid' => $user1->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
         $assignment2 = $DB->get_record('tool_mucertify_assignment', ['userid' => $user1->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
@@ -192,8 +204,12 @@ final class manual_test extends \advanced_testcase {
             'periods_expiration1' => ['since' => certification::SINCE_NEVER, 'delay' => null],
         ];
         $certification = $generator->create_certification($data);
-        $source = $DB->get_record('tool_mucertify_source',
-            ['type' => 'manual', 'certificationid' => $certification->id], '*', MUST_EXIST);
+        $source = $DB->get_record(
+            'tool_mucertify_source',
+            ['type' => 'manual', 'certificationid' => $certification->id],
+            '*',
+            MUST_EXIST
+        );
         manual::assign_users($certification->id, $source->id, [$user1->id, $user2->id]);
         $assignment1 = $DB->get_record('tool_mucertify_assignment', ['userid' => $user1->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
         $assignment2 = $DB->get_record('tool_mucertify_assignment', ['userid' => $user1->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
@@ -226,8 +242,12 @@ final class manual_test extends \advanced_testcase {
             'periods_expiration1' => ['since' => certification::SINCE_NEVER, 'delay' => null],
         ];
         $certification = $generator->create_certification($data);
-        $source = $DB->get_record('tool_mucertify_source',
-            ['type' => 'manual', 'certificationid' => $certification->id], '*', MUST_EXIST);
+        $source = $DB->get_record(
+            'tool_mucertify_source',
+            ['type' => 'manual', 'certificationid' => $certification->id],
+            '*',
+            MUST_EXIST
+        );
 
         $result = manual::is_assignment_possible($certification, $source);
         $this->assertTrue($result);
@@ -289,8 +309,12 @@ final class manual_test extends \advanced_testcase {
             'periods_expiration1' => ['since' => certification::SINCE_NEVER, 'delay' => null],
         ];
         $certification = $generator->create_certification($data);
-        $source = $DB->get_record('tool_mucertify_source',
-            ['type' => 'manual', 'certificationid' => $certification->id], '*', MUST_EXIST);
+        $source = $DB->get_record(
+            'tool_mucertify_source',
+            ['type' => 'manual', 'certificationid' => $certification->id],
+            '*',
+            MUST_EXIST
+        );
 
         $this->setUser($user2);
         $actions = new \tool_mulib\output\header_actions('xyz');
@@ -319,8 +343,12 @@ final class manual_test extends \advanced_testcase {
             'sources' => ['manual' => []],
         ];
         $certification = $generator->create_certification($data);
-        $source = $DB->get_record('tool_mucertify_source',
-            ['type' => 'manual', 'certificationid' => $certification->id], '*', MUST_EXIST);
+        $source = $DB->get_record(
+            'tool_mucertify_source',
+            ['type' => 'manual', 'certificationid' => $certification->id],
+            '*',
+            MUST_EXIST
+        );
 
         $data = [
             'certificationid' => $certification->id,
@@ -364,8 +392,12 @@ final class manual_test extends \advanced_testcase {
             'periods_expiration1' => ['since' => certification::SINCE_NEVER, 'delay' => null],
         ];
         $certification = $generator->create_certification($data);
-        $source = $DB->get_record('tool_mucertify_source',
-            ['type' => 'manual', 'certificationid' => $certification->id], '*', MUST_EXIST);
+        $source = $DB->get_record(
+            'tool_mucertify_source',
+            ['type' => 'manual', 'certificationid' => $certification->id],
+            '*',
+            MUST_EXIST
+        );
 
         $this->setCurrentTimeStart();
         $result = manual::assign_users($certification->id, $source->id, [$user1->id]);
@@ -425,8 +457,12 @@ final class manual_test extends \advanced_testcase {
             'programid1' => null,
         ];
         $certification = $generator->create_certification($data);
-        $source = $DB->get_record('tool_mucertify_source',
-            ['type' => 'manual', 'certificationid' => $certification->id], '*', MUST_EXIST);
+        $source = $DB->get_record(
+            'tool_mucertify_source',
+            ['type' => 'manual', 'certificationid' => $certification->id],
+            '*',
+            MUST_EXIST
+        );
 
         manual::assign_users($certification->id, $source->id, [$user1->id]);
         $assignment = $DB->get_record('tool_mucertify_assignment', ['userid' => $user1->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
@@ -458,8 +494,12 @@ final class manual_test extends \advanced_testcase {
             'programid1' => $program1->id,
         ];
         $certification = $generator->create_certification($data);
-        $source = $DB->get_record('tool_mucertify_source',
-            ['type' => 'manual', 'certificationid' => $certification->id], '*', MUST_EXIST);
+        $source = $DB->get_record(
+            'tool_mucertify_source',
+            ['type' => 'manual', 'certificationid' => $certification->id],
+            '*',
+            MUST_EXIST
+        );
 
         $this->setCurrentTimeStart();
         manual::assign_users($certification->id, $source->id, [$user3->id], [
@@ -505,8 +545,12 @@ final class manual_test extends \advanced_testcase {
             'recertify' => '98765',
         ];
         $certification = $generator->create_certification($data);
-        $source = $DB->get_record('tool_mucertify_source',
-            ['type' => 'manual', 'certificationid' => $certification->id], '*', MUST_EXIST);
+        $source = $DB->get_record(
+            'tool_mucertify_source',
+            ['type' => 'manual', 'certificationid' => $certification->id],
+            '*',
+            MUST_EXIST
+        );
         manual::assign_users($certification->id, $source->id, [$user1->id]);
         $assignment = $DB->get_record('tool_mucertify_assignment', ['userid' => $user1->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
 
@@ -611,8 +655,12 @@ final class manual_test extends \advanced_testcase {
             'recertify' => '98765',
         ];
         $certification = $generator->create_certification($data);
-        $source = $DB->get_record('tool_mucertify_source',
-            ['type' => 'manual', 'certificationid' => $certification->id], '*', MUST_EXIST);
+        $source = $DB->get_record(
+            'tool_mucertify_source',
+            ['type' => 'manual', 'certificationid' => $certification->id],
+            '*',
+            MUST_EXIST
+        );
         manual::assign_users($certification->id, $source->id, [$user1->id]);
         $assignment = $DB->get_record('tool_mucertify_assignment', ['userid' => $user1->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
         $this->assertSame('0', $assignment->archived);
@@ -642,8 +690,12 @@ final class manual_test extends \advanced_testcase {
             'archived' => '1',
         ];
         $certification = $generator->create_certification($data);
-        $source = $DB->get_record('tool_mucertify_source',
-            ['type' => 'manual', 'certificationid' => $certification->id], '*', MUST_EXIST);
+        $source = $DB->get_record(
+            'tool_mucertify_source',
+            ['type' => 'manual', 'certificationid' => $certification->id],
+            '*',
+            MUST_EXIST
+        );
         manual::assign_users($certification->id, $source->id, [$user1->id]);
         $assignment = $DB->get_record('tool_mucertify_assignment', ['userid' => $user1->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
         $assignment = manual::assignment_archive($assignment->id);
@@ -676,8 +728,12 @@ final class manual_test extends \advanced_testcase {
             'periods_expiration1' => ['since' => certification::SINCE_NEVER, 'delay' => null],
         ];
         $certification = $generator->create_certification($data);
-        $source = $DB->get_record('tool_mucertify_source',
-            ['type' => 'manual', 'certificationid' => $certification->id], '*', MUST_EXIST);
+        $source = $DB->get_record(
+            'tool_mucertify_source',
+            ['type' => 'manual', 'certificationid' => $certification->id],
+            '*',
+            MUST_EXIST
+        );
         $this->setCurrentTimeStart();
         manual::assign_users($certification->id, $source->id, [$user1->id, $user2->id]);
         $assignment = $DB->get_record('tool_mucertify_assignment', ['userid' => $user1->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
@@ -719,8 +775,12 @@ final class manual_test extends \advanced_testcase {
             'sources' => ['manual' => []],
         ];
         $certification = $generator->create_certification($data);
-        $source = $DB->get_record('tool_mucertify_source',
-            ['type' => 'manual', 'certificationid' => $certification->id], '*', MUST_EXIST);
+        $source = $DB->get_record(
+            'tool_mucertify_source',
+            ['type' => 'manual', 'certificationid' => $certification->id],
+            '*',
+            MUST_EXIST
+        );
 
         $this->setUser($user2);
         $this->assertSame('Active', manual::render_status($certification, $source));
@@ -752,8 +812,12 @@ final class manual_test extends \advanced_testcase {
             'programid1' => $program1->id,
         ];
         $certification = $generator->create_certification($data);
-        $source = $DB->get_record('tool_mucertify_source',
-            ['type' => 'manual', 'certificationid' => $certification->id], '*', MUST_EXIST);
+        $source = $DB->get_record(
+            'tool_mucertify_source',
+            ['type' => 'manual', 'certificationid' => $certification->id],
+            '*',
+            MUST_EXIST
+        );
         manual::assign_users($certification->id, $source->id, [$user1->id]);
         $assignment = $DB->get_record('tool_mucertify_assignment', ['userid' => $user1->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
 

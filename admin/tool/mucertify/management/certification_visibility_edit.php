@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 // phpcs:disable moodle.Files.BoilerplateComment.CommentEndedTooSoon
+// phpcs:disable moodle.Files.LineLength.TooLong
 
 /**
  * certification management interface.
@@ -26,21 +27,18 @@
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use tool_mucertify\local\management;
+use tool_mucertify\local\certification;
+
 /** @var moodle_database $DB */
 /** @var moodle_page $PAGE */
 /** @var core_renderer $OUTPUT */
 /** @var stdClass $CFG */
 /** @var stdClass $COURSE */
 
-use tool_mucertify\local\management;
-use tool_mucertify\local\certification;
+define('AJAX_SCRIPT', true);
 
-// phpcs:ignoreFile moodle.Files.MoodleInternal.MoodleInternalGlobalState
-if (!empty($_SERVER['HTTP_X_MULIB_DIALOG_FORM_REQUEST'])) {
-    define('AJAX_SCRIPT', true);
-}
 require('../../../../config.php');
-require_once($CFG->dirroot . '/lib/formslib.php');
 
 $id = required_param('id', PARAM_INT);
 
@@ -51,8 +49,8 @@ $context = context::instance_by_id($certification->contextid);
 require_capability('tool/mucertify:edit', $context);
 
 $currenturl = new moodle_url('/admin/tool/mucertify/management/certification_visibility_edit.php', ['id' => $id]);
-
-management::setup_certification_page($currenturl, $context, $certification, 'certification_visibility');
+$PAGE->set_context($context);
+$PAGE->set_url($currenturl);
 
 $current = new stdClass();
 $current->id = $certification->id;
@@ -64,16 +62,12 @@ $form = new \tool_mucertify\local\form\certification_visibility_edit(null, ['dat
 $returnurl = new moodle_url('/admin/tool/mucertify/management/certification_visibility.php', ['id' => $certification->id]);
 
 if ($form->is_cancelled()) {
-    redirect($returnurl);
+    $form->ajax_form_cancelled($returnurl);
 }
 
 if ($data = $form->get_data()) {
     certification::update_visibility($data);
-    $form->redirect_submitted($returnurl);
+    $form->ajax_form_submitted($returnurl);
 }
 
-echo $OUTPUT->header();
-
-echo $form->render();
-
-echo $OUTPUT->footer();
+$form->ajax_form_render();

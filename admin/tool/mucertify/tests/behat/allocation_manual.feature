@@ -75,14 +75,14 @@ Feature: Manual certification assignment tests
     And I click on "Update Manual assignment" "link"
     And I set the following fields to these values:
       | Active | Yes |
-    And I press dialog form button "Update"
+    And I click on "Update" "button" in the ".modal-dialog" "css_element"
     And I should see "Active" in the "Manual assignment" definition list item
     And I click on "Users" "link" in the ".secondary-navigation" "css_element"
 
     When I press "Assign users"
     And I set the following fields to these values:
       | Users | Student 1, Student 5 |
-    And I press dialog form button "Assign users"
+    And I click on "Assign users" "button" in the ".modal-dialog" "css_element"
     Then "Student 1" row "Source" column of "reportbuilder-table" table should contain "Manual assignment"
     And "Student 5" row "Source" column of "reportbuilder-table" table should contain "Manual assignment"
     And I should not see "Student 2"
@@ -92,7 +92,7 @@ Feature: Manual certification assignment tests
     When I press "Assign users"
     And I set the following fields to these values:
       | Cohort | Cohort 2 |
-    And I press dialog form button "Assign users"
+    And I click on "Assign users" "button" in the ".modal-dialog" "css_element"
     Then "Student 1" row "Source" column of "reportbuilder-table" table should contain "Manual assignment"
     And "Student 2" row "Source" column of "reportbuilder-table" table should contain "Manual assignment"
     And "Student 5" row "Source" column of "reportbuilder-table" table should contain "Manual assignment"
@@ -101,25 +101,25 @@ Feature: Manual certification assignment tests
 
     And I click on "Actions" "link" in the "Student 2" "table_row"
     When I click on "Archive assignment" "link" in the "Student 2" "table_row"
-    And I press dialog form button "Archive assignment"
+    And I click on "Archive assignment" "button" in the ".modal-dialog" "css_element"
     Then "Student 2" row "Archived" column of "reportbuilder-table" table should contain "Yes"
 
     And I click on "Actions" "link" in the "Student 2" "table_row"
     When I click on "Restore assignment" "link" in the "Student 2" "table_row"
-    And I press dialog form button "Restore assignment"
+    And I click on "Restore assignment" "button" in the ".modal-dialog" "css_element"
     Then "Student 2" row "Archived" column of "reportbuilder-table" table should contain "No"
 
     And I click on "Actions" "link" in the "Student 2" "table_row"
     And I click on "Archive assignment" "link" in the "Student 2" "table_row"
-    And I press dialog form button "Archive assignment"
+    And I click on "Archive assignment" "button" in the ".modal-dialog" "css_element"
     And I click on "Actions" "link" in the "Student 2" "table_row"
     When I click on "Delete assignment" "link" in the "Student 2" "table_row"
-    And I press dialog form button "Cancel"
+    And I click on "Cancel" "button" in the ".modal-dialog" "css_element"
     Then "Student 2" row "Source" column of "reportbuilder-table" table should contain "Manual assignment"
 
     And I click on "Actions" "link" in the "Student 2" "table_row"
     When I click on "Delete assignment" "link" in the "Student 2" "table_row"
-    And I press dialog form button "Delete assignment"
+    And I click on "Delete assignment" "button" in the ".modal-dialog" "css_element"
     Then I should not see "Student 2"
 
   @javascript @tool_mutenancy
@@ -141,13 +141,13 @@ Feature: Manual certification assignment tests
     And I click on "Update Manual assignment" "link"
     And I set the following fields to these values:
       | Active | Yes |
-    And I press dialog form button "Update"
+    And I click on "Update" "button" in the ".modal-dialog" "css_element"
     And I should see "Active" in the "Manual assignment" definition list item
     And I click on "Users" "link" in the ".secondary-navigation" "css_element"
     When I press "Assign users"
     And I set the following fields to these values:
       | Users | Student 1 |
-    And I press dialog form button "Assign users"
+    And I click on "Assign users" "button" in the ".modal-dialog" "css_element"
     Then "Student 1" row "Source" column of "reportbuilder-table" table should contain "Manual assignment"
 
     And I am on the "tool_mucertify > All certifications management" page
@@ -156,19 +156,19 @@ Feature: Manual certification assignment tests
     And I click on "Update Manual assignment" "link"
     And I set the following fields to these values:
       | Active | Yes |
-    And I press dialog form button "Update"
+    And I click on "Update" "button" in the ".modal-dialog" "css_element"
     And I should see "Active" in the "Manual assignment" definition list item
     And I click on "Users" "link" in the ".secondary-navigation" "css_element"
 
     When I press "Assign users"
     And I set the following fields to these values:
       | Users | Student 1 |
-    And I press dialog form button "Assign users"
+    And I click on "Assign users" "button" in the ".modal-dialog" "css_element"
     And "Student 1" row "Source" column of "reportbuilder-table" table should contain "Manual assignment"
     And I click on "Switch tenant" "link"
     And I set the following fields to these values:
       | Tenant      | Tenant 1         |
-    And I press dialog form button "Switch tenant"
+    And I click on "Switch tenant" "button" in the ".modal-dialog" "css_element"
 
     And I am on the "tool_mucertify > All certifications management" page
     And I follow "Certification 000"
@@ -177,7 +177,7 @@ Feature: Manual certification assignment tests
     When I press "Assign users"
     And I set the following fields to these values:
       | Users | Tenant 1 Student |
-    And I press dialog form button "Assign users"
+    And I click on "Assign users" "button" in the ".modal-dialog" "css_element"
     Then "Tenant 1 Student" row "Source" column of "reportbuilder-table" table should contain "Manual assignment"
 
     And I am on the "tool_mucertify > All certifications management" page
@@ -187,7 +187,7 @@ Feature: Manual certification assignment tests
     When I press "Assign users"
     And I set the following fields to these values:
       | Users | Tenant 1 Student |
-    And I press dialog form button "Assign users"
+    And I click on "Assign users" "button" in the ".modal-dialog" "css_element"
     Then "Tenant 1 Student" row "Source" column of "reportbuilder-table" table should contain "Manual assignment"
 
   @javascript @_file_upload
@@ -199,28 +199,28 @@ Feature: Manual certification assignment tests
     And I click on "Update Manual assignment" "link"
     And I set the following fields to these values:
       | Active | Yes |
-    And I press dialog form button "Update"
+    And I click on "Update" "button" in the ".modal-dialog" "css_element"
     And I click on "Users" "link" in the ".secondary-navigation" "css_element"
 
     When I click on "Upload assignments" action from "User actions" dropdown
     And I upload "admin/tool/mucertify/tests/fixtures/assign.csv" file to "CSV file" filemanager
-    And I press dialog form button "Continue"
+    And I click on "Continue" "button" in the ".modal-dialog" "css_element"
     And the following fields match these values:
       | User identification column | username |
       | User mapping via           | Username |
       | First line is header       | 1        |
-    And I press dialog form button "Upload assignments"
+    And I click on "Upload assignments" "button" in the ".modal-dialog" "css_element"
     Then I should see "4 users were assigned to certification"
     And I should see "1 errors detected when assigning certification"
 
     When I click on "Upload assignments" action from "User actions" dropdown
     And I upload "admin/tool/mucertify/tests/fixtures/assign.csv" file to "CSV file" filemanager
-    And I press dialog form button "Continue"
+    And I click on "Continue" "button" in the ".modal-dialog" "css_element"
     And I set the following fields to these values:
       | User identification column | email         |
       | User mapping via           | Email address |
       | First line is header       | 1             |
-    And I press dialog form button "Upload assignments"
+    And I click on "Upload assignments" "button" in the ".modal-dialog" "css_element"
     Then I should see "3 users were already assigned to certification"
     And I should see "2 errors detected when assigning certification"
 
@@ -231,17 +231,17 @@ Feature: Manual certification assignment tests
     And I click on "Update Manual assignment" "link"
     And I set the following fields to these values:
       | Active | Yes |
-    And I press dialog form button "Update"
+    And I click on "Update" "button" in the ".modal-dialog" "css_element"
     And I click on "Users" "link" in the ".secondary-navigation" "css_element"
 
     When I click on "Upload assignments" action from "User actions" dropdown
     And I upload "admin/tool/mucertify/tests/fixtures/assign.csv" file to "CSV file" filemanager
-    And I press dialog form button "Continue"
+    And I click on "Continue" "button" in the ".modal-dialog" "css_element"
     And I set the following fields to these values:
      | Window opening time column    | timewindowstart |
      | Certification due time column | timewindowdue   |
      | Window closing time column    | timewindowend   |
-    And I press dialog form button "Upload assignments"
+    And I click on "Upload assignments" "button" in the ".modal-dialog" "css_element"
     Then I should see "3 users were assigned to certification"
     And I should see "2 errors detected when assigning certification"
     And I click on "Student 1" "link"
@@ -277,7 +277,7 @@ Feature: Manual certification assignment tests
     And I click on "Update Manual assignment" "link"
     And I set the following fields to these values:
       | Active | Yes |
-    And I press dialog form button "Update"
+    And I click on "Update" "button" in the ".modal-dialog" "css_element"
     And I should see "Active" in the "Manual assignment" definition list item
     And I click on "Users" "link" in the ".secondary-navigation" "css_element"
 
@@ -286,7 +286,7 @@ Feature: Manual certification assignment tests
       | Users        | Student 1 |
       | Test field 1 | Prvni     |
       | Test field 2 | ASF2     |
-    And I press dialog form button "Assign users"
+    And I click on "Assign users" "button" in the ".modal-dialog" "css_element"
     And I follow "Student 1"
     Then I should see "Prvni" in the "Test field 1" definition list item
     And I should see "ASF2" in the "Test field 2" definition list item
@@ -294,7 +294,7 @@ Feature: Manual certification assignment tests
     When I press "Update assignment"
     And I set the following fields to these values:
       | Test field 1 | Druhy     |
-    And I press dialog form button "Update assignment"
+    And I click on "Update assignment" "button" in the ".modal-dialog" "css_element"
     Then I should see "Druhy" in the "Test field 1" definition list item
     And I should see "ASF2" in the "Test field 2" definition list item
 

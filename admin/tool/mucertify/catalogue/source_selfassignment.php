@@ -33,10 +33,8 @@
 /** @var stdClass $COURSE */
 /** @var stdClass $USER */
 
-// phpcs:ignoreFile moodle.Files.MoodleInternal.MoodleInternalGlobalState
-if (!empty($_SERVER['HTTP_X_MULIB_DIALOG_FORM_REQUEST'])) {
-    define('AJAX_SCRIPT', true);
-}
+define('AJAX_SCRIPT', true);
+
 require('../../../../config.php');
 
 $sourceid = required_param('sourceid', PARAM_INT);
@@ -55,11 +53,6 @@ $source = $DB->get_record('tool_mucertify_source', ['id' => $sourceid, 'type' =>
 $certification = $DB->get_record('tool_mucertify_certification', ['id' => $source->certificationid], '*', MUST_EXIST);
 $certificationcontext = context::instance_by_id($certification->contextid);
 
-$PAGE->set_heading(get_string('catalogue', 'tool_mucertify'));
-$PAGE->navigation->override_active_url(new moodle_url('/admin/tool/mucertify/catalogue/index.php'));
-$PAGE->set_title(get_string('catalogue', 'tool_mucertify'));
-$PAGE->navbar->add(format_string($certification->fullname));
-
 if (!\tool_mucertify\local\source\selfassignment::can_user_request($certification, $source, $USER->id)) {
     redirect(new moodle_url('/admin/tool/mucertify/catalogue/index.php'));
 }
@@ -69,21 +62,12 @@ $returnurl = new moodle_url('/admin/tool/mucertify/catalogue/certification.php',
 $form = new tool_mucertify\local\form\source_selfassignment(null, ['source' => $source, 'certification' => $certification]);
 
 if ($form->is_cancelled()) {
-    redirect($returnurl);
+    $form->ajax_form_cancelled($returnurl);
 }
 
 if ($data = $form->get_data()) {
     tool_mucertify\local\source\selfassignment::signup($certification->id, $source->id);
-    $form->redirect_submitted($returnurl);
+    $form->ajax_form_submitted($returnurl);
 }
 
-/** @var \tool_mucertify\output\catalogue\renderer $catalogueoutput */
-$catalogueoutput = $PAGE->get_renderer('tool_mucertify', 'catalogue');
-
-echo $OUTPUT->header();
-
-echo $catalogueoutput->render_certification($certification);
-
-echo $form->render();
-
-echo $OUTPUT->footer();
+$form->ajax_form_render();

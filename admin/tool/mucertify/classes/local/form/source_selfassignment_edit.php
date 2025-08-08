@@ -28,7 +28,7 @@ namespace tool_mucertify\local\form;
  * @author     Petr Skoda
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-final class source_selfassignment_edit extends \tool_mulib\local\dialog_form {
+final class source_selfassignment_edit extends \tool_mulib\local\ajax_form {
     #[\Override]
     protected function definition() {
         $mform = $this->_form;
@@ -42,8 +42,12 @@ final class source_selfassignment_edit extends \tool_mulib\local\dialog_form {
             $mform->hardFreeze('enable');
         }
 
-        $mform->addElement('select', 'selfassignment_allowsignup', get_string('source_selfassignment_allowsignup', 'tool_mucertify'),
-            ['1' => get_string('yes'), '0' => get_string('no')]);
+        $mform->addElement(
+            'select',
+            'selfassignment_allowsignup',
+            get_string('source_selfassignment_allowsignup', 'tool_mucertify'),
+            ['1' => get_string('yes'), '0' => get_string('no')]
+        );
         $mform->setDefault('selfassignment_allowsignup', 1);
         $mform->hideIf('selfassignment_allowsignup', 'enable', 'eq', '0');
 

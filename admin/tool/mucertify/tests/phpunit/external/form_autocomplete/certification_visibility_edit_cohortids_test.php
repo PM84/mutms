@@ -17,9 +17,9 @@
 // phpcs:disable moodle.Files.BoilerplateComment.CommentEndedTooSoon
 // phpcs:disable moodle.Files.LineLength.TooLong
 
-namespace tool_mucertify\phpunit\external;
+namespace tool_mucertify\phpunit\external\form_autocomplete;
 
-use tool_mucertify\external\form_certification_visibility_edit_cohortids;
+use tool_mucertify\external\form_autocomplete\certification_visibility_edit_cohortids;
 
 /**
  * External API for certification visibility cohorts test.
@@ -29,9 +29,9 @@ use tool_mucertify\external\form_certification_visibility_edit_cohortids;
  * @copyright  2025 Petr Skoda
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
- * @covers \tool_mucertify\external\form_certification_visibility_edit_cohortids
+ * @covers \tool_mucertify\external\form_autocomplete\certification_visibility_edit_cohortids
  */
-final class form_certification_visibility_edit_cohortids_test extends \advanced_testcase {
+final class certification_visibility_edit_cohortids_test extends \advanced_testcase {
     public function setUp(): void {
         parent::setUp();
         $this->resetAfterTest();
@@ -69,8 +69,8 @@ final class form_certification_visibility_edit_cohortids_test extends \advanced_
 
         $this->setUser($user1);
 
-        $result = form_certification_visibility_edit_cohortids::execute('', $certification1->id);
-        $this->assertNull($result['notice']);
+        $result = certification_visibility_edit_cohortids::execute('', $certification1->id);
+        $this->assertFalse($result['overflow']);
         $expected = [
             ['value' => $cohort1->id, 'label' => $cohort1->name],
             ['value' => $cohort2->id, 'label' => $cohort2->name],
@@ -78,8 +78,8 @@ final class form_certification_visibility_edit_cohortids_test extends \advanced_
         ];
         $this->assertSame($expected, $result['list']);
 
-        $result = form_certification_visibility_edit_cohortids::execute('ta 1', $certification1->id);
-        $this->assertNull($result['notice']);
+        $result = certification_visibility_edit_cohortids::execute('ta 1', $certification1->id);
+        $this->assertFalse($result['overflow']);
         $expected = [
             ['value' => $cohort1->id, 'label' => $cohort1->name],
         ];
@@ -87,8 +87,8 @@ final class form_certification_visibility_edit_cohortids_test extends \advanced_
 
         $this->setUser($user2);
 
-        $result = form_certification_visibility_edit_cohortids::execute('', $certification2->id);
-        $this->assertNull($result['notice']);
+        $result = certification_visibility_edit_cohortids::execute('', $certification2->id);
+        $this->assertFalse($result['overflow']);
         $expected = [
             ['value' => $cohort2->id, 'label' => $cohort2->name],
             ['value' => $cohort3->id, 'label' => $cohort3->name],
@@ -97,8 +97,8 @@ final class form_certification_visibility_edit_cohortids_test extends \advanced_
 
         $this->setUser($user3);
 
-        $result = form_certification_visibility_edit_cohortids::execute('', $certification2->id);
-        $this->assertNull($result['notice']);
+        $result = certification_visibility_edit_cohortids::execute('', $certification2->id);
+        $this->assertFalse($result['overflow']);
         $expected = [
             ['value' => $cohort3->id, 'label' => $cohort3->name],
         ];
@@ -146,8 +146,8 @@ final class form_certification_visibility_edit_cohortids_test extends \advanced_
 
         // NOTE: tenant cohorts are created in system context - they should be visible here.
 
-        $result = form_certification_visibility_edit_cohortids::execute('', $certification0->id);
-        $this->assertNull($result['notice']);
+        $result = certification_visibility_edit_cohortids::execute('', $certification0->id);
+        $this->assertFalse($result['overflow']);
         $expected = [
             ['value' => $cohort0->id, 'label' => $cohort0->name],
             ['value' => $cohort1->id, 'label' => $cohort1->name],
@@ -157,8 +157,8 @@ final class form_certification_visibility_edit_cohortids_test extends \advanced_
         ];
         $this->assertSame($expected, $result['list']);
 
-        $result = form_certification_visibility_edit_cohortids::execute('', $certification1->id);
-        $this->assertNull($result['notice']);
+        $result = certification_visibility_edit_cohortids::execute('', $certification1->id);
+        $this->assertFalse($result['overflow']);
         $expected = [
             ['value' => $cohort0->id, 'label' => $cohort0->name],
             ['value' => $cohort1->id, 'label' => $cohort1->name],
@@ -168,7 +168,7 @@ final class form_certification_visibility_edit_cohortids_test extends \advanced_
         $this->assertSame($expected, $result['list']);
     }
 
-    public function test_validate_cohortid(): void {
+    public function test_validate_value(): void {
         global $DB;
 
         /** @var \tool_mucertify_generator $generator */
@@ -200,23 +200,23 @@ final class form_certification_visibility_edit_cohortids_test extends \advanced_
 
         $this->setUser($user1);
 
-        $this->assertNull(form_certification_visibility_edit_cohortids::validate_cohortid($cohort1->id, $certification1->id));
-        $this->assertNull(form_certification_visibility_edit_cohortids::validate_cohortid($cohort2->id, $certification1->id));
-        $this->assertNull(form_certification_visibility_edit_cohortids::validate_cohortid($cohort3->id, $certification1->id));
-        $this->assertNull(form_certification_visibility_edit_cohortids::validate_cohortid($cohort1->id, $certification2->id));
-        $this->assertNull(form_certification_visibility_edit_cohortids::validate_cohortid($cohort2->id, $certification2->id));
-        $this->assertNull(form_certification_visibility_edit_cohortids::validate_cohortid($cohort3->id, $certification2->id));
+        $this->assertNull(certification_visibility_edit_cohortids::validate_value($cohort1->id, ['certificationid' => $certification1->id], $syscontext));
+        $this->assertNull(certification_visibility_edit_cohortids::validate_value($cohort2->id, ['certificationid' => $certification1->id], $syscontext));
+        $this->assertNull(certification_visibility_edit_cohortids::validate_value($cohort3->id, ['certificationid' => $certification1->id], $syscontext));
+        $this->assertNull(certification_visibility_edit_cohortids::validate_value($cohort1->id, ['certificationid' => $certification2->id], $catcontext1));
+        $this->assertNull(certification_visibility_edit_cohortids::validate_value($cohort2->id, ['certificationid' => $certification2->id], $catcontext1));
+        $this->assertNull(certification_visibility_edit_cohortids::validate_value($cohort3->id, ['certificationid' => $certification2->id], $catcontext1));
 
         $this->setUser($user2);
 
-        $this->assertSame('Error', form_certification_visibility_edit_cohortids::validate_cohortid($cohort1->id, $certification1->id));
-        $this->assertNull(form_certification_visibility_edit_cohortids::validate_cohortid($cohort2->id, $certification1->id));
-        $this->assertNull(form_certification_visibility_edit_cohortids::validate_cohortid($cohort3->id, $certification1->id));
-        $this->assertSame('Error', form_certification_visibility_edit_cohortids::validate_cohortid($cohort1->id, $certification2->id));
-        $this->assertNull(form_certification_visibility_edit_cohortids::validate_cohortid($cohort2->id, $certification2->id));
-        $this->assertNull(form_certification_visibility_edit_cohortids::validate_cohortid($cohort3->id, $certification2->id));
+        $this->assertSame('Error', certification_visibility_edit_cohortids::validate_value($cohort1->id, ['certificationid' => $certification1->id], $syscontext));
+        $this->assertNull(certification_visibility_edit_cohortids::validate_value($cohort2->id, ['certificationid' => $certification1->id], $syscontext));
+        $this->assertNull(certification_visibility_edit_cohortids::validate_value($cohort3->id, ['certificationid' => $certification1->id], $syscontext));
+        $this->assertSame('Error', certification_visibility_edit_cohortids::validate_value($cohort1->id, ['certificationid' => $certification1->id], $syscontext));
+        $this->assertNull(certification_visibility_edit_cohortids::validate_value($cohort2->id, ['certificationid' => $certification2->id], $catcontext1));
+        $this->assertNull(certification_visibility_edit_cohortids::validate_value($cohort3->id, ['certificationid' => $certification2->id], $catcontext1));
 
         \tool_mucertify\local\certification::update_visibility((object)['id' => $certification1->id, 'public' => 0, 'cohortids' => [$cohort1->id]]);
-        $this->assertNull(form_certification_visibility_edit_cohortids::validate_cohortid($cohort1->id, $certification1->id));
+        $this->assertNull(certification_visibility_edit_cohortids::validate_value($cohort1->id, ['certificationid' => $certification1->id], $syscontext));
     }
 }

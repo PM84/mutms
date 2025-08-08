@@ -39,20 +39,28 @@ final class catalogue_test extends \advanced_testcase {
 
     public function test_get_current_url(): void {
         $catalogue = new \tool_mucertify\local\catalogue([]);
-        $this->assertSame('https://www.example.com/moodle/admin/tool/mucertify/catalogue/index.php',
-            $catalogue->get_current_url()->out(false));
+        $this->assertSame(
+            'https://www.example.com/moodle/admin/tool/mucertify/catalogue/index.php',
+            $catalogue->get_current_url()->out(false)
+        );
 
         $catalogue = new \tool_mucertify\local\catalogue(['searchtext' => '']);
-        $this->assertSame('https://www.example.com/moodle/admin/tool/mucertify/catalogue/index.php',
-            $catalogue->get_current_url()->out(false));
+        $this->assertSame(
+            'https://www.example.com/moodle/admin/tool/mucertify/catalogue/index.php',
+            $catalogue->get_current_url()->out(false)
+        );
 
         $catalogue = new \tool_mucertify\local\catalogue(['page' => 10, 'searchtext' => 'abc']);
-        $this->assertSame('https://www.example.com/moodle/admin/tool/mucertify/catalogue/index.php?page=10&searchtext=abc',
-            $catalogue->get_current_url()->out(false));
+        $this->assertSame(
+            'https://www.example.com/moodle/admin/tool/mucertify/catalogue/index.php?page=10&searchtext=abc',
+            $catalogue->get_current_url()->out(false)
+        );
 
         $catalogue = new \tool_mucertify\local\catalogue(['page' => 10, 'searchtext' => 'abc', 'perpage' => 12]);
-        $this->assertSame('https://www.example.com/moodle/admin/tool/mucertify/catalogue/index.php?page=10&perpage=12&searchtext=abc',
-            $catalogue->get_current_url()->out(false));
+        $this->assertSame(
+            'https://www.example.com/moodle/admin/tool/mucertify/catalogue/index.php?page=10&perpage=12&searchtext=abc',
+            $catalogue->get_current_url()->out(false)
+        );
     }
 
     public function test_is_filtering(): void {
@@ -341,7 +349,6 @@ final class catalogue_test extends \advanced_testcase {
         $certifications = $catalogue->get_certifications();
         $this->assertSame([(int)$certification1->id, (int)$certification2->id, (int)$certification4->id, (int)$certification6->id], array_keys($certifications));
         $this->assertSame(4, $catalogue->count_certifications());
-
     }
 
     public function test_is_certification_visible(): void {

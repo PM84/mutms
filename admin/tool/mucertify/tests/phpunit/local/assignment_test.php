@@ -85,8 +85,12 @@ final class assignment_test extends \advanced_testcase {
             'programid1' => $program1->id,
         ];
         $certification = $generator->create_certification($data);
-        $source = $DB->get_record('tool_mucertify_source',
-            ['type' => 'manual', 'certificationid' => $certification->id], '*', MUST_EXIST);
+        $source = $DB->get_record(
+            'tool_mucertify_source',
+            ['type' => 'manual', 'certificationid' => $certification->id],
+            '*',
+            MUST_EXIST
+        );
         manual::assign_users($certification->id, $source->id, [$user1->id]);
         $assignment = $DB->get_record('tool_mucertify_assignment', ['userid' => $user1->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
         $period = $DB->get_record('tool_mucertify_period', ['userid' => $user1->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
@@ -168,8 +172,12 @@ final class assignment_test extends \advanced_testcase {
             'programid1' => $program1->id,
         ];
         $certification = $generator->create_certification($data);
-        $source = $DB->get_record('tool_mucertify_source',
-            ['type' => 'manual', 'certificationid' => $certification->id], '*', MUST_EXIST);
+        $source = $DB->get_record(
+            'tool_mucertify_source',
+            ['type' => 'manual', 'certificationid' => $certification->id],
+            '*',
+            MUST_EXIST
+        );
         manual::assign_users($certification->id, $source->id, [$user1->id]);
 
         $assignment = $DB->get_record('tool_mucertify_assignment', ['userid' => $user1->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
@@ -193,8 +201,12 @@ final class assignment_test extends \advanced_testcase {
             'programid1' => $program1->id,
         ];
         $certification = $generator->create_certification($data);
-        $source = $DB->get_record('tool_mucertify_source',
-            ['type' => 'manual', 'certificationid' => $certification->id], '*', MUST_EXIST);
+        $source = $DB->get_record(
+            'tool_mucertify_source',
+            ['type' => 'manual', 'certificationid' => $certification->id],
+            '*',
+            MUST_EXIST
+        );
         manual::assign_users($certification->id, $source->id, [$user1->id]);
 
         \tool_mucertify\local\assignment::fix_assignment_sources(null, null);
@@ -219,8 +231,12 @@ final class assignment_test extends \advanced_testcase {
             'programid1' => $program1->id,
         ];
         $certification = $generator->create_certification($data);
-        $source = $DB->get_record('tool_mucertify_source',
-            ['type' => 'manual', 'certificationid' => $certification->id], '*', MUST_EXIST);
+        $source = $DB->get_record(
+            'tool_mucertify_source',
+            ['type' => 'manual', 'certificationid' => $certification->id],
+            '*',
+            MUST_EXIST
+        );
 
         $this->assertFalse(\tool_mucertify\local\assignment::has_active_assignments($user1->id));
 
@@ -254,8 +270,12 @@ final class assignment_test extends \advanced_testcase {
             'programid1' => $program1->id,
         ];
         $certification = $generator->create_certification($data);
-        $source = $DB->get_record('tool_mucertify_source',
-            ['type' => 'manual', 'certificationid' => $certification->id], '*', MUST_EXIST);
+        $source = $DB->get_record(
+            'tool_mucertify_source',
+            ['type' => 'manual', 'certificationid' => $certification->id],
+            '*',
+            MUST_EXIST
+        );
 
         $this->assertFalse(\tool_mucertify\local\assignment::has_active_assignments($user1->id));
 
@@ -264,8 +284,10 @@ final class assignment_test extends \advanced_testcase {
         $this->assertSame('Not set', \tool_mucertify\local\assignment::get_until_html($certification, $assignment));
 
         $assignment = \tool_mucertify\local\source\base::assignment_update((object)['id' => $assignment->id, 'timecertifiedtemp' => $now + DAYSECS]);
-        $this->assertSame(userdate($assignment->timecertifiedtemp, get_string('strftimedatetimeshort')),
-            \tool_mucertify\local\assignment::get_until_html($certification, $assignment));
+        $this->assertSame(
+            userdate($assignment->timecertifiedtemp, get_string('strftimedatetimeshort')),
+            \tool_mucertify\local\assignment::get_until_html($certification, $assignment)
+        );
 
         $assignment = \tool_mucertify\local\source\base::assignment_update((object)['id' => $assignment->id, 'timecertifiedtemp' => null]);
         $period1 = $DB->get_record('tool_mucertify_period', ['userid' => $user1->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
@@ -293,13 +315,17 @@ final class assignment_test extends \advanced_testcase {
             'timerevoked' => null,
         ];
         $period1 = \tool_mucertify\local\period::override_dates((object)$dateoverrides);
-        $this->assertSame(userdate($period1->timeuntil, get_string('strftimedatetimeshort')),
-            \tool_mucertify\local\assignment::get_until_html($certification, $assignment));
+        $this->assertSame(
+            userdate($period1->timeuntil, get_string('strftimedatetimeshort')),
+            \tool_mucertify\local\assignment::get_until_html($certification, $assignment)
+        );
 
         $assignment = \tool_mucertify\local\source\base::assignment_update((object)['id' => $assignment->id, 'timecertifiedtemp' => $now + WEEKSECS]);
         $period1 = \tool_mucertify\local\period::override_dates((object)$dateoverrides);
-        $this->assertSame(userdate($assignment->timecertifiedtemp, get_string('strftimedatetimeshort')),
-            \tool_mucertify\local\assignment::get_until_html($certification, $assignment));
+        $this->assertSame(
+            userdate($assignment->timecertifiedtemp, get_string('strftimedatetimeshort')),
+            \tool_mucertify\local\assignment::get_until_html($certification, $assignment)
+        );
 
         $assignment = \tool_mucertify\local\source\base::assignment_update((object)['id' => $assignment->id, 'timecertifiedtemp' => null]);
         $dateoverrides = [
@@ -325,8 +351,10 @@ final class assignment_test extends \advanced_testcase {
             'timerevoked' => null,
         ];
         $period2 = \tool_mucertify\local\period::add((object)$data);
-        $this->assertSame(userdate($period1->timeuntil, get_string('strftimedatetimeshort')),
-            \tool_mucertify\local\assignment::get_until_html($certification, $assignment));
+        $this->assertSame(
+            userdate($period1->timeuntil, get_string('strftimedatetimeshort')),
+            \tool_mucertify\local\assignment::get_until_html($certification, $assignment)
+        );
 
         $dateoverrides = [
             'id' => $period2->id,
@@ -334,16 +362,20 @@ final class assignment_test extends \advanced_testcase {
             'timerevoked' => null,
         ];
         $period2 = \tool_mucertify\local\period::override_dates((object)$dateoverrides);
-        $this->assertSame(userdate($period2->timeuntil, get_string('strftimedatetimeshort')),
-            \tool_mucertify\local\assignment::get_until_html($certification, $assignment));
+        $this->assertSame(
+            userdate($period2->timeuntil, get_string('strftimedatetimeshort')),
+            \tool_mucertify\local\assignment::get_until_html($certification, $assignment)
+        );
 
         $dateoverrides = [
             'id' => $period2->id,
             'timerevoked' => $now,
         ];
         $period2 = \tool_mucertify\local\period::override_dates((object)$dateoverrides);
-        $this->assertSame(userdate($period1->timeuntil, get_string('strftimedatetimeshort')),
-            \tool_mucertify\local\assignment::get_until_html($certification, $assignment));
+        $this->assertSame(
+            userdate($period1->timeuntil, get_string('strftimedatetimeshort')),
+            \tool_mucertify\local\assignment::get_until_html($certification, $assignment)
+        );
     }
 
     public function test_fix_caches_indirect(): void {
@@ -364,8 +396,12 @@ final class assignment_test extends \advanced_testcase {
             'programid1' => $program1->id,
         ];
         $certification = $generator->create_certification($data);
-        $source = $DB->get_record('tool_mucertify_source',
-            ['type' => 'manual', 'certificationid' => $certification->id], '*', MUST_EXIST);
+        $source = $DB->get_record(
+            'tool_mucertify_source',
+            ['type' => 'manual', 'certificationid' => $certification->id],
+            '*',
+            MUST_EXIST
+        );
 
         $this->assertFalse(\tool_mucertify\local\assignment::has_active_assignments($user1->id));
 

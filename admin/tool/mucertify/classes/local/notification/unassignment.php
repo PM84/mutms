@@ -52,8 +52,12 @@ final class unassignment extends base {
      * @param stdClass $user
      * @return array
      */
-    public static function get_assignment_placeholders(stdClass $certification, stdClass $source, stdClass $assignment,
-                                                       stdClass $user): array {
+    public static function get_assignment_placeholders(
+        stdClass $certification,
+        stdClass $source,
+        stdClass $assignment,
+        stdClass $user
+    ): array {
         $a = parent::get_assignment_placeholders($certification, $source, $assignment, $user);
         $a['certification_url'] = (new \moodle_url('/admin/tool/mucertify/catalogue/certification.php', ['id' => $certification->id]))->out(false);
         return $a;

@@ -35,7 +35,6 @@ use core_reportbuilder\local\filters\date;
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 final class assignment extends base {
-
     #[\Override]
     protected function get_default_tables(): array {
         return [
@@ -98,7 +97,7 @@ final class assignment extends base {
             ->add_field("COALESCE({$assignmentalias}.timecertifiedtemp, {$assignmentalias}.timecertifieduntil)", 'timecertifieduntil')
             ->set_is_sortable(true)
             ->add_callback([format::class, 'userdate'], $dateformat)
-            ->add_callback(static function($value, \stdClass $row): string {
+            ->add_callback(static function ($value, \stdClass $row): string {
                 if ($row->timecertifieduntil != \tool_mulib\local\date_util::TIMESTAMP_FOREVER) {
                     return $value;
                 }
@@ -120,10 +119,12 @@ final class assignment extends base {
                      WHEN {$assignmentalias}.timecertifiedtemp > $now THEN 2
                      WHEN {$assignmentalias}.timecertifieduntil > $now THEN 1
                      ELSE 0
-                 END", 'status')
+                 END",
+                'status'
+            )
             ->add_field('(' . "SELECT p.archived FROM {tool_mucertify_certification} p WHERE p.id = {$assignmentalias}.certificationid" . ')', 'certificationarchived')
             ->set_is_sortable(true)
-            ->add_callback(static function($value, \stdClass $row): string {
+            ->add_callback(static function ($value, \stdClass $row): string {
                 switch ($row->status) {
                     case 5:
                         return '<span class="badge bg-dark">' . get_string('certificationstatus_archived', 'tool_mucertify') . '</span>';
@@ -168,14 +169,15 @@ final class assignment extends base {
             'status',
             new lang_string('certificationstatus', 'tool_mucertify'),
             $this->get_entity_name(),
-                "CASE
+            "CASE
                      WHEN {$assignmentalias}.archived = 1 THEN 5
                      WHEN {$assignmentalias}.timecertifiedfrom IS NULL OR {$assignmentalias}.timecertifiedfrom > $now THEN 4
                      WHEN COALESCE({$assignmentalias}.timecertifiedtemp, {$assignmentalias}.timecertifieduntil) < $now THEN 3
                      WHEN {$assignmentalias}.timecertifiedtemp > $now THEN 2
                      WHEN {$assignmentalias}.timecertifieduntil > $now THEN 1
                      ELSE 0
-                 END"))
+                 END"
+        ))
             ->add_joins($this->get_joins())
             ->set_options(
                 [

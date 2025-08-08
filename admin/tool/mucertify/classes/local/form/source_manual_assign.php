@@ -19,6 +19,8 @@
 
 namespace tool_mucertify\local\form;
 
+use tool_mucertify\external\form_autocomplete\source_manual_assign_users;
+
 /**
  * assign users and cohorts manually.
  *
@@ -28,7 +30,7 @@ namespace tool_mucertify\local\form;
  * @author     Petr Skoda
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-final class source_manual_assign extends \tool_mulib\local\dialog_form {
+final class source_manual_assign extends \tool_mulib\local\ajax_form {
     /** @var array $arguments for WS call to get candidate users */
     protected $arguments;
     /** @var bool is due date optional? */
@@ -46,25 +48,39 @@ final class source_manual_assign extends \tool_mulib\local\dialog_form {
         $settings = \tool_mucertify\local\certification::get_periods_settings($certification);
 
         $this->arguments = ['certificationid' => $certification->id];
-        \tool_mucertify\external\form_source_manual_assign_users::add_form_element(
-            $mform, $this->arguments, 'users', get_string('users'));
+        source_manual_assign_users::add_element(
+            $mform,
+            $this->arguments,
+            'users',
+            get_string('users'),
+            $context
+        );
 
         $options = ['contextid' => $context->id, 'multiple' => false];
         $mform->addElement('cohort', 'cohortid', get_string('cohort', 'cohort'), $options);
 
         $now = time();
-        $mform->addElement('date_time_selector', 'timewindowstart', get_string('windowstartdate', 'tool_mucertify'),
-            ['optional' => false]);
+        $mform->addElement(
+            'date_time_selector',
+            'timewindowstart',
+            get_string('windowstartdate', 'tool_mucertify'),
+            ['optional' => false]
+        );
         $mform->setDefault('timewindowstart', $now);
 
-        if ($settings->valid1 === 'windowdue'
+        if (
+            $settings->valid1 === 'windowdue'
             || $settings->windowend1 === 'windowdue'
             || $settings->expiration1 === 'windowdue'
         ) {
             $this->dueoptional = false;
         }
-        $mform->addElement('date_time_selector', 'timewindowdue', get_string('windowduedate', 'tool_mucertify'),
-            ['optional' => $this->dueoptional]);
+        $mform->addElement(
+            'date_time_selector',
+            'timewindowdue',
+            get_string('windowduedate', 'tool_mucertify'),
+            ['optional' => $this->dueoptional]
+        );
         if (!$this->dueoptional) {
             $mform->addRule('timewindowdue', get_string('required'), 'required', null, 'client');
         }
@@ -124,8 +140,11 @@ final class source_manual_assign extends \tool_mulib\local\dialog_form {
 
         if ($data['users']) {
             foreach ($data['users'] as $userid) {
-                $error = \tool_mucertify\external\form_source_manual_assign_users::validate_form_value(
-                    $this->arguments, $userid, $context);
+                $error = source_manual_assign_users::validate_value(
+                    $userid,
+                    $this->arguments,
+                    $context
+                );
                 if ($error !== null) {
                     $errors['users'] = $error;
                     break;

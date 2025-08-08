@@ -86,14 +86,14 @@ Feature: Certifications plugin English documentation image generator
       | expiration1[since]    | Certification completion date         |
       | expiration1[number]   | 12                                    |
       | expiration1[timeunit] | Months                                |
-    And I press dialog form button "Update certification"
+    And I click on "Update certification" "button" in the ".modal-dialog" "css_element"
     And I click on "Update re-certification" "link"
     And I set the following fields to these values:
       | expiration2[since]    | Certification completion date         |
       | expiration2[number]   | 12                                    |
       | expiration2[timeunit] | Months                                |
       | resettype2            | Full course purge                     |
-    And I press dialog form button "Update re-certification"
+    And I click on "Update re-certification" "button" in the ".modal-dialog" "css_element"
     And I change window size to "1208x1000"
 
     Then I make documentation screenshot "certification_settings.png" for "tool_mucertify" plugin
@@ -117,7 +117,7 @@ Feature: Certifications plugin English documentation image generator
     And I set the following fields to these values:
       | Active            | Yes           |
       | Assign to cohorts | All employees |
-    And I press dialog form button "Update"
+    And I click on "Update" "button" in the ".modal-dialog" "css_element"
 
     Then I make documentation screenshot "certification_assignment.png" for "tool_mucertify" plugin
     And site is restored after documentation screenshots
@@ -147,7 +147,7 @@ Feature: Certifications plugin English documentation image generator
       | timeuntil[year]          | 2025        |
       | timeuntil[hour]          | 09          |
       | timeuntil[minute]        | 00          |
-    And I press dialog form button "Add period"
+    And I click on "Add period" "button" in the ".modal-dialog" "css_element"
     And I follow "5/03/24"
     And I press "Override period dates"
     And I set the following fields to these values:
@@ -157,7 +157,7 @@ Feature: Certifications plugin English documentation image generator
       | timecertified[year]    | 2024      |
       | timecertified[hour]    | 09        |
       | timecertified[minute]  | 00        |
-    And I press dialog form button "Override period dates"
+    And I click on "Override period dates" "button" in the ".modal-dialog" "css_element"
 
     When I follow "Users"
     Then I make documentation screenshot "certification_users.png" for "tool_mucertify" plugin

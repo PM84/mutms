@@ -17,7 +17,7 @@
 // phpcs:disable moodle.Files.BoilerplateComment.CommentEndedTooSoon
 // phpcs:disable moodle.Files.LineLength.TooLong
 
-namespace tool_mucertify\external;
+namespace tool_mucertify\external\form_autocomplete;
 
 use core_external\external_function_parameters;
 use core_external\external_value;
@@ -27,27 +27,22 @@ use core_external\external_value;
  *
  * @package     tool_mucertify
  * @copyright   2023 Open LMS (https://www.openlms.net/)
+ * @copyright   2025 Petr Skoda
  * @author      Petr Skoda
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-final class form_certification_periods_programid extends \tool_mulib\external\form_autocomplete_field {
-    /** @var int max results */
-    const MAX_RESULTS = 20;
+final class certification_periods_programid extends \tool_mulib\external\form_autocomplete\base {
+    /** @var string|null program table */
+    protected const ITEM_TABLE = 'tool_muprog_program';
+    /** @var string|null field used for item name */
+    protected const ITEM_FIELD = 'fullname';
 
-    /**
-     * True means returned field data is array, false means value is scalar.
-     *
-     * @return bool
-     */
-    public static function is_multi_select_field(): bool {
+    #[\Override]
+    public static function get_multiple(): bool {
         return false;
     }
 
-    /**
-     * Describes the external function arguments.
-     *
-     * @return external_function_parameters
-     */
+    #[\Override]
     public static function execute_parameters(): external_function_parameters {
         return new external_function_parameters([
             'query' => new external_value(PARAM_RAW, 'The search query', VALUE_REQUIRED),
@@ -65,8 +60,16 @@ final class form_certification_periods_programid extends \tool_mulib\external\fo
     public static function execute(string $query, int $certificationid): array {
         global $DB;
 
-        ['query' => $query, 'certificationid' => $certificationid] = self::validate_parameters(
-            self::execute_parameters(), ['query' => $query, 'certificationid' => $certificationid]);
+        [
+            'query' => $query,
+            'certificationid' => $certificationid,
+        ] = self::validate_parameters(
+            self::execute_parameters(),
+            [
+                'query' => $query,
+                'certificationid' => $certificationid,
+            ]
+        );
 
         $certification = $DB->get_record('tool_mucertify_certification', ['id' => $certificationid], '*', MUST_EXIST);
 
@@ -75,7 +78,7 @@ final class form_certification_periods_programid extends \tool_mulib\external\fo
         self::validate_context($context);
         require_capability('tool/mucertify:edit', $context);
 
-        list($searchsql, $params) = \tool_muprog\local\management::get_program_search_query(null, $query, 'p');
+        [$searchsql, $params] = \tool_muprog\local\management::get_program_search_query(null, $query, 'p');
 
         $tenantselect = '';
         if (\tool_mucertify\local\util::is_mutenancy_active()) {
@@ -99,84 +102,34 @@ SQL;
         $rs = $DB->get_recordset_sql($sqlquery, $params);
 
         $count = 0;
-        $list = [];
-        $notice = null;
+        $programs = [];
 
         foreach ($rs as $program) {
-            $context = \context::instance_by_id($program->contextid);
-            if (!has_capability('tool/muprog:addtocertifications', $context)) {
+            $pcontext = \context::instance_by_id($program->contextid);
+            if (!has_capability('tool/muprog:addtocertifications', $pcontext)) {
                 continue;
             }
+            $programs[] = $program;
             $count++;
             if ($count > self::MAX_RESULTS) {
-                $notice = get_string('toomanyrecords', 'tool_mulib', self::MAX_RESULTS);
                 break;
             }
-
-            $list[] = [
-                'value' => $program->id,
-                'label' => format_string($program->fullname),
-            ];
         }
         $rs->close();
 
-        return [
-            'notice' => $notice,
-            'list' => $list,
-        ];
+        return self::prepare_result($programs, $context);
     }
 
-    /**
-     * Return function that return label for given value.
-     *
-     * @param array $arguments
-     * @return callable
-     */
-    public static function get_label_callback(array $arguments): callable {
-        return function($value) use ($arguments): string {
-            global $DB;
-
-            if (!$value) {
-                return '';
-            }
-
-            $certification = $DB->get_record('tool_mucertify_certification', ['id' => $arguments['certificationid']], '*', MUST_EXIST);
-            $context = \context::instance_by_id($certification->contextid);
-
-            $error = '';
-            if (self::validate_form_value($arguments, $value, $context) !== null) {
-                $error = ' (' . get_string('error') .')';
-            }
-
-            $program = $DB->get_record('tool_muprog_program', ['id' => $value]);
-            if ($program) {
-                return format_string($program->fullname) . $error;
-            } else {
-                return trim($error);
-            }
-        };
-    }
-
-    /**
-     * Is valid value?
-     *
-     * @param array $arguments
-     * @param mixed $value
-     * @return string|null error message, NULL means value is ok
-     */
-    public static function validate_form_value(array $arguments, $value): ?string {
+    #[\Override]
+    public static function validate_value(int $value, array $args, \context $context): ?string {
         global $DB;
-
-        if (!$value) {
-            return null;
-        }
 
         $program = $DB->get_record('tool_muprog_program', ['id' => $value]);
         if (!$program) {
             return get_string('error');
         }
 
-        $certification = $DB->get_record('tool_mucertify_certification', ['id' => $arguments['certificationid']], '*', MUST_EXIST);
+        $certification = $DB->get_record('tool_mucertify_certification', ['id' => $args['certificationid']], '*', MUST_EXIST);
         if ($program->id == $certification->programid1 || $program->id == $certification->programid2) {
             // Current value is always ok.
             return null;

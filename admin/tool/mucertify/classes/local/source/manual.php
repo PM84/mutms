@@ -93,13 +93,13 @@ final class manual extends base {
         $buttons = [];
         if ($enabled && has_capability('tool/mucertify:assign', $context)) {
             $url = new \moodle_url('/admin/tool/mucertify/management/source_manual_assign.php', ['sourceid' => $source->id]);
-            $button = new \tool_mulib\output\dialog_form\button($url, get_string('source_manual_assignusers', 'tool_mucertify'));
+            $button = new \tool_mulib\output\ajax_form\button($url, get_string('source_manual_assignusers', 'tool_mucertify'));
             $actions->add_button($button);
 
             $url = new \moodle_url('/admin/tool/mucertify/management/source_manual_upload.php', ['sourceid' => $source->id]);
-            $link = new \tool_mulib\output\dialog_form\link($url, get_string('source_manual_uploadusers', 'tool_mucertify'));
-            $link->set_dialog_size('xl');
-            $actions->get_dropdown()->add_dialog_form($link);
+            $link = new \tool_mulib\output\ajax_form\link($url, get_string('source_manual_uploadusers', 'tool_mucertify'));
+            $link->set_form_size('xl');
+            $actions->get_dropdown()->add_ajax_form($link);
         }
     }
 
@@ -139,8 +139,12 @@ final class manual extends base {
         $result = [];
 
         $certification = $DB->get_record('tool_mucertify_certification', ['id' => $certificationid], '*', MUST_EXIST);
-        $source = $DB->get_record('tool_mucertify_source',
-            ['id' => $sourceid, 'type' => static::get_type(), 'certificationid' => $certification->id], '*', MUST_EXIST);
+        $source = $DB->get_record(
+            'tool_mucertify_source',
+            ['id' => $sourceid, 'type' => static::get_type(), 'certificationid' => $certification->id],
+            '*',
+            MUST_EXIST
+        );
 
         if (count($userids) === 0) {
             return $result;
@@ -180,7 +184,8 @@ final class manual extends base {
     public static function process_uploaded_data(stdClass $data, array $filedata): array {
         global $DB, $USER;
 
-        if ($data->usermapping !== 'username'
+        if (
+            $data->usermapping !== 'username'
                 && $data->usermapping !== 'email'
                 && $data->usermapping !== 'idnumber'
         ) {
@@ -260,4 +265,3 @@ final class manual extends base {
         return $result;
     }
 }
-

@@ -64,7 +64,7 @@ Feature: Certification completion by managers tests
       | timewindowstart[year]    | 2022      |
       | timewindowstart[hour]    | 09        |
       | timewindowstart[minute]  | 00        |
-    And I press dialog form button "Assign users"
+    And I click on "Assign users" "button" in the ".modal-dialog" "css_element"
     And I follow "Student 1"
     And I click on "5/11/22" "link" in the "Program 001" "table_row"
 
@@ -82,7 +82,7 @@ Feature: Certification completion by managers tests
       | timecertified[year]    | 2023      |
       | timecertified[hour]    | 09        |
       | timecertified[minute]  | 00        |
-    And I press dialog form button "Override period dates"
+    And I click on "Override period dates" "button" in the ".modal-dialog" "css_element"
     Then I should see "Valid" in the "Certification status" definition list item
 
   @javascript
@@ -99,7 +99,7 @@ Feature: Certification completion by managers tests
       | timewindowstart[year]    | 2022      |
       | timewindowstart[hour]    | 09        |
       | timewindowstart[minute]  | 00        |
-    And I press dialog form button "Assign users"
+    And I click on "Assign users" "button" in the ".modal-dialog" "css_element"
     And I follow "Student 1"
     And I click on "5/11/22" "link" in the "Program 001" "table_row"
     And I follow "Program 001"
@@ -107,7 +107,7 @@ Feature: Certification completion by managers tests
     When I click on "Override completion" "link" in the "Program 001" "table_row"
     And I set the following fields to these values:
       | timecompleted[enabled] | 1    |
-    And I press dialog form button "Update"
+    And I click on "Update" "button" in the ".modal-dialog" "css_element"
     And I am on the "tool_mucertify > All certifications management" page
     And I follow "Certification 001"
     And I click on "Users" "link" in the ".secondary-navigation" "css_element"

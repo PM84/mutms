@@ -21,6 +21,7 @@ namespace tool_mucertify\local\form;
 
 use tool_mucertify\local\util;
 use tool_mucertify\local\certification;
+use tool_mucertify\external\form_autocomplete\certification_periods_programid;
 
 /**
  * Edit initial certification settings.
@@ -31,7 +32,7 @@ use tool_mucertify\local\certification;
  * @author     Petr Skoda
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-final class certification_settings_edit1 extends \tool_mulib\local\dialog_form {
+final class certification_settings_edit1 extends \tool_mulib\local\ajax_form {
     /** @var array $arguments for WS call to get candidate programs */
     protected $arguments;
 
@@ -39,11 +40,17 @@ final class certification_settings_edit1 extends \tool_mulib\local\dialog_form {
     protected function definition() {
         $mform = $this->_form;
         $certification = $this->_customdata['certification'];
+        $context = $this->_customdata['context'];
         $this->arguments = ['certificationid' => $certification->id];
         $settings = certification::get_periods_settings($certification);
 
-        \tool_mucertify\external\form_certification_periods_programid::add_form_element(
-            $mform, $this->arguments, 'programid1', get_string('program', 'tool_muprog'));
+        certification_periods_programid::add_element(
+            $mform,
+            $this->arguments,
+            'programid1',
+            get_string('program', 'tool_muprog'),
+            $context
+        );
         $mform->setDefault('programid1', $certification->programid1);
         $mform->addRule('programid1', get_string('required'), 'required', null, 'client');
 
@@ -51,8 +58,12 @@ final class certification_settings_edit1 extends \tool_mulib\local\dialog_form {
         $mform->addElement('select', 'resettype1', get_string('resettype1', 'tool_mucertify'), $resettypes);
         $mform->setDefault('resettype1', $settings->resettype1);
 
-        $mform->addElement('duration', 'due1', get_string('windowdueafter', 'tool_mucertify'),
-            ['optional' => true, 'defaultunit' => DAYSECS]);
+        $mform->addElement(
+            'duration',
+            'due1',
+            get_string('windowdueafter', 'tool_mucertify'),
+            ['optional' => true, 'defaultunit' => DAYSECS]
+        );
         $mform->setDefault('due1', $settings->due1);
 
         $since = certification::get_valid_options();
@@ -87,8 +98,12 @@ final class certification_settings_edit1 extends \tool_mulib\local\dialog_form {
         $mform->setType('expiration1[number]', PARAM_INT);
         $mform->setDefault('expiration1', util::get_delay_form_value($settings->expiration1, 'months'));
 
-        $mform->addElement('duration', 'recertify', get_string('recertifybefore', 'tool_mucertify'),
-            ['optional' => true, 'defaultunit' => DAYSECS]);
+        $mform->addElement(
+            'duration',
+            'recertify',
+            get_string('recertifybefore', 'tool_mucertify'),
+            ['optional' => true, 'defaultunit' => DAYSECS]
+        );
         $mform->setDefault('recertify', $settings->recertify);
 
         $mform->addElement('hidden', 'id');
@@ -101,6 +116,7 @@ final class certification_settings_edit1 extends \tool_mulib\local\dialog_form {
     #[\Override]
     public function validation($data, $files) {
         $errors = parent::validation($data, $files);
+        $context = $this->_customdata['context'];
 
         if ($data['windowend1']['since'] !== certification::SINCE_NEVER && $data['windowend1']['number'] <= 0) {
             $errors['windowend1'] = get_string('required');
@@ -110,8 +126,9 @@ final class certification_settings_edit1 extends \tool_mulib\local\dialog_form {
             $errors['expiration1'] = get_string('required');
         }
 
-        if (\tool_mucertify\external\form_certification_periods_programid::validate_form_value($this->arguments, $data['programid1']) !== null) {
-            $errors['programid1'] = get_string('error');
+        $error = certification_periods_programid::validate_value($data['programid1'], $this->arguments, $context);
+        if ($error !== null) {
+            $errors['programid1'] = $error;
         }
 
         return $errors;
