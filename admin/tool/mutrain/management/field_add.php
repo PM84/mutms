@@ -26,7 +26,6 @@
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use tool_mutrain\local\management;
 use tool_mutrain\local\framework;
 
 /** @var moodle_database $DB */
@@ -34,10 +33,8 @@ use tool_mutrain\local\framework;
 /** @var core_renderer $OUTPUT */
 /** @var stdClass $CFG */
 
-// phpcs:ignoreFile moodle.Files.MoodleInternal.MoodleInternalGlobalState
-if (!empty($_SERVER['HTTP_X_MULIB_DIALOG_FORM_REQUEST'])) {
-    define('AJAX_SCRIPT', true);
-}
+define('AJAX_SCRIPT', true);
+
 require('../../../../config.php');
 require_once("$CFG->libdir/filelib.php");
 
@@ -49,8 +46,9 @@ $framework = $DB->get_record('tool_mutrain_framework', ['id' => $frameworkid]);
 $context = context::instance_by_id($framework->contextid);
 require_capability('tool/mutrain:manageframeworks', $context);
 
-$pageurl = new moodle_url('/admin/tool/mutrain/management/field_add.php', ['frameworkid' => $frameworkid]);
-management::setup_framework_page($pageurl, $context, $framework);
+$currenturl = new moodle_url('/admin/tool/mutrain/management/field_add.php', ['frameworkid' => $frameworkid]);
+$PAGE->set_context($context);
+$PAGE->set_url($currenturl);
 
 $returnurl = new moodle_url('/admin/tool/mutrain/management/framework.php', ['id' => $frameworkid]);
 
@@ -60,16 +58,13 @@ if ($framework->archived) {
 
 $data = clone($framework);
 
-$form = new \tool_mutrain\local\form\field_add(null, ['framework' => $framework]);
+$form = new \tool_mutrain\local\form\field_add(null, ['framework' => $framework, 'context' => $context]);
 
 if ($form->is_cancelled()) {
-    redirect($returnurl);
+    $form->ajax_form_cancelled($returnurl);
 } else if ($data = $form->get_data()) {
     framework::field_add($data->frameworkid, $data->fieldid);
-    $form->redirect_submitted($returnurl);
+    $form->ajax_form_submitted($returnurl);
 }
 
-echo $OUTPUT->header();
-echo $OUTPUT->heading(get_string('field_add', 'tool_mutrain'));
-echo $form->render();
-echo $OUTPUT->footer();
+$form->ajax_form_render();

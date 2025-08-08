@@ -313,13 +313,17 @@ final class framework_test extends \advanced_testcase {
         global $DB;
 
         $fielcategory = $this->getDataGenerator()->create_custom_field_category(
-            ['component' => 'core_course', 'area' => 'course']);
+            ['component' => 'core_course', 'area' => 'course']
+        );
         $field1 = $this->getDataGenerator()->create_custom_field(
-            ['categoryid' => $fielcategory->get('id'), 'type' => 'mutrain', 'shortname' => 'field1']);
+            ['categoryid' => $fielcategory->get('id'), 'type' => 'mutrain', 'shortname' => 'field1']
+        );
         $field2 = $this->getDataGenerator()->create_custom_field(
-            ['categoryid' => $fielcategory->get('id'), 'type' => 'mutrain', 'shortname' => 'field2']);
+            ['categoryid' => $fielcategory->get('id'), 'type' => 'mutrain', 'shortname' => 'field2']
+        );
         $field3 = $this->getDataGenerator()->create_custom_field(
-            ['categoryid' => $fielcategory->get('id'), 'type' => 'text', 'shortname' => 'field3']);
+            ['categoryid' => $fielcategory->get('id'), 'type' => 'text', 'shortname' => 'field3']
+        );
 
         $result = framework::get_all_training_fields();
         $this->assertArrayHasKey($field1->get('id'), $result);
@@ -339,13 +343,17 @@ final class framework_test extends \advanced_testcase {
         $generator = $this->getDataGenerator()->get_plugin_generator('tool_mutrain');
 
         $fielcategory = $this->getDataGenerator()->create_custom_field_category(
-            ['component' => 'core_course', 'area' => 'course']);
+            ['component' => 'core_course', 'area' => 'course']
+        );
         $field1 = $this->getDataGenerator()->create_custom_field(
-            ['categoryid' => $fielcategory->get('id'), 'type' => 'mutrain', 'shortname' => 'field1']);
+            ['categoryid' => $fielcategory->get('id'), 'type' => 'mutrain', 'shortname' => 'field1']
+        );
         $field2 = $this->getDataGenerator()->create_custom_field(
-            ['categoryid' => $fielcategory->get('id'), 'type' => 'mutrain', 'shortname' => 'field2']);
+            ['categoryid' => $fielcategory->get('id'), 'type' => 'mutrain', 'shortname' => 'field2']
+        );
         $field3 = $this->getDataGenerator()->create_custom_field(
-            ['categoryid' => $fielcategory->get('id'), 'type' => 'text', 'shortname' => 'field3']);
+            ['categoryid' => $fielcategory->get('id'), 'type' => 'text', 'shortname' => 'field3']
+        );
 
         $framework1 = $generator->create_framework();
         $framework2 = $generator->create_framework();
@@ -382,7 +390,7 @@ final class framework_test extends \advanced_testcase {
             $this->fail('Exception expected');
         } catch (\moodle_exception $e) {
             $this->assertInstanceOf(\invalid_parameter_exception::class, $e);
-            $this->assertSame('Invalid parameter value detected (Invalid field: '. $field3->get('id') . ')', $e->getMessage());
+            $this->assertSame('Invalid parameter value detected (Invalid field: ' . $field3->get('id') . ')', $e->getMessage());
         }
 
         $this->assertCount(3, $DB->get_records('tool_mutrain_field', []));
@@ -395,11 +403,14 @@ final class framework_test extends \advanced_testcase {
         $generator = $this->getDataGenerator()->get_plugin_generator('tool_mutrain');
 
         $fielcategory = $this->getDataGenerator()->create_custom_field_category(
-            ['component' => 'core_course', 'area' => 'course']);
+            ['component' => 'core_course', 'area' => 'course']
+        );
         $field1 = $this->getDataGenerator()->create_custom_field(
-            ['categoryid' => $fielcategory->get('id'), 'type' => 'mutrain', 'shortname' => 'field1']);
+            ['categoryid' => $fielcategory->get('id'), 'type' => 'mutrain', 'shortname' => 'field1']
+        );
         $field2 = $this->getDataGenerator()->create_custom_field(
-            ['categoryid' => $fielcategory->get('id'), 'type' => 'mutrain', 'shortname' => 'field2']);
+            ['categoryid' => $fielcategory->get('id'), 'type' => 'mutrain', 'shortname' => 'field2']
+        );
 
         $framework1 = $generator->create_framework();
         $framework2 = $generator->create_framework();
@@ -425,11 +436,14 @@ final class framework_test extends \advanced_testcase {
         $generator = $this->getDataGenerator()->get_plugin_generator('tool_mutrain');
 
         $fielcategory = $this->getDataGenerator()->create_custom_field_category(
-            ['component' => 'core_course', 'area' => 'course']);
+            ['component' => 'core_course', 'area' => 'course']
+        );
         $field1 = $this->getDataGenerator()->create_custom_field(
-            ['categoryid' => $fielcategory->get('id'), 'type' => 'mutrain', 'shortname' => 'field1']);
+            ['categoryid' => $fielcategory->get('id'), 'type' => 'mutrain', 'shortname' => 'field1']
+        );
         $field2 = $this->getDataGenerator()->create_custom_field(
-            ['categoryid' => $fielcategory->get('id'), 'type' => 'mutrain', 'shortname' => 'field2']);
+            ['categoryid' => $fielcategory->get('id'), 'type' => 'mutrain', 'shortname' => 'field2']
+        );
 
         $admin = \get_admin();
         $site = \get_site();

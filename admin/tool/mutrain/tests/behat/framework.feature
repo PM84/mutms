@@ -48,7 +48,7 @@ Feature: Managers can manage training frameworks
     And I set the following fields in the ".modal-dialog" "css_element" to these values:
       | Framework name          | Framework 1 |
       | Required training total | 33          |
-    And I press dialog form button "Add framework"
+    And I click on "Add framework" "button" in the ".modal-dialog" "css_element"
     Then the following should exist in the "reportbuilder-table" table:
       | Framework name | Framework ID | Custom fields | Public | Required training total | Restricted completion validity |
       | Framework 1    |              | 0             | No     | 33                      | No                             |
@@ -61,7 +61,7 @@ Feature: Managers can manage training frameworks
       | Public                         | 1           |
       | Required training total        | 13          |
       | Restricted completion validity | 1           |
-    And I press dialog form button "Add framework"
+    And I click on "Add framework" "button" in the ".modal-dialog" "css_element"
     Then the following should exist in the "reportbuilder-table" table:
       | Framework name | Framework ID | Custom fields | Public | Required training total | Restricted completion validity |
       | Framework 1    |              | 0             | No     | 33                      | No                             |
@@ -91,7 +91,7 @@ Feature: Managers can manage training frameworks
       | Required training total        | 31          |
       | Restricted completion validity | 0           |
       | Context                        | Cat 1       |
-    And I press dialog form button "Update framework"
+    And I click on "Update framework" "button" in the ".modal-dialog" "css_element"
     Then I should see "Framework X"
     And I should see "Argh"
     And I should see "fwidx" in the "Framework ID" definition list item
@@ -119,7 +119,7 @@ Feature: Managers can manage training frameworks
       | Required training total        | 13          |
       | Restricted completion validity | 1           |
       | Context                        | System      |
-    And I press dialog form button "Update framework"
+    And I click on "Update framework" "button" in the ".modal-dialog" "css_element"
     Then I should see "Framework 2"
     And I should see "Blah"
     And I should see "fwid2" in the "Framework ID" definition list item
@@ -130,19 +130,19 @@ Feature: Managers can manage training frameworks
     And I should see "No" in the "Archived" definition list item
 
     When I click on "Archive framework" "link"
-    And I press dialog form button "Archive framework"
+    And I click on "Archive framework" "button" in the ".modal-dialog" "css_element"
     Then I should see "Yes" in the "Archived" definition list item
 
     When I click on "Restore framework" "link"
-    And I press dialog form button "Restore framework"
+    And I click on "Restore framework" "button" in the ".modal-dialog" "css_element"
     Then I should see "No" in the "Archived" definition list item
 
     And I click on "Archive framework" "link"
-    And I press dialog form button "Archive framework"
+    And I click on "Archive framework" "button" in the ".modal-dialog" "css_element"
     And I should see "Yes" in the "Archived" definition list item
 
     When I click on "Delete framework" action from "Framework actions" dropdown
-    And I press dialog form button "Delete framework"
+    And I click on "Delete framework" "button" in the ".modal-dialog" "css_element"
     Then I should see "Framework 1"
     And I should not see "Framework 2"
 
@@ -153,13 +153,13 @@ Feature: Managers can manage training frameworks
     And I set the following fields in the ".modal-dialog" "css_element" to these values:
       | Framework name          | Framework 1 |
       | Required training total | 33          |
-    And I press dialog form button "Add framework"
+    And I click on "Add framework" "button" in the ".modal-dialog" "css_element"
     And I follow "Framework 1"
 
     When I press "Add field"
     And I set the following fields in the ".modal-dialog" "css_element" to these values:
       | Custom field | Training Field 1 |
-    And I press dialog form button "Add field"
+    And I click on "Add field" "button" in the ".modal-dialog" "css_element"
     Then the following should exist in the "tool_mutrain_field_table" table:
       | Name             | Short name | Component   | Area   |
       | Training Field 1 | training1  | core_course | course |

@@ -30,7 +30,6 @@ use stdClass;
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 final class framework {
-
     /**
      * Create new training framework.
      *
@@ -148,8 +147,15 @@ final class framework {
             $data->description = $data->description_editor['text'];
             $data->descriptionformat = $data->description_editor['format'];
             $editoroptions = self::get_description_editor_options($oldrecord->contextid);
-            $data = file_postupdate_standard_editor($data, 'description', $editoroptions, $editoroptions['context'],
-                'tool_mutrain', 'description', $data->id);
+            $data = file_postupdate_standard_editor(
+                $data,
+                'description',
+                $editoroptions,
+                $editoroptions['context'],
+                'tool_mutrain',
+                'description',
+                $data->id
+            );
         }
         if (property_exists($data, 'description')) {
             $record->description = (string)$data->description;
@@ -301,8 +307,10 @@ final class framework {
     public static function field_remove(int $frameworkid, int $fieldid): void {
         global $DB;
 
-        $DB->delete_records('tool_mutrain_field',
-            ['frameworkid' => $frameworkid, 'fieldid' => $fieldid]);
+        $DB->delete_records(
+            'tool_mutrain_field',
+            ['frameworkid' => $frameworkid, 'fieldid' => $fieldid]
+        );
     }
 
     /**

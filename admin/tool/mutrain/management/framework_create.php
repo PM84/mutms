@@ -34,10 +34,8 @@ use tool_mutrain\local\management;
 /** @var core_renderer $OUTPUT */
 /** @var stdClass $CFG */
 
-// phpcs:ignoreFile moodle.Files.MoodleInternal.MoodleInternalGlobalState
-if (!empty($_SERVER['HTTP_X_MULIB_DIALOG_FORM_REQUEST'])) {
-    define('AJAX_SCRIPT', true);
-}
+define('AJAX_SCRIPT', true);
+
 require('../../../../config.php');
 
 $contextid = required_param('contextid', PARAM_INT);
@@ -46,8 +44,9 @@ $context = context::instance_by_id($contextid);
 require_login();
 require_capability('tool/mutrain:manageframeworks', $context);
 
-$pageurl = new moodle_url('/admin/tool/mutrain/management/framework_create.php', ['contextid' => $context->id]);
-management::setup_index_page($pageurl, $context, $context->id);
+$currenturl = new moodle_url('/admin/tool/mutrain/management/framework_create.php', ['contextid' => $context->id]);
+$PAGE->set_context($context);
+$PAGE->set_url($currenturl);
 
 $returnurl = new moodle_url('/admin/tool/mutrain/management/index.php', ['contextid' => $context->id]);
 
@@ -64,13 +63,10 @@ $editoroptions = framework::get_description_editor_options();
 
 $form = new \tool_mutrain\local\form\framework_create(null, ['data' => $framework, 'editoroptions' => $editoroptions]);
 if ($form->is_cancelled()) {
-    redirect($returnurl);
+    $form->ajax_form_cancelled($returnurl);
 } else if ($data = $form->get_data()) {
     framework::create((array)$data);
-    $form->redirect_submitted($returnurl);
+    $form->ajax_form_submitted($returnurl);
 }
 
-echo $OUTPUT->header();
-echo $OUTPUT->heading(get_string('framework_create', 'tool_mutrain'));
-echo $form->render();
-echo $OUTPUT->footer();
+$form->ajax_form_render();

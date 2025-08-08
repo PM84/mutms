@@ -29,8 +29,8 @@
 defined('MOODLE_INTERNAL') || die();
 
 $functions = [
-    'tool_mutrain_form_field_add_fieldid' => [
-        'classname' => \tool_mutrain\external\form_field_add_fieldid::class,
+    'tool_mutrain_form_autocomplete_field_add_fieldid' => [
+        'classname' => \tool_mutrain\external\form_autocomplete\field_add_fieldid::class,
         'description' => 'Return list of field candidates for adding to framework.',
         'type' => 'read',
         'ajax' => true,
