@@ -50,27 +50,6 @@ class behat_tool_mulib extends behat_base {
     }
 
     /**
-     * Submit modal form dialog.
-     *
-     * @Given I press dialog form button :element
-     *
-     * @param string $element Element we look for
-     */
-    public function i_press_dialog_form_button($element) {
-        if (!$this->running_javascript()) {
-            $node = $this->get_node_in_container('button', $element, 'css_element', '.mform');
-            $node->click();
-            return;
-        }
-
-        $node = $this->get_node_in_container('button', $element, 'css_element', '.tool_mulib-dialog_form');
-        $node->focus(); // Scroll to the button, it might be outside the dialog viewport.
-        $this->ensure_node_is_visible($node);
-
-        $node->click();
-    }
-
-    /**
      * Execute a scheduled task via CURL.
      *
      * @Given I run the :taskname task
@@ -96,8 +75,11 @@ class behat_tool_mulib extends behat_base {
             'HEADER' => 0,
         ];
 
-        $content = $ch->get("$CFG->wwwroot/admin/tool/mulib/tests/behat/task_runner.php",
-            ['behat_task' => $taskname], $options);
+        $content = $ch->get(
+            "$CFG->wwwroot/admin/tool/mulib/tests/behat/task_runner.php",
+            ['behat_task' => $taskname],
+            $options
+        );
 
         if (!str_contains($content, "Scheduled task '$taskname' completed")) {
             throw new ExpectationException("Scheduled task '$taskname' did not complete successfully, content : " . $content, $this->getSession());
@@ -203,7 +185,7 @@ class behat_tool_mulib extends behat_base {
         // We also check the element visibility when running JS tests. Using microsleep as this
         // is a repeated step and global performance is important.
         $this->spin(
-            function($context, $args) {
+            function ($context, $args) {
 
                 foreach ($args['nodes'] as $node) {
                     if ($node->isVisible()) {
