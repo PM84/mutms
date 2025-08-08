@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 // phpcs:disable moodle.Files.BoilerplateComment.CommentEndedTooSoon
+// phpcs:disable moodle.Files.LineLength.TooLong
 
 /**
  * Programs export.
@@ -75,7 +76,7 @@ if ($program) {
 }
 
 $form = new \tool_muprog\local\form\export(null,
-    ['program' => $program, 'contextid' => $contextid, 'archived' => $archived]);
+    ['program' => $program, 'context' => $context, 'contextid' => $contextid, 'archived' => $archived]);
 
 if ($form->is_cancelled()) {
     redirect($returnurl);

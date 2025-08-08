@@ -20,7 +20,7 @@
 namespace tool_muprog\local\form;
 
 use tool_muprog\local\content\set;
-use tool_muprog\external\form_item_append_trainingid;
+use tool_muprog\external\form_autocomplete\item_append_trainingid;
 use tool_muprog\local\util;
 
 /**
@@ -32,7 +32,7 @@ use tool_muprog\local\util;
  * @author     Petr Skoda
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-final class item_append extends \tool_mulib\local\dialog_form {
+final class item_append extends \tool_mulib\local\ajax_form {
     #[\Override]
     protected function definition() {
         global $DB;
@@ -40,18 +40,28 @@ final class item_append extends \tool_mulib\local\dialog_form {
         $mform = $this->_form;
         /** @var set $parentset */
         $parentset = $this->_customdata['parentset'];
+        $context = $this->_customdata['context'];
 
         $select = 'programid = :programid AND courseid IS NOT NULL';
         $params = ['programid' => $parentset->get_programid()];
         $exclude = $DB->get_fieldset_select('tool_muprog_item', 'courseid', $select, $params);
 
-        $mform->addElement('course', 'courses', get_string('courses'),
-            ['multiple' => true, 'exclude' => $exclude, 'requiredcapabilities' => ['tool/muprog:addcourse']]);
+        $mform->addElement(
+            'course',
+            'courses',
+            get_string('courses'),
+            ['multiple' => true, 'exclude' => $exclude, 'requiredcapabilities' => ['tool/muprog:addcourse']]
+        );
 
         if (util::is_mutrain_available() && $DB->record_exists('tool_mutrain_framework', ['archived' => 0])) {
-            $arguments = ['programid' => $parentset->get_programid()];
-            form_item_append_trainingid::add_form_element(
-                $mform, $arguments, 'trainingid', get_string('training', 'tool_muprog'));
+            $args = ['programid' => $parentset->get_programid()];
+            item_append_trainingid::add_element(
+                $mform,
+                $args,
+                'trainingid',
+                get_string('training', 'tool_muprog'),
+                $context
+            );
         }
 
         $mform->addElement('select', 'addset', get_string('addset', 'tool_muprog'), ['0' => get_string('no'), '1' => get_string('yes')]);
@@ -79,8 +89,12 @@ final class item_append extends \tool_mulib\local\dialog_form {
         $mform->hideIf('minpoints', 'sequencetype', 'noteq', set::SEQUENCE_TYPE_MINPOINTS);
         $mform->setDefault('minpoints', 1);
 
-        $mform->addElement('duration', 'completiondelay', get_string('completiondelay', 'tool_muprog'),
-            ['optional' => true, 'defaultunit' => DAYSECS]);
+        $mform->addElement(
+            'duration',
+            'completiondelay',
+            get_string('completiondelay', 'tool_muprog'),
+            ['optional' => true, 'defaultunit' => DAYSECS]
+        );
 
         $mform->addElement('hidden', 'parentitemid');
         $mform->setType('parentitemid', PARAM_INT);
@@ -135,8 +149,8 @@ final class item_append extends \tool_mulib\local\dialog_form {
         }
 
         if (!empty($data['trainingid'])) {
-            $arguments = ['programid' => $parentset->get_programid()];
-            $error = form_item_append_trainingid::validate_form_value($arguments, $data['trainingid']);
+            $args = ['programid' => $parentset->get_programid()];
+            $error = item_append_trainingid::validate_value($data['trainingid'], $args, $context);
             if ($error !== null) {
                 $errors['trainingid'] = $error;
             }
