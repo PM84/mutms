@@ -16,9 +16,6 @@
 
 // phpcs:disable moodle.Files.BoilerplateComment.CommentEndedTooSoon
 
-use tool_mutenancy\local\tenancy;
-use tool_mutenancy\local\manager;
-
 /**
  * Associate users with tenant.
  *
@@ -27,16 +24,16 @@ use tool_mutenancy\local\manager;
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use tool_mutenancy\local\tenancy;
+
 /** @var moodle_database $DB */
 /** @var moodle_page $PAGE */
 /** @var core_renderer $OUTPUT */
 /** @var stdClass $CFG */
 
-// phpcs:ignoreFile moodle.Files.MoodleInternal.MoodleInternalGlobalState
-if (!empty($_SERVER['HTTP_X_MULIB_DIALOG_FORM_REQUEST'])) {
-    define('AJAX_SCRIPT', true);
-}
-require(__DIR__.'/../../../../config.php');
+define('AJAX_SCRIPT', true);
+
+require(__DIR__ . '/../../../../config.php');
 require_once($CFG->dirroot . '/cohort/lib.php');
 
 $tenantid = required_param('tenantid', PARAM_INT);
@@ -67,22 +64,17 @@ $PAGE->set_context($context);
 
 $returnurl = new moodle_url('/admin/tool/mutenancy/tenant_users.php', ['id' => $tenant->id]);
 
-$form = new \tool_mutenancy\local\form\associate_add(null, ['tenant' => $tenant, 'cohort' => $cohort]);
+$form = new \tool_mutenancy\local\form\associate_add(null, ['tenant' => $tenant, 'cohort' => $cohort, 'context' => $context]);
 
 if ($form->is_cancelled()) {
-    redirect($returnurl);
+    $form->ajax_form_cancelled($returnurl);
 }
 
 if ($data = $form->get_data()) {
     foreach ($data->userids as $userid) {
         cohort_add_member($cohort->id, $userid);
     }
-    $form->redirect_submitted($returnurl);
+    $form->ajax_form_submitted($returnurl);
 }
 
-echo $OUTPUT->header();
-echo $OUTPUT->heading(get_string('associate_add', 'tool_mutenancy'));
-
-echo $form->render();
-
-echo $OUTPUT->footer();
+$form->ajax_form_render();

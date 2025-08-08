@@ -16,8 +16,6 @@
 
 // phpcs:disable moodle.Files.BoilerplateComment.CommentEndedTooSoon
 
-use tool_mutenancy\local\tenancy;
-
 /**
  * Multi-tenancy activation.
  *
@@ -26,14 +24,14 @@ use tool_mutenancy\local\tenancy;
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use tool_mutenancy\local\tenancy;
+
 /** @var moodle_page $PAGE */
 /** @var core_renderer $OUTPUT */
 
-// phpcs:ignoreFile moodle.Files.MoodleInternal.MoodleInternalGlobalState
-if (!empty($_SERVER['HTTP_X_MULIB_DIALOG_FORM_REQUEST'])) {
-    define('AJAX_SCRIPT', true);
-}
-require(__DIR__.'/../../../../config.php');
+define('AJAX_SCRIPT', true);
+
+require(__DIR__ . '/../../../../config.php');
 
 require_login();
 $syscontext = context_system::instance();
@@ -42,7 +40,7 @@ require_capability('moodle/site:config', $syscontext);
 $returnurl = new moodle_url('/admin/tool/mutenancy/index.php');
 
 if (tenancy::is_active()) {
-    redirect($returnurl);
+    throw new \core\exception\invalid_parameter_exception('Multi-tenancy is already active');
 }
 
 $PAGE->set_url('/admin/tool/mutenancy/management/tenancy_activate.php');
@@ -51,17 +49,12 @@ $PAGE->set_context($syscontext);
 $form = new \tool_mutenancy\local\form\tenancy_activate();
 
 if ($form->is_cancelled()) {
-    redirect($returnurl);
+    $form->ajax_form_cancelled($returnurl);
 }
 
 if ($data = $form->get_data()) {
     tenancy::activate();
-    $form->redirect_submitted($returnurl);
+    $form->ajax_form_submitted($returnurl);
 }
 
-echo $OUTPUT->header();
-echo $OUTPUT->heading(get_string('tenancy_activate', 'tool_mutenancy'));
-
-echo $form->render();
-
-echo $OUTPUT->footer();
+$form->ajax_form_render();

@@ -1,9 +1,8 @@
-@tool @tool_mutenancy @MuTMS
+@tool @tool_mutenancy @MuTMS @javascript
 Feature: Tenant authentication setting loginshow
   Background:
     Given unnecessary Admin bookmarks block gets deleted
 
-  @javascript
   Scenario: Users may access tenant login pages
     Given I am on homepage
     When I click on "Log in" "link" in the ".logininfo" "css_element"
@@ -78,7 +77,6 @@ Feature: Tenant authentication setting loginshow
     And I should see "Access as a guest"
     And I should see "Select site"
 
-  @javascript
   Scenario: Tenant managers may configure tenant login instructions
     Given the following "tool_mutenancy > tenants" exist:
       | name     | idnumber | loginshow | sitefullname     | siteshortname |
@@ -103,7 +101,7 @@ Feature: Tenant authentication setting loginshow
     And I set the following fields to these values:
       | auth_instructions_override | 1                   |
       | auth_instructions[text]    | Welcome to Tenant 1 |
-    And I press dialog form button "Update"
+    And I click on "Update" "button" in the ".modal-dialog" "css_element"
     And I should see "Welcome to Tenant 1" in the "Instructions" definition list item
     And I log out
 
@@ -114,7 +112,7 @@ Feature: Tenant authentication setting loginshow
     And I set the following fields to these values:
       | auth_instructions_override | 1                   |
       | auth_instructions[text]    |                     |
-    And I press dialog form button "Update"
+    And I click on "Update" "button" in the ".modal-dialog" "css_element"
     And I should see "Empty" in the "Instructions" definition list item
     And I log out
 

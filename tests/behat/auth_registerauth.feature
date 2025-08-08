@@ -1,4 +1,4 @@
-@tool @tool_mutenancy @MuTMS
+@tool @tool_mutenancy @MuTMS @javascript
 Feature: Tenant authentication setting registerauth
   Background:
     Given unnecessary Admin bookmarks block gets deleted
@@ -17,7 +17,7 @@ Feature: Tenant authentication setting registerauth
     And I set the following fields to these values:
       | registerauth_override   | 1                   |
       | registerauth            | Disabled            |
-    And I press dialog form button "Update"
+    And I click on "Update" "button" in the ".modal-dialog" "css_element"
     And I should see "Disabled" in the "Self registration" definition list item
     And I am on the "TEN3" "tool_mutenancy > Tenant authentication" page
     And I should see "Default value (Email-based self-registration)" in the "Self registration" definition list item
@@ -25,11 +25,10 @@ Feature: Tenant authentication setting registerauth
     And I set the following fields to these values:
       | registerauth_override   | 1                   |
       | registerauth            | email               |
-    And I press dialog form button "Update"
+    And I click on "Update" "button" in the ".modal-dialog" "css_element"
     And I should see "Email-based self-registration" in the "Self registration" definition list item
     And I log out
 
-  @javascript
   Scenario: Users may self register as tenant members
     When I am on the "0" "tool_mutenancy > Tenant login" page
     And I click on "Create new account" "link"
