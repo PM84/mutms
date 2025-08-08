@@ -129,7 +129,8 @@ final class element_test extends \advanced_testcase {
         $this->assertSame(['programfield' => 'timecompleted', 'dateformat' => 'strftimedatefullshort'], (array)$result);
 
         $result = element::decode_programfield_data(json_encode(
-            (object)['programfield' => 'customfield', 'customfieldid' => '111']));
+            (object)['programfield' => 'customfield', 'customfieldid' => '111']
+        ));
         $this->assertIsObject($result);
         $this->assertSame(['programfield' => 'customfield', 'customfieldid' => '111'], (array)$result);
 
