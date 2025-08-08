@@ -129,7 +129,8 @@ final class element_test extends \advanced_testcase {
         $this->assertSame(['certificationfield' => 'timecertified', 'dateformat' => 'strftimedatefullshort'], (array)$result);
 
         $result = element::decode_certificationfield_data(json_encode(
-            (object)['certificationfield' => 'customfield', 'customfieldid' => '111']));
+            (object)['certificationfield' => 'customfield', 'customfieldid' => '111']
+        ));
         $this->assertIsObject($result);
         $this->assertSame(['certificationfield' => 'customfield', 'customfieldid' => '111'], (array)$result);
 
