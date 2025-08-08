@@ -16,9 +16,6 @@
 
 // phpcs:disable moodle.Files.BoilerplateComment.CommentEndedTooSoon
 
-use tool_mutenancy\local\tenancy;
-use tool_mutenancy\local\manager;
-
 /**
  * Update tenant managers.
  *
@@ -27,15 +24,16 @@ use tool_mutenancy\local\manager;
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use tool_mutenancy\local\tenancy;
+use tool_mutenancy\local\manager;
+
 /** @var moodle_database $DB */
 /** @var moodle_page $PAGE */
 /** @var core_renderer $OUTPUT */
 
-// phpcs:ignoreFile moodle.Files.MoodleInternal.MoodleInternalGlobalState
-if (!empty($_SERVER['HTTP_X_MULIB_DIALOG_FORM_REQUEST'])) {
-    define('AJAX_SCRIPT', true);
-}
-require(__DIR__.'/../../../../config.php');
+define('AJAX_SCRIPT', true);
+
+require(__DIR__ . '/../../../../config.php');
 
 $tenantid = required_param('id', PARAM_INT);
 
@@ -56,20 +54,19 @@ $PAGE->set_context($context);
 $returnurl = new moodle_url('/admin/tool/mutenancy/tenant.php', ['id' => $tenant->id]);
 
 $managers = \tool_mutenancy\local\manager::get_manager_users($tenant->id);
-$form = new \tool_mutenancy\local\form\tenant_managers(null, ['tenant' => $tenant, 'userids' => array_keys($managers)]);
+$form = new \tool_mutenancy\local\form\tenant_managers(null, [
+    'tenant' => $tenant,
+    'userids' => array_keys($managers),
+    'context' => $context,
+]);
 
 if ($form->is_cancelled()) {
-    redirect($returnurl);
+    $form->ajax_form_cancelled($returnurl);
 }
 
 if ($data = $form->get_data()) {
     manager::set_userids($tenant->id, $data->userids);
-    $form->redirect_submitted($returnurl);
+    $form->ajax_form_submitted($returnurl);
 }
 
-echo $OUTPUT->header();
-echo $OUTPUT->heading(get_string('tenant_managers', 'tool_mutenancy'));
-
-echo $form->render();
-
-echo $OUTPUT->footer();
+$form->ajax_form_render();

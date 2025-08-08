@@ -16,8 +16,6 @@
 
 // phpcs:disable moodle.Files.BoilerplateComment.CommentEndedTooSoon
 
-use tool_mutenancy\local\tenancy;
-
 /**
  * Confirm tenant member account.
  *
@@ -28,17 +26,17 @@ use tool_mutenancy\local\tenancy;
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use tool_mutenancy\local\tenancy;
+
 /** @var moodle_page $PAGE */
 /** @var core_renderer $OUTPUT */
 /** @var moodle_database $DB */
 /** @var stdClass $USER */
 /** @var stdClass $CFG */
 
-// phpcs:ignoreFile moodle.Files.MoodleInternal.MoodleInternalGlobalState
-if (!empty($_SERVER['HTTP_X_MULIB_DIALOG_FORM_REQUEST'])) {
-    define('AJAX_SCRIPT', true);
-}
-require(__DIR__.'/../../../../config.php');
+define('AJAX_SCRIPT', true);
+
+require(__DIR__ . '/../../../../config.php');
 
 $userid = required_param('id', PARAM_INT);
 
@@ -56,7 +54,8 @@ $PAGE->set_context($personalcontext);
 
 $user = $DB->get_record('user', ['id' => $userid]);
 
-if (!$user || $user->deleted || !$user->tenantid || isguestuser($user)
+if (
+    !$user || $user->deleted || !$user->tenantid || isguestuser($user)
     || is_siteadmin($user) || $USER->id == $user->id || $user->mnethostid != $CFG->mnet_localhost_id
 ) {
     throw new moodle_exception('invaliduserid');
@@ -71,24 +70,20 @@ if ($user->confirmed) {
 $form = new \tool_mutenancy\local\form\member_confirm(null, ['user' => $user]);
 
 if ($form->is_cancelled()) {
-    redirect($returnurl);
+    $form->ajax_form_cancelled($returnurl);
 }
 
 if ($data = $form->get_data()) {
     $success = \tool_mutenancy\local\member::confirm($user->id);
     if ($success) {
-        $form->redirect_submitted($returnurl);
+        $form->ajax_form_submitted($returnurl);
     } else {
-        $form->redirect_submitted($returnurl,
+        \core\notification::add(
             get_string('usernotconfirmed', '', fullname($user, true)),
             \core\output\notification::NOTIFY_ERROR
         );
+        $form->ajax_form_submitted($returnurl);
     }
 }
 
-echo $OUTPUT->header();
-echo $OUTPUT->heading(get_string('confirmaccount', 'core'));
-
-echo $form->render();
-
-echo $OUTPUT->footer();
+$form->ajax_form_render();

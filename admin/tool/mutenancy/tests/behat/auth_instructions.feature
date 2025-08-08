@@ -1,4 +1,4 @@
-@tool @tool_mutenancy @MuTMS
+@tool @tool_mutenancy @MuTMS @javascript
 Feature: Tenant authentication setting instructions
   Background:
     Given unnecessary Admin bookmarks block gets deleted
@@ -18,7 +18,6 @@ Feature: Tenant authentication setting instructions
     And the following config values are set as admin:
       | auth_instructions | Welcome to main site |
 
-  @javascript
   Scenario: Tenant managers may configure tenant login instructions
     Given I log in as "manager1"
     And I am on the "TEN1" "tool_mutenancy > Tenant authentication" page
@@ -27,7 +26,7 @@ Feature: Tenant authentication setting instructions
     And I set the following fields to these values:
       | auth_instructions_override | 1                   |
       | auth_instructions[text]    | Welcome to Tenant 1 |
-    And I press dialog form button "Update"
+    And I click on "Update" "button" in the ".modal-dialog" "css_element"
     And I should see "Welcome to Tenant 1" in the "Instructions" definition list item
     And I log out
 
@@ -38,7 +37,7 @@ Feature: Tenant authentication setting instructions
     And I set the following fields to these values:
       | auth_instructions_override | 1                   |
       | auth_instructions[text]    |                     |
-    And I press dialog form button "Update"
+    And I click on "Update" "button" in the ".modal-dialog" "css_element"
     And I should see "Empty" in the "Instructions" definition list item
     And I log out
 

@@ -1,4 +1,4 @@
-@tool @tool_mutenancy @MuTMS
+@tool @tool_mutenancy @MuTMS @javascript
 Feature: Tenant members and associated users section
   Background:
     Given unnecessary Admin bookmarks block gets deleted
@@ -13,7 +13,6 @@ Feature: Tenant members and associated users section
       | tenant | user     |
       | TEN1   | manager1 |
 
-  @javascript
   Scenario: Tenant manager may add, update and delete tenant members
     Given I log in as "manager1"
     And I am on the "TEN1" "tool_mutenancy > Tenant users" page
@@ -25,7 +24,7 @@ Feature: Tenant members and associated users section
       | First name    | First                |
       | Last name     | Member               |
       | Email address | member1@example.com  |
-    And I press dialog form button "Create account"
+    And I click on "Create account" "button" in the ".modal-dialog" "css_element"
     Then the following should exist in the "reportbuilder-table" table:
       | First name    | Email address        | Tenant member |
       | First Member  | member1@example.com  | Yes           |
@@ -47,22 +46,22 @@ Feature: Tenant members and associated users section
       | First name    | Prvni                |
       | Last name     | Student              |
       | Email address | student1@example.com |
-    And I press dialog form button "Update account"
+    And I click on "Update account" "button" in the ".modal-dialog" "css_element"
     Then the following should exist in the "reportbuilder-table" table:
       | First name    | Email address        | Tenant member |
       | Prvni Student | student1@example.com | Yes           |
 
     When I click on "Actions" "link" in the "Prvni Student" "table_row"
     And I click on "Suspend user account" "link" in the "Prvni Student" "table_row"
-    And I press dialog form button "Suspend user account"
+    And I click on "Suspend user account" "button" in the ".modal-dialog" "css_element"
     Then I should see "Suspended" in the "student1@example.com" "table_row"
 
     When I click on "Actions" "link" in the "Prvni Student" "table_row"
     And I click on "Activate user account" "link" in the "Prvni Student" "table_row"
-    And I press dialog form button "Activate user account"
+    And I click on "Activate user account" "button" in the ".modal-dialog" "css_element"
     Then I should not see "Suspended" in the "student1@example.com" "table_row"
 
     When I click on "Actions" "link" in the "Prvni Student" "table_row"
     And I click on "Delete" "link" in the "Prvni Student" "table_row"
-    And I press dialog form button "Delete"
+    And I click on "Delete" "button" in the ".modal-dialog" "css_element"
     Then I should not see "Prvni student"

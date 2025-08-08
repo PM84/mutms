@@ -16,9 +16,6 @@
 
 // phpcs:disable moodle.Files.BoilerplateComment.CommentEndedTooSoon
 
-use tool_mutenancy\local\tenancy;
-use tool_mutenancy\local\config;
-
 /**
  * Update auth editing favicon.
  *
@@ -27,15 +24,16 @@ use tool_mutenancy\local\config;
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use tool_mutenancy\local\tenancy;
+use tool_mutenancy\local\config;
+
 /** @var moodle_database $DB */
 /** @var moodle_page $PAGE */
 /** @var core_renderer $OUTPUT */
 
-// phpcs:ignoreFile moodle.Files.MoodleInternal.MoodleInternalGlobalState
-if (!empty($_SERVER['HTTP_X_MULIB_DIALOG_FORM_REQUEST'])) {
-    define('AJAX_SCRIPT', true);
-}
-require(__DIR__.'/../../../../config.php');
+define('AJAX_SCRIPT', true);
+
+require(__DIR__ . '/../../../../config.php');
 
 $tenantid = required_param('id', PARAM_INT);
 
@@ -59,7 +57,7 @@ $returnurl = new moodle_url('/admin/tool/tenant_auth.php', ['id' => $tenant->id]
 $form = new \tool_mutenancy\local\form\auth_edit(null, ['tenant' => $tenant]);
 
 if ($form->is_cancelled()) {
-    redirect($returnurl);
+    $form->ajax_form_cancelled($returnurl);
 }
 
 if ($data = $form->get_data()) {
@@ -113,12 +111,7 @@ if ($data = $form->get_data()) {
 
     \tool_mutenancy\event\auth_updated::create_from_tenant($tenant)->trigger();
 
-    $form->redirect_submitted($returnurl);
+    $form->ajax_form_submitted($returnurl);
 }
 
-echo $OUTPUT->header();
-echo $OUTPUT->heading(get_string('update'));
-
-echo $form->render();
-
-echo $OUTPUT->footer();
+$form->ajax_form_render();

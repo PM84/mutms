@@ -16,8 +16,6 @@
 
 // phpcs:disable moodle.Files.BoilerplateComment.CommentEndedTooSoon
 
-use tool_mutenancy\local\tenancy;
-
 /**
  * Allocate users to tenants.
  *
@@ -26,16 +24,16 @@ use tool_mutenancy\local\tenancy;
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use tool_mutenancy\local\tenancy;
+
 /** @var moodle_database $DB */
 /** @var moodle_page $PAGE */
 /** @var core_renderer $OUTPUT */
 /** @var stdClass $USER */
 
-// phpcs:ignoreFile moodle.Files.MoodleInternal.MoodleInternalGlobalState
-if (!empty($_SERVER['HTTP_X_MULIB_DIALOG_FORM_REQUEST'])) {
-    define('AJAX_SCRIPT', true);
-}
-require(__DIR__.'/../../../../config.php');
+define('AJAX_SCRIPT', true);
+
+require(__DIR__ . '/../../../../config.php');
 
 $userid = required_param('id', PARAM_INT);
 
@@ -59,7 +57,7 @@ if ($USER->id == $user->id) {
     throw new \core\exception\invalid_parameter_exception('cannot allocate own account');
 }
 
-$form = new \tool_mutenancy\local\form\user_allocate(null, ['user' => $user]);
+$form = new \tool_mutenancy\local\form\user_allocate(null, ['user' => $user, 'context' => $syscontext]);
 
 if ($form->is_cancelled()) {
     if ($user->tenantid) {
@@ -67,7 +65,7 @@ if ($form->is_cancelled()) {
     } else {
         $returnurl = new moodle_url('/admin/tool/user.php');
     }
-    redirect($returnurl);
+    $form->ajax_form_cancelled($returnurl);
 }
 
 if ($data = $form->get_data()) {
@@ -78,12 +76,7 @@ if ($data = $form->get_data()) {
     } else {
         $returnurl = new moodle_url('/admin/tool/user.php');
     }
-    $form->redirect_submitted($returnurl);
+    $form->ajax_form_submitted($returnurl);
 }
 
-echo $OUTPUT->header();
-echo $OUTPUT->heading(get_string('user_allocate', 'tool_mutenancy'));
-
-echo $form->render();
-
-echo $OUTPUT->footer();
+$form->ajax_form_render();

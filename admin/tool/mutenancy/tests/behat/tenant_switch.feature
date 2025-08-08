@@ -1,4 +1,4 @@
-@tool @tool_mutenancy @MuTMS
+@tool @tool_mutenancy @MuTMS @javascript
 Feature: Tenant switching
   Background:
     Given unnecessary Admin bookmarks block gets deleted
@@ -14,34 +14,32 @@ Feature: Tenant switching
       | Tenant 3 | TEN3     | Tent Site full 3 | TSS3          | 0        |             |
       | Tenant 4 | TEN4     | Tent Site full 4 | TSS4          | 1        | cohort4     |
 
-  @javascript
   Scenario: Admin may switch to any active tenant
     Given I log in as "admin"
     And I should see "Acceptance test site" in the ".navbar" "css_element"
 
     When I click on "Switch tenant" "link" in the ".navbar" "css_element"
-    And I press dialog form button "Switch tenant"
+    And I click on "Switch tenant" "button" in the ".modal-dialog" "css_element"
     And I should see "Change required" in the ".modal-dialog" "css_element"
     And I set the following fields to these values:
       | Tenant      | Tenant 1         |
-    And I press dialog form button "Switch tenant"
+    And I click on "Switch tenant" "button" in the ".modal-dialog" "css_element"
     Then I should see "TSS1" in the ".navbar" "css_element"
 
     When I click on "Switch tenant" "link" in the ".navbar" "css_element"
-    And I press dialog form button "Switch tenant"
+    And I click on "Switch tenant" "button" in the ".modal-dialog" "css_element"
     And I should see "Change required" in the ".modal-dialog" "css_element"
     And I set the following fields to these values:
       | Tenant      | Tenant 2         |
-    And I press dialog form button "Switch tenant"
+    And I click on "Switch tenant" "button" in the ".modal-dialog" "css_element"
     Then I should see "TSS2" in the ".navbar" "css_element"
 
     When I click on "Switch tenant" "link" in the ".navbar" "css_element"
     And I set the following fields to these values:
       | Tenant      | No tenant        |
-    And I press dialog form button "Switch tenant"
+    And I click on "Switch tenant" "button" in the ".modal-dialog" "css_element"
     Then I should see "Acceptance test site" in the ".navbar" "css_element"
 
-  @javascript
   Scenario: Tenant switcher may switch to associated tenants
     Given the following "roles" exist:
       | name            | shortname |
@@ -66,22 +64,21 @@ Feature: Tenant switching
     When I click on "Switch tenant" "link" in the ".navbar" "css_element"
     And I set the following fields to these values:
       | Tenant      | Tenant 1         |
-    And I press dialog form button "Switch tenant"
+    And I click on "Switch tenant" "button" in the ".modal-dialog" "css_element"
     Then I should see "TSS1" in the ".navbar" "css_element"
 
     When I click on "Switch tenant" "link" in the ".navbar" "css_element"
     And I set the following fields to these values:
       | Tenant      | Tenant 2         |
-    And I press dialog form button "Switch tenant"
+    And I click on "Switch tenant" "button" in the ".modal-dialog" "css_element"
     Then I should see "TSS2" in the ".navbar" "css_element"
 
     When I click on "Switch tenant" "link" in the ".navbar" "css_element"
     And I set the following fields to these values:
       | Tenant      | No tenant        |
-    And I press dialog form button "Switch tenant"
+    And I click on "Switch tenant" "button" in the ".modal-dialog" "css_element"
     Then I should see "Acceptance test site" in the ".navbar" "css_element"
 
-  @javascript
   Scenario: Tenant viewer may switch to any active tenant
     Given the following "roles" exist:
       | name          | shortname |
@@ -102,23 +99,23 @@ Feature: Tenant switching
     When I click on "Switch tenant" "link" in the ".navbar" "css_element"
     And I set the following fields to these values:
       | Tenant      | Tenant 1         |
-    And I press dialog form button "Switch tenant"
+    And I click on "Switch tenant" "button" in the ".modal-dialog" "css_element"
     Then I should see "TSS1" in the ".navbar" "css_element"
 
     When I click on "Switch tenant" "link" in the ".navbar" "css_element"
     And I set the following fields to these values:
       | Tenant      | Tenant 2         |
-    And I press dialog form button "Switch tenant"
+    And I click on "Switch tenant" "button" in the ".modal-dialog" "css_element"
     Then I should see "TSS2" in the ".navbar" "css_element"
 
     When I click on "Switch tenant" "link" in the ".navbar" "css_element"
     And I set the following fields to these values:
       | Tenant      | Tenant 3         |
-    And I press dialog form button "Switch tenant"
+    And I click on "Switch tenant" "button" in the ".modal-dialog" "css_element"
     Then I should see "TSS3" in the ".navbar" "css_element"
 
     When I click on "Switch tenant" "link" in the ".navbar" "css_element"
     And I set the following fields to these values:
       | Tenant      | No tenant        |
-    And I press dialog form button "Switch tenant"
+    And I click on "Switch tenant" "button" in the ".modal-dialog" "css_element"
     Then I should see "Acceptance test site" in the ".navbar" "css_element"
