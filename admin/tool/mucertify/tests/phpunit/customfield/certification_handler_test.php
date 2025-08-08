@@ -246,7 +246,8 @@ final class certification_handler_test extends \advanced_testcase {
         ];
         $certification1 = $generator->create_certification((object)$data);
         $assignment = $generator->create_certification_assignment(
-            ['certificationid' => $certification1->id, 'userid' => $assigned->id]);
+            ['certificationid' => $certification1->id, 'userid' => $assigned->id]
+        );
 
         $handler = certification_handler::create();
 

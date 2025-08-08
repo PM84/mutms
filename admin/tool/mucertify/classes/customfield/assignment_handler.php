@@ -75,10 +75,8 @@ final class assignment_handler extends \core_customfield\handler {
             $assignment = $DB->get_record('tool_mucertify_assignment', ['id' => $instanceid], '*', MUST_EXIST);
             $certification = $DB->get_record('tool_mucertify_certification', ['id' => $assignment->certificationid], '*', MUST_EXIST);
             return context::instance_by_id($certification->contextid);
-
         } else if ($this->newitemcontext) {
             return $this->newitemcontext;
-
         } else {
             return \context_system::instance();
         }
@@ -149,13 +147,28 @@ final class assignment_handler extends \core_customfield\handler {
         $mform->setExpanded('customfield_mucertify', true);
         $mform->addElement('html', get_string('customfieldvisibleto', 'tool_mucertify'));
 
-        $mform->addElement('advcheckbox', 'configdata[visibilitymanagers]',
-            '', get_string('customfieldvisible:viewcapability', 'tool_mucertify'), ['group' => 1]);
+        $mform->addElement(
+            'advcheckbox',
+            'configdata[visibilitymanagers]',
+            '',
+            get_string('customfieldvisible:viewcapability', 'tool_mucertify'),
+            ['group' => 1]
+        );
 
-        $mform->addElement('advcheckbox', 'configdata[visibilityassignee]',
-            '', get_string('customfieldvisible:assignee', 'tool_mucertify'), ['group' => 1]);
+        $mform->addElement(
+            'advcheckbox',
+            'configdata[visibilityassignee]',
+            '',
+            get_string('customfieldvisible:assignee', 'tool_mucertify'),
+            ['group' => 1]
+        );
 
-        $mform->addElement('advcheckbox', 'configdata[visibilityeveryone]',
-            '', get_string('customfieldvisible:everyone', 'tool_mucertify'), ['group' => 1]);
+        $mform->addElement(
+            'advcheckbox',
+            'configdata[visibilityeveryone]',
+            '',
+            get_string('customfieldvisible:everyone', 'tool_mucertify'),
+            ['group' => 1]
+        );
     }
 }

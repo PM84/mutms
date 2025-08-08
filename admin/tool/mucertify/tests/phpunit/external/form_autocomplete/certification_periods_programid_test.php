@@ -17,9 +17,9 @@
 // phpcs:disable moodle.Files.BoilerplateComment.CommentEndedTooSoon
 // phpcs:disable moodle.Files.LineLength.TooLong
 
-namespace tool_mucertify\phpunit\external;
+namespace tool_mucertify\phpunit\external\form_autocomplete;
 
-use tool_mucertify\external\form_certification_periods_programid;
+use tool_mucertify\external\form_autocomplete\certification_periods_programid;
 
 /**
  * External API for form program selection.
@@ -31,9 +31,9 @@ use tool_mucertify\external\form_certification_periods_programid;
  * @author     Petr Skoda
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
- * @covers \tool_mucertify\external\form_certification_periods_programid
+ * @covers \tool_mucertify\external\form_autocomplete\certification_periods_programid
  */
-final class form_certification_periods_programid_test extends \advanced_testcase {
+final class certification_periods_programid_test extends \advanced_testcase {
     public function setUp(): void {
         parent::setUp();
         $this->resetAfterTest();
@@ -108,37 +108,45 @@ final class form_certification_periods_programid_test extends \advanced_testcase
         ]);
 
         $this->setAdminUser();
-        $response = form_certification_periods_programid::execute ('', $certification1->id);
-        $results = form_certification_periods_programid::clean_returnvalue(
-            form_certification_periods_programid::execute_returns(), $response);
-        $this->assertSame(null, $results['notice']);
+        $response = certification_periods_programid::execute('', $certification1->id);
+        $results = certification_periods_programid::clean_returnvalue(
+            certification_periods_programid::execute_returns(),
+            $response
+        );
+        $this->assertFalse($results['overflow']);
         $this->assertCount(2, $results['list']);
-        $this->assertSame($program1->id, $results['list'][0]['value']);
-        $this->assertSame($program2->id, $results['list'][1]['value']);
+        $this->assertSame((int)$program1->id, $results['list'][0]['value']);
+        $this->assertSame((int)$program2->id, $results['list'][1]['value']);
 
-        $response = form_certification_periods_programid::execute ('hoku', $certification1->id);
-        $results = form_certification_periods_programid::clean_returnvalue(
-            form_certification_periods_programid::execute_returns(), $response);
-        $this->assertSame(null, $results['notice']);
+        $response = certification_periods_programid::execute('hoku', $certification1->id);
+        $results = certification_periods_programid::clean_returnvalue(
+            certification_periods_programid::execute_returns(),
+            $response
+        );
+        $this->assertFalse($results['overflow']);
         $this->assertCount(1, $results['list']);
-        $this->assertSame($program1->id, $results['list'][0]['value']);
+        $this->assertSame((int)$program1->id, $results['list'][0]['value']);
 
         $this->setUser($user1);
-        $response = form_certification_periods_programid::execute ('', $certification2->id);
-        $results = form_certification_periods_programid::clean_returnvalue(
-            form_certification_periods_programid::execute_returns(), $response);
-        $this->assertSame(null, $results['notice']);
+        $response = certification_periods_programid::execute('', $certification2->id);
+        $results = certification_periods_programid::clean_returnvalue(
+            certification_periods_programid::execute_returns(),
+            $response
+        );
+        $this->assertFalse($results['overflow']);
         $this->assertCount(1, $results['list']);
-        $this->assertSame($program2->id, $results['list'][0]['value']);
+        $this->assertSame((int)$program2->id, $results['list'][0]['value']);
 
         $this->setUser($user1);
         try {
-            form_certification_periods_programid::execute ('', $certification1->id);
+            certification_periods_programid::execute('', $certification1->id);
             $this->fail('Exception excepted');
         } catch (\moodle_exception $ex) {
             $this->assertInstanceOf(\required_capability_exception::class, $ex);
-            $this->assertSame('Sorry, but you do not currently have permissions to do that (Add and update certifications).',
-                $ex->getMessage());
+            $this->assertSame(
+                'Sorry, but you do not currently have permissions to do that (Add and update certifications).',
+                $ex->getMessage()
+            );
         }
     }
 
@@ -208,41 +216,49 @@ final class form_certification_periods_programid_test extends \advanced_testcase
         ]);
 
         $this->setAdminUser();
-        $response = form_certification_periods_programid::execute ('', $certification0->id);
-        $results = form_certification_periods_programid::clean_returnvalue(
-            form_certification_periods_programid::execute_returns(), $response);
-        $this->assertSame(null, $results['notice']);
+        $response = certification_periods_programid::execute('', $certification0->id);
+        $results = certification_periods_programid::clean_returnvalue(
+            certification_periods_programid::execute_returns(),
+            $response
+        );
+        $this->assertFalse($results['overflow']);
         $this->assertCount(3, $results['list']);
-        $this->assertSame($program0->id, $results['list'][0]['value']);
-        $this->assertSame($program1->id, $results['list'][1]['value']);
-        $this->assertSame($program2->id, $results['list'][2]['value']);
+        $this->assertSame((int)$program0->id, $results['list'][0]['value']);
+        $this->assertSame((int)$program1->id, $results['list'][1]['value']);
+        $this->assertSame((int)$program2->id, $results['list'][2]['value']);
 
         $this->setAdminUser();
-        $response = form_certification_periods_programid::execute ('', $certification1->id);
-        $results = form_certification_periods_programid::clean_returnvalue(
-            form_certification_periods_programid::execute_returns(), $response);
-        $this->assertSame(null, $results['notice']);
+        $response = certification_periods_programid::execute('', $certification1->id);
+        $results = certification_periods_programid::clean_returnvalue(
+            certification_periods_programid::execute_returns(),
+            $response
+        );
+        $this->assertFalse($results['overflow']);
         $this->assertCount(2, $results['list']);
-        $this->assertSame($program0->id, $results['list'][0]['value']);
-        $this->assertSame($program1->id, $results['list'][1]['value']);
+        $this->assertSame((int)$program0->id, $results['list'][0]['value']);
+        $this->assertSame((int)$program1->id, $results['list'][1]['value']);
 
         $this->setUser($user1);
-        $response = form_certification_periods_programid::execute ('', $certification0->id);
-        $results = form_certification_periods_programid::clean_returnvalue(
-            form_certification_periods_programid::execute_returns(), $response);
-        $this->assertSame(null, $results['notice']);
+        $response = certification_periods_programid::execute('', $certification0->id);
+        $results = certification_periods_programid::clean_returnvalue(
+            certification_periods_programid::execute_returns(),
+            $response
+        );
+        $this->assertFalse($results['overflow']);
         $this->assertCount(2, $results['list']);
-        $this->assertSame($program0->id, $results['list'][0]['value']);
-        $this->assertSame($program1->id, $results['list'][1]['value']);
+        $this->assertSame((int)$program0->id, $results['list'][0]['value']);
+        $this->assertSame((int)$program1->id, $results['list'][1]['value']);
 
         $this->setUser($user1);
         try {
-            form_certification_periods_programid::execute ('', $certification2->id);
+            certification_periods_programid::execute('', $certification2->id);
             $this->fail('Exception excepted');
         } catch (\moodle_exception $ex) {
             $this->assertInstanceOf(\required_capability_exception::class, $ex);
-            $this->assertSame('Sorry, but you do not currently have permissions to do that (Add and update certifications).',
-                $ex->getMessage());
+            $this->assertSame(
+                'Sorry, but you do not currently have permissions to do that (Add and update certifications).',
+                $ex->getMessage()
+            );
         }
     }
 }

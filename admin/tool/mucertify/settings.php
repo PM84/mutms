@@ -34,35 +34,52 @@ defined('MOODLE_INTERNAL') || die();
 
 $ADMIN->add('root', new admin_category('tool_mucertify', new lang_string('certifications', 'tool_mucertify')), 'competencies');
 
-$settings = new admin_settingpage('tool_mucertify_settings',
+$settings = new admin_settingpage(
+    'tool_mucertify_settings',
     new lang_string('settings', 'tool_mucertify'),
-    'moodle/site:config');
+    'moodle/site:config'
+);
 $ADMIN->add('tool_mucertify', $settings);
 if ($ADMIN->fulltree) {
-    $settings->add(new admin_setting_configcheckbox('tool_mucertify/source_approval_allownew',
+    $settings->add(new admin_setting_configcheckbox(
+        'tool_mucertify/source_approval_allownew',
         new lang_string('source_approval_allownew', 'tool_mucertify'),
-        new lang_string('source_approval_allownew_desc', 'tool_mucertify'), 1));
-    $settings->add(new admin_setting_configcheckbox('tool_mucertify/source_cohort_allownew',
+        new lang_string('source_approval_allownew_desc', 'tool_mucertify'),
+        1
+    ));
+    $settings->add(new admin_setting_configcheckbox(
+        'tool_mucertify/source_cohort_allownew',
         new lang_string('source_cohort_allownew', 'tool_mucertify'),
-        new lang_string('source_cohort_allownew_desc', 'tool_mucertify'), 1));
-    $settings->add(new admin_setting_configcheckbox('tool_mucertify/source_selfassignment_allownew',
+        new lang_string('source_cohort_allownew_desc', 'tool_mucertify'),
+        1
+    ));
+    $settings->add(new admin_setting_configcheckbox(
+        'tool_mucertify/source_selfassignment_allownew',
         new lang_string('source_selfassignment_allownew', 'tool_mucertify'),
-        new lang_string('source_selfassignment_allownew_desc', 'tool_mucertify'), 1));
+        new lang_string('source_selfassignment_allownew_desc', 'tool_mucertify'),
+        1
+    ));
 }
 
-$ADMIN->add('tool_mucertify', new admin_externalpage('tool_mucertify_customfield_certification',
+$ADMIN->add('tool_mucertify', new admin_externalpage(
+    'tool_mucertify_customfield_certification',
     new lang_string('customfields', 'tool_mucertify'),
     new moodle_url("/admin/tool/mucertify/management/customfield_certification.php"),
-    'tool/mucertify:configurecustomfields'));
+    'tool/mucertify:configurecustomfields'
+));
 
-$ADMIN->add('tool_mucertify', new admin_externalpage('tool_mucertify_customfield_assignment',
+$ADMIN->add('tool_mucertify', new admin_externalpage(
+    'tool_mucertify_customfield_assignment',
     new lang_string('customfields_assignment', 'tool_mucertify'),
     new moodle_url("/admin/tool/mucertify/management/customfield_assignment.php"),
-    'tool/mucertify:configurecustomfields'));
+    'tool/mucertify:configurecustomfields'
+));
 
-$ADMIN->add('tool_mucertify', new admin_externalpage('tool_mucertify_management',
+$ADMIN->add('tool_mucertify', new admin_externalpage(
+    'tool_mucertify_management',
     new lang_string('management', 'tool_mucertify'),
     new moodle_url("/admin/tool/mucertify/management/index.php"),
-    'tool/mucertify:view'));
+    'tool/mucertify:view'
+));
 
 $settings = null;

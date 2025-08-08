@@ -95,7 +95,7 @@ Feature: Certification completion by students tests
       | timewindowstart[year]    | 2022      |
       | timewindowstart[hour]    | 09        |
       | timewindowstart[minute]  | 00        |
-    And I press dialog form button "Assign users"
+    And I click on "Assign users" "button" in the ".modal-dialog" "css_element"
     And I press "Assign users"
     And I set the following fields to these values:
       | Users                    | Student 2 |
@@ -104,7 +104,7 @@ Feature: Certification completion by students tests
       | timewindowstart[day]     | 5         |
       | timewindowstart[hour]    | 09        |
       | timewindowstart[minute]  | 00        |
-    And I press dialog form button "Assign users"
+    And I click on "Assign users" "button" in the ".modal-dialog" "css_element"
     And I log out
 
     When I log in as "student1"

@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 // phpcs:disable moodle.Files.BoilerplateComment.CommentEndedTooSoon
+// phpcs:disable moodle.Files.LineLength.TooLong
 
 /**
  * certification management interface.
@@ -32,15 +33,9 @@
 /** @var stdClass $CFG */
 /** @var stdClass $COURSE */
 
-use tool_mucertify\local\management;
-use tool_mucertify\local\period;
+define('AJAX_SCRIPT', true);
 
-// phpcs:ignoreFile moodle.Files.MoodleInternal.MoodleInternalGlobalState
-if (!empty($_SERVER['HTTP_X_MULIB_DIALOG_FORM_REQUEST'])) {
-    define('AJAX_SCRIPT', true);
-}
 require('../../../../config.php');
-require_once($CFG->dirroot . '/lib/formslib.php');
 
 $id = required_param('id', PARAM_INT);
 
@@ -53,6 +48,10 @@ $assignment = $DB->get_record('tool_mucertify_assignment', ['certificationid' =>
 $context = context::instance_by_id($certification->contextid);
 require_capability('tool/mucertify:admin', $context);
 
+$currenturl = new moodle_url('/admin/tool/mucertify/management/period_update.php', ['id' => $period->id]);
+$PAGE->set_context($context);
+$PAGE->set_url($currenturl);
+
 $returnurl = new moodle_url('/admin/tool/mucertify/management/period.php', ['id' => $period->id]);
 if (!$period->timerevoked || ($assignment && $assignment->archived) || $certification->archived) {
     redirect($returnurl);
@@ -60,14 +59,10 @@ if (!$period->timerevoked || ($assignment && $assignment->archived) || $certific
 
 $user = $DB->get_record('user', ['id' => $period->userid], '*', MUST_EXIST);
 
-$currenturl = new moodle_url('/admin/tool/mucertify/management/period_update.php', ['id' => $period->id]);
-
-management::setup_certification_page($currenturl, $context, $certification, 'certification_users');
-
 $form = new \tool_mucertify\local\form\period_delete(null, ['period' => $period, 'user' => $user, 'context' => $context]);
 
 if ($form->is_cancelled()) {
-    redirect($returnurl);
+    $form->ajax_form_cancelled($returnurl);
 }
 
 if ($data = $form->get_data()) {
@@ -77,13 +72,7 @@ if ($data = $form->get_data()) {
     } else {
         $returnurl = new moodle_url('/admin/tool/mucertify/management/certification.php', ['id' => $certification->id]);
     }
-    $form->redirect_submitted($returnurl);
+    $form->ajax_form_submitted($returnurl);
 }
 
-echo $OUTPUT->header();
-
-echo $OUTPUT->heading(fullname($user), 3);
-
-echo $form->render();
-
-echo $OUTPUT->footer();
+$form->ajax_form_render();

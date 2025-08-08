@@ -35,15 +35,9 @@ use core_privacy\local\request\writer;
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class provider implements
-    // Transactions store user data.
+    \core_privacy\local\request\core_userlist_provider,
     \core_privacy\local\metadata\provider,
-
-    // The certifications plugin has user assignments.
-    \core_privacy\local\request\plugin\provider,
-
-    // This plugin is capable of determining which users have data within it.
-    \core_privacy\local\request\core_userlist_provider {
-
+    \core_privacy\local\request\plugin\provider {
     /**
      * Returns meta-data about this system.
      *
@@ -149,7 +143,7 @@ class provider implements
 
         $user = $contextlist->get_user();
 
-        list($contextsql, $contextparams) = $DB->get_in_or_equal($contextlist->get_contextids(), SQL_PARAMS_NAMED);
+        [$contextsql, $contextparams] = $DB->get_in_or_equal($contextlist->get_contextids(), SQL_PARAMS_NAMED);
 
         $sql = "SELECT c.contextid, c.fullname, ca.id, ca.certificationid, ca.userid, ca.sourceid, ca.archived, ca.timecreated
                   FROM {tool_mucertify_certification} c
@@ -170,8 +164,11 @@ class provider implements
 
             // Add periods.
             $assignment->periods = [];
-            $periods = $DB->get_records('tool_mucertify_period',
-                ['certificationid' => $assignment->certificationid, 'userid' => $assignment->userid], 'timewindowstart ASC');
+            $periods = $DB->get_records(
+                'tool_mucertify_period',
+                ['certificationid' => $assignment->certificationid, 'userid' => $assignment->userid],
+                'timewindowstart ASC'
+            );
             foreach ($periods as $p) {
                 $period = new \stdClass();
                 $period->programid = $p->programid;
@@ -241,7 +238,7 @@ class provider implements
         }
 
         $user = $contextlist->get_user();
-        list($contextsql, $contextparams) = $DB->get_in_or_equal($contextlist->get_contextids(), SQL_PARAMS_NAMED);
+        [$contextsql, $contextparams] = $DB->get_in_or_equal($contextlist->get_contextids(), SQL_PARAMS_NAMED);
 
         $sql = "SELECT ca.*
                   FROM {tool_mucertify_certification} c
@@ -279,7 +276,7 @@ class provider implements
 
         $context = $userlist->get_context();
         $userids = $userlist->get_userids();
-        list($usersql, $userparams) = $DB->get_in_or_equal($userids, SQL_PARAMS_NAMED);
+        [$usersql, $userparams] = $DB->get_in_or_equal($userids, SQL_PARAMS_NAMED);
 
         $sql = "SELECT ca.*
                   FROM {tool_mucertify_certification} c

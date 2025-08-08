@@ -52,8 +52,12 @@ final class assignment_created_test extends \advanced_testcase {
             'programid1' => $program->id,
             'contextid' => $syscontext->id,
         ]);
-        $source = $DB->get_record('tool_mucertify_source',
-            ['type' => 'manual', 'certificationid' => $certification->id], '*', MUST_EXIST);
+        $source = $DB->get_record(
+            'tool_mucertify_source',
+            ['type' => 'manual', 'certificationid' => $certification->id],
+            '*',
+            MUST_EXIST
+        );
 
         $this->setAdminUser();
         $sink = $this->redirectEvents();
@@ -63,8 +67,12 @@ final class assignment_created_test extends \advanced_testcase {
 
         $this->assertCount(2, $events);
         $event = $events[0];
-        $assignment = $DB->get_record('tool_mucertify_assignment',
-            ['userid' => $user->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
+        $assignment = $DB->get_record(
+            'tool_mucertify_assignment',
+            ['userid' => $user->id, 'certificationid' => $certification->id],
+            '*',
+            MUST_EXIST
+        );
         $this->assertInstanceOf(\tool_mucertify\event\assignment_created::class, $event);
         $this->assertEquals($syscontext->id, $event->contextid);
         $this->assertSame($assignment->id, $event->objectid);

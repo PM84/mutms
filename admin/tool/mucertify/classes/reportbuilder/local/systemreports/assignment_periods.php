@@ -55,10 +55,18 @@ final class assignment_periods extends system_report {
     protected function initialise(): void {
         global $DB;
         // Make sure assignmentid and context match!
-        $this->assignment = $DB->get_record('tool_mucertify_assignment',
-            ['id' => $this->get_parameters()['assignmentid']], '*', MUST_EXIST);
-        $this->certification = $DB->get_record('tool_mucertify_certification',
-            ['id' => $this->assignment->certificationid, 'contextid' => $this->get_context()->id], '*', MUST_EXIST);
+        $this->assignment = $DB->get_record(
+            'tool_mucertify_assignment',
+            ['id' => $this->get_parameters()['assignmentid']],
+            '*',
+            MUST_EXIST
+        );
+        $this->certification = $DB->get_record(
+            'tool_mucertify_certification',
+            ['id' => $this->assignment->certificationid, 'contextid' => $this->get_context()->id],
+            '*',
+            MUST_EXIST
+        );
 
         $this->periodentity = new period();
         $periodentityalias = $this->periodentity->get_table_alias('tool_mucertify_period');
@@ -113,7 +121,7 @@ final class assignment_periods extends system_report {
 
         $column = $this->periodentity->get_column('timewindowstart')
             ->add_field("{$periodalias}.id")
-            ->add_callback(static function($value, \stdClass $row): string {
+            ->add_callback(static function ($value, \stdClass $row): string {
                 $url = new \moodle_url('/admin/tool/mucertify/management/period.php', ['id' => $row->id]);
                 return \html_writer::link($url, $value);
             });
@@ -127,7 +135,7 @@ final class assignment_periods extends system_report {
             ->add_field("{$programalias}.fullname")
             ->add_field("{$allocationalias}.id", 'allocationid')
             ->add_field("{$programalias}.contextid")
-            ->set_callback(static function(?string $value, \stdClass $row): string {
+            ->set_callback(static function (?string $value, \stdClass $row): string {
                 if (!$row->contextid) {
                     return '';
                 }

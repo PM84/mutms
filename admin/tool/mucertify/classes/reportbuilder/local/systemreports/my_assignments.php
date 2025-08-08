@@ -68,7 +68,8 @@ final class my_assignments extends system_report {
         $param = database::generate_param_name();
         $this->add_base_condition_sql(
             "{$assignmentalias}.userid = :$param AND {$assignmentalias}.archived = 0 AND {$certificationalias}.archived = 0",
-            [$param => $USER->id]);
+            [$param => $USER->id]
+        );
 
         $this->add_columns();
         $this->add_filters();
@@ -105,7 +106,7 @@ final class my_assignments extends system_report {
 
         $column = $this->certificationentity->get_column('fullname')
             ->add_field("{$certificationalias}.id")
-            ->add_callback(static function($value, \stdClass $row): string {
+            ->add_callback(static function ($value, \stdClass $row): string {
                 if (!$value) {
                     return '';
                 }

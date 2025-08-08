@@ -54,16 +54,32 @@ final class unassignment_test extends \advanced_testcase {
             'programid1' => $program->id,
             'contextid' => $syscontext->id,
         ]);
-        $source = $DB->get_record('tool_mucertify_source',
-            ['type' => 'manual', 'certificationid' => $certification->id], '*', MUST_EXIST);
+        $source = $DB->get_record(
+            'tool_mucertify_source',
+            ['type' => 'manual', 'certificationid' => $certification->id],
+            '*',
+            MUST_EXIST
+        );
 
         \tool_mucertify\local\source\manual::assign_users($certification->id, $source->id, [$user1->id, $user2->id, $user3->id], []);
-        $assignment1 = $DB->get_record('tool_mucertify_assignment',
-            ['userid' => $user1->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
-        $assignment2 = $DB->get_record('tool_mucertify_assignment',
-            ['userid' => $user2->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
-        $assignment3 = $DB->get_record('tool_mucertify_assignment',
-            ['userid' => $user3->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
+        $assignment1 = $DB->get_record(
+            'tool_mucertify_assignment',
+            ['userid' => $user1->id, 'certificationid' => $certification->id],
+            '*',
+            MUST_EXIST
+        );
+        $assignment2 = $DB->get_record(
+            'tool_mucertify_assignment',
+            ['userid' => $user2->id, 'certificationid' => $certification->id],
+            '*',
+            MUST_EXIST
+        );
+        $assignment3 = $DB->get_record(
+            'tool_mucertify_assignment',
+            ['userid' => $user3->id, 'certificationid' => $certification->id],
+            '*',
+            MUST_EXIST
+        );
         $assignment3->archived = '1';
         $DB->update_record('tool_mucertify_assignment', $assignment3);
 
@@ -106,8 +122,12 @@ final class unassignment_test extends \advanced_testcase {
         $this->assertSame('1', $message->notification);
 
         \tool_mucertify\local\source\manual::assign_users($certification->id, $source->id, [$user1->id], []);
-        $assignment1 = $DB->get_record('tool_mucertify_assignment',
-            ['userid' => $user1->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
+        $assignment1 = $DB->get_record(
+            'tool_mucertify_assignment',
+            ['userid' => $user1->id, 'certificationid' => $certification->id],
+            '*',
+            MUST_EXIST
+        );
         $certification->archived = '1';
         $DB->update_record('tool_mucertify_certification', $certification);
         $sink = $this->redirectMessages();

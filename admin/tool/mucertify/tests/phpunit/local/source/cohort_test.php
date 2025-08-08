@@ -187,8 +187,12 @@ final class cohort_test extends \advanced_testcase {
             'programid1' => $program1->id,
         ];
         $certification = $generator->create_certification($data);
-        $source = $DB->get_record('tool_mucertify_source',
-            ['type' => 'cohort', 'certificationid' => $certification->id], '*', MUST_EXIST);
+        $source = $DB->get_record(
+            'tool_mucertify_source',
+            ['type' => 'cohort', 'certificationid' => $certification->id],
+            '*',
+            MUST_EXIST
+        );
         cohort_remove_member($cohort1->id, $user2->id);
         cohort::fix_assignments(null, null);
         $assignment1 = $DB->get_record('tool_mucertify_assignment', ['userid' => $user1->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
@@ -228,8 +232,12 @@ final class cohort_test extends \advanced_testcase {
             'programid1' => $program1->id,
         ];
         $certification = $generator->create_certification($data);
-        $source = $DB->get_record('tool_mucertify_source',
-            ['type' => 'cohort', 'certificationid' => $certification->id], '*', MUST_EXIST);
+        $source = $DB->get_record(
+            'tool_mucertify_source',
+            ['type' => 'cohort', 'certificationid' => $certification->id],
+            '*',
+            MUST_EXIST
+        );
         cohort_remove_member($cohort1->id, $user2->id);
         cohort::fix_assignments(null, null);
         $assignment1 = $DB->get_record('tool_mucertify_assignment', ['userid' => $user1->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
@@ -269,8 +277,12 @@ final class cohort_test extends \advanced_testcase {
             'programid1' => $program1->id,
         ];
         $certification = $generator->create_certification($data);
-        $source = $DB->get_record('tool_mucertify_source',
-            ['type' => 'cohort', 'certificationid' => $certification->id], '*', MUST_EXIST);
+        $source = $DB->get_record(
+            'tool_mucertify_source',
+            ['type' => 'cohort', 'certificationid' => $certification->id],
+            '*',
+            MUST_EXIST
+        );
         cohort_remove_member($cohort1->id, $user2->id);
         cohort::fix_assignments(null, null);
         $assignment1 = $DB->get_record('tool_mucertify_assignment', ['userid' => $user1->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
@@ -310,8 +322,12 @@ final class cohort_test extends \advanced_testcase {
             'programid1' => $program1->id,
         ];
         $certification = $generator->create_certification($data);
-        $source = $DB->get_record('tool_mucertify_source',
-            ['type' => 'cohort', 'certificationid' => $certification->id], '*', MUST_EXIST);
+        $source = $DB->get_record(
+            'tool_mucertify_source',
+            ['type' => 'cohort', 'certificationid' => $certification->id],
+            '*',
+            MUST_EXIST
+        );
         cohort_remove_member($cohort1->id, $user2->id);
         cohort::fix_assignments(null, null);
         $assignment1 = $DB->get_record('tool_mucertify_assignment', ['userid' => $user1->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
@@ -367,8 +383,12 @@ final class cohort_test extends \advanced_testcase {
             'sources' => ['cohort' => []],
         ];
         $certification = $generator->create_certification($data);
-        $source = $DB->get_record('tool_mucertify_source',
-            ['type' => 'cohort', 'certificationid' => $certification->id], '*', MUST_EXIST);
+        $source = $DB->get_record(
+            'tool_mucertify_source',
+            ['type' => 'cohort', 'certificationid' => $certification->id],
+            '*',
+            MUST_EXIST
+        );
 
         $data = [
             'certificationid' => $certification->id,
@@ -451,8 +471,12 @@ final class cohort_test extends \advanced_testcase {
             'programid1' => $program1->id,
         ];
         $certification = $generator->create_certification($data);
-        $source = $DB->get_record('tool_mucertify_source',
-            ['type' => 'cohort', 'certificationid' => $certification->id], '*', MUST_EXIST);
+        $source = $DB->get_record(
+            'tool_mucertify_source',
+            ['type' => 'cohort', 'certificationid' => $certification->id],
+            '*',
+            MUST_EXIST
+        );
         $assignment1 = $DB->get_record('tool_mucertify_assignment', ['userid' => $user1->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
         $assignment2 = $DB->get_record('tool_mucertify_assignment', ['userid' => $user1->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
         $this->assertCount(2, $DB->get_records('tool_mucertify_period', ['certificationid' => $certification->id]));
@@ -483,16 +507,24 @@ final class cohort_test extends \advanced_testcase {
             'sources' => ['cohort' => ['cohortids' => []]],
         ];
         $certification = $generator->create_certification($data);
-        $source = $DB->get_record('tool_mucertify_source',
-            ['type' => 'cohort', 'certificationid' => $certification->id], '*', MUST_EXIST);
+        $source = $DB->get_record(
+            'tool_mucertify_source',
+            ['type' => 'cohort', 'certificationid' => $certification->id],
+            '*',
+            MUST_EXIST
+        );
         $this->assertSame('Active', cohort::render_status_details($certification, $source));
 
         $data = [
             'sources' => ['cohort' => ['cohortids' => [$cohort1->id, $cohort2->id]]],
         ];
         $certification = $generator->create_certification($data);
-        $source = $DB->get_record('tool_mucertify_source',
-            ['type' => 'cohort', 'certificationid' => $certification->id], '*', MUST_EXIST);
+        $source = $DB->get_record(
+            'tool_mucertify_source',
+            ['type' => 'cohort', 'certificationid' => $certification->id],
+            '*',
+            MUST_EXIST
+        );
         $this->assertSame('Active (Cohort 1, Cohort 2)', cohort::render_status_details($certification, $source));
     }
 
@@ -518,8 +550,12 @@ final class cohort_test extends \advanced_testcase {
             'sources' => ['cohort' => []],
         ];
         $certification = $generator->create_certification($data);
-        $source = $DB->get_record('tool_mucertify_source',
-            ['type' => 'cohort', 'certificationid' => $certification->id], '*', MUST_EXIST);
+        $source = $DB->get_record(
+            'tool_mucertify_source',
+            ['type' => 'cohort', 'certificationid' => $certification->id],
+            '*',
+            MUST_EXIST
+        );
 
         $this->setUser($user2);
         $this->assertSame('Active', cohort::render_status($certification, $source));
@@ -553,8 +589,12 @@ final class cohort_test extends \advanced_testcase {
             'programid1' => $program1->id,
         ];
         $certification = $generator->create_certification($data);
-        $source = $DB->get_record('tool_mucertify_source',
-            ['type' => 'cohort', 'certificationid' => $certification->id], '*', MUST_EXIST);
+        $source = $DB->get_record(
+            'tool_mucertify_source',
+            ['type' => 'cohort', 'certificationid' => $certification->id],
+            '*',
+            MUST_EXIST
+        );
         $assignment = $DB->get_record('tool_mucertify_assignment', ['userid' => $user1->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
 
         $this->setUser(null);

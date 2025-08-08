@@ -74,12 +74,20 @@ final class certificate_test extends \advanced_testcase {
             'sources' => ['manual' => []],
         ];
         $certification1 = $generator->create_certification($data);
-        $source1 = $DB->get_record('tool_mucertify_source',
-            ['type' => 'manual', 'certificationid' => $certification1->id], '*', MUST_EXIST);
+        $source1 = $DB->get_record(
+            'tool_mucertify_source',
+            ['type' => 'manual', 'certificationid' => $certification1->id],
+            '*',
+            MUST_EXIST
+        );
         $certification1 = \tool_mucertify\local\certification::update_certificate($certification1->id, $template1->get_id());
         manual::assign_users($certification1->id, $source1->id, [$user1->id]);
-        $period1 = $DB->get_record('tool_mucertify_period',
-            ['certificationid' => $certification1->id, 'userid' => $user1->id], '*', MUST_EXIST);
+        $period1 = $DB->get_record(
+            'tool_mucertify_period',
+            ['certificationid' => $certification1->id, 'userid' => $user1->id],
+            '*',
+            MUST_EXIST
+        );
         $dateoverrides = [
             'id' => $period1->id,
             'timewindowstart' => (string)($now - 1500),
@@ -98,8 +106,12 @@ final class certificate_test extends \advanced_testcase {
         $this->assertFalse(\tool_mucertify\local\certificate::issue($period1->id));
 
         manual::assign_users($certification1->id, $source1->id, [$user2->id]);
-        $period2 = $DB->get_record('tool_mucertify_period',
-            ['certificationid' => $certification1->id, 'userid' => $user2->id], '*', MUST_EXIST);
+        $period2 = $DB->get_record(
+            'tool_mucertify_period',
+            ['certificationid' => $certification1->id, 'userid' => $user2->id],
+            '*',
+            MUST_EXIST
+        );
         $dateoverrides = [
             'id' => $period2->id,
             'timewindowstart' => (string)($now - 1500),
@@ -114,8 +126,12 @@ final class certificate_test extends \advanced_testcase {
         $this->assertSame((string)$template1->get_id(), $issue2->templateid);
 
         manual::assign_users($certification1->id, $source1->id, [$user3->id]);
-        $period3 = $DB->get_record('tool_mucertify_period',
-            ['certificationid' => $certification1->id, 'userid' => $user3->id], '*', MUST_EXIST);
+        $period3 = $DB->get_record(
+            'tool_mucertify_period',
+            ['certificationid' => $certification1->id, 'userid' => $user3->id],
+            '*',
+            MUST_EXIST
+        );
         $dateoverrides = [
             'id' => $period3->id,
             'timewindowstart' => (string)($now - 1500),
@@ -177,14 +193,26 @@ final class certificate_test extends \advanced_testcase {
             'sources' => ['manual' => []],
         ];
         $certification1 = $generator->create_certification($data);
-        $source1 = $DB->get_record('tool_mucertify_source',
-            ['type' => 'manual', 'certificationid' => $certification1->id], '*', MUST_EXIST);
+        $source1 = $DB->get_record(
+            'tool_mucertify_source',
+            ['type' => 'manual', 'certificationid' => $certification1->id],
+            '*',
+            MUST_EXIST
+        );
         $certification1 = \tool_mucertify\local\certification::update_certificate($certification1->id, $template1->get_id());
         manual::assign_users($certification1->id, $source1->id, [$user1->id]);
-        $period1 = $DB->get_record('tool_mucertify_period',
-            ['certificationid' => $certification1->id, 'userid' => $user1->id], '*', MUST_EXIST);
-        $assignment1 = $DB->get_record('tool_mucertify_assignment',
-            ['certificationid' => $certification1->id, 'userid' => $user1->id], '*', MUST_EXIST);
+        $period1 = $DB->get_record(
+            'tool_mucertify_period',
+            ['certificationid' => $certification1->id, 'userid' => $user1->id],
+            '*',
+            MUST_EXIST
+        );
+        $assignment1 = $DB->get_record(
+            'tool_mucertify_assignment',
+            ['certificationid' => $certification1->id, 'userid' => $user1->id],
+            '*',
+            MUST_EXIST
+        );
         $dateoverrides = [
             'id' => $period1->id,
             'timewindowstart' => (string)($now - 1500),
@@ -224,7 +252,8 @@ final class certificate_test extends \advanced_testcase {
         $period1 = $DB->get_record('tool_mucertify_period', ['id' => $period1->id], '*', MUST_EXIST);
         $this->assertNotEmpty($period1->certificateissueid);
 
-        \tool_mucertify\local\period::delete($period1->id);;
+        \tool_mucertify\local\period::delete($period1->id);
+        ;
         $this->assertFalse($DB->record_exists('tool_mucertify_period', ['id' => $period1->id]));
         $this->assertFalse($DB->record_exists('tool_certificate_issues', ['id' => $period1->certificateissueid]));
 
@@ -271,14 +300,26 @@ final class certificate_test extends \advanced_testcase {
             'sources' => ['manual' => []],
         ];
         $certification1 = $generator->create_certification($data);
-        $source1 = $DB->get_record('tool_mucertify_source',
-            ['type' => 'manual', 'certificationid' => $certification1->id], '*', MUST_EXIST);
+        $source1 = $DB->get_record(
+            'tool_mucertify_source',
+            ['type' => 'manual', 'certificationid' => $certification1->id],
+            '*',
+            MUST_EXIST
+        );
         $certification1 = \tool_mucertify\local\certification::update_certificate($certification1->id, $template1->get_id());
         manual::assign_users($certification1->id, $source1->id, [$user1->id]);
-        $period1 = $DB->get_record('tool_mucertify_period',
-            ['certificationid' => $certification1->id, 'userid' => $user1->id], '*', MUST_EXIST);
-        $assignment1 = $DB->get_record('tool_mucertify_assignment',
-            ['certificationid' => $certification1->id, 'userid' => $user1->id], '*', MUST_EXIST);
+        $period1 = $DB->get_record(
+            'tool_mucertify_period',
+            ['certificationid' => $certification1->id, 'userid' => $user1->id],
+            '*',
+            MUST_EXIST
+        );
+        $assignment1 = $DB->get_record(
+            'tool_mucertify_assignment',
+            ['certificationid' => $certification1->id, 'userid' => $user1->id],
+            '*',
+            MUST_EXIST
+        );
         $dateoverrides = [
             'id' => $period1->id,
             'timewindowstart' => (string)($now - 1500),
@@ -330,25 +371,53 @@ final class certificate_test extends \advanced_testcase {
         ];
         $certification1 = $generator->create_certification($data);
         $certification2 = $generator->create_certification($data);
-        $source1 = $DB->get_record('tool_mucertify_source',
-            ['type' => 'manual', 'certificationid' => $certification1->id], '*', MUST_EXIST);
-        $source2 = $DB->get_record('tool_mucertify_source',
-            ['type' => 'manual', 'certificationid' => $certification2->id], '*', MUST_EXIST);
+        $source1 = $DB->get_record(
+            'tool_mucertify_source',
+            ['type' => 'manual', 'certificationid' => $certification1->id],
+            '*',
+            MUST_EXIST
+        );
+        $source2 = $DB->get_record(
+            'tool_mucertify_source',
+            ['type' => 'manual', 'certificationid' => $certification2->id],
+            '*',
+            MUST_EXIST
+        );
         $certification1 = \tool_mucertify\local\certification::update_certificate($certification1->id, $template1->get_id());
         $certification2 = \tool_mucertify\local\certification::update_certificate($certification2->id, $template1->get_id());
 
         manual::assign_users($certification1->id, $source1->id, [$user1->id, $user2->id, $user3->id, $user4->id, $user5->id]);
         manual::assign_users($certification2->id, $source2->id, [$user6->id]);
-        $period1 = $DB->get_record('tool_mucertify_period',
-            ['certificationid' => $certification1->id, 'userid' => $user1->id], '*', MUST_EXIST);
-        $period2 = $DB->get_record('tool_mucertify_period',
-            ['certificationid' => $certification1->id, 'userid' => $user2->id], '*', MUST_EXIST);
-        $period3 = $DB->get_record('tool_mucertify_period',
-            ['certificationid' => $certification1->id, 'userid' => $user3->id], '*', MUST_EXIST);
-        $period4 = $DB->get_record('tool_mucertify_period',
-            ['certificationid' => $certification1->id, 'userid' => $user4->id], '*', MUST_EXIST);
-        $period5 = $DB->get_record('tool_mucertify_period',
-            ['certificationid' => $certification1->id, 'userid' => $user5->id], '*', MUST_EXIST);
+        $period1 = $DB->get_record(
+            'tool_mucertify_period',
+            ['certificationid' => $certification1->id, 'userid' => $user1->id],
+            '*',
+            MUST_EXIST
+        );
+        $period2 = $DB->get_record(
+            'tool_mucertify_period',
+            ['certificationid' => $certification1->id, 'userid' => $user2->id],
+            '*',
+            MUST_EXIST
+        );
+        $period3 = $DB->get_record(
+            'tool_mucertify_period',
+            ['certificationid' => $certification1->id, 'userid' => $user3->id],
+            '*',
+            MUST_EXIST
+        );
+        $period4 = $DB->get_record(
+            'tool_mucertify_period',
+            ['certificationid' => $certification1->id, 'userid' => $user4->id],
+            '*',
+            MUST_EXIST
+        );
+        $period5 = $DB->get_record(
+            'tool_mucertify_period',
+            ['certificationid' => $certification1->id, 'userid' => $user5->id],
+            '*',
+            MUST_EXIST
+        );
         $dateoverrides = [
             'id' => $period1->id,
             'timewindowstart' => (string)($now - 1500),
@@ -390,11 +459,19 @@ final class certificate_test extends \advanced_testcase {
             'timecertified' => (string)($now - 10),
         ];
         $period5 = \tool_mucertify\local\period::override_dates((object)$dateoverrides);
-        $assignment5 = $DB->get_record('tool_mucertify_assignment',
-            ['certificationid' => $certification1->id, 'userid' => $user5->id], '*', MUST_EXIST);
+        $assignment5 = $DB->get_record(
+            'tool_mucertify_assignment',
+            ['certificationid' => $certification1->id, 'userid' => $user5->id],
+            '*',
+            MUST_EXIST
+        );
         $assignment5 = \tool_mucertify\local\source\base::assignment_archive($assignment5->id);
-        $period6 = $DB->get_record('tool_mucertify_period',
-            ['certificationid' => $certification2->id, 'userid' => $user6->id], '*', MUST_EXIST);
+        $period6 = $DB->get_record(
+            'tool_mucertify_period',
+            ['certificationid' => $certification2->id, 'userid' => $user6->id],
+            '*',
+            MUST_EXIST
+        );
         $dateoverrides = [
             'id' => $period6->id,
             'timewindowstart' => (string)($now - 1500),

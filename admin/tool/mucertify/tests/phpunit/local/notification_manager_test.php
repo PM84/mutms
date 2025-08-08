@@ -50,13 +50,25 @@ final class notification_manager_test extends \advanced_testcase {
         $user1 = $this->getDataGenerator()->create_user();
         $program1 = $programgenerator->create_program(['fullname' => 'hokus', 'sources' => ['mucertify' => []]]);
         $certification1 = $generator->create_certification(['programid1' => $program1->id, 'sources' => ['manual' => []]]);
-        $source1 = $DB->get_record('tool_mucertify_source',
-            ['type' => 'manual', 'certificationid' => $certification1->id], '*', MUST_EXIST);
+        $source1 = $DB->get_record(
+            'tool_mucertify_source',
+            ['type' => 'manual', 'certificationid' => $certification1->id],
+            '*',
+            MUST_EXIST
+        );
         manual::assign_users($certification1->id, $source1->id, [$user1->id]);
-        $assignment1 = $DB->get_record('tool_mucertify_assignment',
-            ['userid' => $user1->id, 'certificationid' => $certification1->id], '*', MUST_EXIST);
-        $period1 = $DB->get_record('tool_mucertify_period',
-            ['userid' => $user1->id, 'certificationid' => $certification1->id], '*', MUST_EXIST);
+        $assignment1 = $DB->get_record(
+            'tool_mucertify_assignment',
+            ['userid' => $user1->id, 'certificationid' => $certification1->id],
+            '*',
+            MUST_EXIST
+        );
+        $period1 = $DB->get_record(
+            'tool_mucertify_period',
+            ['userid' => $user1->id, 'certificationid' => $certification1->id],
+            '*',
+            MUST_EXIST
+        );
 
         // Let's call all methods to make sure there are no missing strings and fatal errors.,
         // the actual returned values need to be tested elsewhere.
@@ -215,15 +227,19 @@ final class notification_manager_test extends \advanced_testcase {
         \role_assign($viewerroleid, $user1->id, $catcontext1->id);
 
         $this->setUser($user1);
-        $this->assertSame('https://www.example.com/moodle/admin/tool/mucertify/management/certification_notifications.php?id=' . $certification1->id,
-            \tool_mucertify\local\notification_manager::get_instance_management_url($certification1->id)->out(false));
+        $this->assertSame(
+            'https://www.example.com/moodle/admin/tool/mucertify/management/certification_notifications.php?id=' . $certification1->id,
+            \tool_mucertify\local\notification_manager::get_instance_management_url($certification1->id)->out(false)
+        );
 
         $this->setUser($user2);
         $this->assertSame(null, \tool_mucertify\local\notification_manager::get_instance_management_url($certification1->id));
 
         $this->setAdminUser();
-        $this->assertSame('https://www.example.com/moodle/admin/tool/mucertify/management/certification_notifications.php?id=' . $certification1->id,
-            \tool_mucertify\local\notification_manager::get_instance_management_url($certification1->id)->out(false));
+        $this->assertSame(
+            'https://www.example.com/moodle/admin/tool/mucertify/management/certification_notifications.php?id=' . $certification1->id,
+            \tool_mucertify\local\notification_manager::get_instance_management_url($certification1->id)->out(false)
+        );
     }
 
     public function test_trigger_notifications(): void {
@@ -240,11 +256,19 @@ final class notification_manager_test extends \advanced_testcase {
         $user1 = $this->getDataGenerator()->create_user();
         $program1 = $programgenerator->create_program(['fullname' => 'hokus', 'sources' => ['mucertify' => []]]);
         $certification1 = $generator->create_certification(['programid1' => $program1->id, 'sources' => ['manual' => []]]);
-        $source1 = $DB->get_record('tool_mucertify_source',
-            ['type' => 'manual', 'certificationid' => $certification1->id], '*', MUST_EXIST);
+        $source1 = $DB->get_record(
+            'tool_mucertify_source',
+            ['type' => 'manual', 'certificationid' => $certification1->id],
+            '*',
+            MUST_EXIST
+        );
         manual::assign_users($certification1->id, $source1->id, [$user1->id]);
-        $assignment1 = $DB->get_record('tool_mucertify_assignment',
-            ['userid' => $user1->id, 'certificationid' => $certification1->id], '*', MUST_EXIST);
+        $assignment1 = $DB->get_record(
+            'tool_mucertify_assignment',
+            ['userid' => $user1->id, 'certificationid' => $certification1->id],
+            '*',
+            MUST_EXIST
+        );
 
         $types = \tool_mucertify\local\notification_manager::get_all_types();
         // phpcs:ignore moodle.Commenting.InlineComment.TypeHintingForeach
@@ -277,10 +301,18 @@ final class notification_manager_test extends \advanced_testcase {
         $program2 = $programgenerator->create_program(['fullname' => 'hokus', 'sources' => ['mucertify' => []]]);
         $certification1 = $generator->create_certification(['programid1' => $program1->id, 'sources' => ['manual' => []]]);
         $certification2 = $generator->create_certification(['programid1' => $program2->id, 'sources' => ['manual' => []]]);
-        $source1 = $DB->get_record('tool_mucertify_source',
-            ['type' => 'manual', 'certificationid' => $certification1->id], '*', MUST_EXIST);
-        $source2 = $DB->get_record('tool_mucertify_source',
-            ['type' => 'manual', 'certificationid' => $certification2->id], '*', MUST_EXIST);
+        $source1 = $DB->get_record(
+            'tool_mucertify_source',
+            ['type' => 'manual', 'certificationid' => $certification1->id],
+            '*',
+            MUST_EXIST
+        );
+        $source2 = $DB->get_record(
+            'tool_mucertify_source',
+            ['type' => 'manual', 'certificationid' => $certification2->id],
+            '*',
+            MUST_EXIST
+        );
 
         $generator->create_certifiction_notification(['notificationtype' => 'assignment', 'certificationid' => $certification1->id]);
         $generator->create_certifiction_notification(['notificationtype' => 'valid', 'certificationid' => $certification1->id]);
@@ -289,8 +321,12 @@ final class notification_manager_test extends \advanced_testcase {
         $this->assertCount(0, $DB->get_records('tool_mulib_notification_user', []));
 
         manual::assign_users($certification1->id, $source1->id, [$user1->id]);
-        $period1x1 = $DB->get_record('tool_mucertify_period',
-            ['userid' => $user1->id, 'certificationid' => $certification1->id], '*', MUST_EXIST);
+        $period1x1 = $DB->get_record(
+            'tool_mucertify_period',
+            ['userid' => $user1->id, 'certificationid' => $certification1->id],
+            '*',
+            MUST_EXIST
+        );
         $dateoverrides = [
             'id' => $period1x1->id,
             'timewindowstart' => (string)($now - 1500),
@@ -305,8 +341,12 @@ final class notification_manager_test extends \advanced_testcase {
         $this->assertCount(2, $DB->get_records('tool_mulib_notification_user', ['userid' => $user1->id]));
 
         manual::assign_users($certification1->id, $source1->id, [$user2->id]);
-        $period1x2 = $DB->get_record('tool_mucertify_period',
-            ['userid' => $user2->id, 'certificationid' => $certification1->id], '*', MUST_EXIST);
+        $period1x2 = $DB->get_record(
+            'tool_mucertify_period',
+            ['userid' => $user2->id, 'certificationid' => $certification1->id],
+            '*',
+            MUST_EXIST
+        );
         $dateoverrides = [
             'id' => $period1x2->id,
             'timewindowstart' => (string)($now - 1500),
@@ -322,8 +362,12 @@ final class notification_manager_test extends \advanced_testcase {
         $this->assertCount(2, $DB->get_records('tool_mulib_notification_user', ['userid' => $user2->id]));
 
         manual::assign_users($certification2->id, $source2->id, [$user1->id]);
-        $period2x1 = $DB->get_record('tool_mucertify_period',
-            ['userid' => $user1->id, 'certificationid' => $certification2->id], '*', MUST_EXIST);
+        $period2x1 = $DB->get_record(
+            'tool_mucertify_period',
+            ['userid' => $user1->id, 'certificationid' => $certification2->id],
+            '*',
+            MUST_EXIST
+        );
         $dateoverrides = [
             'id' => $period2x1->id,
             'timewindowstart' => (string)($now - 1500),
@@ -372,10 +416,18 @@ final class notification_manager_test extends \advanced_testcase {
         $program2 = $programgenerator->create_program(['fullname' => 'hokus', 'sources' => ['mucertify' => []]]);
         $certification1 = $generator->create_certification(['programid1' => $program1->id, 'sources' => ['manual' => []]]);
         $certification2 = $generator->create_certification(['programid1' => $program2->id, 'sources' => ['manual' => []]]);
-        $source1 = $DB->get_record('tool_mucertify_source',
-            ['type' => 'manual', 'certificationid' => $certification1->id], '*', MUST_EXIST);
-        $source2 = $DB->get_record('tool_mucertify_source',
-            ['type' => 'manual', 'certificationid' => $certification2->id], '*', MUST_EXIST);
+        $source1 = $DB->get_record(
+            'tool_mucertify_source',
+            ['type' => 'manual', 'certificationid' => $certification1->id],
+            '*',
+            MUST_EXIST
+        );
+        $source2 = $DB->get_record(
+            'tool_mucertify_source',
+            ['type' => 'manual', 'certificationid' => $certification2->id],
+            '*',
+            MUST_EXIST
+        );
 
         $generator->create_certifiction_notification(['notificationtype' => 'assignment', 'certificationid' => $certification1->id]);
         $generator->create_certifiction_notification(['notificationtype' => 'valid', 'certificationid' => $certification1->id]);
@@ -384,8 +436,12 @@ final class notification_manager_test extends \advanced_testcase {
         $this->assertCount(0, $DB->get_records('tool_mulib_notification_user', []));
 
         manual::assign_users($certification1->id, $source1->id, [$user1->id]);
-        $period1x1 = $DB->get_record('tool_mucertify_period',
-            ['userid' => $user1->id, 'certificationid' => $certification1->id], '*', MUST_EXIST);
+        $period1x1 = $DB->get_record(
+            'tool_mucertify_period',
+            ['userid' => $user1->id, 'certificationid' => $certification1->id],
+            '*',
+            MUST_EXIST
+        );
         $dateoverrides = [
             'id' => $period1x1->id,
             'timewindowstart' => (string)($now - 1500),
@@ -400,8 +456,12 @@ final class notification_manager_test extends \advanced_testcase {
         $this->assertCount(2, $DB->get_records('tool_mulib_notification_user', ['userid' => $user1->id]));
 
         manual::assign_users($certification1->id, $source1->id, [$user2->id]);
-        $period1x2 = $DB->get_record('tool_mucertify_period',
-            ['userid' => $user2->id, 'certificationid' => $certification1->id], '*', MUST_EXIST);
+        $period1x2 = $DB->get_record(
+            'tool_mucertify_period',
+            ['userid' => $user2->id, 'certificationid' => $certification1->id],
+            '*',
+            MUST_EXIST
+        );
         $dateoverrides = [
             'id' => $period1x2->id,
             'timewindowstart' => (string)($now - 1500),
@@ -417,8 +477,12 @@ final class notification_manager_test extends \advanced_testcase {
         $this->assertCount(2, $DB->get_records('tool_mulib_notification_user', ['userid' => $user2->id]));
 
         manual::assign_users($certification2->id, $source2->id, [$user1->id]);
-        $period2x1 = $DB->get_record('tool_mucertify_period',
-            ['userid' => $user1->id, 'certificationid' => $certification2->id], '*', MUST_EXIST);
+        $period2x1 = $DB->get_record(
+            'tool_mucertify_period',
+            ['userid' => $user1->id, 'certificationid' => $certification2->id],
+            '*',
+            MUST_EXIST
+        );
         $dateoverrides = [
             'id' => $period2x1->id,
             'timewindowstart' => (string)($now - 1500),
@@ -469,10 +533,18 @@ final class notification_manager_test extends \advanced_testcase {
         $program2 = $programgenerator->create_program(['fullname' => 'hokus', 'sources' => ['mucertify' => []]]);
         $certification1 = $generator->create_certification(['programid1' => $program1->id, 'sources' => ['manual' => []]]);
         $certification2 = $generator->create_certification(['programid1' => $program2->id, 'sources' => ['manual' => []]]);
-        $source1 = $DB->get_record('tool_mucertify_source',
-            ['type' => 'manual', 'certificationid' => $certification1->id], '*', MUST_EXIST);
-        $source2 = $DB->get_record('tool_mucertify_source',
-            ['type' => 'manual', 'certificationid' => $certification2->id], '*', MUST_EXIST);
+        $source1 = $DB->get_record(
+            'tool_mucertify_source',
+            ['type' => 'manual', 'certificationid' => $certification1->id],
+            '*',
+            MUST_EXIST
+        );
+        $source2 = $DB->get_record(
+            'tool_mucertify_source',
+            ['type' => 'manual', 'certificationid' => $certification2->id],
+            '*',
+            MUST_EXIST
+        );
 
         $generator->create_certifiction_notification(['notificationtype' => 'assignment', 'certificationid' => $certification1->id]);
         $generator->create_certifiction_notification(['notificationtype' => 'valid', 'certificationid' => $certification1->id]);
@@ -481,8 +553,12 @@ final class notification_manager_test extends \advanced_testcase {
         $this->assertCount(0, $DB->get_records('tool_mulib_notification_user', []));
 
         manual::assign_users($certification1->id, $source1->id, [$user1->id]);
-        $period1x1 = $DB->get_record('tool_mucertify_period',
-            ['userid' => $user1->id, 'certificationid' => $certification1->id], '*', MUST_EXIST);
+        $period1x1 = $DB->get_record(
+            'tool_mucertify_period',
+            ['userid' => $user1->id, 'certificationid' => $certification1->id],
+            '*',
+            MUST_EXIST
+        );
         $dateoverrides = [
             'id' => $period1x1->id,
             'timewindowstart' => (string)($now - 1500),
@@ -497,8 +573,12 @@ final class notification_manager_test extends \advanced_testcase {
         $this->assertCount(2, $DB->get_records('tool_mulib_notification_user', ['userid' => $user1->id]));
 
         manual::assign_users($certification1->id, $source1->id, [$user2->id]);
-        $period1x2 = $DB->get_record('tool_mucertify_period',
-            ['userid' => $user2->id, 'certificationid' => $certification1->id], '*', MUST_EXIST);
+        $period1x2 = $DB->get_record(
+            'tool_mucertify_period',
+            ['userid' => $user2->id, 'certificationid' => $certification1->id],
+            '*',
+            MUST_EXIST
+        );
         $dateoverrides = [
             'id' => $period1x2->id,
             'timewindowstart' => (string)($now - 1500),
@@ -514,8 +594,12 @@ final class notification_manager_test extends \advanced_testcase {
         $this->assertCount(2, $DB->get_records('tool_mulib_notification_user', ['userid' => $user2->id]));
 
         manual::assign_users($certification2->id, $source2->id, [$user1->id]);
-        $period2x1 = $DB->get_record('tool_mucertify_period',
-            ['userid' => $user1->id, 'certificationid' => $certification2->id], '*', MUST_EXIST);
+        $period2x1 = $DB->get_record(
+            'tool_mucertify_period',
+            ['userid' => $user1->id, 'certificationid' => $certification2->id],
+            '*',
+            MUST_EXIST
+        );
         $dateoverrides = [
             'id' => $period2x1->id,
             'timewindowstart' => (string)($now - 1500),
@@ -557,10 +641,18 @@ final class notification_manager_test extends \advanced_testcase {
         $program2 = $programgenerator->create_program(['fullname' => 'hokus', 'sources' => ['mucertify' => []]]);
         $certification1 = $generator->create_certification(['programid1' => $program1->id, 'sources' => ['manual' => []]]);
         $certification2 = $generator->create_certification(['programid1' => $program2->id, 'sources' => ['manual' => []]]);
-        $source1 = $DB->get_record('tool_mucertify_source',
-            ['type' => 'manual', 'certificationid' => $certification1->id], '*', MUST_EXIST);
-        $source2 = $DB->get_record('tool_mucertify_source',
-            ['type' => 'manual', 'certificationid' => $certification2->id], '*', MUST_EXIST);
+        $source1 = $DB->get_record(
+            'tool_mucertify_source',
+            ['type' => 'manual', 'certificationid' => $certification1->id],
+            '*',
+            MUST_EXIST
+        );
+        $source2 = $DB->get_record(
+            'tool_mucertify_source',
+            ['type' => 'manual', 'certificationid' => $certification2->id],
+            '*',
+            MUST_EXIST
+        );
 
         $generator->create_certifiction_notification(['notificationtype' => 'assignment', 'certificationid' => $certification1->id]);
         $generator->create_certifiction_notification(['notificationtype' => 'valid', 'certificationid' => $certification1->id]);

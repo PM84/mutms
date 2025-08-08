@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 // phpcs:disable moodle.Files.BoilerplateComment.CommentEndedTooSoon
+// phpcs:disable moodle.Files.LineLength.TooLong
 
 /**
  * Uploads user history for certifications.
@@ -31,13 +32,8 @@
 /** @var stdClass $CFG */
 /** @var stdClass $COURSE */
 
-use tool_mucertify\local\management;
-use tool_mucertify\local\source\manual;
+define('AJAX_SCRIPT', true);
 
-// phpcs:ignoreFile moodle.Files.MoodleInternal.MoodleInternalGlobalState
-if (!empty($_SERVER['HTTP_X_MULIB_DIALOG_FORM_REQUEST'])) {
-    define('AJAX_SCRIPT', true);
-}
 require('../../../../config.php');
 
 $certificationid = required_param('certificationid', PARAM_INT);
@@ -51,9 +47,10 @@ $context = context::instance_by_id($certification->contextid);
 require_capability('tool/mucertify:admin', $context);
 
 $currenturl = new moodle_url('/admin/tool/mucertify/management/history_upload.php', ['certification' => $certificationid]);
-$returnurl = new moodle_url('/admin/tool/mucertify/management/certification_users.php', ['id' => $certification->id]);
+$PAGE->set_context($context);
+$PAGE->set_url($currenturl);
 
-management::setup_certification_page($currenturl, $context, $certification, 'certification_users');
+$returnurl = new moodle_url('/admin/tool/mucertify/management/certification_users.php', ['id' => $certification->id]);
 
 $filedata = null;
 if ($draftitemid && confirm_sesskey()) {
@@ -70,7 +67,7 @@ if (!$filedata) {
 }
 
 if ($form->is_cancelled()) {
-    redirect($returnurl);
+    $form->ajax_form_cancelled($returnurl);
 }
 
 if ($data = $form->get_data()) {
@@ -94,7 +91,7 @@ if ($data = $form->get_data()) {
             \core\notification::add($message, \core\output\notification::NOTIFY_WARNING);
         }
 
-        $form->redirect_submitted($returnurl);
+        $form->ajax_form_submitted($returnurl);
     }
     if (!$filedata && $form instanceof \tool_mucertify\local\form\history_upload_file) {
         $filedata = \tool_mucertify\local\util::get_uploaded_data($draftitemid);
@@ -106,10 +103,4 @@ if ($data = $form->get_data()) {
     }
 }
 
-echo $OUTPUT->header();
-
-echo $OUTPUT->heading(get_string('history_upload', 'tool_mucertify'), 3);
-
-echo $form->render();
-
-echo $OUTPUT->footer();
+$form->ajax_form_render();

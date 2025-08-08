@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 // phpcs:disable moodle.Files.BoilerplateComment.CommentEndedTooSoon
+// phpcs:disable moodle.Files.LineLength.TooLong
 
 /**
  * Certification management interface.
@@ -26,17 +27,16 @@
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use tool_mucertify\local\management;
+use tool_mulib\output\header_actions;
+
 /** @var moodle_database $DB */
 /** @var moodle_page $PAGE */
 /** @var core_renderer $OUTPUT */
 /** @var stdClass $CFG */
 /** @var stdClass $COURSE */
 
-use tool_mucertify\local\management;
-use tool_mulib\output\header_actions;
-
 require('../../../../config.php');
-require_once($CFG->dirroot . '/lib/formslib.php');
 
 $id = required_param('id', PARAM_INT);
 
@@ -66,9 +66,9 @@ foreach ($sourceclasses as $sourceclass) {
 }
 if (!$certification->archived && has_capability('tool/mucertify:admin', $context)) {
     $url = new \moodle_url('/admin/tool/mucertify/management/history_upload.php', ['certificationid' => $certification->id]);
-    $link = new \tool_mulib\output\dialog_form\link($url, get_string('history_upload', 'tool_mucertify'));
-    $link->set_dialog_size('xl');
-    $actions->get_dropdown()->add_dialog_form($link);
+    $link = new \tool_mulib\output\ajax_form\link($url, get_string('history_upload', 'tool_mucertify'));
+    $link->set_form_size('xl');
+    $actions->get_dropdown()->add_ajax_form($link);
 }
 
 if ($actions->has_items()) {
@@ -79,7 +79,9 @@ echo $OUTPUT->header();
 
 $report = \core_reportbuilder\system_report_factory::create(
     \tool_mucertify\reportbuilder\local\systemreports\assignments::class,
-    $context, parameters:['certificationid' => $certification->id]);
+    $context,
+    parameters:['certificationid' => $certification->id]
+);
 echo $report->output();
 
 echo $OUTPUT->footer();

@@ -61,18 +61,18 @@ Feature: Import of historic certification periods
     And I click on "Update Manual assignment" "link"
     And I set the following fields to these values:
       | Active | Yes |
-    And I press dialog form button "Update"
+    And I click on "Update" "button" in the ".modal-dialog" "css_element"
     And I click on "Update Automatic cohort assignment" "link"
     And I set the following fields to these values:
       | Active            | Yes      |
       | Assign to cohorts | Cohort 1 |
-    And I press dialog form button "Update"
+    And I click on "Update" "button" in the ".modal-dialog" "css_element"
 
     When I click on "Users" "link" in the ".secondary-navigation" "css_element"
     And I click on "Upload history" action from "User actions" dropdown
     And I upload "admin/tool/mucertify/tests/fixtures/history1.csv" file to "CSV file" filemanager
-    And I press dialog form button "Continue"
-    And I press dialog form button "Upload history"
+    And I click on "Continue" "button" in the ".modal-dialog" "css_element"
+    And I click on "Upload history" "button" in the ".modal-dialog" "css_element"
     Then I should see "Certification periods imported: 2"
     And I should see "Rows skipped: 1"
     And the following should exist in the "reportbuilder-table" table:
@@ -83,10 +83,10 @@ Feature: Import of historic certification periods
 
     When I click on "Upload history" action from "User actions" dropdown
     And I upload "admin/tool/mucertify/tests/fixtures/history1.csv" file to "CSV file" filemanager
-    And I press dialog form button "Continue"
+    And I click on "Continue" "button" in the ".modal-dialog" "css_element"
     And I set the following fields to these values:
       | Create new assignments | 1 |
-    And I press dialog form button "Upload history"
+    And I click on "Upload history" "button" in the ".modal-dialog" "css_element"
     Then I should see "Users assigned to certification: 1"
     And I should see "Certification periods imported: 1"
     And I should see "Rows skipped: 2"
@@ -98,11 +98,11 @@ Feature: Import of historic certification periods
 
     When I click on "Upload history" action from "User actions" dropdown
     And I upload "admin/tool/mucertify/tests/fixtures/history2.txt" file to "CSV file" filemanager
-    And I press dialog form button "Continue"
+    And I click on "Continue" "button" in the ".modal-dialog" "css_element"
     And I set the following fields to these values:
       | Create new assignments      | 1 |
       | Skip already assigned users | 1 |
-    And I press dialog form button "Upload history"
+    And I click on "Upload history" "button" in the ".modal-dialog" "css_element"
     Then I should see "Users assigned to certification: 1"
     And I should see "Certification periods imported: 1"
     And I should see "Rows skipped: 1"
@@ -115,35 +115,35 @@ Feature: Import of historic certification periods
 
     When I click on "Upload history" action from "User actions" dropdown
     And I upload "admin/tool/mucertify/tests/fixtures/history1.csv" file to "CSV file" filemanager
-    And I press dialog form button "Continue"
+    And I click on "Continue" "button" in the ".modal-dialog" "css_element"
     And I set the following fields to these values:
       | Period valid from column    | Choose...       |
-    And I press dialog form button "Upload history"
+    And I click on "Upload history" "button" in the ".modal-dialog" "css_element"
     Then I should see "Required"
     And I set the following fields to these values:
       | Period valid from column    | from            |
       | Period expiration column    | Choose...       |
-    And I press dialog form button "Upload history"
+    And I click on "Upload history" "button" in the ".modal-dialog" "css_element"
     Then I should see "Required"
     And I set the following fields to these values:
       | Period expiration column    | expiration      |
       | Certification date column   | Choose...       |
-    And I press dialog form button "Upload history"
+    And I click on "Upload history" "button" in the ".modal-dialog" "css_element"
     Then I should see "Required"
     And I set the following fields to these values:
       | Certification date column   | certified       |
       | Period expiration column    | from            |
-    And I press dialog form button "Upload history"
+    And I click on "Upload history" "button" in the ".modal-dialog" "css_element"
     Then I should see "Column is used already"
     And I set the following fields to these values:
       | Period expiration column    | expiration      |
       | Certification date column   | expiration      |
-    And I press dialog form button "Upload history"
+    And I click on "Upload history" "button" in the ".modal-dialog" "css_element"
     Then I should see "Column is used already"
     And I set the following fields to these values:
       | Period expiration column    | expiration      |
       | Certification date column   | from            |
-    And I press dialog form button "Upload history"
+    And I click on "Upload history" "button" in the ".modal-dialog" "css_element"
     Then I should see "Rows skipped: 3"
     And the following should exist in the "reportbuilder-table" table:
       | First name | Valid from     | Expiration      | Certification status | Source                      |
@@ -161,17 +161,17 @@ Feature: Import of historic certification periods
     And I click on "Update Manual assignment" "link"
     And I set the following fields to these values:
       | Active | Yes |
-    And I press dialog form button "Update"
+    And I click on "Update" "button" in the ".modal-dialog" "css_element"
     And I click on "Update Automatic cohort assignment" "link"
     And I set the following fields to these values:
       | Active            | Yes      |
       | Assign to cohorts | Cohort 1 |
-    And I press dialog form button "Update"
+    And I click on "Update" "button" in the ".modal-dialog" "css_element"
 
     When I click on "Users" "link" in the ".secondary-navigation" "css_element"
     And I click on "Upload history" action from "User actions" dropdown
     And I upload "admin/tool/mucertify/tests/fixtures/history3.csv" file to "CSV file" filemanager
-    And I press dialog form button "Continue"
+    And I click on "Continue" "button" in the ".modal-dialog" "css_element"
     And I set the following fields to these values:
       | User identification column  | student1         |
       | User mapping via            | Username         |
@@ -183,7 +183,7 @@ Feature: Import of historic certification periods
       | Certification date column   | 2020-01-01       |
       | Evidence column             | passed program X |
       | Evidence default            | historic stuff   |
-    And I press dialog form button "Upload history"
+    And I click on "Upload history" "button" in the ".modal-dialog" "css_element"
     Then I should see "Users assigned to certification: 1"
     And I should see "Certification periods imported: 3"
     And the following should exist in the "reportbuilder-table" table:

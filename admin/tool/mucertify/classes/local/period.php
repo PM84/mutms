@@ -45,9 +45,11 @@ final class period {
 
         $assignment = $DB->get_record('tool_mucertify_assignment', ['certificationid' => $certificationid, 'userid' => $userid]);
 
-        $hascertifiedperiod = $DB->record_exists_select('tool_mucertify_period',
+        $hascertifiedperiod = $DB->record_exists_select(
+            'tool_mucertify_period',
             "certificationid = :certificationid AND userid = :userid AND timecertified IS NOT NULL AND timerevoked IS NULL",
-            ['certificationid' => $certificationid, 'userid' => $userid]);
+            ['certificationid' => $certificationid, 'userid' => $userid]
+        );
 
         if (!$hascertifiedperiod) {
             if ($assignment) {
@@ -67,14 +69,21 @@ final class period {
                         'timecertifiedfrom' => $from,
                         'timecertifieduntil' => $until,
                     ]);
-                    $assignment = $DB->get_record('tool_mucertify_assignment',
-                        ['certificationid' => $certificationid, 'userid' => $userid], '*', MUST_EXIST);
+                    $assignment = $DB->get_record(
+                        'tool_mucertify_assignment',
+                        ['certificationid' => $certificationid, 'userid' => $userid],
+                        '*',
+                        MUST_EXIST
+                    );
                 }
             }
         }
 
-        $periods = $DB->get_records('tool_mucertify_period',
-            ['certificationid' => $certificationid, 'userid' => $userid], 'timewindowstart ASC');
+        $periods = $DB->get_records(
+            'tool_mucertify_period',
+            ['certificationid' => $certificationid, 'userid' => $userid],
+            'timewindowstart ASC'
+        );
 
         if (!$periods) {
             if ($assignment) {
@@ -159,8 +168,12 @@ final class period {
         if ($update) {
             $update['id'] = $assignment->id;
             $DB->update_record('tool_mucertify_assignment', $update);
-            $assignment = $DB->get_record('tool_mucertify_assignment',
-                ['certificationid' => $certificationid, 'userid' => $userid], '*', MUST_EXIST);
+            $assignment = $DB->get_record(
+                'tool_mucertify_assignment',
+                ['certificationid' => $certificationid, 'userid' => $userid],
+                '*',
+                MUST_EXIST
+            );
         }
         return $assignment;
     }
@@ -178,10 +191,14 @@ final class period {
 
         $now = time();
 
-        $firstperiod = $DB->get_record('tool_mucertify_period',
-            ['certificationid' => $certification->id, 'userid' => $userid, 'first' => 1]);
-        $recertperiod = $DB->get_record('tool_mucertify_period',
-            ['certificationid' => $certification->id, 'userid' => $userid, 'recertifiable' => 1]);
+        $firstperiod = $DB->get_record(
+            'tool_mucertify_period',
+            ['certificationid' => $certification->id, 'userid' => $userid, 'first' => 1]
+        );
+        $recertperiod = $DB->get_record(
+            'tool_mucertify_period',
+            ['certificationid' => $certification->id, 'userid' => $userid, 'recertifiable' => 1]
+        );
         $continuation = false;
 
         if (empty($dateoverrides['timewindowstart'])) {
@@ -358,13 +375,19 @@ final class period {
         $record->first = 0;
         $record->recertifiable = 0;
         if (!isset($record->timerevoked)) {
-            if (!$DB->record_exists('tool_mucertify_period',
-                ['certificationid' => $certification->id, 'userid' => $user->id, 'timerevoked' => null])
+            if (
+                !$DB->record_exists(
+                    'tool_mucertify_period',
+                    ['certificationid' => $certification->id, 'userid' => $user->id, 'timerevoked' => null]
+                )
             ) {
                 $record->first = 1;
                 $record->recertifiable = 1; // Ignored if recertification disabled in settings, they might enable it later.
-            } else if ($DB->record_exists('tool_mucertify_period',
-                ['certificationid' => $certification->id, 'userid' => $user->id, 'recertifiable' => 1])
+            } else if (
+                $DB->record_exists(
+                    'tool_mucertify_period',
+                    ['certificationid' => $certification->id, 'userid' => $user->id, 'recertifiable' => 1]
+                )
             ) {
                 // Duplicates will be removed when fixing flags.
                 $record->recertifiable = 1;
@@ -529,7 +552,7 @@ final class period {
         } else {
             $evidence = (array)json_decode($record->evidencejson);
             if (property_exists($data, 'evidencedetails')) {
-                if ($data->evidencedetails === null || trim ($data->evidencedetails) === '') {
+                if ($data->evidencedetails === null || trim($data->evidencedetails) === '') {
                     unset($evidence['details']);
                 } else {
                     $evidence['details'] = $data->evidencedetails;
@@ -571,11 +594,19 @@ final class period {
         global $DB;
 
         if ($stoprecertify) {
-            $DB->set_field('tool_mucertify_period', 'recertifiable', 0,
-                ['certificationid' => $assignment->certificationid, 'userid' => $assignment->userid]);
+            $DB->set_field(
+                'tool_mucertify_period',
+                'recertifiable',
+                0,
+                ['certificationid' => $assignment->certificationid, 'userid' => $assignment->userid]
+            );
         } else {
-            $DB->set_field('tool_mucertify_period', 'recertifiable', 1,
-                ['certificationid' => $assignment->certificationid, 'userid' => $assignment->userid, 'timerevoked' => null]);
+            $DB->set_field(
+                'tool_mucertify_period',
+                'recertifiable',
+                1,
+                ['certificationid' => $assignment->certificationid, 'userid' => $assignment->userid, 'timerevoked' => null]
+            );
         }
         return self::fix_flags($assignment->certificationid, $assignment->userid);
     }
@@ -647,10 +678,18 @@ final class period {
             return;
         }
 
-        $certification = $DB->get_record('tool_mucertify_certification',
-            ['id' => $period->certificationid], '*', MUST_EXIST);
-        $assignment = $DB->get_record('tool_mucertify_assignment',
-            ['certificationid' => $period->certificationid, 'userid' => $period->userid], '*', MUST_EXIST);
+        $certification = $DB->get_record(
+            'tool_mucertify_certification',
+            ['id' => $period->certificationid],
+            '*',
+            MUST_EXIST
+        );
+        $assignment = $DB->get_record(
+            'tool_mucertify_assignment',
+            ['certificationid' => $period->certificationid, 'userid' => $period->userid],
+            '*',
+            MUST_EXIST
+        );
 
         $settings = certification::get_periods_settings($certification);
 
@@ -1075,10 +1114,12 @@ final class period {
                 continue;
             }
 
-            if ($DB->record_exists('tool_mucertify_period', [
+            if (
+                $DB->record_exists('tool_mucertify_period', [
                 'certificationid' => $certification->id, 'userid' => $user->id, 'timerevoked' => null,
                 'timefrom' => $timefrom, 'timeuntil' => $timeuntil,
-            ])) {
+                ])
+            ) {
                 // Ignore duplicates.
                 $result['skipped']++;
                 continue;

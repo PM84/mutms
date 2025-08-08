@@ -16,33 +16,25 @@
 
 // phpcs:disable moodle.Files.BoilerplateComment.CommentEndedTooSoon
 
-namespace tool_mucertify\external;
+namespace tool_mucertify\external\form_autocomplete;
 
 use core_external\external_function_parameters;
 use core_external\external_value;
 
 /**
- * Cohort allocation cohorts autocompletion.
+ * Certification visibility cohorts autocompletion.
  *
  * @package     tool_mucertify
  * @copyright   2025 Petr Skoda
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-final class form_source_cohort_edit_cohortids extends \tool_mulib\external\form_autocomplete_field_cohort {
-    /**
-     * True means returned field data is array, false means value is scalar.
-     *
-     * @return bool
-     */
-    public static function is_multi_select_field(): bool {
+final class certification_visibility_edit_cohortids extends \tool_mulib\external\form_autocomplete\cohort {
+    #[\Override]
+    public static function get_multiple(): bool {
         return true;
     }
 
-    /**
-     * Describes the external function arguments.
-     *
-     * @return external_function_parameters
-     */
+    #[\Override]
     public static function execute_parameters(): external_function_parameters {
         return new external_function_parameters([
             'query' => new external_value(PARAM_RAW, 'The search query', VALUE_REQUIRED),
@@ -60,15 +52,23 @@ final class form_source_cohort_edit_cohortids extends \tool_mulib\external\form_
     public static function execute(string $query, int $certificationid): array {
         global $DB;
 
-        ['query' => $query, 'certificationid' => $certificationid] = self::validate_parameters(
-            self::execute_parameters(), ['query' => $query, 'certificationid' => $certificationid]);
+        [
+            'query' => $query,
+            'certificationid' => $certificationid,
+        ] = self::validate_parameters(
+            self::execute_parameters(),
+            [
+                'query' => $query,
+                'certificationid' => $certificationid,
+            ]
+        );
 
         $certification = $DB->get_record('tool_mucertify_certification', ['id' => $certificationid], '*', MUST_EXIST);
         $context = \context::instance_by_id($certification->contextid);
         self::validate_context($context);
         require_capability('tool/mucertify:edit', $context);
 
-        list($searchsql, $params) = self::get_cohort_search_query($query, 'ch');
+        [$searchsql, $params] = self::get_cohort_search_query($query, 'ch');
         $tenantselect = "";
         if (\tool_mucertify\local\util::is_mutenancy_active()) {
             if ($context->tenantid) {
@@ -84,19 +84,28 @@ final class form_source_cohort_edit_cohortids extends \tool_mulib\external\form_
               ORDER BY ch.name ASC";
         $rs = $DB->get_recordset_sql($sql, $params);
 
-        return self::prepare_cohort_list($rs);
+        $cohorts = [];
+        $i = 0;
+        foreach ($rs as $cohort) {
+            if (!self::is_cohort_visible($cohort)) {
+                continue;
+            }
+            $cohorts[$cohort->id] = $cohort;
+            $i++;
+            if ($i > self::MAX_RESULTS) {
+                break;
+            }
+        }
+        $rs->close();
+
+        return self::prepare_result($cohorts, $context);
     }
 
-    /**
-     * Validate user can select cohort.
-     *
-     * @param int $cohortid
-     * @param int $certificationid 0 means no certification yet
-     * @return string|null null means ids ok, string is error
-     */
-    public static function validate_cohortid(int $cohortid, int $certificationid): ?string {
+    #[\Override]
+    public static function validate_value(int $value, array $args, \context $context): ?string {
         global $DB;
-        $cohort = $DB->get_record('cohort', ['id' => $cohortid]);
+        $certificationid = $args['certificationid'];
+        $cohort = $DB->get_record('cohort', ['id' => $value]);
         if (!$cohort) {
             return get_string('error');
         }
@@ -104,12 +113,9 @@ final class form_source_cohort_edit_cohortids extends \tool_mulib\external\form_
         if (!$context) {
             return get_string('error');
         }
-        $source = $DB->get_record('tool_mucertify_source', ['certificationid' => $certificationid, 'type' => 'cohort']);
-        if ($source) {
-            if ($DB->record_exists('tool_mucertify_src_cohort', ['cohortid' => $cohort->id, 'sourceid' => $source->id])) {
-                // Existing cohorts are always fine.
-                return null;
-            }
+        if ($DB->record_exists('tool_mucertify_cohort', ['cohortid' => $cohort->id, 'certificationid' => $certificationid])) {
+            // Existing cohorts are always fine.
+            return null;
         }
         $certification = $DB->get_record('tool_mucertify_certification', ['id' => $certificationid], '*', MUST_EXIST);
         if (\tool_mucertify\local\util::is_mutenancy_active()) {
