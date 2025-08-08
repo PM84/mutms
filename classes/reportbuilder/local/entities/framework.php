@@ -34,7 +34,6 @@ use core_reportbuilder\local\filters\boolean_select;
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 final class framework extends base {
-
     #[\Override]
     protected function get_default_tables(): array {
         return [
@@ -95,7 +94,7 @@ final class framework extends base {
             ->set_type(column::TYPE_TEXT)
             ->add_fields("{$frameworkalias}.name, {$frameworkalias}.id, {$frameworkalias}.contextid")
             ->set_is_sortable(true)
-            ->set_callback(static function(?string $value, \stdClass $row): string {
+            ->set_callback(static function (?string $value, \stdClass $row): string {
                 if (!$row->id) {
                     return '';
                 }
@@ -117,7 +116,7 @@ final class framework extends base {
             ->set_type(column::TYPE_TEXT)
             ->add_fields("{$frameworkalias}.idnumber")
             ->set_is_sortable(true)
-            ->set_callback(static function(?string $value, \stdClass $row): string {
+            ->set_callback(static function (?string $value, \stdClass $row): string {
                 return s($row->idnumber);
             });
 
@@ -142,7 +141,7 @@ final class framework extends base {
             ->set_type(column::TYPE_INTEGER)
             ->add_fields("{$frameworkalias}.contextid")
             ->set_is_sortable(false)
-            ->set_callback(static function(?int $value, \stdClass $row): string {
+            ->set_callback(static function (?int $value, \stdClass $row): string {
                 if (!$row->contextid) {
                     return '';
                 }
@@ -198,8 +197,7 @@ final class framework extends base {
             ->set_type(column::TYPE_INTEGER)
             ->add_field('(' . "SELECT COUNT('x')
                                  FROM {tool_mutrain_field} tf
-                                WHERE tf.frameworkid = {$frameworkalias}.id" . ')'
-                , 'fieldcount')
+                                WHERE tf.frameworkid = {$frameworkalias}.id" . ')', 'fieldcount')
             ->set_is_sortable(true)
             ->set_disabled_aggregation_all();
 

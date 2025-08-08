@@ -61,12 +61,12 @@ class renderer extends \plugin_renderer_base {
         if (has_capability('tool/mutrain:manageframeworks', $context)) {
             if ($framework->archived) {
                 $url = new moodle_url('/admin/tool/mutrain/management/framework_restore.php', ['id' => $framework->id]);
-                $action = new \tool_mulib\output\dialog_form\icon($url, get_string('framework_restore', 'tool_mutrain'), 'i/settings');
+                $action = new \tool_mulib\output\ajax_form\icon($url, get_string('framework_restore', 'tool_mutrain'), 'i/settings');
             } else {
                 $url = new moodle_url('/admin/tool/mutrain/management/framework_archive.php', ['id' => $framework->id]);
-                $action = new \tool_mulib\output\dialog_form\icon($url, get_string('framework_archive', 'tool_mutrain'), 'i/settings');
+                $action = new \tool_mulib\output\ajax_form\icon($url, get_string('framework_archive', 'tool_mutrain'), 'i/settings');
             }
-            $action->set_dialog_size('sm');
+            $action->set_form_size('sm');
             $archived .= $this->output->render($action);
         }
         $details->add(get_string('archived', 'tool_mutrain'), $archived);

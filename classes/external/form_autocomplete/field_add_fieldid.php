@@ -17,11 +17,12 @@
 // phpcs:disable moodle.Files.BoilerplateComment.CommentEndedTooSoon
 // phpcs:disable moodle.Files.LineLength.TooLong
 
-namespace tool_mutrain\external;
+namespace tool_mutrain\external\form_autocomplete;
 
 use tool_mutrain\local\framework;
 use core_external\external_function_parameters;
 use core_external\external_value;
+use stdClass;
 
 /**
  * Provides list of candidates for adding fields to framework.
@@ -32,25 +33,20 @@ use core_external\external_value;
  * @author     Petr Skoda
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-final class form_field_add_fieldid extends \tool_mulib\external\form_autocomplete_field {
-    /**
-     * True means returned field data is array, false means value is scalar.
-     *
-     * @return bool
-     */
-    public static function is_multi_select_field(): bool {
+final class field_add_fieldid extends \tool_mulib\external\form_autocomplete\base {
+    /** @var int training field db table */
+    public const ITEM_TABLE = 'customfield_field';
+
+    #[\Override]
+    public static function get_multiple(): bool {
         return false;
     }
 
-    /**
-     * Describes the external function arguments.
-     *
-     * @return external_function_parameters
-     */
+    #[\Override]
     public static function execute_parameters(): external_function_parameters {
         return new external_function_parameters([
-            'query' => new external_value(\PARAM_RAW, 'The search query', \VALUE_REQUIRED),
-            'frameworkid' => new external_value(\PARAM_INT, 'Framework id', \VALUE_REQUIRED),
+            'query' => new external_value(PARAM_RAW, 'The search query', VALUE_REQUIRED),
+            'frameworkid' => new external_value(PARAM_INT, 'Framework id', VALUE_REQUIRED),
         ]);
     }
 
@@ -64,28 +60,28 @@ final class form_field_add_fieldid extends \tool_mulib\external\form_autocomplet
     public static function execute(string $query, int $frameworkid): array {
         global $DB;
 
-        $params = self::validate_parameters(self::execute_parameters(),
-            ['query' => $query, 'frameworkid' => $frameworkid]);
-        $query = $params['query'];
-        $frameworkid = $params['frameworkid'];
+        [
+            'query' => $query,
+            'frameworkid' => $frameworkid,
+        ] = self::validate_parameters(
+            self::execute_parameters(),
+            [
+                'query' => $query,
+                'frameworkid' => $frameworkid,
+            ]
+        );
 
-        $framework = $DB->get_record('tool_mutrain_framework', ['id' => $frameworkid], '*', \MUST_EXIST);
+        $framework = $DB->get_record('tool_mutrain_framework', ['id' => $frameworkid], '*', MUST_EXIST);
 
         // Validate context.
         $context = \context::instance_by_id($framework->contextid);
         self::validate_context($context);
-        \require_capability('tool/mutrain:manageframeworks', $context);
+        require_capability('tool/mutrain:manageframeworks', $context);
 
         $allfields = framework::get_all_training_fields();
         $current = $DB->get_records_menu('tool_mutrain_field', ['frameworkid' => $framework->id], '', 'fieldid, id');
 
-        $list = [];
-        $notice = null;
-
-        if (!$allfields) {
-            $notice = get_string('error_notrainingfields', 'tool_mutrain');
-        }
-
+        $fields = [];
         foreach ($allfields as $field) {
             if (isset($current[$field->id])) {
                 continue;
@@ -97,57 +93,34 @@ final class form_field_add_fieldid extends \tool_mulib\external\form_autocomplet
                 }
             }
 
-            $name = \format_string($field->name);
-
-            $list[] = [
-                'value' => $field->id,
-                'label' => "$name <small>($field->component/$field->area)</small>",
-            ];
+            $fields[$field->id] = $field;
         }
-        return [
-            'notice' => $notice,
-            'list' => $list,
-        ];
+
+        if (count($fields) > self::MAX_RESULTS) {
+            return self::get_overflow_result();
+        }
+
+        return self::get_list_result($fields, $context);
     }
 
-    /**
-     * Return function that return label for given value.
-     *
-     * @param array $arguments
-     * @return callable
-     */
-    public static function get_label_callback(array $arguments): callable {
-        return function($value) use ($arguments): string {
-            $allfields = framework::get_all_training_fields();
-            $name = $allfields[$value]->name ?? \get_string('error');
-            return \format_string($name);
-        };
+    #[\Override]
+    public static function format_label(stdClass $item, \context $context): string {
+        $name = format_string($item->name);
+        return "$name <small>($item->component/$item->area)</small>";
     }
 
-    /**
-     * Validate data.
-     *
-     * @param array $arguments
-     * @param mixed $value
-     * @return string|null error message, NULL means value is ok
-     */
-    public static function validate_form_value(array $arguments, $value): ?string {
+    #[\Override]
+    public static function validate_value(int $value, array $args, \context $context): ?string {
         global $DB;
-
-        if (!$value) {
-            return null;
-        }
 
         $allfields = framework::get_all_training_fields();
 
         if (!isset($allfields[$value])) {
-            return \get_string('error');
+            return get_string('error');
         }
 
-        if ($DB->record_exists('tool_mutrain_field',
-            ['frameworkid' => $arguments['frameworkid'], 'fieldid' => $value])) {
-
-            return \get_string('error');
+        if ($DB->record_exists('tool_mutrain_field', ['frameworkid' => $args['frameworkid'], 'fieldid' => $value])) {
+            return get_string('error');
         }
 
         return null;

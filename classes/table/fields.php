@@ -157,9 +157,11 @@ final class fields extends \table_sql {
         $html = '';
 
         if (!$this->framework->archived && has_capability('tool/mutrain:manageframeworks', \context_system::instance())) {
-            $url = new \moodle_url('/admin/tool/mutrain/management/field_remove.php',
-                ['frameworkid' => $this->framework->id, 'fieldid' => $field->id]);
-            $button = new \tool_mulib\output\dialog_form\icon($url, get_string('field_remove', 'tool_mutrain'), 'i/delete', 'moodle');
+            $url = new \moodle_url(
+                '/admin/tool/mutrain/management/field_remove.php',
+                ['frameworkid' => $this->framework->id, 'fieldid' => $field->id]
+            );
+            $button = new \tool_mulib\output\ajax_form\icon($url, get_string('field_remove', 'tool_mutrain'), 'i/delete', 'moodle');
             $html .= $OUTPUT->render($button);
         }
 
