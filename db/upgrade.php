@@ -39,7 +39,6 @@ function xmldb_tool_mucertify_upgrade($oldversion) {
     $dbman = $DB->get_manager();
 
     if ($oldversion < 2025042300) {
-
         $table = new xmldb_table('tool_mucertify_crt_snapshot');
         if ($dbman->table_exists($table)) {
             $dbman->drop_table($table);

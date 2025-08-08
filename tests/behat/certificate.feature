@@ -59,7 +59,7 @@ Feature: Issuing of certificates for certification completion
       | Certificate template | Not set       |
     And I set the following fields to these values:
       | Certificate template | Certificate 1 |
-    And I press dialog form button "Update certificate template"
+    And I click on "Update certificate template" "button" in the ".modal-dialog" "css_element"
     Then I should see "Certificate 1" in the "Certificate template" definition list item
 
     When I click on "Update certificate template" "link"
@@ -67,7 +67,7 @@ Feature: Issuing of certificates for certification completion
       | Certificate template | Certificate 1 |
     And I set the following fields to these values:
       | Certificate template | Certificate 2 |
-    And I press dialog form button "Update certificate template"
+    And I click on "Update certificate template" "button" in the ".modal-dialog" "css_element"
     Then I should see "Certificate 2" in the "Certificate template" definition list item
 
     When I click on "Update certificate template" "link"
@@ -75,13 +75,13 @@ Feature: Issuing of certificates for certification completion
       | Certificate template | Certificate 2 |
     And I set the following fields to these values:
       | Certificate template | Certificate 1 |
-    And I press dialog form button "Update certificate template"
+    And I click on "Update certificate template" "button" in the ".modal-dialog" "css_element"
     Then I should see "Certificate 1" in the "Certificate template" definition list item
 
     When I click on "Update certificate template" "link"
     And I set the following fields to these values:
       | Certificate template | Not set       |
-    And I press dialog form button "Update certificate template"
+    And I click on "Update certificate template" "button" in the ".modal-dialog" "css_element"
     Then I should see "Not set" in the "Certificate template" definition list item
 
   @javascript
@@ -98,7 +98,7 @@ Feature: Issuing of certificates for certification completion
     And I click on "Update certificate template" "link"
     And I set the following fields to these values:
       | Certificate template | Certificate 1 |
-    And I press dialog form button "Update certificate template"
+    And I click on "Update certificate template" "button" in the ".modal-dialog" "css_element"
     And I should see "Certificate 1" in the "Certificate template" definition list item
 
     And I click on "Users" "link" in the ".secondary-navigation" "css_element"
@@ -110,7 +110,7 @@ Feature: Issuing of certificates for certification completion
       | timewindowstart[year]    | 2022      |
       | timewindowstart[hour]    | 09        |
       | timewindowstart[minute]  | 00        |
-    And I press dialog form button "Assign users"
+    And I click on "Assign users" "button" in the ".modal-dialog" "css_element"
 
     And I follow "Student 1"
     And I click on "5/11/22" "link" in the "Program 000" "table_row"
@@ -128,7 +128,7 @@ Feature: Issuing of certificates for certification completion
       | timecertified[year]    | 2023      |
       | timecertified[hour]    | 09        |
       | timecertified[minute]  | 00        |
-    And I press dialog form button "Override period dates"
+    And I click on "Override period dates" "button" in the ".modal-dialog" "css_element"
     And I should see "Valid" in the "Certification status" definition list item
 
     And I log out

@@ -27,16 +27,15 @@
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use tool_mucertify\local\management;
+
 /** @var moodle_database $DB */
 /** @var moodle_page $PAGE */
 /** @var core_renderer $OUTPUT */
 /** @var stdClass $CFG */
 /** @var stdClass $COURSE */
 
-use tool_mucertify\local\management;
-
 require('../../../../config.php');
-require_once($CFG->dirroot . '/lib/formslib.php');
 
 $id = required_param('id', PARAM_INT);
 
@@ -59,7 +58,7 @@ echo $OUTPUT->header();
 $updateicon = '';
 if (has_capability('tool/mucertify:edit', $context)) {
     $editurl = new moodle_url('/admin/tool/mucertify/management/certification_settings_edit1.php', ['id' => $certification->id]);
-    $updateicon = new tool_mulib\output\dialog_form\icon($editurl, get_string('certification_update', 'tool_mucertify'), 'i/settings');
+    $updateicon = new tool_mulib\output\ajax_form\icon($editurl, get_string('certification_update', 'tool_mucertify'), 'i/settings');
     $updateicon = ' <span style="font-size: .9375rem !important">' . $OUTPUT->render($updateicon) . '</span>';
 }
 echo $OUTPUT->heading(get_string('certification', 'tool_mucertify') . $updateicon, 3);
@@ -69,7 +68,7 @@ if ($certification->recertify !== null) {
     $updateicon = '';
     if (has_capability('tool/mucertify:edit', $context)) {
         $editurl = new moodle_url('/admin/tool/mucertify/management/certification_settings_edit2.php', ['id' => $certification->id]);
-        $updateicon = new tool_mulib\output\dialog_form\icon($editurl, get_string('updaterecertification', 'tool_mucertify'), 'i/settings');
+        $updateicon = new tool_mulib\output\ajax_form\icon($editurl, get_string('updaterecertification', 'tool_mucertify'), 'i/settings');
         $updateicon = ' <span style="font-size: .9375rem !important">' . $OUTPUT->render($updateicon) . '</span>';
     }
     echo $OUTPUT->heading(get_string('recertification', 'tool_mucertify') . $updateicon, 3);
@@ -80,7 +79,7 @@ if (\tool_mucertify\local\certificate::is_available()) {
     $updateicon = '';
     if (has_capability('tool/mucertify:edit', $context)) {
         $editurl = new moodle_url('/admin/tool/mucertify/management/certification_certificate_edit.php', ['id' => $certification->id]);
-        $updateicon = new tool_mulib\output\dialog_form\icon($editurl, get_string('updatecertificatetemplate', 'tool_mucertify'), 'i/settings');
+        $updateicon = new tool_mulib\output\ajax_form\icon($editurl, get_string('updatecertificatetemplate', 'tool_mucertify'), 'i/settings');
         $updateicon = ' <span style="font-size: .9375rem !important">' . $OUTPUT->render($updateicon) . '</span>';
     }
     echo $OUTPUT->heading(get_string('certificates', 'tool_mucertify') . $updateicon, 3);

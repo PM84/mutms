@@ -52,8 +52,11 @@ class renderer extends \plugin_renderer_base {
 
         $presentation = (array)json_decode($certification->presentationjson);
         if (!empty($presentation['image'])) {
-            $imageurl = moodle_url::make_file_url("$CFG->wwwroot/pluginfile.php",
-                '/' . $context->id . '/tool_mucertify/image/' . $certification->id . '/'. $presentation['image'], false);
+            $imageurl = moodle_url::make_file_url(
+                "$CFG->wwwroot/pluginfile.php",
+                '/' . $context->id . '/tool_mucertify/image/' . $certification->id . '/' . $presentation['image'],
+                false
+            );
             $certificationimage = '<div class="certificationimage">' . html_writer::img($imageurl, '') . '</div>';
         }
 
@@ -79,12 +82,12 @@ class renderer extends \plugin_renderer_base {
         if (has_capability('tool/mucertify:edit', $context)) {
             if ($certification->archived) {
                 $url = new moodle_url('/admin/tool/mucertify/management/certification_restore.php', ['id' => $certification->id]);
-                $action = new \tool_mulib\output\dialog_form\icon($url, get_string('certification_restore', 'tool_mucertify'), 'i/settings');
+                $action = new \tool_mulib\output\ajax_form\icon($url, get_string('certification_restore', 'tool_mucertify'), 'i/settings');
             } else {
                 $url = new moodle_url('/admin/tool/mucertify/management/certification_archive.php', ['id' => $certification->id]);
-                $action = new \tool_mulib\output\dialog_form\icon($url, get_string('certification_archive', 'tool_mucertify'), 'i/settings');
+                $action = new \tool_mulib\output\ajax_form\icon($url, get_string('certification_archive', 'tool_mucertify'), 'i/settings');
             }
-            $action->set_dialog_size('sm');
+            $action->set_form_size('sm');
             $archived .= $this->output->render($action);
         }
         $details->add(get_string('archived', 'tool_mucertify'), $archived);
@@ -304,8 +307,10 @@ class renderer extends \plugin_renderer_base {
                 $details->add(get_string('certificatetemplate', 'tool_certificate'), $name);
             }
         } else {
-            $details->add(get_string('certificatetemplate', 'tool_certificate'),
-                get_string('notset', 'tool_muprog'));
+            $details->add(
+                get_string('certificatetemplate', 'tool_certificate'),
+                get_string('notset', 'tool_muprog')
+            );
         }
 
         return $this->output->render($details);
@@ -339,21 +344,21 @@ class renderer extends \plugin_renderer_base {
             if (has_capability('tool/mucertify:admin', $context)) {
                 if ($sourceclass::is_assignment_update_possible($certification, $source, $assignment)) {
                     $url = new moodle_url('/admin/tool/mucertify/management/assignment_update.php', ['id' => $assignment->id]);
-                    $button = new \tool_mulib\output\dialog_form\button($url, get_string('assignment_update', 'tool_mucertify'));
+                    $button = new \tool_mulib\output\ajax_form\button($url, get_string('assignment_update', 'tool_mucertify'));
                     $buttons[] = $this->output->render($button);
                 }
             }
             if (has_capability('tool/mucertify:unassign', $context)) {
                 if ($sourceclass::is_assignment_delete_possible($certification, $source, $assignment)) {
                     $url = new moodle_url('/admin/tool/mucertify/management/assignment_delete.php', ['id' => $assignment->id]);
-                    $button = new \tool_mulib\output\dialog_form\button($url, get_string('assignment_delete', 'tool_mucertify'));
-                    $button->set_after_submit($button::AFTER_SUBMIT_REDIRECT);
+                    $button = new \tool_mulib\output\ajax_form\button($url, get_string('assignment_delete', 'tool_mucertify'));
+                    $button->set_submitted_action($button::SUBMITTED_ACTION_REDIRECT);
                     $buttons[] = $this->output->render($button);
                 }
             }
             if (!$certification->archived && !$assignment->archived && has_capability('tool/mucertify:admin', $context)) {
                 $url = new moodle_url('/admin/tool/mucertify/management/period_create.php', ['assignmentid' => $assignment->id]);
-                $button = new \tool_mulib\output\dialog_form\button($url, get_string('period_create', 'tool_mucertify'));
+                $button = new \tool_mulib\output\ajax_form\button($url, get_string('period_create', 'tool_mucertify'));
                 $buttons[] = $this->output->render($button);
             }
         }
@@ -383,16 +388,16 @@ class renderer extends \plugin_renderer_base {
             if ($assignment->archived && has_capability('tool/mucertify:assign', $context)) {
                 if ($sourceclass::is_assignment_restore_possible($certification, $source, $assignment)) {
                     $url = new moodle_url('/admin/tool/mucertify/management/assignment_restore.php', ['id' => $assignment->id]);
-                    $action = new \tool_mulib\output\dialog_form\icon($url, get_string('assignment_restore', 'tool_mucertify'), 'i/settings');
-                    $action->set_dialog_size('sm');
+                    $action = new \tool_mulib\output\ajax_form\icon($url, get_string('assignment_restore', 'tool_mucertify'), 'i/settings');
+                    $action->set_form_size('sm');
                     $archived .= $this->output->render($action);
                 }
             }
             if (!$assignment->archived && has_capability('tool/mucertify:unassign', $context)) {
                 if ($sourceclass::is_assignment_archive_possible($certification, $source, $assignment)) {
                     $url = new moodle_url('/admin/tool/mucertify/management/assignment_archive.php', ['id' => $assignment->id]);
-                    $action = new \tool_mulib\output\dialog_form\icon($url, get_string('assignment_archive', 'tool_mucertify'), 'i/settings');
-                    $action->set_dialog_size('sm');
+                    $action = new \tool_mulib\output\ajax_form\icon($url, get_string('assignment_archive', 'tool_mucertify'), 'i/settings');
+                    $action->set_form_size('sm');
                     $archived .= $this->output->render($action);
                 }
             }
@@ -435,7 +440,9 @@ class renderer extends \plugin_renderer_base {
         $context = \context::instance_by_id($certification->contextid);
         $report = \core_reportbuilder\system_report_factory::create(
             \tool_mucertify\reportbuilder\local\systemreports\assignment_periods::class,
-            $context, parameters:['assignmentid' => $assignment->id]);
+            $context,
+            parameters:['assignmentid' => $assignment->id]
+        );
         $result .= $report->output();
 
         return $result;
@@ -470,13 +477,13 @@ class renderer extends \plugin_renderer_base {
 
         if (!$certification->archived && (!$assignment || !$assignment->archived) && has_capability('tool/mucertify:admin', $context)) {
             $updateurl = new moodle_url('/admin/tool/mucertify/management/period_update.php', ['id' => $period->id]);
-            $updatebutton = new \tool_mulib\output\dialog_form\button($updateurl, get_string('period_update', 'tool_mucertify'));
+            $updatebutton = new \tool_mulib\output\ajax_form\button($updateurl, get_string('period_update', 'tool_mucertify'));
             $buttons[] = $this->output->render($updatebutton);
 
             if ($period->timerevoked) {
                 $deleteurl = new moodle_url('/admin/tool/mucertify/management/period_delete.php', ['id' => $period->id]);
-                $deletebutton = new \tool_mulib\output\dialog_form\button($deleteurl, get_string('period_delete', 'tool_mucertify'));
-                $deletebutton->set_after_submit($deletebutton::AFTER_SUBMIT_REDIRECT);
+                $deletebutton = new \tool_mulib\output\ajax_form\button($deleteurl, get_string('period_delete', 'tool_mucertify'));
+                $deletebutton->set_submitted_action($deletebutton::SUBMITTED_ACTION_REDIRECT);
                 $buttons[] = $this->output->render($deletebutton);
             }
         }
@@ -504,29 +511,45 @@ class renderer extends \plugin_renderer_base {
         }
         $details->add(get_string('programstatus', 'tool_muprog'), $programstatus);
 
-        $details->add(get_string('windowstartdate', 'tool_mucertify'),
-            period::get_windowstart_html($certification, $assignment, $period));
+        $details->add(
+            get_string('windowstartdate', 'tool_mucertify'),
+            period::get_windowstart_html($certification, $assignment, $period)
+        );
 
-        $details->add(get_string('windowduedate', 'tool_mucertify'),
-            period::get_windowdue_html($certification, $assignment, $period));
+        $details->add(
+            get_string('windowduedate', 'tool_mucertify'),
+            period::get_windowdue_html($certification, $assignment, $period)
+        );
 
-        $details->add(get_string('windowenddate', 'tool_mucertify'),
-            period::get_windowend_html($certification, $assignment, $period));
+        $details->add(
+            get_string('windowenddate', 'tool_mucertify'),
+            period::get_windowend_html($certification, $assignment, $period)
+        );
 
-        $details->add(get_string('fromdate', 'tool_mucertify'),
-            period::get_from_html($certification, $assignment, $period));
+        $details->add(
+            get_string('fromdate', 'tool_mucertify'),
+            period::get_from_html($certification, $assignment, $period)
+        );
 
-        $details->add(get_string('untildate', 'tool_mucertify'),
-            period::get_until_html($certification, $assignment, $period));
+        $details->add(
+            get_string('untildate', 'tool_mucertify'),
+            period::get_until_html($certification, $assignment, $period)
+        );
 
-        $details->add(get_string('recertify', 'tool_mucertify'),
-            period::get_recertify_html($certification, $assignment, $period));
+        $details->add(
+            get_string('recertify', 'tool_mucertify'),
+            period::get_recertify_html($certification, $assignment, $period)
+        );
 
-        $details->add(get_string('certifieddate', 'tool_mucertify'),
-            ($period->timecertified ? userdate($period->timecertified) : $strnotset));
+        $details->add(
+            get_string('certifieddate', 'tool_mucertify'),
+            ($period->timecertified ? userdate($period->timecertified) : $strnotset)
+        );
 
-        $details->add(get_string('revokeddate', 'tool_mucertify'),
-            ($period->timerevoked ? userdate($period->timerevoked) : $strnotset));
+        $details->add(
+            get_string('revokeddate', 'tool_mucertify'),
+            ($period->timerevoked ? userdate($period->timerevoked) : $strnotset)
+        );
 
         if (!empty($certification->templateid) && \tool_mucertify\local\certificate::is_available()) {
             $template = $DB->get_record('tool_certificate_templates', ['id' => $certification->templateid]);
@@ -552,13 +575,17 @@ class renderer extends \plugin_renderer_base {
         if ($period->evidencejson) {
             $jsondata = (object)json_decode($period->evidencejson);
             if (isset($jsondata->details)) {
-                $details->add(get_string('evidence_details', 'tool_mucertify'),
-                    format_text($jsondata->details, FORMAT_PLAIN, ['para' => false]));
+                $details->add(
+                    get_string('evidence_details', 'tool_mucertify'),
+                    format_text($jsondata->details, FORMAT_PLAIN, ['para' => false])
+                );
             }
         }
 
-        $details->add(get_string('periodstatus', 'tool_mucertify'),
-            period::get_status_html($certification, $assignment, $period));
+        $details->add(
+            get_string('periodstatus', 'tool_mucertify'),
+            period::get_status_html($certification, $assignment, $period)
+        );
 
         $result = $this->output->render($details);
 

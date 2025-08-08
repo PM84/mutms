@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 // phpcs:disable moodle.Files.BoilerplateComment.CommentEndedTooSoon
+// phpcs:disable moodle.Files.LineLength.TooLong
 
 /**
  * Configuration for certification custom fields.
@@ -30,7 +31,7 @@
 /** @var moodle_page $PAGE */
 
 require('../../../../config.php');
-require_once($CFG->libdir.'/adminlib.php');
+require_once($CFG->libdir . '/adminlib.php');
 
 admin_externalpage_setup('tool_mucertify_customfield_certification');
 

@@ -28,7 +28,7 @@ namespace tool_mucertify\local\form;
  * @author     Petr Skoda
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-final class certification_create extends \tool_mulib\local\dialog_form {
+final class certification_create extends \tool_mulib\local\ajax_form {
     /** @var \tool_mucertify\customfield\certification_handler */
     protected $handler;
 

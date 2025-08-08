@@ -72,11 +72,11 @@ Feature: Certification visibility management tests
       | Visible to cohorts |                |
     And I set the following fields to these values:
       | Public             | Yes            |
-    And I press dialog form button "Update certification"
+    And I click on "Update certification" "button" in the ".modal-dialog" "css_element"
     Then I press "Edit"
     And the following fields match these values:
       | Public             | Yes            |
-    And I press dialog form button "Cancel"
+    And I click on "Cancel" "button" in the ".modal-dialog" "css_element"
     And I am on the "tool_mucertify > All certifications management" page
     And "Certification 000" row "Public" column of "reportbuilder-table" table should contain "Yes"
 
@@ -84,12 +84,12 @@ Feature: Certification visibility management tests
     And I press "Edit"
     And I set the following fields to these values:
       | Visible to cohorts | Cohort 1 |
-    And I press dialog form button "Update certification"
+    And I click on "Update certification" "button" in the ".modal-dialog" "css_element"
     Then I should see "Cohort 1"
     And I press "Edit"
     And I set the following fields to these values:
       | Visible to cohorts | Cohort 2 |
-    And I press dialog form button "Update certification"
+    And I click on "Update certification" "button" in the ".modal-dialog" "css_element"
     And I should see "Cohort 2"
     And I am on the "tool_mucertify > All certifications management" page
     And "Certification 001" row "Public" column of "reportbuilder-table" table should contain "No"
@@ -99,7 +99,7 @@ Feature: Certification visibility management tests
     And I press "Edit"
     And I set the following fields to these values:
       | Visible to cohorts | Cohort 2, Cohort 1 |
-    And I press dialog form button "Update certification"
+    And I click on "Update certification" "button" in the ".modal-dialog" "css_element"
     Then I should see "Cohort 1"
     And I should see "Cohort 2"
 

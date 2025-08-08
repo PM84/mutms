@@ -54,8 +54,10 @@ final class notification_manager extends \tool_mulib\local\notification\manager 
 
         $types = self::get_all_types();
 
-        $existing = $DB->get_records('tool_mulib_notification',
-            ['component' => 'tool_mucertify', 'instanceid' => $instanceid]);
+        $existing = $DB->get_records(
+            'tool_mulib_notification',
+            ['component' => 'tool_mucertify', 'instanceid' => $instanceid]
+        );
         foreach ($existing as $notification) {
             unset($types[$notification->notificationtype]);
         }
@@ -222,8 +224,10 @@ final class notification_manager extends \tool_mulib\local\notification\manager 
     public static function delete_assignment_notifications(\stdClass $assignment) {
         global $DB;
 
-        $notifications = $DB->get_records('tool_mulib_notification',
-            ['component' => 'tool_mucertify', 'instanceid' => $assignment->certificationid]);
+        $notifications = $DB->get_records(
+            'tool_mulib_notification',
+            ['component' => 'tool_mucertify', 'instanceid' => $assignment->certificationid]
+        );
         foreach ($notifications as $notification) {
             /** @var class-string<notification\base> $classname */
             $classname = self::get_classname($notification->notificationtype);
@@ -243,8 +247,10 @@ final class notification_manager extends \tool_mulib\local\notification\manager 
     public static function delete_period_notifications(\stdClass $period) {
         global $DB;
 
-        $notifications = $DB->get_records('tool_mulib_notification',
-            ['component' => 'tool_mucertify', 'instanceid' => $period->certificationid]);
+        $notifications = $DB->get_records(
+            'tool_mulib_notification',
+            ['component' => 'tool_mucertify', 'instanceid' => $period->certificationid]
+        );
         foreach ($notifications as $notification) {
             /** @var class-string<notification\base> $classname */
             $classname = self::get_classname($notification->notificationtype);
@@ -264,8 +270,10 @@ final class notification_manager extends \tool_mulib\local\notification\manager 
     public static function delete_certification_notifications(\stdClass $certification) {
         global $DB;
 
-        $notifications = $DB->get_records('tool_mulib_notification',
-            ['component' => 'tool_mucertify', 'instanceid' => $certification->id]);
+        $notifications = $DB->get_records(
+            'tool_mulib_notification',
+            ['component' => 'tool_mucertify', 'instanceid' => $certification->id]
+        );
         foreach ($notifications as $notification) {
             \tool_mulib\local\notification\util::notification_delete($notification->id);
         }

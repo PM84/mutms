@@ -51,8 +51,12 @@ final class assignments extends system_report {
     protected function initialise(): void {
         global $DB;
         // Make sure certificationid and context match!
-        $this->certification = $DB->get_record('tool_mucertify_certification',
-            ['id' => $this->get_parameters()['certificationid'], 'contextid' => $this->get_context()->id], '*', MUST_EXIST);
+        $this->certification = $DB->get_record(
+            'tool_mucertify_certification',
+            ['id' => $this->get_parameters()['certificationid'], 'contextid' => $this->get_context()->id],
+            '*',
+            MUST_EXIST
+        );
 
         $this->assignmententity = new assignment();
         $assignmentalias = $this->assignmententity->get_table_alias('tool_mucertify_assignment');
@@ -103,7 +107,7 @@ final class assignments extends system_report {
         $column = $this->userentity->get_column('fullname');
         $column
             ->add_fields("$assignmentalias.id")
-            ->add_callback(static function(string $fullname, \stdClass $row): string {
+            ->add_callback(static function (string $fullname, \stdClass $row): string {
                 $url = new \moodle_url('/admin/tool/mucertify/management/assignment.php', ['id' => $row->id]);
                 return \html_writer::link($url, $fullname);
             });
@@ -178,9 +182,9 @@ final class assignments extends system_report {
         $certification = $this->certification;
 
         $url = new moodle_url('/admin/tool/mucertify/management/assignment_update.php', ['id' => ':id']);
-        $link = new \tool_mulib\output\dialog_form\link($url, get_string('assignment_update', 'tool_mucertify'), 'i/settings');
+        $link = new \tool_mulib\output\ajax_form\link($url, get_string('assignment_update', 'tool_mucertify'), 'i/settings');
         $this->add_action($link->create_report_action()
-            ->add_callback(static function(\stdclass $row) use ($certification): bool {
+            ->add_callback(static function (\stdclass $row) use ($certification): bool {
                 global $DB;
                 if (!$row->id) {
                     return false;
@@ -204,13 +208,12 @@ final class assignments extends system_report {
                     return false;
                 }
                 return $sourceclass::is_assignment_update_possible($certification, $source, $assignment);
-            })
-        );
+            }));
 
         $url = new moodle_url('/admin/tool/mucertify/management/assignment_archive.php', ['id' => ':id']);
-        $link = new \tool_mulib\output\dialog_form\link($url, get_string('assignment_archive', 'tool_mucertify'), 'i/lock');
+        $link = new \tool_mulib\output\ajax_form\link($url, get_string('assignment_archive', 'tool_mucertify'), 'i/lock');
         $this->add_action($link->create_report_action()
-            ->add_callback(static function(\stdclass $row) use ($certification): bool {
+            ->add_callback(static function (\stdclass $row) use ($certification): bool {
                 global $DB;
                 if (!$row->id) {
                     return false;
@@ -234,13 +237,12 @@ final class assignments extends system_report {
                     return false;
                 }
                 return $sourceclass::is_assignment_archive_possible($certification, $source, $assignment);
-            })
-        );
+            }));
 
         $url = new moodle_url('/admin/tool/mucertify/management/assignment_restore.php', ['id' => ':id']);
-        $link = new \tool_mulib\output\dialog_form\link($url, get_string('assignment_restore', 'tool_mucertify'), 'i/unlock');
+        $link = new \tool_mulib\output\ajax_form\link($url, get_string('assignment_restore', 'tool_mucertify'), 'i/unlock');
         $this->add_action($link->create_report_action()
-            ->add_callback(static function(\stdclass $row) use ($certification): bool {
+            ->add_callback(static function (\stdclass $row) use ($certification): bool {
                 global $DB;
                 if (!$row->id) {
                     return false;
@@ -264,13 +266,12 @@ final class assignments extends system_report {
                     return false;
                 }
                 return $sourceclass::is_assignment_restore_possible($certification, $source, $assignment);
-            })
-        );
+            }));
 
         $url = new moodle_url('/admin/tool/mucertify/management/assignment_delete.php', ['id' => ':id']);
-        $link = new \tool_mulib\output\dialog_form\link($url, get_string('assignment_delete', 'tool_mucertify'), 'i/delete');
+        $link = new \tool_mulib\output\ajax_form\link($url, get_string('assignment_delete', 'tool_mucertify'), 'i/delete');
         $this->add_action($link->create_report_action(['class' => 'text-danger'])
-            ->add_callback(static function(\stdclass $row) use ($certification): bool {
+            ->add_callback(static function (\stdclass $row) use ($certification): bool {
                 global $DB;
                 if (!$row->id) {
                     return false;
@@ -294,7 +295,6 @@ final class assignments extends system_report {
                     return false;
                 }
                 return $sourceclass::is_assignment_delete_possible($certification, $source, $assignment);
-            })
-        );
+            }));
     }
 }

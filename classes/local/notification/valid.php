@@ -43,11 +43,15 @@ final class valid extends base {
 
         $source = null;
         $assignment = null;
-        $loadfunction = function(stdClass $period) use (&$certification, &$source, &$assignment, &$user): void {
+        $loadfunction = function (stdClass $period) use (&$certification, &$source, &$assignment, &$user): void {
             global $DB;
             if (!$assignment || $assignment->userid != $period->userid || $assignment->certificationid != $period->certificationid) {
-                $assignment = $DB->get_record('tool_mucertify_assignment',
-                    ['userid' => $period->userid, 'certificationid' => $period->certificationid], '*', MUST_EXIST);
+                $assignment = $DB->get_record(
+                    'tool_mucertify_assignment',
+                    ['userid' => $period->userid, 'certificationid' => $period->certificationid],
+                    '*',
+                    MUST_EXIST
+                );
             }
             if (!$source || $source->id != $assignment->sourceid) {
                 $source = $DB->get_record('tool_mucertify_source', ['id' => $assignment->sourceid], '*', MUST_EXIST);

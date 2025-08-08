@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 // phpcs:disable moodle.Files.BoilerplateComment.CommentEndedTooSoon
+// phpcs:disable moodle.Files.LineLength.TooLong
 
 /**
  * Certification management interface.
@@ -26,16 +27,15 @@
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use tool_mucertify\local\management;
+
 /** @var moodle_database $DB */
 /** @var moodle_page $PAGE */
 /** @var core_renderer $OUTPUT */
 /** @var stdClass $CFG */
 /** @var stdClass $COURSE */
 
-use tool_mucertify\local\management;
-
 require('../../../../config.php');
-require_once($CFG->dirroot . '/lib/formslib.php');
 
 $id = required_param('id', PARAM_INT);
 

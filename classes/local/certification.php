@@ -50,6 +50,9 @@ final class certification {
      * @return array
      */
     public static function get_description_editor_options(int $contextid): array {
+        global $CFG;
+        require_once($CFG->dirroot . '/lib/formslib.php');
+
         $context = \context::instance_by_id($contextid);
         return ['maxfiles' => EDITOR_UNLIMITED_FILES, 'maxbytes' => get_site()->maxbytes, 'context' => $context];
     }
@@ -61,7 +64,9 @@ final class certification {
      */
     public static function get_image_filemanager_options(): array {
         global $CFG;
-        return ['maxbytes' => $CFG->maxbytes, 'maxfiles' => 1, 'subdirs' => 0 , 'accepted_types' => ['.jpg', '.jpeg', '.jpe', '.png']];
+        require_once($CFG->dirroot . '/lib/formslib.php');
+
+        return ['maxbytes' => $CFG->maxbytes, 'maxfiles' => 1, 'subdirs' => 0, 'accepted_types' => ['.jpg', '.jpeg', '.jpe', '.png']];
     }
 
     /**
@@ -148,8 +153,15 @@ final class certification {
 
         if ($editorused) {
             $editoroptions = self::get_description_editor_options($data->contextid);
-            $data = file_postupdate_standard_editor($data, 'description', $editoroptions, $editoroptions['context'],
-                'tool_mucertify', 'description', $data->id);
+            $data = file_postupdate_standard_editor(
+                $data,
+                'description',
+                $editoroptions,
+                $editoroptions['context'],
+                'tool_mucertify',
+                'description',
+                $data->id
+            );
             if ($rawdescription !== $data->description) {
                 $DB->set_field('tool_mucertify_certification', 'description', $data->description, ['id' => $data->id]);
             }
@@ -199,8 +211,13 @@ final class certification {
             // so the $oldcontext should be still here.
             $oldcontext = \context::instance_by_id($oldcertification->contextid, IGNORE_MISSING);
             if ($oldcontext) {
-                get_file_storage()->move_area_files_to_new_context($oldcertification->contextid, $context->id,
-                    'tool_mucertify', 'description', $data->id);
+                get_file_storage()->move_area_files_to_new_context(
+                    $oldcertification->contextid,
+                    $context->id,
+                    'tool_mucertify',
+                    'description',
+                    $data->id
+                );
                 // Delete tags even if they are not enabled before move,
                 // tags API is not designed to deal with this,
                 // we cannot create instance of deleted context.
@@ -229,8 +246,15 @@ final class certification {
             $data->description = $data->description_editor['text'];
             $data->descriptionformat = $data->description_editor['format'];
             $editoroptions = self::get_description_editor_options($data->contextid);
-            $data = file_postupdate_standard_editor($data, 'description', $editoroptions, $editoroptions['context'],
-                'tool_mucertify', 'description', $data->id);
+            $data = file_postupdate_standard_editor(
+                $data,
+                'description',
+                $editoroptions,
+                $editoroptions['context'],
+                'tool_mucertify',
+                'description',
+                $data->id
+            );
         }
         if (isset($data->description)) {
             $record->description = $data->description;
@@ -371,7 +395,8 @@ final class certification {
     public static function update_visibility(stdClass $data): stdClass {
         global $DB;
 
-        if ((isset($data->cohortids) && !is_array($data->cohortids))
+        if (
+            (isset($data->cohortids) && !is_array($data->cohortids))
             || empty($data->id) || !isset($data->public)
         ) {
             throw new \coding_exception('Invalid data');

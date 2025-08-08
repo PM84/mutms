@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 // phpcs:disable moodle.Files.BoilerplateComment.CommentEndedTooSoon
+// phpcs:disable moodle.Files.LineLength.TooLong
 
 /**
  * certification management interface.
@@ -32,14 +33,9 @@
 /** @var stdClass $CFG */
 /** @var stdClass $COURSE */
 
-use tool_mucertify\local\management;
+define('AJAX_SCRIPT', true);
 
-// phpcs:ignoreFile moodle.Files.MoodleInternal.MoodleInternalGlobalState
-if (!empty($_SERVER['HTTP_X_MULIB_DIALOG_FORM_REQUEST'])) {
-    define('AJAX_SCRIPT', true);
-}
 require('../../../../config.php');
-require_once($CFG->dirroot . '/lib/formslib.php');
 
 $id = required_param('id', PARAM_INT);
 
@@ -53,24 +49,20 @@ $context = context::instance_by_id($certification->contextid);
 require_capability('tool/mucertify:assign', $context);
 
 $currenturl = new moodle_url('/admin/tool/mucertify/management/source_approval_reject.php', ['id' => $id]);
-
-management::setup_certification_page($currenturl, $context, $certification, 'certification_approval_requests');
+$PAGE->set_context($context);
+$PAGE->set_url($currenturl);
 
 $returnurl = new moodle_url('/admin/tool/mucertify/management/source_approval_requests.php', ['id' => $certification->id]);
 
 $form = new \tool_mucertify\local\form\source_approval_reject(null, ['request' => $request, 'user' => $user, 'certification' => $certification, 'context' => $context]);
 
 if ($form->is_cancelled()) {
-    redirect($returnurl);
+    $form->ajax_form_cancelled($returnurl);
 }
 
 if ($data = $form->get_data()) {
     tool_mucertify\local\source\approval::reject_request($request->id, $data->reason);
-    $form->redirect_submitted($returnurl);
+    $form->ajax_form_submitted($returnurl);
 }
 
-echo $OUTPUT->header();
-
-echo $form->render();
-
-echo $OUTPUT->footer();
+$form->ajax_form_render();

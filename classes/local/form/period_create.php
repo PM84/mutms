@@ -20,6 +20,7 @@
 namespace tool_mucertify\local\form;
 
 use tool_mucertify\local\period;
+use tool_mucertify\external\form_autocomplete\certification_periods_programid;
 
 /**
  * Edit user period.
@@ -30,7 +31,7 @@ use tool_mucertify\local\period;
  * @author     Petr Skoda
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-final class period_create extends \tool_mulib\local\dialog_form {
+final class period_create extends \tool_mulib\local\ajax_form {
     /** @var array autocompletion arguments */
     protected $arguments;
 
@@ -54,8 +55,13 @@ final class period_create extends \tool_mulib\local\dialog_form {
 
         $defaultdates = period::get_default_dates($certification, $user->id, []);
 
-        \tool_mucertify\external\form_certification_periods_programid::add_form_element(
-            $mform, $this->arguments, 'programid', get_string('program', 'tool_muprog'));
+        certification_periods_programid::add_element(
+            $mform,
+            $this->arguments,
+            'programid',
+            get_string('program', 'tool_muprog'),
+            $context
+        );
         if ($firstperiod) {
             $mform->setDefault('programid', $settings->programid2);
         } else {
@@ -88,6 +94,7 @@ final class period_create extends \tool_mulib\local\dialog_form {
     #[\Override]
     public function validation($data, $files) {
         $errors = parent::validation($data, $files);
+        $context = $this->_customdata['context'];
 
         if ($data['timewindowdue'] && $data['timewindowdue'] <= $data['timewindowstart']) {
             $errors['timewindowdue'] = get_string('error');
@@ -102,8 +109,9 @@ final class period_create extends \tool_mulib\local\dialog_form {
             $errors['timeuntil'] = get_string('error');
         }
 
-        if (\tool_mucertify\external\form_certification_periods_programid::validate_form_value($this->arguments, $data['programid']) !== null) {
-            $errors['programid'] = get_string('error');
+        $error = certification_periods_programid::validate_value($data['programid'], $this->arguments, $context);
+        if ($error !== null) {
+            $errors['programid'] = $error;
         }
 
         return $errors;

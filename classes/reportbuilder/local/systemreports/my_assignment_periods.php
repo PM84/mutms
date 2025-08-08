@@ -54,10 +54,18 @@ final class my_assignment_periods extends system_report {
     #[\Override]
     protected function initialise(): void {
         global $DB, $USER;
-        $this->assignment = $DB->get_record('tool_mucertify_assignment',
-            ['id' => $this->get_parameters()['assignmentid'], 'userid' => $USER->id, 'archived' => 0], '*', MUST_EXIST);
-        $this->certification = $DB->get_record('tool_mucertify_certification',
-            ['id' => $this->assignment->certificationid, 'archived' => 0], '*', MUST_EXIST);
+        $this->assignment = $DB->get_record(
+            'tool_mucertify_assignment',
+            ['id' => $this->get_parameters()['assignmentid'], 'userid' => $USER->id, 'archived' => 0],
+            '*',
+            MUST_EXIST
+        );
+        $this->certification = $DB->get_record(
+            'tool_mucertify_certification',
+            ['id' => $this->assignment->certificationid, 'archived' => 0],
+            '*',
+            MUST_EXIST
+        );
 
         $this->periodentity = new period();
         $periodentityalias = $this->periodentity->get_table_alias('tool_mucertify_period');
@@ -133,7 +141,7 @@ final class my_assignment_periods extends system_report {
             ->add_field("{$programalias}.fullname")
             ->add_field("{$allocationalias}.id", 'allocationid')
             ->add_field("{$programalias}.id", 'programid')
-            ->set_callback(static function(?string $value, \stdClass $row): string {
+            ->set_callback(static function (?string $value, \stdClass $row): string {
                 if (!$row->allocationid) {
                     return '';
                 }

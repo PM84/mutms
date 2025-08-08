@@ -55,7 +55,8 @@ function tool_mucertify_pluginfile($course, $cm, $context, $filearea, $args, $fo
     if (!$certification) {
         send_file_not_found();
     }
-    if (!has_capability('tool/mucertify:view', $context)
+    if (
+        !has_capability('tool/mucertify:view', $context)
         && !\tool_mucertify\local\catalogue::is_certification_visible($certification)
     ) {
         send_file_not_found();
@@ -142,8 +143,18 @@ function tool_mucertify_get_tagged_certifications($tag, $exclusivemode = false, 
     $content = $result['content'];
     $totalpages = ceil($result['totalcount'] / $perpage);
 
-    return new core_tag\output\tagindex($tag, 'tool_mucertify', 'certification', $content,
-        $exclusivemode, 0, 0, 1, $page, $totalpages);
+    return new core_tag\output\tagindex(
+        $tag,
+        'tool_mucertify',
+        'certification',
+        $content,
+        $exclusivemode,
+        0,
+        0,
+        1,
+        $page,
+        $totalpages
+    );
 }
 
 /**

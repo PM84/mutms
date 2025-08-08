@@ -61,8 +61,12 @@ abstract class base extends \tool_mulib\local\notification\notificationtype {
      * @param stdClass $user
      * @return array
      */
-    public static function get_assignment_placeholders(stdClass $certification, stdClass $source, stdClass $assignment,
-                                                       stdClass $user): array {
+    public static function get_assignment_placeholders(
+        stdClass $certification,
+        stdClass $source,
+        stdClass $assignment,
+        stdClass $user
+    ): array {
         /** @var \tool_mucertify\local\source\base[] $sourceclasses */
         $sourceclasses = \tool_mucertify\local\assignment::get_source_classes();
         if (isset($sourceclasses[$source->type])) {
@@ -99,8 +103,13 @@ abstract class base extends \tool_mulib\local\notification\notificationtype {
      * @param stdClass $user
      * @return array
      */
-    public static function get_period_placeholders(stdClass $certification, stdClass $source, stdClass $assignment, stdClass $period,
-                                                   stdClass $user): array {
+    public static function get_period_placeholders(
+        stdClass $certification,
+        stdClass $source,
+        stdClass $assignment,
+        stdClass $period,
+        stdClass $user
+    ): array {
         if ($period->certificationid != $assignment->certificationid || $period->userid != $assignment->userid) {
             throw new \coding_exception('invalid parameter mix');
         }
@@ -120,7 +129,8 @@ abstract class base extends \tool_mulib\local\notification\notificationtype {
             $a['period_recertificationdate'] = $strnotset;
         } else {
             $a['period_certificationdate'] = (isset($period->timecertified) ? userdate($period->timecertified) : $strnotset);
-            if (isset($certification->recertify) && $period->recertifiable && $period->timeuntil
+            if (
+                isset($certification->recertify) && $period->recertifiable && $period->timeuntil
                 && !$certification->archived && !$assignment->archived
             ) {
                 $a['period_recertificationdate'] = userdate($period->timeuntil - $certification->recertify);
@@ -143,8 +153,14 @@ abstract class base extends \tool_mulib\local\notification\notificationtype {
      * @param bool $alowmultiple
      * @return void
      */
-    protected static function notify_assigned_user(stdClass $certification, stdClass $source, stdClass $assignment,
-                                                   ?stdClass $period, stdClass $user, bool $alowmultiple = false): void {
+    protected static function notify_assigned_user(
+        stdClass $certification,
+        stdClass $source,
+        stdClass $assignment,
+        ?stdClass $period,
+        stdClass $user,
+        bool $alowmultiple = false
+    ): void {
         global $DB;
 
         if ($certification->archived) {

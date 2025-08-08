@@ -35,7 +35,6 @@ use core_reportbuilder\local\filters\date;
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 final class period extends base {
-
     #[\Override]
     protected function get_default_tables(): array {
         return [
@@ -116,7 +115,7 @@ final class period extends base {
             ->add_field("{$periodalias}.timewindowstart")
             ->set_is_sortable(true)
             ->add_callback([format::class, 'userdate'], $dateformat)
-            ->add_callback(static function($value, \stdClass $row): string {
+            ->add_callback(static function ($value, \stdClass $row): string {
                 if (!$row->timewindowstart) {
                     return get_string('notset', 'tool_mucertify');
                 }
@@ -133,7 +132,7 @@ final class period extends base {
             ->add_field("{$periodalias}.timewindowdue")
             ->set_is_sortable(true)
             ->add_callback([format::class, 'userdate'], $dateformat)
-            ->add_callback(static function($value, \stdClass $row): string {
+            ->add_callback(static function ($value, \stdClass $row): string {
                 if (!$row->timewindowdue) {
                     return get_string('notset', 'tool_mucertify');
                 }
@@ -150,7 +149,7 @@ final class period extends base {
             ->add_field("{$periodalias}.timewindowend")
             ->set_is_sortable(true)
             ->add_callback([format::class, 'userdate'], $dateformat)
-            ->add_callback(static function($value, \stdClass $row): string {
+            ->add_callback(static function ($value, \stdClass $row): string {
                 if (!$row->timewindowend) {
                     return get_string('notset', 'tool_mucertify');
                 }
@@ -167,7 +166,7 @@ final class period extends base {
             ->add_fields("{$periodalias}.timefrom")
             ->set_is_sortable(true)
             ->add_callback([format::class, 'userdate'], $dateformat)
-            ->add_callback(static function($value, \stdClass $row): string {
+            ->add_callback(static function ($value, \stdClass $row): string {
                 if ($row->timefrom) {
                     return $value;
                 }
@@ -184,7 +183,7 @@ final class period extends base {
             ->add_fields("{$periodalias}.timeuntil, {$periodalias}.timecertified")
             ->set_is_sortable(true)
             ->add_callback([format::class, 'userdate'], $dateformat)
-            ->add_callback(static function($value, \stdClass $row): string {
+            ->add_callback(static function ($value, \stdClass $row): string {
                 if ($row->timeuntil) {
                     return $value;
                 }
@@ -207,7 +206,7 @@ final class period extends base {
             ->add_field("{$certificationalias}.archived", 'certificationarchived')
             ->add_field("{$assignmentalias}.id", 'assignmentid')
             ->set_is_sortable(false)
-            ->add_callback(static function($value, \stdClass $row) use ($dateformat): string {
+            ->add_callback(static function ($value, \stdClass $row) use ($dateformat): string {
                 if (!$row->assignmentid || !$row->recertify || !$row->recertifiable || $row->archived || $row->certificationarchived) {
                     return get_string('no');
                 }
@@ -237,9 +236,11 @@ final class period extends base {
                      WHEN {$periodalias}.timewindowdue IS NOT NULL AND {$periodalias}.timewindowdue < $now THEN 2
                      WHEN {$periodalias}.timewindowstart > $now THEN 1
                      ELSE 0
-                 END", 'status')
+                 END",
+                'status'
+            )
             ->set_is_sortable(true)
-            ->add_callback(static function($value, \stdClass $row): string {
+            ->add_callback(static function ($value, \stdClass $row): string {
                 switch ($row->status) {
                     case 7:
                         return '<span class="badge badge-dark">' . get_string('periodstatus_archived', 'tool_mucertify') . '</span>';

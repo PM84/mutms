@@ -61,14 +61,22 @@ final class event_observer_test extends \advanced_testcase {
             'sources' => ['manual' => []],
         ];
         $certification1 = $generator->create_certification($data);
-        $source1 = $DB->get_record('tool_mucertify_source',
-            ['type' => 'manual', 'certificationid' => $certification1->id], '*', MUST_EXIST);
+        $source1 = $DB->get_record(
+            'tool_mucertify_source',
+            ['type' => 'manual', 'certificationid' => $certification1->id],
+            '*',
+            MUST_EXIST
+        );
         manual::assign_users($certification1->id, $source1->id, [$user1->id]);
         $allocation = $DB->get_record('tool_muprog_allocation', ['programid' => $program1->id, 'userid' => $user1->id], '*', MUST_EXIST);
         $this->assertTrue(\is_enrolled($course1context, $user1));
 
-        $period1 = $DB->get_record('tool_mucertify_period',
-            ['userid' => $user1->id, 'certificationid' => $certification1->id], '*', MUST_EXIST);
+        $period1 = $DB->get_record(
+            'tool_mucertify_period',
+            ['userid' => $user1->id, 'certificationid' => $certification1->id],
+            '*',
+            MUST_EXIST
+        );
         $this->assertSame(null, $period1->timecertified);
 
         $this->setCurrentTimeStart();
@@ -79,8 +87,12 @@ final class event_observer_test extends \advanced_testcase {
             'evidencetimecompleted' => null,
         ];
         allocation::update_item_completion($data);
-        $period1 = $DB->get_record('tool_mucertify_period',
-            ['userid' => $user1->id, 'certificationid' => $certification1->id], '*', MUST_EXIST);
+        $period1 = $DB->get_record(
+            'tool_mucertify_period',
+            ['userid' => $user1->id, 'certificationid' => $certification1->id],
+            '*',
+            MUST_EXIST
+        );
         $this->assertTimeCurrent($period1->timecertified);
     }
 }

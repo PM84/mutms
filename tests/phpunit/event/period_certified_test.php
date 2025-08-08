@@ -53,11 +53,19 @@ final class period_certified_test extends \advanced_testcase {
             'programid1' => $program->id,
             'contextid' => $syscontext->id,
         ]);
-        $source = $DB->get_record('tool_mucertify_source',
-            ['type' => 'manual', 'certificationid' => $certification->id], '*', MUST_EXIST);
+        $source = $DB->get_record(
+            'tool_mucertify_source',
+            ['type' => 'manual', 'certificationid' => $certification->id],
+            '*',
+            MUST_EXIST
+        );
         \tool_mucertify\local\source\manual::assign_users($certification->id, $source->id, [$user->id], []);
-        $assignment = $DB->get_record('tool_mucertify_assignment',
-            ['userid' => $user->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
+        $assignment = $DB->get_record(
+            'tool_mucertify_assignment',
+            ['userid' => $user->id, 'certificationid' => $certification->id],
+            '*',
+            MUST_EXIST
+        );
         $top = \tool_muprog\local\program::load_content($program->id);
         $allocation = $DB->get_record('tool_muprog_allocation', ['sourceid' => $programsource->id, 'userid' => $user->id], '*', MUST_EXIST);
         $period = $DB->get_record('tool_mucertify_period', ['certificationid' => $certification->id, 'userid' => $user->id]);

@@ -50,11 +50,19 @@ final class assignment_restored_test extends \advanced_testcase {
             'programid1' => $program->id,
             'contextid' => $syscontext->id,
         ]);
-        $source = $DB->get_record('tool_mucertify_source',
-            ['type' => 'manual', 'certificationid' => $certification->id], '*', MUST_EXIST);
+        $source = $DB->get_record(
+            'tool_mucertify_source',
+            ['type' => 'manual', 'certificationid' => $certification->id],
+            '*',
+            MUST_EXIST
+        );
         \tool_mucertify\local\source\manual::assign_users($certification->id, $source->id, [$user->id], []);
-        $assignment = $DB->get_record('tool_mucertify_assignment',
-            ['userid' => $user->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
+        $assignment = $DB->get_record(
+            'tool_mucertify_assignment',
+            ['userid' => $user->id, 'certificationid' => $certification->id],
+            '*',
+            MUST_EXIST
+        );
         $assignment = \tool_mucertify\local\source\base::assignment_archive($assignment->id);
 
         $this->setAdminUser();

@@ -20,7 +20,7 @@
 namespace tool_mucertify\local\form;
 
 use tool_mucertify\local\source\cohort;
-use tool_mucertify\external\form_source_cohort_edit_cohortids;
+use tool_mucertify\external\form_autocomplete\source_cohort_edit_cohortids;
 
 /**
  * Edit cohort assignment settings.
@@ -31,10 +31,9 @@ use tool_mucertify\external\form_source_cohort_edit_cohortids;
  * @author     Petr Skoda
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-final class source_cohort_edit extends \tool_mulib\local\dialog_form {
+final class source_cohort_edit extends \tool_mulib\local\ajax_form {
     #[\Override]
     protected function definition() {
-        global $DB;
         $mform = $this->_form;
         $context = $this->_customdata['context'];
         $source = $this->_customdata['source'];
@@ -46,8 +45,13 @@ final class source_cohort_edit extends \tool_mulib\local\dialog_form {
             $mform->hardFreeze('enable');
         }
 
-        form_source_cohort_edit_cohortids::add_form_element(
-            $mform, ['certificationid' => $certification->id], 'cohortids', get_string('source_cohort_cohortstoassign', 'tool_mucertify'));
+        source_cohort_edit_cohortids::add_element(
+            $mform,
+            ['certificationid' => $certification->id],
+            'cohortids',
+            get_string('source_cohort_cohortstoassign', 'tool_mucertify'),
+            $context
+        );
         if (!empty($source->id)) {
             $cohorts = cohort::fetch_assignment_cohorts_menu($source->id);
             $mform->setDefault('cohortids', array_keys($cohorts));
@@ -69,10 +73,12 @@ final class source_cohort_edit extends \tool_mulib\local\dialog_form {
     public function validation($data, $files) {
         $errors = parent::validation($data, $files);
         $certification = $this->_customdata['certification'];
+        $context = $this->_customdata['context'];
+        $args = ['certificationid' => $certification->id];
 
         if ($data['enable']) {
             foreach ($data['cohortids'] as $cohortid) {
-                $error = form_source_cohort_edit_cohortids::validate_cohortid($cohortid, $certification->id);
+                $error = source_cohort_edit_cohortids::validate_value($cohortid, $args, $context);
                 if ($error !== null) {
                     $errors['cohorts'] = $error;
                     break;
