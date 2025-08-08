@@ -16,22 +16,29 @@
 
 // phpcs:disable moodle.Files.BoilerplateComment.CommentEndedTooSoon
 
+namespace tool_mulib\output\ajax_form;
+
+use moodle_url;
+use lang_string;
+
 /**
- * Additional tools library plugin version.
+ * Action icon that opens modal ajax form.
  *
  * @package     tool_mulib
- * @copyright   2022 Open LMS (https://www.openlms.net/)
  * @copyright   2025 Petr Skoda
- * @author      Petr Skoda
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-defined('MOODLE_INTERNAL') || die();
-
-/** @var stdClass $plugin */
-$plugin->component = 'tool_mulib';
-$plugin->version = 2025080950;
-$plugin->requires = 2025041400;
-$plugin->maturity = MATURITY_ALPHA;
-$plugin->supported = [500, 500];
-$plugin->release = 'mu-5.0.2-01';
+final class icon extends action {
+    /**
+     * Create and image link that opens a form in modal dialog.
+     *
+     * @param moodle_url $formurl
+     * @param string|lang_string $title element title
+     * @param string $pixname icon name
+     * @param string $pixcomponent icon component
+     */
+    public function __construct(moodle_url $formurl, string|lang_string $title, string $pixname, string $pixcomponent = 'moodle') {
+        parent::__construct($formurl, $title);
+        $this->icon = new \core\output\pix_icon($pixname, '', $pixcomponent, ['aria-hidden' => 'true']);
+    }
+}

@@ -24,14 +24,12 @@ global $CFG;
 require_once($CFG->dirroot . '/lib/formslib.php');
 
 /**
- * Base class for legacy modal dialog forms.
+ * Helper class for ajax forms.
  *
- * @package     tool_mulib
- * @copyright   2022 Open LMS (https://www.openlms.net/)
- * @copyright   2025 Petr Skoda
- * @author      Petr Skoda
- * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package    tool_mulib
+ * @copyright  2025 Petr Skoda
+ * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-abstract class dialog_form extends \moodleform {
-    use dialog_form_trait;
+abstract class ajax_form extends \moodleform {
+    use ajax_form_trait;
 }
