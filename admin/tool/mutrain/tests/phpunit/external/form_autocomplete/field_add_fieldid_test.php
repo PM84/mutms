@@ -17,8 +17,9 @@
 // phpcs:disable moodle.Files.BoilerplateComment.CommentEndedTooSoon
 // phpcs:disable moodle.Files.LineLength.TooLong
 
-namespace tool_mutrain\phpunit\local\external;
+namespace tool_mutrain\phpunit\external\form_autocomplete;
 
+use tool_mutrain\external\form_autocomplete\field_add_fieldid;
 use tool_mutrain\local\framework;
 
 /**
@@ -31,9 +32,9 @@ use tool_mutrain\local\framework;
  * @author     Petr Skoda
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
- * @covers \tool_mutrain\external\form_field_add_fieldid
+ * @covers \tool_mutrain\external\form_autocomplete\field_add_fieldid
  */
-final class form_field_add_fieldid_test extends \advanced_testcase {
+final class field_add_fieldid_test extends \advanced_testcase {
     public function setUp(): void {
         parent::setUp();
         $this->resetAfterTest();
@@ -44,15 +45,20 @@ final class form_field_add_fieldid_test extends \advanced_testcase {
         $generator = $this->getDataGenerator()->get_plugin_generator('tool_mutrain');
 
         $fielcategory = $this->getDataGenerator()->create_custom_field_category(
-            ['component' => 'core_course', 'area' => 'course']);
+            ['component' => 'core_course', 'area' => 'course']
+        );
         $field1 = $this->getDataGenerator()->create_custom_field(
-            ['categoryid' => $fielcategory->get('id'), 'type' => 'mutrain', 'shortname' => 'field1']);
+            ['categoryid' => $fielcategory->get('id'), 'type' => 'mutrain', 'shortname' => 'field1']
+        );
         $field2 = $this->getDataGenerator()->create_custom_field(
-            ['categoryid' => $fielcategory->get('id'), 'type' => 'mutrain', 'shortname' => 'field2']);
+            ['categoryid' => $fielcategory->get('id'), 'type' => 'mutrain', 'shortname' => 'field2']
+        );
         $field3 = $this->getDataGenerator()->create_custom_field(
-            ['categoryid' => $fielcategory->get('id'), 'type' => 'mutrain', 'shortname' => 'field3']);
+            ['categoryid' => $fielcategory->get('id'), 'type' => 'mutrain', 'shortname' => 'field3']
+        );
         $field4 = $this->getDataGenerator()->create_custom_field(
-            ['categoryid' => $fielcategory->get('id'), 'type' => 'text', 'shortname' => 'field4']);
+            ['categoryid' => $fielcategory->get('id'), 'type' => 'text', 'shortname' => 'field4']
+        );
 
         $category = $this->getDataGenerator()->create_category([]);
         $catcontext = \context_coursecat::instance($category->id);
@@ -72,73 +78,48 @@ final class form_field_add_fieldid_test extends \advanced_testcase {
 
         $this->setUser($user1);
 
-        $result = \tool_mutrain\external\form_field_add_fieldid::execute('', $framework1->id);
+        $result = field_add_fieldid::execute('', $framework1->id);
         $expected = [
-            'notice' => null,
             'list' => [
                 ['value' => (string)$field1->get('id'), 'label' => $field1->get('name') . ' <small>(core_course/course)</small>'],
                 ['value' => (string)$field2->get('id'), 'label' => $field2->get('name') . ' <small>(core_course/course)</small>'],
                 ['value' => (string)$field3->get('id'), 'label' => $field3->get('name') . ' <small>(core_course/course)</small>'],
             ],
+            'overflow' => false,
+            'maxitems' => 50,
         ];
         $this->assertSame($expected, $result);
 
         framework::field_add($framework2->id, $field2->get('id'));
-        $result = \tool_mutrain\external\form_field_add_fieldid::execute('', $framework2->id);
+        $result = field_add_fieldid::execute('', $framework2->id);
         $expected = [
-            'notice' => null,
             'list' => [
                 ['value' => (string)$field1->get('id'), 'label' => $field1->get('name') . ' <small>(core_course/course)</small>'],
                 ['value' => (string)$field3->get('id'), 'label' => $field3->get('name') . ' <small>(core_course/course)</small>'],
             ],
+            'overflow' => false,
+            'maxitems' => 50,
         ];
         $this->assertSame($expected, $result);
 
         $this->setUser($user2);
-        $result = \tool_mutrain\external\form_field_add_fieldid::execute('', $framework2->id);
+        $result = field_add_fieldid::execute('', $framework2->id);
         $expected = [
-            'notice' => null,
             'list' => [
                 ['value' => (string)$field1->get('id'), 'label' => $field1->get('name') . ' <small>(core_course/course)</small>'],
                 ['value' => (string)$field3->get('id'), 'label' => $field3->get('name') . ' <small>(core_course/course)</small>'],
             ],
+            'overflow' => false,
+            'maxitems' => 50,
         ];
         $this->assertSame($expected, $result);
 
         try {
-            \tool_mutrain\external\form_field_add_fieldid::execute('', $framework1->id);
+            field_add_fieldid::execute('', $framework1->id);
             $this->fail('Exception expected');
         } catch (\moodle_exception $ex) {
             $this->assertInstanceOf(\required_capability_exception::class, $ex);
         }
-    }
-
-    public function test_get_label_callback(): void {
-        /** @var \tool_mutrain_generator $generator */
-        $generator = $this->getDataGenerator()->get_plugin_generator('tool_mutrain');
-
-        $fielcategory = $this->getDataGenerator()->create_custom_field_category(
-            ['component' => 'core_course', 'area' => 'course']);
-        $field1 = $this->getDataGenerator()->create_custom_field(
-            ['categoryid' => $fielcategory->get('id'), 'type' => 'mutrain', 'shortname' => 'field1']);
-        $field2 = $this->getDataGenerator()->create_custom_field(
-            ['categoryid' => $fielcategory->get('id'), 'type' => 'mutrain', 'shortname' => 'field2']);
-        $field3 = $this->getDataGenerator()->create_custom_field(
-            ['categoryid' => $fielcategory->get('id'), 'type' => 'mutrain', 'shortname' => 'field3']);
-        $field4 = $this->getDataGenerator()->create_custom_field(
-            ['categoryid' => $fielcategory->get('id'), 'type' => 'text', 'shortname' => 'field4']);
-
-        $category = $this->getDataGenerator()->create_category([]);
-        $catcontext = \context_coursecat::instance($category->id);
-        $syscontext = \context_system::instance();
-
-        $framework1 = $generator->create_framework();
-        $framework2 = $generator->create_framework(['contextid' => $catcontext->id]);
-
-        $callback = \tool_mutrain\external\form_field_add_fieldid::get_label_callback(['frameworkid' => $framework1->id]);
-        $this->assertSame($field1->get('name'), $callback($field1->get('id')));
-        $this->assertSame('Error', $callback(-1));
-        $this->assertSame('Error', $callback($field4->get('id')));
     }
 
     public function test_validate_form_value(): void {
@@ -146,15 +127,20 @@ final class form_field_add_fieldid_test extends \advanced_testcase {
         $generator = $this->getDataGenerator()->get_plugin_generator('tool_mutrain');
 
         $fielcategory = $this->getDataGenerator()->create_custom_field_category(
-            ['component' => 'core_course', 'area' => 'course']);
+            ['component' => 'core_course', 'area' => 'course']
+        );
         $field1 = $this->getDataGenerator()->create_custom_field(
-            ['categoryid' => $fielcategory->get('id'), 'type' => 'mutrain', 'shortname' => 'field1']);
+            ['categoryid' => $fielcategory->get('id'), 'type' => 'mutrain', 'shortname' => 'field1']
+        );
         $field2 = $this->getDataGenerator()->create_custom_field(
-            ['categoryid' => $fielcategory->get('id'), 'type' => 'mutrain', 'shortname' => 'field2']);
+            ['categoryid' => $fielcategory->get('id'), 'type' => 'mutrain', 'shortname' => 'field2']
+        );
         $field3 = $this->getDataGenerator()->create_custom_field(
-            ['categoryid' => $fielcategory->get('id'), 'type' => 'mutrain', 'shortname' => 'field3']);
+            ['categoryid' => $fielcategory->get('id'), 'type' => 'mutrain', 'shortname' => 'field3']
+        );
         $field4 = $this->getDataGenerator()->create_custom_field(
-            ['categoryid' => $fielcategory->get('id'), 'type' => 'text', 'shortname' => 'field4']);
+            ['categoryid' => $fielcategory->get('id'), 'type' => 'text', 'shortname' => 'field4']
+        );
 
         $category = $this->getDataGenerator()->create_category([]);
         $catcontext = \context_coursecat::instance($category->id);
@@ -165,16 +151,16 @@ final class form_field_add_fieldid_test extends \advanced_testcase {
 
         framework::field_add($framework2->id, $field2->get('id'));
 
-        $result = \tool_mutrain\external\form_field_add_fieldid::validate_form_value(['frameworkid' => $framework1->id], $field1->get('id'));
+        $result = field_add_fieldid::validate_value($field1->get('id'), ['frameworkid' => $framework1->id], $syscontext);
         $this->assertNull($result);
 
-        $result = \tool_mutrain\external\form_field_add_fieldid::validate_form_value(['frameworkid' => $framework1->id], $field4->get('id'));
+        $result = field_add_fieldid::validate_value($field4->get('id'), ['frameworkid' => $framework1->id], $syscontext);
         $this->assertSame('Error', $result);
 
-        $result = \tool_mutrain\external\form_field_add_fieldid::validate_form_value(['frameworkid' => $framework2->id], $field2->get('id'));
+        $result = field_add_fieldid::validate_value($field2->get('id'), ['frameworkid' => $framework2->id], $catcontext);
         $this->assertSame('Error', $result);
 
-        $result = \tool_mutrain\external\form_field_add_fieldid::validate_form_value(['frameworkid' => $framework2->id], -1);
+        $result = field_add_fieldid::validate_value(-1, ['frameworkid' => $framework2->id], $catcontext);
         $this->assertSame('Error', $result);
     }
 }

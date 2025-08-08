@@ -40,4 +40,3 @@ $tasks = [
         'disabled' => 0,
     ],
 ];
-

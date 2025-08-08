@@ -146,8 +146,12 @@ final class core_course_course extends base {
         $fields = $DB->get_records_sql($sql, $params);
         foreach ($fields as $field) {
             if ($field->ctcid) {
-                $DB->set_field('tool_mutrain_completion',
-                    'timecompleted', $completion->timecompleted, ['id' => $field->ctcid]);
+                $DB->set_field(
+                    'tool_mutrain_completion',
+                    'timecompleted',
+                    $completion->timecompleted,
+                    ['id' => $field->ctcid]
+                );
             } else {
                 $context = \context_course::instance($courseid);
                 $record = (object)[

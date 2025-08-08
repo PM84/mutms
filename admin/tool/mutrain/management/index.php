@@ -62,8 +62,8 @@ $buttons = [];
 
 if (has_capability('tool/mutrain:manageframeworks', $context)) {
     $url = new moodle_url('/admin/tool/mutrain/management/framework_create.php', ['contextid' => $context->id]);
-    $button = new tool_mulib\output\dialog_form\button($url, get_string('framework_create', 'tool_mutrain'));
-    $button->set_after_submit($button::AFTER_SUBMIT_REDIRECT);
+    $button = new tool_mulib\output\ajax_form\button($url, get_string('framework_create', 'tool_mutrain'));
+    $button->set_submitted_action($button::SUBMITTED_ACTION_REDIRECT);
     $buttons[] = $OUTPUT->render($button);
 }
 
@@ -79,7 +79,8 @@ echo $OUTPUT->header();
 
 $report = \core_reportbuilder\system_report_factory::create(
     \tool_mutrain\reportbuilder\local\systemreports\frameworks::class,
-    $context);
+    $context
+);
 echo $report->output();
 
 echo $OUTPUT->footer();

@@ -46,7 +46,6 @@ final class management {
 
         if (has_capability('tool/mutrain:viewframeworks', \context_system::instance())) {
             return new moodle_url('/admin/tool/mutrain/management/index.php');
-
         } else if (util::is_mutenancy_active()) {
             $tenantid = \tool_mutenancy\local\tenancy::get_current_tenantid();
             if ($tenantid) {
