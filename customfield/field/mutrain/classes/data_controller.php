@@ -30,7 +30,6 @@ use tool_mutrain\local\framework;
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class data_controller extends \core_customfield\data_controller {
-
     /**
      * Return the name of the field where the information is stored
      * @return string
@@ -56,7 +55,7 @@ class data_controller extends \core_customfield\data_controller {
             if (!framework::is_area_compatible($category->get('component'), $category->get('area'))) {
                 $warning = get_string('error_incompatiblearea', 'tool_mutrain');
                 $warning = '<div class="alert alert-warning">' . $warning . '</div>';
-                $mform->addElement('static', $elementname.'warning', '', $warning);
+                $mform->addElement('static', $elementname . 'warning', '', $warning);
             }
         }
 
