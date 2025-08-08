@@ -1,4 +1,4 @@
-@tool @tool_mutenancy @MuTMS
+@tool @tool_mutenancy @MuTMS @javascript
 Feature: Tenant authentication setting allowemailaddresses
   Background:
     Given unnecessary Admin bookmarks block gets deleted
@@ -18,7 +18,7 @@ Feature: Tenant authentication setting allowemailaddresses
     And I set the following fields to these values:
       | allowemailaddresses_override   | 1                   |
       | allowemailaddresses            | yyy.example.com     |
-    And I press dialog form button "Update"
+    And I click on "Update" "button" in the ".modal-dialog" "css_element"
     And I should see "yyy.example.com" in the "Allowed email domains" definition list item
     And I am on the "TEN3" "tool_mutenancy > Tenant authentication" page
     And I should see "Default value (xxx.example.com)" in the "Allowed email domains" definition list item
@@ -26,11 +26,10 @@ Feature: Tenant authentication setting allowemailaddresses
     And I set the following fields to these values:
       | allowemailaddresses_override   | 1                   |
       | allowemailaddresses            |                     |
-    And I press dialog form button "Update"
+    And I click on "Update" "button" in the ".modal-dialog" "css_element"
     And I should see "Empty" in the "Allowed email domains" definition list item
     And I log out
 
-  @javascript
   Scenario: Users may self register with email from allowemailaddresses overridden for tenant
     When I am on the "0" "tool_mutenancy > Tenant login" page
     And I click on "Create new account" "link"
@@ -131,7 +130,6 @@ Feature: Tenant authentication setting allowemailaddresses
     And I should see "TSS3" in the ".navbar" "css_element"
     And I log out
 
-  @javascript
   Scenario: Users may change email to value from allowemailaddresses overridden for tenant
     Given the following "users" exist:
       | username | firstname | lastname | email                | tenant |
@@ -192,7 +190,6 @@ Feature: Tenant authentication setting allowemailaddresses
     And I confirm changed email for "student3"
     And I should see "was successfully updated to student3@zzz.example.com"
 
-  @javascript
   Scenario: Tenant managers may change emails ignoring allowemailaddresses
     Given the following "users" exist:
       | username | firstname | lastname | email                | tenant |
@@ -207,7 +204,7 @@ Feature: Tenant authentication setting allowemailaddresses
     And I click on "Edit" "link" in the "Prvni Student" "table_row"
     When I set the following fields in the ".modal-dialog" "css_element" to these values:
       | Email address | student1@zzz.example.com |
-    And I press dialog form button "Update account"
+    And I click on "Update account" "button" in the ".modal-dialog" "css_element"
     Then the following should exist in the "reportbuilder-table" table:
       | First name    | Email address            | Tenant member |
       | Prvni Student | student1@zzz.example.com | Yes           |

@@ -16,8 +16,6 @@
 
 // phpcs:disable moodle.Files.BoilerplateComment.CommentEndedTooSoon
 
-use tool_mutenancy\local\tenancy;
-
 /**
  * Tenant members.
  *
@@ -26,12 +24,14 @@ use tool_mutenancy\local\tenancy;
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use tool_mutenancy\local\tenancy;
+
 /** @var stdClass $CFG */
 /** @var core_renderer $OUTPUT */
 /** @var moodle_database $DB */
 /** @var moodle_page $PAGE */
 
-require(__DIR__.'/../../../config.php');
+require(__DIR__ . '/../../../config.php');
 require_once("$CFG->libdir/adminlib.php");
 
 $tenantid = required_param('id', PARAM_INT);
@@ -62,7 +62,7 @@ if ($tenant->assoccohortid) {
         $acohortcontext = context::instance_by_id($acohort->contextid);
         if (has_capability('moodle/cohort:assign', $acohortcontext)) {
             $url = new moodle_url('/admin/tool/mutenancy/management/associate_add.php', ['tenantid' => $tenant->id]);
-            $button = new tool_mulib\output\dialog_form\button($url, get_string('associate_add', 'tool_mutenancy'));
+            $button = new tool_mulib\output\ajax_form\button($url, get_string('associate_add', 'tool_mutenancy'));
             $buttons[] = $OUTPUT->render($button);
         }
     }
@@ -79,8 +79,8 @@ if (has_capability('tool/mutenancy:membercreate', $context)) {
 
     if (!$limitreached) {
         $url = new moodle_url('/admin/tool/mutenancy/management/member_create.php', ['tenantid' => $tenant->id]);
-        $button = new tool_mulib\output\dialog_form\button($url, get_string('member_create', 'tool_mutenancy'));
-        $button->set_dialog_size('xl');
+        $button = new tool_mulib\output\ajax_form\button($url, get_string('member_create', 'tool_mutenancy'));
+        $button->set_form_size('xl');
         $buttons[] = $OUTPUT->render($button);
     }
 }

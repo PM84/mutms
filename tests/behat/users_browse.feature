@@ -1,4 +1,4 @@
-@tool @tool_mutenancy @MuTMS
+@tool @tool_mutenancy @MuTMS @javascript
 Feature: Multi-tenancy features of browse users page
   Background:
     Given unnecessary Admin bookmarks block gets deleted
@@ -18,7 +18,6 @@ Feature: Multi-tenancy features of browse users page
       | student2 | Druhy     | Student  | student2@example.com | TEN2   |
       | student3 | Treti     | Student  | student3@example.com | TEN3   |
 
-  @javascript
   Scenario: Admin may filters users by tenants on browse users page
     Given I log in as "admin"
     And I navigate to "Users > Accounts > Browse list of users" in site administration
@@ -77,7 +76,6 @@ Feature: Multi-tenancy features of browse users page
     Then I should see "Tenant 1" in the "Tenant name" definition list item
     And I should see "TEN1" in the "Tenant ID" definition list item
 
-  @javascript
   Scenario: Tenant admin may allocate tenant members on browse users page
     Given the following "roles" exist:
       | name            | shortname |
@@ -110,7 +108,7 @@ Feature: Multi-tenancy features of browse users page
     And I click on "Allocate user" "link" in the "Nulty Student" "table_row"
     And I set the following fields in the ".modal-dialog" "css_element" to these values:
       | Tenant | Tenant 1 |
-    And I press dialog form button "Allocate user"
+    And I click on "Allocate user" "button" in the ".modal-dialog" "css_element"
     Then the following should exist in the "reportbuilder-table" table:
       | First name     | Email address        | Tenant   |
       | Nulty Student  | student0@example.com | Tenant 1 |
@@ -119,7 +117,7 @@ Feature: Multi-tenancy features of browse users page
     And I click on "Allocate user" "link" in the "Nulty Student" "table_row"
     And I set the following fields in the ".modal-dialog" "css_element" to these values:
       | Tenant | Tenant 2 |
-    And I press dialog form button "Allocate user"
+    And I click on "Allocate user" "button" in the ".modal-dialog" "css_element"
     Then the following should exist in the "reportbuilder-table" table:
       | First name     | Email address        | Tenant   |
       | Nulty Student  | student0@example.com | Tenant 2 |
@@ -127,5 +125,5 @@ Feature: Multi-tenancy features of browse users page
     When I click on "Actions" "link" in the "Nulty Student" "table_row"
     And I click on "Allocate user" "link" in the "Nulty Student" "table_row"
     And I click on "Tenant 2" "text" in the ".modal-dialog" "css_element"
-    And I press dialog form button "Allocate user"
+    And I click on "Allocate user" "button" in the ".modal-dialog" "css_element"
     Then I should not see "Tenant" in the "Nulty Student" "table_row"
