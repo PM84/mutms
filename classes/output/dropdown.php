@@ -27,7 +27,7 @@ namespace tool_mulib\output;
  * @author      Petr Skoda
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class dropdown implements \core\output\renderable, \core\output\named_templatable {
+class dropdown implements \core\output\named_templatable, \core\output\renderable {
     /** @var array $items links, dividers or custom html fragments */
     private $items = [];
     /** @var string */
@@ -60,16 +60,16 @@ class dropdown implements \core\output\renderable, \core\output\named_templatabl
     }
 
     /**
-     * Add link that opens dialog_form.
+     * Add link that opens ajax_form.
      *
-     * @param \tool_mulib\output\dialog_form\link $link
+     * @param \tool_mulib\output\ajax_form\link $link
      */
-    final public function add_dialog_form(\tool_mulib\output\dialog_form\link $link): void {
+    final public function add_ajax_form(\tool_mulib\output\ajax_form\link $link): void {
         global $OUTPUT;
-        $oldclass = $link->get_class();
-        $link->set_class('dropdown-item');
+        $oldclasses = $link->get_classes();
+        $link->set_classes(['dropdown-item']);
         $this->items[] = ['customhtml' => $OUTPUT->render($link)];
-        $link->set_class($oldclass);
+        $link->set_classes($oldclasses);
     }
 
     /**
