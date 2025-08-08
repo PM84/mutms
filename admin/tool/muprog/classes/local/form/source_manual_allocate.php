@@ -18,6 +18,8 @@
 
 namespace tool_muprog\local\form;
 
+use tool_muprog\external\form_autocomplete\source_manual_allocate_users;
+
 /**
  * Allocate users and cohorts manually.
  *
@@ -27,7 +29,7 @@ namespace tool_muprog\local\form;
  * @author     Petr Skoda
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-final class source_manual_allocate extends \tool_mulib\local\dialog_form {
+final class source_manual_allocate extends \tool_mulib\local\ajax_form {
     /** @var array $arguments for WS call to get candidate users */
     protected $arguments;
     /** @var \tool_muprog\customfield\allocation_handler */
@@ -41,8 +43,13 @@ final class source_manual_allocate extends \tool_mulib\local\dialog_form {
         $context = $this->_customdata['context'];
 
         $this->arguments = ['programid' => $program->id];
-        \tool_muprog\external\form_source_manual_allocate_users::add_form_element(
-            $mform, $this->arguments, 'users', get_string('users'));
+        source_manual_allocate_users::add_element(
+            $mform,
+            $this->arguments,
+            'users',
+            get_string('users'),
+            $context
+        );
 
         $options = ['contextid' => $context->id, 'multiple' => false];
         $mform->addElement('cohort', 'cohortid', get_string('cohort', 'cohort'), $options);
@@ -100,8 +107,11 @@ final class source_manual_allocate extends \tool_mulib\local\dialog_form {
 
         if ($data['users']) {
             foreach ($data['users'] as $userid) {
-                $error = \tool_muprog\external\form_source_manual_allocate_users::validate_form_value(
-                    $this->arguments, $userid, $context);
+                $error = source_manual_allocate_users::validate_value(
+                    $userid,
+                    $this->arguments,
+                    $context
+                );
                 if ($error !== null) {
                     $errors['users'] = $error;
                     break;

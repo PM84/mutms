@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 // phpcs:disable moodle.Files.BoilerplateComment.CommentEndedTooSoon
+// phpcs:disable moodle.Files.LineLength.TooLong
 
 /**
  * Program management interface.
@@ -65,8 +66,8 @@ $actions = new header_actions(get_string('management_index_actions', 'tool_mupro
 
 if (has_capability('tool/muprog:edit', $context)) {
     $url = new moodle_url('/admin/tool/muprog/management/program_create.php', ['contextid' => $context->id]);
-    $button = new tool_mulib\output\dialog_form\button($url, get_string('program_create', 'tool_muprog'));
-    $button->set_after_submit($button::AFTER_SUBMIT_REDIRECT);
+    $button = new tool_mulib\output\ajax_form\button($url, get_string('program_create', 'tool_muprog'));
+    $button->set_submitted_action($button::SUBMITTED_ACTION_REDIRECT);
     $actions->add_button($button);
 }
 if (has_capability('tool/muprog:export', $context)) {
@@ -86,7 +87,8 @@ echo $OUTPUT->header();
 
 $report = \core_reportbuilder\system_report_factory::create(
     \tool_muprog\reportbuilder\local\systemreports\programs::class,
-    $context);
+    $context
+);
 echo $report->output();
 
 echo $OUTPUT->footer();

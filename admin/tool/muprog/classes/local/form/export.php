@@ -18,6 +18,8 @@
 
 namespace tool_muprog\local\form;
 
+use tool_muprog\external\form_autocomplete\export_programids;
+
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
@@ -39,19 +41,24 @@ final class export extends \moodleform {
         $mform = $this->_form;
         $program = $this->_customdata['program'];
         $contextid = $this->_customdata['contextid'];
+        $context = $this->_customdata['context'];
         $archived = $this->_customdata['archived'];
 
         if ($program) {
             // Export was started from a program details page, let them add other programs.
-            \tool_muprog\external\form_export_programids::add_form_element(
-                $mform, ['query' => ''], 'programids', get_string('programs', 'tool_muprog'));
+            export_programids::add_element(
+                $mform,
+                ['query' => ''],
+                'programids',
+                get_string('programs', 'tool_muprog'),
+                $context
+            );
             $mform->addRule('programids', null, 'required', null, 'client');
             $mform->setDefault('programids', [$program->id]);
 
             $mform->addElement('hidden', 'id');
             $mform->setType('id', PARAM_INT);
             $mform->setDefault('id', $program->id);
-
         } else {
             // Export started from category, let them select other categories or all programs.
             $mform->addElement('select', 'contextid', get_string('context'), self::get_contextid_options());
@@ -97,15 +104,19 @@ final class export extends \moodleform {
     #[\Override]
     public function validation($data, $files) {
         $errors = parent::validation($data, $files);
+        $context = $this->_customdata['context'];
         $program = $this->_customdata['program'];
 
         if ($program) {
             if (!$data['programids']) {
                 $errors['programids'] = get_string('required');
             } else {
-                $error = \tool_muprog\external\form_export_programids::validate_programids($data['programids']);
-                if ($error !== null) {
-                    $errors['programids'] = $error;
+                foreach ($data['programids'] as $programid) {
+                    $error = export_programids::validate_value($programid, [], $context);
+                    if ($error !== null) {
+                        $errors['programids'] = $error;
+                        break;
+                    }
                 }
             }
         }
