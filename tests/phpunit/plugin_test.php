@@ -53,7 +53,8 @@ final class plugin_test extends \advanced_testcase {
 
         $cfcat = $generator->create_category();
         $cfield1 = $generator->create_field(
-            ['categoryid' => $cfcat->get('id'), 'shortname' => 'myfield1', 'type' => 'mutrain']);
+            ['categoryid' => $cfcat->get('id'), 'shortname' => 'myfield1', 'type' => 'mutrain']
+        );
         $course1 = $this->getDataGenerator()->create_course();
         $cfdata1 = $generator->add_instance_data($cfield1, $course1->id, 1);
 
@@ -83,13 +84,22 @@ final class plugin_test extends \advanced_testcase {
 
         $cfcat = $generator->create_category();
         $cfield1 = $generator->create_field(
-            ['categoryid' => $cfcat->get('id'), 'shortname' => 'myfield1', 'type' => 'mutrain']);
+            ['categoryid' => $cfcat->get('id'), 'shortname' => 'myfield1', 'type' => 'mutrain']
+        );
         $submitdata = (array)$cfield1->to_record();
         $submitdata['configdata'] = $cfield1->get('configdata');
 
         $submitdata = \core_customfield\field_config_form::mock_ajax_submit($submitdata);
-        $form = new \core_customfield\field_config_form(null, null, 'post', '', null, true,
-            $submitdata, true);
+        $form = new \core_customfield\field_config_form(
+            null,
+            null,
+            'post',
+            '',
+            null,
+            true,
+            $submitdata,
+            true
+        );
         $form->set_data_for_dynamic_submission();
         $this->assertTrue($form->is_validated());
         $form->process_dynamic_submission();
@@ -110,23 +120,29 @@ final class plugin_test extends \advanced_testcase {
         $handler = $cfcat->get_handler();
         $course1 = $this->getDataGenerator()->create_course();
         $cf1 = $generator->create_field(
-            ['categoryid' => $cfcat->get('id'), 'shortname' => 'myfield1', 'type' => 'mutrain']);
+            ['categoryid' => $cfcat->get('id'), 'shortname' => 'myfield1', 'type' => 'mutrain']
+        );
         $cf2 = $generator->create_field(
             ['categoryid' => $cfcat->get('id'), 'shortname' => 'myfield2', 'type' => 'mutrain',
-                'configdata' => ['required' => true]]);
+            'configdata' => ['required' => true]]
+        );
         // First try to submit without required field.
         $submitdata = (array)$course1;
         $submitdata['customfield_myfield1'] = '';
         core_customfield_test_instance_form::mock_submit($submitdata, []);
-        $form = new core_customfield_test_instance_form('POST',
-            ['handler' => $handler, 'instance' => $course1]);
+        $form = new core_customfield_test_instance_form(
+            'POST',
+            ['handler' => $handler, 'instance' => $course1]
+        );
         $this->assertFalse($form->is_validated());
 
         // Should pass now.
         $submitdata['customfield_myfield2'] = '20';
         core_customfield_test_instance_form::mock_submit($submitdata, []);
-        $form = new core_customfield_test_instance_form('POST',
-            ['handler' => $handler, 'instance' => $course1]);
+        $form = new core_customfield_test_instance_form(
+            'POST',
+            ['handler' => $handler, 'instance' => $course1]
+        );
         $this->assertTrue($form->is_validated());
         $data = $form->get_data();
         $this->assertSame('', $data->customfield_myfield1);
@@ -144,8 +160,10 @@ final class plugin_test extends \advanced_testcase {
         $submitdata['customfield_myfield1'] = '-99999';
         $submitdata['customfield_myfield2'] = '20';
         core_customfield_test_instance_form::mock_submit($submitdata, []);
-        $form = new core_customfield_test_instance_form('POST',
-            ['handler' => $handler, 'instance' => $course1]);
+        $form = new core_customfield_test_instance_form(
+            'POST',
+            ['handler' => $handler, 'instance' => $course1]
+        );
         $this->assertFalse($form->is_validated());
     }
 
@@ -159,13 +177,16 @@ final class plugin_test extends \advanced_testcase {
         $cfcat = $generator->create_category();
         $course1 = $this->getDataGenerator()->create_course();
         $cfields1 = $generator->create_field(
-            ['categoryid' => $cfcat->get('id'), 'shortname' => 'myfield1', 'type' => 'mutrain']);
+            ['categoryid' => $cfcat->get('id'), 'shortname' => 'myfield1', 'type' => 'mutrain']
+        );
         $cfields2 = $generator->create_field(
             ['categoryid' => $cfcat->get('id'), 'shortname' => 'myfield2', 'type' => 'mutrain',
-                'configdata' => ['required' => true]]);
+            'configdata' => ['required' => true]]
+        );
         $cfields3 = $generator->create_field(
             ['categoryid' => $cfcat->get('id'), 'shortname' => 'myfield3', 'type' => 'mutrain',
-                'configdata' => []]);
+            'configdata' => []]
+        );
 
         $cfdata1 = $generator->add_instance_data($cfields1, $course1->id, 1);
 
@@ -187,7 +208,8 @@ final class plugin_test extends \advanced_testcase {
 
         $cfcat = $generator->create_category();
         $cfields1 = $generator->create_field(
-            ['categoryid' => $cfcat->get('id'), 'shortname' => 'myfield1', 'type' => 'mutrain']);
+            ['categoryid' => $cfcat->get('id'), 'shortname' => 'myfield1', 'type' => 'mutrain']
+        );
         $cfcat->get_handler()->delete_all();
     }
 }
