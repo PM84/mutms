@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 // phpcs:disable moodle.Files.BoilerplateComment.CommentEndedTooSoon
+// phpcs:disable moodle.Files.LineLength.TooLong
 
 /**
  * Program management interface.
@@ -52,7 +53,9 @@ echo $OUTPUT->header();
 
 $report = \core_reportbuilder\system_report_factory::create(
     \tool_muprog\reportbuilder\local\systemreports\requests::class,
-    $context, parameters:['programid' => $program->id]);
+    $context,
+    parameters:['programid' => $program->id]
+);
 echo $report->output();
 
 echo $OUTPUT->footer();

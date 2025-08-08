@@ -27,7 +27,7 @@ namespace tool_muprog\local\form;
  * @author     Petr Skoda
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-final class program_content_import_confirmation extends \tool_mulib\local\dialog_form {
+final class program_content_import_confirmation extends \tool_mulib\local\ajax_form {
     #[\Override]
     protected function definition() {
         global $DB, $PAGE;
@@ -75,7 +75,7 @@ final class program_content_import_confirmation extends \tool_mulib\local\dialog
         $programid = $data['fromprogram'];
         $programcontextid = $DB->get_field('tool_muprog_program', 'contextid', ['id' => $programid]);
         $context = \context::instance_by_id($programcontextid);
-        if (!has_capability('tool/muprog:clone', $context )) {
+        if (!has_capability('tool/muprog:clone', $context)) {
             $errors['fromprogram'] = get_string('error');
         }
         return $errors;
