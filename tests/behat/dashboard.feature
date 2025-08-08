@@ -21,12 +21,12 @@ Feature: My certifications block
     And I click on "Update Manual assignment" "link"
     And I set the following fields to these values:
       | Active | Yes |
-    And I press dialog form button "Update"
+    And I click on "Update" "button" in the ".modal-dialog" "css_element"
     And I click on "Users" "link" in the ".secondary-navigation" "css_element"
     And I press "Assign users"
     And I set the following fields to these values:
       | Users | Student 1 |
-    And I press dialog form button "Assign users"
+    And I click on "Assign users" "button" in the ".modal-dialog" "css_element"
     And I log out
 
     And I log in as "student1"
