@@ -18,7 +18,7 @@
 
 namespace tool_musudo\local\form;
 
-use tool_musudo\external\form_sudoer_create_userid;
+use tool_musudo\external\form_autocomplete\sudoer_create_userid;
 use tool_musudo\local\sudoer;
 use tool_musudo\local\mfa;
 
@@ -29,8 +29,7 @@ use tool_musudo\local\mfa;
  * @copyright  2025 Petr Skoda
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-final class sudoer_create extends \tool_mulib\local\dialog_form {
-
+final class sudoer_create extends \tool_mulib\local\ajax_form {
     #[\Override]
     protected function definition() {
         $mform = $this->_form;
@@ -39,7 +38,7 @@ final class sudoer_create extends \tool_mulib\local\dialog_form {
         // NOTE: client side validation for required fields somehow fails for repeated elements,
         // so rely on server validation here.
 
-        form_sudoer_create_userid::add_form_element($mform, [], 'userid', get_string('user'));
+        sudoer_create_userid::add_element($mform, [], 'userid', get_string('user'), $syscontext);
         $mform->setType('userid', PARAM_INT);
         $mform->addRule('userid', get_string('required'), 'required', null, 'server');
 
@@ -64,8 +63,17 @@ final class sudoer_create extends \tool_mulib\local\dialog_form {
 
         $repeat[] = $mform->createElement('submit', 'privilege_delete', get_string('privilege_delete', 'tool_musudo'), [], false);
 
-        $this->repeat_elements($repeat, 1, $repeatopts, 'privilege_repeat',
-            'privilege_more', 1, get_string('privilege_more', 'tool_musudo'), false, 'privilege_delete');
+        $this->repeat_elements(
+            $repeat,
+            1,
+            $repeatopts,
+            'privilege_repeat',
+            'privilege_more',
+            1,
+            get_string('privilege_more', 'tool_musudo'),
+            false,
+            'privilege_delete'
+        );
 
         // NOTE: repeat options are not working much when stuff gets deleted, just hack around it for now.
         $repeatcount = $this->optional_param('privilege_repeat', 1, PARAM_INT);
@@ -87,10 +95,15 @@ final class sudoer_create extends \tool_mulib\local\dialog_form {
     public function validation($data, $files) {
         global $DB;
         $errors = parent::validation($data, $files);
+        $syscontext = \context_system::instance();
 
-        $error = form_sudoer_create_userid::validate_form_value([], $data['userid']);
-        if ($error !== null) {
-            $errors['userid'] = $error;
+        if ($data['userid']) {
+            $error = sudoer_create_userid::validate_value($data['userid'], [], $syscontext);
+            if ($error !== null) {
+                $errors['userid'] = $error;
+            }
+        } else {
+            $errors['userid'] = get_string('required');
         }
 
         $contextids = [];
