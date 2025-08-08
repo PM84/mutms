@@ -29,26 +29,23 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - os: ubuntu-22.04
+          - os: ubuntu-24.04
             php: 8.1
-            extensions:
             db: mariadb
             dbversion: 10.6
-          - os: ubuntu-22.04
+          - os: ubuntu-24.04
             php: 8.2
-            extensions:
             db: mariadb
             dbversion: 11.4
-          - os: ubuntu-22.04
+          - os: ubuntu-24.04
             php: 8.3
-            extensions:
             db: mysqli
             dbversion: 8.4
-          - os: ubuntu-22.04
+          - os: ubuntu-24.04
             php: 8.1
             db: pgsql
             dbversion: 13
-          - os: ubuntu-22.04
+          - os: ubuntu-24.04
             php: 8.3
             db: pgsql
             dbversion: 17
@@ -69,7 +66,7 @@ jobs:
         uses: moodlehq/mysql-action@v1
         with:
           collation server: utf8mb4_bin
-          mysql version: 8.0
+          mysql version: ${{ matrix.dbversion }}
           mysql database: test
           mysql user: test
           mysql password: test
