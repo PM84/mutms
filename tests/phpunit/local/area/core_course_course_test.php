@@ -47,11 +47,14 @@ final class core_course_course_test extends \advanced_testcase {
         $this->assertCount(0, $DB->get_records_sql($sql));
 
         $this->getDataGenerator()->create_custom_field_category(
-            ['component' => 'core_course', 'area' => 'course']);
+            ['component' => 'core_course', 'area' => 'course']
+        );
         $this->getDataGenerator()->create_custom_field_category(
-            ['component' => 'core_group', 'area' => 'group']);
+            ['component' => 'core_group', 'area' => 'group']
+        );
         $this->getDataGenerator()->create_custom_field_category(
-            ['component' => 'core_group', 'area' => 'group']);
+            ['component' => 'core_group', 'area' => 'group']
+        );
         $sql = "SELECT xx.*
                   FROM {customfield_category} xx
                  WHERE $select";
@@ -62,13 +65,17 @@ final class core_course_course_test extends \advanced_testcase {
         global $DB;
 
         $fielcategory = $this->getDataGenerator()->create_custom_field_category(
-            ['component' => 'core_course', 'area' => 'course']);
+            ['component' => 'core_course', 'area' => 'course']
+        );
         $field1 = $this->getDataGenerator()->create_custom_field(
-            ['categoryid' => $fielcategory->get('id'), 'type' => 'mutrain', 'shortname' => 'field1']);
+            ['categoryid' => $fielcategory->get('id'), 'type' => 'mutrain', 'shortname' => 'field1']
+        );
         $field2 = $this->getDataGenerator()->create_custom_field(
-            ['categoryid' => $fielcategory->get('id'), 'type' => 'mutrain', 'shortname' => 'field2']);
+            ['categoryid' => $fielcategory->get('id'), 'type' => 'mutrain', 'shortname' => 'field2']
+        );
         $field3 = $this->getDataGenerator()->create_custom_field(
-            ['categoryid' => $fielcategory->get('id'), 'type' => 'text', 'shortname' => 'field3']);
+            ['categoryid' => $fielcategory->get('id'), 'type' => 'text', 'shortname' => 'field3']
+        );
 
         $course1 = $this->getDataGenerator()->create_course(['customfield_field1' => 10, 'customfield_field2' => 1]);
         $course2 = $this->getDataGenerator()->create_course(['customfield_field1' => 20]);
@@ -106,16 +113,26 @@ final class core_course_course_test extends \advanced_testcase {
         $completions = $DB->get_records('tool_mutrain_completion', [], 'id ASC');
         $this->assertCount(5, $completions);
 
-        $this->assertTrue($DB->record_exists('tool_mutrain_completion',
-            ['fieldid' => $field1->get('id'), 'instanceid' => $course1->id, 'userid' => $user1->id]));
-        $this->assertTrue($DB->record_exists('tool_mutrain_completion',
-            ['fieldid' => $field2->get('id'), 'instanceid' => $course1->id, 'userid' => $user1->id]));
-        $this->assertTrue($DB->record_exists('tool_mutrain_completion',
-            ['fieldid' => $field1->get('id'), 'instanceid' => $course3->id, 'userid' => $user1->id]));
-        $this->assertTrue($DB->record_exists('tool_mutrain_completion',
-            ['fieldid' => $field1->get('id'), 'instanceid' => $course1->id, 'userid' => $user2->id]));
-        $this->assertTrue($DB->record_exists('tool_mutrain_completion',
-            ['fieldid' => $field2->get('id'), 'instanceid' => $course1->id, 'userid' => $user2->id]));
+        $this->assertTrue($DB->record_exists(
+            'tool_mutrain_completion',
+            ['fieldid' => $field1->get('id'), 'instanceid' => $course1->id, 'userid' => $user1->id]
+        ));
+        $this->assertTrue($DB->record_exists(
+            'tool_mutrain_completion',
+            ['fieldid' => $field2->get('id'), 'instanceid' => $course1->id, 'userid' => $user1->id]
+        ));
+        $this->assertTrue($DB->record_exists(
+            'tool_mutrain_completion',
+            ['fieldid' => $field1->get('id'), 'instanceid' => $course3->id, 'userid' => $user1->id]
+        ));
+        $this->assertTrue($DB->record_exists(
+            'tool_mutrain_completion',
+            ['fieldid' => $field1->get('id'), 'instanceid' => $course1->id, 'userid' => $user2->id]
+        ));
+        $this->assertTrue($DB->record_exists(
+            'tool_mutrain_completion',
+            ['fieldid' => $field2->get('id'), 'instanceid' => $course1->id, 'userid' => $user2->id]
+        ));
 
         // No modifications.
         \tool_mutrain\local\area\core_course_course::sync_area_completions();
@@ -126,10 +143,14 @@ final class core_course_course_test extends \advanced_testcase {
         \tool_mutrain\local\area\core_course_course::sync_area_completions();
         $completions = $DB->get_records('tool_mutrain_completion', [], 'id ASC');
         $this->assertCount(3, $completions);
-        $this->assertFalse($DB->record_exists('tool_mutrain_completion',
-            ['fieldid' => $field1->get('id'), 'instanceid' => $course1->id, 'userid' => $user1->id]));
-        $this->assertFalse($DB->record_exists('tool_mutrain_completion',
-            ['fieldid' => $field2->get('id'), 'instanceid' => $course1->id, 'userid' => $user1->id]));
+        $this->assertFalse($DB->record_exists(
+            'tool_mutrain_completion',
+            ['fieldid' => $field1->get('id'), 'instanceid' => $course1->id, 'userid' => $user1->id]
+        ));
+        $this->assertFalse($DB->record_exists(
+            'tool_mutrain_completion',
+            ['fieldid' => $field2->get('id'), 'instanceid' => $course1->id, 'userid' => $user1->id]
+        ));
 
         // Date sync.
         $DB->set_field('tool_mutrain_completion', 'timecompleted', '1', []);
@@ -142,23 +163,31 @@ final class core_course_course_test extends \advanced_testcase {
         \tool_mutrain\local\area\core_course_course::sync_area_completions();
         $completions = $DB->get_records('tool_mutrain_completion', [], 'id ASC');
         $this->assertCount(1, $completions);
-        $this->assertFalse($DB->record_exists('tool_mutrain_completion',
-            ['fieldid' => $field1->get('id'), 'instanceid' => $course1->id, 'userid' => $user2->id]));
-        $this->assertFalse($DB->record_exists('tool_mutrain_completion',
-            ['fieldid' => $field2->get('id'), 'instanceid' => $course1->id, 'userid' => $user2->id]));
+        $this->assertFalse($DB->record_exists(
+            'tool_mutrain_completion',
+            ['fieldid' => $field1->get('id'), 'instanceid' => $course1->id, 'userid' => $user2->id]
+        ));
+        $this->assertFalse($DB->record_exists(
+            'tool_mutrain_completion',
+            ['fieldid' => $field2->get('id'), 'instanceid' => $course1->id, 'userid' => $user2->id]
+        ));
     }
 
     public function test_observe_course_completed(): void {
         global $DB;
 
         $fielcategory = $this->getDataGenerator()->create_custom_field_category(
-            ['component' => 'core_course', 'area' => 'course']);
+            ['component' => 'core_course', 'area' => 'course']
+        );
         $field1 = $this->getDataGenerator()->create_custom_field(
-            ['categoryid' => $fielcategory->get('id'), 'type' => 'mutrain', 'shortname' => 'field1']);
+            ['categoryid' => $fielcategory->get('id'), 'type' => 'mutrain', 'shortname' => 'field1']
+        );
         $field2 = $this->getDataGenerator()->create_custom_field(
-            ['categoryid' => $fielcategory->get('id'), 'type' => 'mutrain', 'shortname' => 'field2']);
+            ['categoryid' => $fielcategory->get('id'), 'type' => 'mutrain', 'shortname' => 'field2']
+        );
         $field3 = $this->getDataGenerator()->create_custom_field(
-            ['categoryid' => $fielcategory->get('id'), 'type' => 'text', 'shortname' => 'field3']);
+            ['categoryid' => $fielcategory->get('id'), 'type' => 'text', 'shortname' => 'field3']
+        );
 
         $course1 = $this->getDataGenerator()->create_course(['customfield_field1' => 10, 'customfield_field2' => 1]);
         $course2 = $this->getDataGenerator()->create_course(['customfield_field1' => 20]);
@@ -222,13 +251,17 @@ final class core_course_course_test extends \advanced_testcase {
         global $DB;
 
         $fielcategory = $this->getDataGenerator()->create_custom_field_category(
-            ['component' => 'core_course', 'area' => 'course']);
+            ['component' => 'core_course', 'area' => 'course']
+        );
         $field1 = $this->getDataGenerator()->create_custom_field(
-            ['categoryid' => $fielcategory->get('id'), 'type' => 'mutrain', 'shortname' => 'field1']);
+            ['categoryid' => $fielcategory->get('id'), 'type' => 'mutrain', 'shortname' => 'field1']
+        );
         $field2 = $this->getDataGenerator()->create_custom_field(
-            ['categoryid' => $fielcategory->get('id'), 'type' => 'mutrain', 'shortname' => 'field2']);
+            ['categoryid' => $fielcategory->get('id'), 'type' => 'mutrain', 'shortname' => 'field2']
+        );
         $field3 = $this->getDataGenerator()->create_custom_field(
-            ['categoryid' => $fielcategory->get('id'), 'type' => 'text', 'shortname' => 'field3']);
+            ['categoryid' => $fielcategory->get('id'), 'type' => 'text', 'shortname' => 'field3']
+        );
 
         $course1 = $this->getDataGenerator()->create_course(['customfield_field1' => 10, 'customfield_field2' => 1]);
         $course2 = $this->getDataGenerator()->create_course(['customfield_field1' => 20]);
@@ -280,13 +313,17 @@ final class core_course_course_test extends \advanced_testcase {
         $programgenerator = $this->getDataGenerator()->get_plugin_generator('tool_muprog');
 
         $fielcategory = $this->getDataGenerator()->create_custom_field_category(
-            ['component' => 'core_course', 'area' => 'course']);
+            ['component' => 'core_course', 'area' => 'course']
+        );
         $field1 = $this->getDataGenerator()->create_custom_field(
-            ['categoryid' => $fielcategory->get('id'), 'type' => 'mutrain', 'shortname' => 'field1']);
+            ['categoryid' => $fielcategory->get('id'), 'type' => 'mutrain', 'shortname' => 'field1']
+        );
         $field2 = $this->getDataGenerator()->create_custom_field(
-            ['categoryid' => $fielcategory->get('id'), 'type' => 'mutrain', 'shortname' => 'field2']);
+            ['categoryid' => $fielcategory->get('id'), 'type' => 'mutrain', 'shortname' => 'field2']
+        );
         $field3 = $this->getDataGenerator()->create_custom_field(
-            ['categoryid' => $fielcategory->get('id'), 'type' => 'text', 'shortname' => 'field3']);
+            ['categoryid' => $fielcategory->get('id'), 'type' => 'text', 'shortname' => 'field3']
+        );
 
         $course1 = $this->getDataGenerator()->create_course(['customfield_field1' => 10, 'customfield_field2' => 1]);
         $course2 = $this->getDataGenerator()->create_course(['customfield_field1' => 20]);
@@ -341,16 +378,24 @@ final class core_course_course_test extends \advanced_testcase {
         \tool_muprog\local\course_reset::purge_completions($user1, $program1->id);
 
         $this->assertCount(3, $DB->get_records('tool_mutrain_completion', []));
-        $this->assertCount(1, $DB->get_records('tool_mutrain_completion',
-            ['fieldid' => $field1->get('id'), 'instanceid' => $course1->id, 'userid' => $user2->id]));
-        $this->assertCount(1, $DB->get_records('tool_mutrain_completion',
-            ['fieldid' => $field2->get('id'), 'instanceid' => $course1->id, 'userid' => $user2->id]));
-        $this->assertCount(1, $DB->get_records('tool_mutrain_completion',
-            ['fieldid' => $field1->get('id'), 'instanceid' => $course3->id, 'userid' => $user1->id]));
+        $this->assertCount(1, $DB->get_records(
+            'tool_mutrain_completion',
+            ['fieldid' => $field1->get('id'), 'instanceid' => $course1->id, 'userid' => $user2->id]
+        ));
+        $this->assertCount(1, $DB->get_records(
+            'tool_mutrain_completion',
+            ['fieldid' => $field2->get('id'), 'instanceid' => $course1->id, 'userid' => $user2->id]
+        ));
+        $this->assertCount(1, $DB->get_records(
+            'tool_mutrain_completion',
+            ['fieldid' => $field1->get('id'), 'instanceid' => $course3->id, 'userid' => $user1->id]
+        ));
 
         \tool_muprog\local\course_reset::purge_completions($user2, $program1->id);
         $this->assertCount(1, $DB->get_records('tool_mutrain_completion', []));
-        $this->assertCount(1, $DB->get_records('tool_mutrain_completion',
-            ['fieldid' => $field1->get('id'), 'instanceid' => $course3->id, 'userid' => $user1->id]));
+        $this->assertCount(1, $DB->get_records(
+            'tool_mutrain_completion',
+            ['fieldid' => $field1->get('id'), 'instanceid' => $course3->id, 'userid' => $user1->id]
+        ));
     }
 }

@@ -121,39 +121,39 @@ final class management_test extends \advanced_testcase {
         $framework2 = $generator->create_framework(['name' => 'Second framework', 'idnumber' => 'PRG2', 'description' => 'druhy popis']);
         $framework3 = $generator->create_framework(['name' => 'Third framework', 'idnumber' => 'PR3', 'description' => 'treti popis', 'contextid' => $catcontext1->id]);
 
-        list($search, $params) = management::get_framework_search_query(null, 'First', 'p');
+        [$search, $params] = management::get_framework_search_query(null, 'First', 'p');
         $frameworkids = $DB->get_fieldset_sql("SELECT p.* FROM {tool_mutrain_framework} AS p WHERE $search ORDER BY p.id ASC", $params);
         $this->assertSame([$framework1->id], $frameworkids);
 
-        list($search, $params) = management::get_framework_search_query(null, 'First', '');
+        [$search, $params] = management::get_framework_search_query(null, 'First', '');
         $frameworkids = $DB->get_fieldset_sql("SELECT * FROM {tool_mutrain_framework} WHERE $search ORDER BY id ASC", $params);
         $this->assertSame([$framework1->id], $frameworkids);
 
-        list($search, $params) = management::get_framework_search_query(null, 'PRG', 'p');
+        [$search, $params] = management::get_framework_search_query(null, 'PRG', 'p');
         $frameworkids = $DB->get_fieldset_sql("SELECT p.* FROM {tool_mutrain_framework} AS p WHERE $search ORDER BY p.id ASC", $params);
         $this->assertSame([$framework1->id, $framework2->id], $frameworkids);
 
-        list($search, $params) = management::get_framework_search_query(null, 'popis', 'p');
+        [$search, $params] = management::get_framework_search_query(null, 'popis', 'p');
         $frameworkids = $DB->get_fieldset_sql("SELECT p.* FROM {tool_mutrain_framework} AS p WHERE $search ORDER BY p.id ASC", $params);
         $this->assertSame([$framework1->id, $framework2->id, $framework3->id], $frameworkids);
 
-        list($search, $params) = management::get_framework_search_query(null, '', 'p');
+        [$search, $params] = management::get_framework_search_query(null, '', 'p');
         $frameworkids = $DB->get_fieldset_sql("SELECT p.* FROM {tool_mutrain_framework} AS p WHERE $search ORDER BY p.id ASC", $params);
         $this->assertSame([$framework1->id, $framework2->id, $framework3->id], $frameworkids);
 
-        list($search, $params) = management::get_framework_search_query($catcontext1, '', 'p');
+        [$search, $params] = management::get_framework_search_query($catcontext1, '', 'p');
         $frameworkids = $DB->get_fieldset_sql("SELECT p.* FROM {tool_mutrain_framework} AS p WHERE $search ORDER BY p.id ASC", $params);
         $this->assertSame([$framework3->id], $frameworkids);
 
-        list($search, $params) = management::get_framework_search_query($catcontext1, 'PR', 'p');
+        [$search, $params] = management::get_framework_search_query($catcontext1, 'PR', 'p');
         $frameworkids = $DB->get_fieldset_sql("SELECT p.* FROM {tool_mutrain_framework} AS p WHERE $search ORDER BY p.id ASC", $params);
         $this->assertSame([$framework3->id], $frameworkids);
 
-        list($search, $params) = management::get_framework_search_query($catcontext1, 'PR', '');
+        [$search, $params] = management::get_framework_search_query($catcontext1, 'PR', '');
         $frameworkids = $DB->get_fieldset_sql("SELECT * FROM {tool_mutrain_framework} WHERE $search ORDER BY id ASC", $params);
         $this->assertSame([$framework3->id], $frameworkids);
 
-        list($search, $params) = management::get_framework_search_query($catcontext1, 'PRG', 'p');
+        [$search, $params] = management::get_framework_search_query($catcontext1, 'PRG', 'p');
         $frameworkids = $DB->get_fieldset_sql("SELECT p.* FROM {tool_mutrain_framework} AS p WHERE $search ORDER BY p.id ASC", $params);
         $this->assertSame([], $frameworkids);
     }

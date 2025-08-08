@@ -28,7 +28,6 @@ namespace tool_mutrain\local\area;
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 abstract class base {
-
     /**
      * List all available area classes.
      *

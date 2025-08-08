@@ -18,7 +18,7 @@
 
 namespace tool_mutrain\local\form;
 
-use tool_mutrain\external\form_field_add_fieldid;
+use tool_mutrain\external\form_autocomplete\field_add_fieldid;
 
 /**
  * Add field to training framework.
@@ -29,19 +29,25 @@ use tool_mutrain\external\form_field_add_fieldid;
  * @author     Petr Skoda
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-final class field_add extends \tool_mulib\local\dialog_form {
+final class field_add extends \tool_mulib\local\ajax_form {
     #[\Override]
     protected function definition() {
         $mform = $this->_form;
         $framework = $this->_customdata['framework'];
+        $context = $this->_customdata['context'];
 
         $mform->addElement('hidden', 'frameworkid');
         $mform->setType('frameworkid', PARAM_INT);
         $mform->setDefault('frameworkid', $framework->id);
 
-        $arguments = ['frameworkid' => $framework->id];
-        form_field_add_fieldid::add_form_element(
-            $mform, $arguments, 'fieldid', get_string('field', 'tool_mutrain'));
+        $args = ['frameworkid' => $framework->id];
+        field_add_fieldid::add_element(
+            $mform,
+            $args,
+            'fieldid',
+            get_string('field', 'tool_mutrain'),
+            $context
+        );
         $mform->addRule('fieldid', null, 'required', null, 'client');
 
         $this->add_action_buttons(true, get_string('field_add', 'tool_mutrain'));
@@ -51,9 +57,10 @@ final class field_add extends \tool_mulib\local\dialog_form {
     public function validation($data, $files) {
         $errors = parent::validation($data, $files);
         $framework = $this->_customdata['framework'];
+        $context = $this->_customdata['context'];
 
-        $arguments = ['frameworkid' => $framework->id];
-        $error = form_field_add_fieldid::validate_form_value($arguments, $data['fieldid']);
+        $args = ['frameworkid' => $framework->id];
+        $error = field_add_fieldid::validate_value($data['fieldid'], $args, $context);
         if ($error !== null) {
             $errors['fieldid'] = $error;
         }
