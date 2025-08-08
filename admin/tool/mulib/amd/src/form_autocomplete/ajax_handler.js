@@ -14,19 +14,20 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
- * Provides support for general form autocomplete via ajax.
+ * Ajax helper for autocomplete form elements.
  *
- * @module      tool_mulib/form_autocomplete_ajax
- * @copyright   2023 Open LMS (https://www.openlms.net/)
- * @copyright   2025 Petr Skoda
- * @author      Petr Skoda
- * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
+ * NOTE: this file is based on /user/amd/src/form_user_selector.js
+ *
+ * @module     tool_mulib/form_autocomplete/ajax_handler
+ * @copyright  2025 Petr Skoda
+ * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ **/
 
 import Ajax from 'core/ajax';
+import {getString} from 'core/str';
 
 /**
- * Load the list of items via WS.
+ * Load the list of items matching the query and render the selector labels for them.
  *
  * @param {String} selector The selector of the auto complete element.
  * @param {String} query The query string.
@@ -34,31 +35,25 @@ import Ajax from 'core/ajax';
  * @param {Function} failure A function to call in case of failure, receiving the error message.
  */
 export async function transport(selector, query, callback, failure) {
+    const methodname = document.querySelector(selector).dataset.methodname;
 
-    const wsmethod = document.querySelector(selector).getAttribute('data-ws-method');
-    let wsarguments = document.querySelector(selector).getAttribute('data-ws-args');
-
-    wsarguments = JSON.parse(wsarguments);
-    if (Array.isArray(wsarguments)) {
-        wsarguments = {};
+    let args = document.querySelector(selector).dataset.args;
+    args = JSON.parse(args);
+    if (args instanceof Array) {
+        args = {};
     }
-
-    if (typeof query !== 'string') {
-        wsarguments.query = '';
-    } else {
-        wsarguments.query = query;
-    }
+    args.query = query ?? '';
 
     const request = {
-        methodname: wsmethod,
-        args: wsarguments
+        methodname: methodname,
+        args: args,
     };
 
     try {
         const response = await Ajax.call([request])[0];
-
-        if (response.notice !== null) {
-            callback(response.notice);
+        if (response.overflow) {
+            const msg = await getString('toomanyitemsfound', 'tool_mulib', response.maxitems);
+            callback(msg);
         } else {
             callback(response.list);
         }

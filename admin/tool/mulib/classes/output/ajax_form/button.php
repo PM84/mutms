@@ -16,56 +16,52 @@
 
 // phpcs:disable moodle.Files.BoilerplateComment.CommentEndedTooSoon
 
-namespace tool_mulib\output;
+namespace tool_mulib\output\ajax_form;
+
+use moodle_url;
+use lang_string;
 
 /**
- * Entity details display.
+ * Button that opens modal ajax form.
  *
  * @package     tool_mulib
  * @copyright   2025 Petr Skoda
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class entity_details implements \core\output\named_templatable, \core\output\renderable {
-    /** @var array */
-    protected $rows = [];
+final class button extends action {
+    /** @var bool */
+    protected $primary;
 
     /**
-     * Add entity detail.
+     * Create button that opens a form in modal dialog.
      *
-     * @param string $property
-     * @param string|null $value
-     * @return void
+     * @param moodle_url $formurl
+     * @param string|lang_string $label button label
+     * @param bool $primary is this a primary button?
      */
-    public function add(string $property, ?string $value): void {
-        $this->rows[] = ['property' => $property, 'value' => $value];
+    public function __construct(moodle_url $formurl, string|lang_string $label, bool $primary = false) {
+        parent::__construct($formurl, $label);
+        $this->primary = $primary;
+
+        $this->add_class('singlebutton');
     }
 
     /**
-     * Are there any details rows?
+     * Set button as primary.
      *
-     * @return bool
+     * @param bool $value
+     * @return static
      */
-    public function has_details(): bool {
-        return !empty($this->rows);
+    public function set_primary(bool $value): static {
+        $this->primary = $value;
+        return $this;
     }
 
-    /**
-     * Export data for template.
-     *
-     * @param \renderer_base $output
-     * @return array
-     */
+    #[\Override]
     public function export_for_template(\renderer_base $output): array {
-        return ['details' => $this->rows];
-    }
+        $data = parent::export_for_template($output);
+        $data['primary'] = $this->primary;
 
-    /**
-     * Get the name of the template to use for this templatable.
-     *
-     * @param \renderer_base $renderer The renderer requesting the template name
-     * @return string
-     */
-    public function get_template_name(\renderer_base $renderer): string {
-        return 'tool_mulib/entity_details';
+        return $data;
     }
 }
