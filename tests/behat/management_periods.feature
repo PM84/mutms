@@ -50,7 +50,7 @@ Feature: Certification periods settings management tests
     And I set the following fields in the ".modal-dialog" "css_element" to these values:
       | Certification name | Certification 001 |
       | Certification ID   | CT01              |
-    And I press dialog form button "Add certification"
+    And I click on "Add certification" "button" in the ".modal-dialog" "css_element"
     And I click on "Period settings" "link" in the ".secondary-navigation" "css_element"
     And I should see "Not set" in the "Program" definition list item
     And I should see "Not set" in the "Certification due" definition list item
@@ -82,7 +82,7 @@ Feature: Certification periods settings management tests
       | expiration1[number]   | 12                                    |
       | expiration1[timeunit] | Months                                |
       | recertify[enabled]    | 0                                     |
-    And I press dialog form button "Update certification"
+    And I click on "Update certification" "button" in the ".modal-dialog" "css_element"
     Then I should see "Program 001" in the "Program" definition list item
     And I should see "21 days" in the "Certification due" definition list item
     And I should see "Window opening" in the "Valid from" definition list item
@@ -92,7 +92,7 @@ Feature: Certification periods settings management tests
     And I should see "No" in the "Re-certify automatically" definition list item
 
     When I click on "Update certification" "link"
-    And I press dialog form button "Update certification"
+    And I click on "Update certification" "button" in the ".modal-dialog" "css_element"
     Then I should see "Program 001" in the "Program" definition list item
     And I should see "21 days" in the "Certification due" definition list item
     And I should see "Window opening" in the "Valid from" definition list item
@@ -123,7 +123,7 @@ Feature: Certification periods settings management tests
       | windowend1[since]     | Never                                 |
       | expiration1[since]    | Never                                 |
       | recertify[enabled]    | 0                                     |
-    And I press dialog form button "Update certification"
+    And I click on "Update certification" "button" in the ".modal-dialog" "css_element"
     Then I should see "Program 002" in the "Program" definition list item
     And I should see "Not set" in the "Certification due" definition list item
     And I should see "Certification completion date" in the "Valid from" definition list item
@@ -141,7 +141,7 @@ Feature: Certification periods settings management tests
     And I set the following fields in the ".modal-dialog" "css_element" to these values:
       | Certification name | Certification 001 |
       | Certification ID   | CT01              |
-    And I press dialog form button "Add certification"
+    And I click on "Add certification" "button" in the ".modal-dialog" "css_element"
     And I click on "Period settings" "link" in the ".secondary-navigation" "css_element"
     And I should see "Not set" in the "Program" definition list item
     And I should see "Not set" in the "Certification due" definition list item
@@ -164,7 +164,7 @@ Feature: Certification periods settings management tests
       | recertify[enabled]    | 1                                     |
       | recertify[number]     | 30                                    |
       | recertify[timeunit]   | days                                  |
-    And I press dialog form button "Update certification"
+    And I click on "Update certification" "button" in the ".modal-dialog" "css_element"
     And I click on "Update re-certification" "link"
     And the following fields match these values:
       | resettype2            | Standard course purge                 |
@@ -187,7 +187,7 @@ Feature: Certification periods settings management tests
       | expiration2[since]    | Certification due                     |
       | expiration2[number]   | 12                                    |
       | expiration2[timeunit] | Months                                |
-    And I press dialog form button "Update re-certification"
+    And I click on "Update re-certification" "button" in the ".modal-dialog" "css_element"
     Then I should see "30 days before Expiration" in the "Re-certify automatically" definition list item
     And I click on "Update re-certification" "link"
     And the following fields match these values:
@@ -202,12 +202,12 @@ Feature: Certification periods settings management tests
       | expiration2[since]    | Certification due                     |
       | expiration2[number]   | 12                                    |
       | expiration2[timeunit] | Months                                |
-    And I press dialog form button "Cancel"
+    And I click on "Cancel" "button" in the ".modal-dialog" "css_element"
 
     When I click on "Update certification" "link"
     And I set the following fields to these values:
       | recertify[enabled]    | 0                                     |
-    And I press dialog form button "Update certification"
+    And I click on "Update certification" "button" in the ".modal-dialog" "css_element"
     Then I should see "No" in the "Re-certify automatically" definition list item
 
   @javascript
@@ -222,7 +222,7 @@ Feature: Certification periods settings management tests
     And I set the following fields in the ".modal-dialog" "css_element" to these values:
       | Certification name | Certification 001 |
       | Certification ID   | CT01              |
-    And I press dialog form button "Add certification"
+    And I click on "Add certification" "button" in the ".modal-dialog" "css_element"
     And I click on "Period settings" "link" in the ".secondary-navigation" "css_element"
     And I click on "Update certification" "link"
     And I set the following fields in the ".modal-dialog" "css_element" to these values:
@@ -237,12 +237,12 @@ Feature: Certification periods settings management tests
       | recertify[enabled]    | 1                                     |
       | recertify[number]     | 30                                    |
       | recertify[timeunit]   | days                                  |
-    And I press dialog form button "Update certification"
+    And I click on "Update certification" "button" in the ".modal-dialog" "css_element"
     And I click on "Assignment settings" "link" in the ".secondary-navigation" "css_element"
     And I click on "Update Manual assignment" "link"
     And I set the following fields to these values:
       | Active | Yes |
-    And I press dialog form button "Update"
+    And I click on "Update" "button" in the ".modal-dialog" "css_element"
     And I click on "Users" "link" in the ".secondary-navigation" "css_element"
     And I press "Assign users"
     And I set the following fields to these values:
@@ -252,7 +252,7 @@ Feature: Certification periods settings management tests
       | timewindowstart[year]    | 2022      |
       | timewindowstart[hour]    | 09        |
       | timewindowstart[minute]  | 00        |
-    And I press dialog form button "Assign users"
+    And I click on "Assign users" "button" in the ".modal-dialog" "css_element"
     And I follow "Student 1"
 
     When I press "Add period"
@@ -275,7 +275,7 @@ Feature: Certification periods settings management tests
       | timeuntil[year]          | 2024        |
       | timeuntil[hour]          | 09          |
       | timeuntil[minute]        | 00          |
-    And I press dialog form button "Add period"
+    And I click on "Add period" "button" in the ".modal-dialog" "css_element"
     Then the following should exist in the "reportbuilder-table" table:
       | Program     | Window opening | Window closing | Expiration         | Re-certify automatically |
       | Program 001 | 5/10/22        | Not set        | Not set            | No                       |
@@ -313,7 +313,7 @@ Feature: Certification periods settings management tests
       | timeuntil[year]          | 2023        |
       | timeuntil[hour]          | 09          |
       | timeuntil[minute]        | 00          |
-    And I press dialog form button "Override period dates"
+    And I click on "Override period dates" "button" in the ".modal-dialog" "css_element"
     Then I should see "Program 001" in the "Program" definition list item
     And I should see "1 October 2022" in the "Window opening" definition list item
     And I should see "10 October 2022" in the "Certification due" definition list item
@@ -327,9 +327,9 @@ Feature: Certification periods settings management tests
     When I press "Override period dates"
     And I set the following fields to these values:
       | timerevoked[enabled]       | 1           |
-    And I press dialog form button "Override period dates"
+    And I click on "Override period dates" "button" in the ".modal-dialog" "css_element"
     And I press "Delete period"
-    And I press dialog form button "Delete period"
+    And I click on "Delete period" "button" in the ".modal-dialog" "css_element"
     Then the following should exist in the "reportbuilder-table" table:
       | Program     | Window opening | Window closing | Expiration                 | Re-certify automatically |
       | Program 002 | 5/10/23        | Not set        | 5/10/24                    | 5/09/24                  |

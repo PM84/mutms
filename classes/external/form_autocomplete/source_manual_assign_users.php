@@ -17,7 +17,7 @@
 // phpcs:disable moodle.Files.BoilerplateComment.CommentEndedTooSoon
 // phpcs:disable moodle.Files.LineLength.TooLong
 
-namespace tool_mucertify\external;
+namespace tool_mucertify\external\form_autocomplete;
 
 use core_external\external_function_parameters;
 use core_external\external_value;
@@ -27,24 +27,17 @@ use core_external\external_value;
  *
  * @package     tool_mucertify
  * @copyright   2023 Open LMS (https://www.openlms.net/)
+ * @copyright   2025 petr Skoda
  * @author      Petr Skoda
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-final class form_source_manual_assign_users extends \tool_mulib\external\form_autocomplete_field {
-    /**
-     * True means returned field data is array, false means value is scalar.
-     *
-     * @return bool
-     */
-    public static function is_multi_select_field(): bool {
+final class source_manual_assign_users extends \tool_mulib\external\form_autocomplete\user {
+    #[\Override]
+    public static function get_multiple(): bool {
         return true;
     }
 
-    /**
-     * Describes the external function arguments.
-     *
-     * @return external_function_parameters
-     */
+    #[\Override]
     public static function execute_parameters(): external_function_parameters {
         return new external_function_parameters([
             'query' => new external_value(PARAM_RAW, 'The search query', VALUE_REQUIRED),
@@ -60,10 +53,18 @@ final class form_source_manual_assign_users extends \tool_mulib\external\form_au
      * @return array
      */
     public static function execute(string $query, int $certificationid): array {
-        global $DB, $CFG, $OUTPUT;
+        global $DB, $CFG;
 
-        ['query' => $query, 'certificationid' => $certificationid] = self::validate_parameters(
-            self::execute_parameters(), ['query' => $query, 'certificationid' => $certificationid]);
+        [
+            'query' => $query,
+            'certificationid' => $certificationid,
+        ] = self::validate_parameters(
+            self::execute_parameters(),
+            [
+                'query' => $query,
+                'certificationid' => $certificationid,
+            ]
+        );
 
         $certification = $DB->get_record('tool_mucertify_certification', ['id' => $certificationid], '*', MUST_EXIST);
 
@@ -75,8 +76,8 @@ final class form_source_manual_assign_users extends \tool_mulib\external\form_au
         $fields = \core_user\fields::for_name()->with_identity($context, false);
         $extrafields = $fields->get_required_fields([\core_user\fields::PURPOSE_IDENTITY]);
 
-        list($searchsql, $searchparams) = users_search_sql($query, 'usr', true, $extrafields);
-        list($sortsql, $sortparams) = users_order_by_sql('usr', $query, $context);
+        [$searchsql, $searchparams] = users_search_sql($query, 'usr', true, $extrafields);
+        [$sortsql, $sortparams] = users_order_by_sql('usr', $query, $context);
         $params = array_merge($searchparams, $sortparams);
         $params['certificationid'] = $certificationid;
 
@@ -85,9 +86,8 @@ final class form_source_manual_assign_users extends \tool_mulib\external\form_au
             $tenantwhere = \tool_mutenancy\local\tenancy::get_related_users_exists('usr.id', $context);
         }
 
-        $additionalfields = $fields->get_sql('usr')->selects;
-        $sqlquery = <<<SQL
-            SELECT usr.id {$additionalfields}
+        $sql = <<<SQL
+            SELECT usr.*
               FROM {user} usr
          LEFT JOIN {tool_mucertify_assignment} pa ON (pa.userid = usr.id AND pa.certificationid = :certificationid)
              WHERE pa.id IS NULL AND {$searchsql} {$tenantwhere}
@@ -95,44 +95,12 @@ final class form_source_manual_assign_users extends \tool_mulib\external\form_au
           ORDER BY {$sortsql}
 SQL;
 
-        $rs = $DB->get_recordset_sql($sqlquery, $params, 0, $CFG->maxusersperpage + 1);
-
-        return self::prepare_user_list($rs, $extrafields);
+        $users = $DB->get_records_sql($sql, $params, 0, self::MAX_RESULTS + 1);
+        return self::prepare_result($users, $context);
     }
 
-    /**
-     * Return function that return label for given value.
-     *
-     * @param array $arguments
-     * @return callable
-     */
-    public static function get_label_callback(array $arguments): callable {
-        return function($value) use ($arguments): string {
-            global $DB;
-
-            $certification = $DB->get_record('tool_mucertify_certification', ['id' => $arguments['certificationid']], '*', MUST_EXIST);
-            $context = \context::instance_by_id($certification->contextid);
-
-            $error = null; // This is not pretty, but luckily there is a low chance this will happen.
-            if (static::validate_form_value($arguments, $value, $context) !== null) {
-                $error = ' (' . get_string('error') .')';
-            }
-
-            $record = $DB->get_record('user', ['id' => $value]);
-
-            return self::prepare_user_label($record, $context, $error);
-        };
-    }
-
-    /**
-     * Validate data.
-     *
-     * @param array $arguments
-     * @param mixed $value
-     * @param \context $context
-     * @return string|null error message, NULL means value is ok
-     */
-    public static function validate_form_value(array $arguments, $value, \context $context): ?string {
+    #[\Override]
+    public static function validate_value(int $value, array $args, \context $context): ?string {
         global $DB;
 
         $user = $DB->get_record('user', ['id' => $value, 'deleted' => 0, 'confirmed' => 1]);
@@ -140,7 +108,7 @@ SQL;
             return get_string('error');
         }
 
-        if ($DB->record_exists('tool_mucertify_assignment', ['certificationid' => $arguments['certificationid'], 'userid' => $user->id])) {
+        if ($DB->record_exists('tool_mucertify_assignment', ['certificationid' => $args['certificationid'], 'userid' => $user->id])) {
             return get_string('error');
         }
 

@@ -53,8 +53,12 @@ final class assignment_test extends \advanced_testcase {
             'programid1' => $program->id,
             'contextid' => $syscontext->id,
         ]);
-        $source = $DB->get_record('tool_mucertify_source',
-            ['type' => 'manual', 'certificationid' => $certification->id], '*', MUST_EXIST);
+        $source = $DB->get_record(
+            'tool_mucertify_source',
+            ['type' => 'manual', 'certificationid' => $certification->id],
+            '*',
+            MUST_EXIST
+        );
 
         $this->setAdminUser();
         $sink = $this->redirectMessages();
@@ -70,8 +74,12 @@ final class assignment_test extends \advanced_testcase {
         $sink->close();
         $this->assertCount(1, $messages);
         $message = reset($messages);
-        $assignment = $DB->get_record('tool_mucertify_assignment',
-            ['userid' => $user2->id, 'certificationid' => $certification->id], '*', MUST_EXIST);
+        $assignment = $DB->get_record(
+            'tool_mucertify_assignment',
+            ['userid' => $user2->id, 'certificationid' => $certification->id],
+            '*',
+            MUST_EXIST
+        );
         $this->assertSame('Certification assignment notification', $message->subject);
         $this->assertStringContainsString('you have been assigned to certification', $message->fullmessage);
         $this->assertSame('tool_mucertify', $message->component);

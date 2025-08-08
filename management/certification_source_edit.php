@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 // phpcs:disable moodle.Files.BoilerplateComment.CommentEndedTooSoon
+// phpcs:disable moodle.Files.LineLength.TooLong
 
 /**
  * certification management interface.
@@ -32,15 +33,9 @@
 /** @var stdClass $CFG */
 /** @var stdClass $COURSE */
 
-use tool_mucertify\local\management;
-use tool_mucertify\local\certification;
+define('AJAX_SCRIPT', true);
 
-// phpcs:ignoreFile moodle.Files.MoodleInternal.MoodleInternalGlobalState
-if (!empty($_SERVER['HTTP_X_MULIB_DIALOG_FORM_REQUEST'])) {
-    define('AJAX_SCRIPT', true);
-}
 require('../../../../config.php');
-require_once($CFG->dirroot . '/lib/formslib.php');
 
 $certificationid = required_param('certificationid', PARAM_INT);
 $type = required_param('type', PARAM_ALPHANUMEXT);
@@ -53,6 +48,9 @@ $context = context::instance_by_id($certification->contextid);
 require_capability('tool/mucertify:edit', $context);
 
 $currenturl = new moodle_url('/admin/tool/mucertify/management/source_edit.php', ['id' => $certification->id]);
+$PAGE->set_context($context);
+$PAGE->set_url($currenturl);
+
 $returnurl = new moodle_url('/admin/tool/mucertify/management/certification_assignment.php', ['id' => $certification->id]);
 
 /** @var \tool_mucertify\local\source\base[] $sourceclasses */
@@ -61,8 +59,6 @@ if (!isset($sourceclasses[$type])) {
     throw new coding_exception('Invalid source type');
 }
 $sourceclass = $sourceclasses[$type];
-
-management::setup_certification_page($currenturl, $context, $certification, 'certification_assignment');
 
 if ($source) {
     if (!$sourceclass::is_update_allowed($certification)) {
@@ -87,16 +83,12 @@ $formclass = $sourceclass::get_edit_form_class();
 $form = new $formclass(null, ['source' => $source, 'certification' => $certification, 'context' => $context]);
 
 if ($form->is_cancelled()) {
-    redirect($returnurl);
+    $form->ajax_form_cancelled($returnurl);
 }
 
 if ($data = $form->get_data()) {
     tool_mucertify\local\source\base::update_source($data);
-    $form->redirect_submitted($returnurl);
+    $form->ajax_form_submitted($returnurl);
 }
 
-echo $OUTPUT->header();
-
-echo $form->render();
-
-echo $OUTPUT->footer();
+$form->ajax_form_render();

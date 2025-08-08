@@ -77,9 +77,11 @@ final class assignment_handler_test extends \advanced_testcase {
 
         $certification1 = $generator->create_certification(['contextid' => $catcontext->id]);
         $assignment1 = $generator->create_certification_assignment(
-            ['certificationid' => $certification1->id, 'userid' => $user1->id]);
+            ['certificationid' => $certification1->id, 'userid' => $user1->id]
+        );
         $assignment2 = $generator->create_certification_assignment(
-            ['certificationid' => $certification1->id, 'userid' => $user2->id]);
+            ['certificationid' => $certification1->id, 'userid' => $user2->id]
+        );
 
         $this->setUser($manager);
 
@@ -165,9 +167,11 @@ final class assignment_handler_test extends \advanced_testcase {
 
         $certification1 = $generator->create_certification(['contextid' => $catcontext->id]);
         $assignment1 = $generator->create_certification_assignment(
-            ['certificationid' => $certification1->id, 'userid' => $user1->id]);
+            ['certificationid' => $certification1->id, 'userid' => $user1->id]
+        );
         $assignment2 = $generator->create_certification_assignment(
-            ['certificationid' => $certification1->id, 'userid' => $user2->id]);
+            ['certificationid' => $certification1->id, 'userid' => $user2->id]
+        );
 
         $this->setUser($manager);
         $data = (object)[
@@ -289,7 +293,8 @@ final class assignment_handler_test extends \advanced_testcase {
             'customfield_testfield4' => 'Test value 4',
         ]);
         $assignment2 = $generator->create_certification_assignment(
-            ['certificationid' => $certification1->id, 'userid' => $assigned2->id]);
+            ['certificationid' => $certification1->id, 'userid' => $assigned2->id]
+        );
 
         $handler = assignment_handler::create();
 

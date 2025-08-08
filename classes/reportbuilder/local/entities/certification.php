@@ -34,7 +34,6 @@ use core_reportbuilder\local\filters\boolean_select;
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 final class certification extends base {
-
     #[\Override]
     protected function get_default_tables(): array {
         return [
@@ -95,7 +94,7 @@ final class certification extends base {
             ->set_type(column::TYPE_TEXT)
             ->add_fields("{$certificationalias}.id, {$certificationalias}.fullname, {$certificationalias}.contextid")
             ->set_is_sortable(true)
-            ->set_callback(static function(?string $value, \stdClass $row): string {
+            ->set_callback(static function (?string $value, \stdClass $row): string {
                 if (!$row->id) {
                     return '';
                 }
@@ -117,7 +116,7 @@ final class certification extends base {
             ->set_type(column::TYPE_TEXT)
             ->add_fields("{$certificationalias}.idnumber")
             ->set_is_sortable(true)
-            ->set_callback(static function(?string $value, \stdClass $row): string {
+            ->set_callback(static function (?string $value, \stdClass $row): string {
                 return s($row->idnumber);
             });
 
@@ -131,7 +130,7 @@ final class certification extends base {
             ->add_fields("{$certificationalias}.public, {$certificationalias}.id, {$certificationalias}.contextid")
             ->set_is_sortable(true)
             ->set_callback([format::class, 'boolean_as_text'])
-            ->add_callback(static function(string $value, \stdClass $row): string {
+            ->add_callback(static function (string $value, \stdClass $row): string {
                 $context = \context::instance_by_id($row->contextid);
                 if (!has_capability('tool/mucertify:view', $context)) {
                     return $value;
@@ -162,7 +161,7 @@ final class certification extends base {
             ->set_type(column::TYPE_INTEGER)
             ->add_fields("{$certificationalias}.contextid")
             ->set_is_sortable(false)
-            ->set_callback(static function(?int $value, \stdClass $row): string {
+            ->set_callback(static function (?int $value, \stdClass $row): string {
                 if (!$row->contextid) {
                     return '';
                 }
@@ -186,13 +185,12 @@ final class certification extends base {
             ->set_type(column::TYPE_INTEGER)
             ->add_field('(' . "SELECT COUNT('x')
                                  FROM {tool_mucertify_assignment} a
-                                WHERE a.certificationid = {$certificationalias}.id" . ')'
-                , 'assignmentcount')
+                                WHERE a.certificationid = {$certificationalias}.id" . ')', 'assignmentcount')
             ->add_field("{$certificationalias}.id")
             ->add_field("{$certificationalias}.contextid")
             ->set_is_sortable(true)
             ->set_disabled_aggregation_all()
-            ->set_callback(static function(?int $value, \stdClass $row): string {
+            ->set_callback(static function (?int $value, \stdClass $row): string {
                 $count = $row->assignmentcount;
                 $context = \context::instance_by_id($row->contextid);
                 if (has_capability('tool/mucertify:view', $context)) {

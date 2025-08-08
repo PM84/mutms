@@ -77,7 +77,8 @@ echo $OUTPUT->header();
 
 $report = \core_reportbuilder\system_report_factory::create(
     \tool_mucertify\reportbuilder\local\systemreports\my_assignments::class,
-    $usercontext);
+    $usercontext
+);
 echo $report->output();
 
 echo $OUTPUT->footer();

@@ -72,7 +72,7 @@ Feature: Certification self-assignment tests
     And I set the following fields to these values:
       | Active             | Yes |
       | Allow new sign ups | No  |
-    And I press dialog form button "Update"
+    And I click on "Update" "button" in the ".modal-dialog" "css_element"
     Then I should see "Active; Sign ups are not allowed" in the "Self assignment" definition list item
     And I log out
 
@@ -91,7 +91,7 @@ Feature: Certification self-assignment tests
     And I click on "Update Self assignment" "link"
     And I set the following fields to these values:
       | Allow new sign ups | Yes |
-    And I press dialog form button "Update"
+    And I click on "Update" "button" in the ".modal-dialog" "css_element"
     Then I should see "Active; Sign ups are allowed" in the "Self assignment" definition list item
     And I log out
 
@@ -101,9 +101,9 @@ Feature: Certification self-assignment tests
     And I should see "Certification 001"
     And I follow "Certification 000"
     And I press "Sign up"
-    And I press dialog form button "Cancel"
+    And I click on "Cancel" "button" in the ".modal-dialog" "css_element"
     And I press "Sign up"
-    And I press dialog form button "Sign up"
+    And I click on "Sign up" "button" in the ".modal-dialog" "css_element"
     Then I should see "Not certified" in the "Certification status" definition list item
     And I should see "Program 000"
 
@@ -118,7 +118,7 @@ Feature: Certification self-assignment tests
     And I set the following fields to these values:
       | Active      | Yes   |
       | Sign up key | heslo |
-    And I press dialog form button "Update"
+    And I click on "Update" "button" in the ".modal-dialog" "css_element"
     Then I should see "Active; Sign up key is required; Sign ups are allowed" in the "Self assignment" definition list item
     And I log out
 
@@ -126,15 +126,15 @@ Feature: Certification self-assignment tests
     And I am on the "tool_mucertify > Certification catalogue" page
     And I follow "Certification 000"
     And I press "Sign up"
-    And I press dialog form button "Sign up"
+    And I click on "Sign up" "button" in the ".modal-dialog" "css_element"
     And I should see "Required"
     And I set the following fields to these values:
       | Sign up key | hEslo |
-    And I press dialog form button "Sign up"
+    And I click on "Sign up" "button" in the ".modal-dialog" "css_element"
     And I should see "Error"
     And I set the following fields to these values:
       | Sign up key | heslo |
-    And I press dialog form button "Sign up"
+    And I click on "Sign up" "button" in the ".modal-dialog" "css_element"
     Then I should see "Not certified" in the "Certification status" definition list item
     And I should see "Program 000"
 
@@ -149,7 +149,7 @@ Feature: Certification self-assignment tests
     And I set the following fields to these values:
       | Active    | Yes |
       | Max users | 2   |
-    And I press dialog form button "Update"
+    And I click on "Update" "button" in the ".modal-dialog" "css_element"
     Then I should see "Active; Users 0/2; Sign ups are allowed" in the "Self assignment" definition list item
     And I log out
 
@@ -157,14 +157,14 @@ Feature: Certification self-assignment tests
     And I am on the "tool_mucertify > Certification catalogue" page
     And I follow "Certification 001"
     And I press "Sign up"
-    And I press dialog form button "Sign up"
+    And I click on "Sign up" "button" in the ".modal-dialog" "css_element"
     And I should see "Not certified" in the "Certification status" definition list item
     And I log out
     And I log in as "student2"
     And I am on the "tool_mucertify > Certification catalogue" page
     And I follow "Certification 001"
     And I press "Sign up"
-    And I press dialog form button "Sign up"
+    And I click on "Sign up" "button" in the ".modal-dialog" "css_element"
     And I log out
 
     When I log in as "student3"

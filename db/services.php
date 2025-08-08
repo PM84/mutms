@@ -29,29 +29,29 @@
 defined('MOODLE_INTERNAL') || die();
 
 $functions = [
-    'tool_mucertify_form_certification_periods_programid' => [
-        'classname' => tool_mucertify\external\form_certification_periods_programid::class,
+    'tool_mucertify_form_autocomplete_certification_periods_programid' => [
+        'classname' => tool_mucertify\external\form_autocomplete\certification_periods_programid::class,
         'description' => 'Return list of user candidates for program allocation.',
         'type' => 'read',
         'ajax' => true,
         'loginrequired' => true,
     ],
-    'tool_mucertify_form_source_manual_assign_users' => [
-        'classname' => tool_mucertify\external\form_source_manual_assign_users::class,
+    'tool_mucertify_form_autocomplete_source_manual_assign_users' => [
+        'classname' => tool_mucertify\external\form_autocomplete\source_manual_assign_users::class,
         'description' => 'Return list of user candidates for certification assignment.',
         'type' => 'read',
         'ajax' => true,
         'loginrequired' => true,
     ],
-    'tool_mucertify_form_certification_visibility_edit_cohortids' => [
-        'classname' => tool_mucertify\external\form_certification_visibility_edit_cohortids::class,
+    'tool_mucertify_form_autocomplete_certification_visibility_edit_cohortids' => [
+        'classname' => tool_mucertify\external\form_autocomplete\certification_visibility_edit_cohortids::class,
         'description' => 'Return list of cohorts for certification visibility.',
         'type' => 'read',
         'ajax' => true,
         'loginrequired' => true,
     ],
-    'tool_mucertify_form_source_cohort_edit_cohortids' => [
-        'classname' => tool_mucertify\external\form_source_cohort_edit_cohortids::class,
+    'tool_mucertify_form_autocomplete_source_cohort_edit_cohortids' => [
+        'classname' => tool_mucertify\external\form_autocomplete\source_cohort_edit_cohortids::class,
         'description' => 'Return list of cohorts for cohort allocation.',
         'type' => 'read',
         'ajax' => true,

@@ -116,7 +116,7 @@ final class approval extends base {
         }
 
         $url = new \moodle_url('/admin/tool/mucertify/catalogue/source_approval_request.php', ['sourceid' => $source->id]);
-        $button = new \tool_mulib\output\dialog_form\button($url, get_string('source_approval_makerequest', 'tool_mucertify'));
+        $button = new \tool_mulib\output\ajax_form\button($url, get_string('source_approval_makerequest', 'tool_mucertify'));
 
         $button = $OUTPUT->render($button);
 
@@ -186,8 +186,12 @@ final class approval extends base {
         }
 
         $certification = $DB->get_record('tool_mucertify_certification', ['id' => $certificationid], '*', MUST_EXIST);
-        $source = $DB->get_record('tool_mucertify_source',
-            ['id' => $sourceid, 'type' => static::get_type(), 'certificationid' => $certification->id], '*', MUST_EXIST);
+        $source = $DB->get_record(
+            'tool_mucertify_source',
+            ['id' => $sourceid, 'type' => static::get_type(), 'certificationid' => $certification->id],
+            '*',
+            MUST_EXIST
+        );
 
         $user = $DB->get_record('user', ['id' => $USER->id, 'deleted' => 0], '*', MUST_EXIST);
         if ($DB->record_exists('tool_mucertify_assignment', ['certificationid' => $certification->id, 'userid' => $user->id])) {
@@ -391,4 +395,3 @@ final class approval extends base {
         return $result;
     }
 }
-

@@ -57,8 +57,11 @@ class renderer extends \plugin_renderer_base {
         $certificationimage = '';
         $presentation = (array)json_decode($certification->presentationjson);
         if (!empty($presentation['image'])) {
-            $imageurl = \moodle_url::make_file_url("$CFG->wwwroot/pluginfile.php",
-                '/' . $context->id . '/tool_mucertify/image/' . $certification->id . '/'. $presentation['image'], false);
+            $imageurl = \moodle_url::make_file_url(
+                "$CFG->wwwroot/pluginfile.php",
+                '/' . $context->id . '/tool_mucertify/image/' . $certification->id . '/' . $presentation['image'],
+                false
+            );
             $certificationimage = '<div class="certificationimage">' . \html_writer::img($imageurl, '') . '</div>';
         }
 

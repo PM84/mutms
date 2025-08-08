@@ -205,8 +205,11 @@ final class catalogue {
             $certificationimage = '';
             $presentation = (array)json_decode($certification->presentationjson);
             if (!empty($presentation['image'])) {
-                $imageurl = \moodle_url::make_file_url("$CFG->wwwroot/pluginfile.php",
-                    '/' . $context->id . '/tool_mucertify/image/' . $certification->id . '/'. $presentation['image'], false);
+                $imageurl = \moodle_url::make_file_url(
+                    "$CFG->wwwroot/pluginfile.php",
+                    '/' . $context->id . '/tool_mucertify/image/' . $certification->id . '/' . $presentation['image'],
+                    false
+                );
                 $certificationimage = \html_writer::img($imageurl, '', ['class' => 'certificationimage']);
             }
 
@@ -235,7 +238,7 @@ final class catalogue {
     public function get_certifications(): array {
         global $DB;
 
-        list($sql, $params) = $this->get_certifications_sql();
+        [$sql, $params] = $this->get_certifications_sql();
         return $DB->get_records_sql($sql, $params, $this->page * $this->perpage, $this->perpage);
     }
 
@@ -247,7 +250,7 @@ final class catalogue {
     public function count_certifications(): int {
         global $DB;
 
-        list($sql, $params) = $this->get_certifications_sql();
+        [$sql, $params] = $this->get_certifications_sql();
 
         $sql = util::convert_to_count_sql($sql);
 

@@ -28,7 +28,6 @@ namespace tool_mucertify\task;
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class trigger_certificate extends \core\task\adhoc_task {
-
     /**
      * Name for this task.
      *

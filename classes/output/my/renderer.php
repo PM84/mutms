@@ -58,8 +58,11 @@ class renderer extends \plugin_renderer_base {
         $certificationimage = '';
         $presentation = (array)json_decode($certification->presentationjson);
         if (!empty($presentation['image'])) {
-            $imageurl = \moodle_url::make_file_url("$CFG->wwwroot/pluginfile.php",
-                '/' . $context->id . '/tool_mucertify/image/' . $certification->id . '/'. $presentation['image'], false);
+            $imageurl = \moodle_url::make_file_url(
+                "$CFG->wwwroot/pluginfile.php",
+                '/' . $context->id . '/tool_mucertify/image/' . $certification->id . '/' . $presentation['image'],
+                false
+            );
             $certificationimage = '<div class="certificationimage">' . \html_writer::img($imageurl, '') . '</div>';
         }
 
@@ -129,7 +132,9 @@ class renderer extends \plugin_renderer_base {
         $context = \context_user::instance($USER->id);
         $report = \core_reportbuilder\system_report_factory::create(
             \tool_mucertify\reportbuilder\local\systemreports\my_assignment_periods::class,
-            $context, parameters:['assignmentid' => $assignment->id]);
+            $context,
+            parameters:['assignmentid' => $assignment->id]
+        );
         $result .= $report->output();
 
         return $result;

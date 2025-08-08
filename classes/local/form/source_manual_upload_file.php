@@ -29,7 +29,7 @@ use tool_mucertify\local\source\manual;
  * @author     Farhan Karmali
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-final class source_manual_upload_file extends \tool_mulib\local\dialog_form {
+final class source_manual_upload_file extends \tool_mulib\local\ajax_form {
     #[\Override]
     protected function definition() {
         global $CFG;

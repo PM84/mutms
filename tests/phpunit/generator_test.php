@@ -178,14 +178,16 @@ final class generator_test extends \advanced_testcase {
 
         $this->setCurrentTimeStart();
         $assignment1 = $generator->create_certification_assignment(
-            ['certificationid' => $certification1->id, 'userid' => $user1->id]);
+            ['certificationid' => $certification1->id, 'userid' => $user1->id]
+        );
         $this->assertSame($user1->id, $assignment1->userid);
         $this->assertSame($certification1->id, $assignment1->certificationid);
         $this->assertSame(null, $assignment1->timecertifiedtemp);
         $this->assertTimeCurrent($assignment1->timecreated);
 
         $assignment2 = $generator->create_certification_assignment(
-            ['certification' => $certification1->fullname, 'user' => $user2->username]);
+            ['certification' => $certification1->fullname, 'user' => $user2->username]
+        );
         $this->assertSame($user2->id, $assignment2->userid);
         $this->assertSame($certification1->id, $assignment2->certificationid);
         $this->assertSame(null, $assignment2->timecertifiedtemp);
@@ -209,8 +211,10 @@ final class generator_test extends \advanced_testcase {
             'noperiod' => '1',
         ];
         $assignment4 = $generator->create_certification_assignment($data);
-        $this->assertFalse($DB->record_exists('tool_mucertify_period',
-            ['certificationid' => $certification1->id, 'userid' => $user4->id]));
+        $this->assertFalse($DB->record_exists(
+            'tool_mucertify_period',
+            ['certificationid' => $certification1->id, 'userid' => $user4->id]
+        ));
 
         $data = (object)[
             'certificationid' => $certification1->id,
@@ -218,7 +222,9 @@ final class generator_test extends \advanced_testcase {
             'noperiod' => '',
         ];
         $assignment5 = $generator->create_certification_assignment($data);
-        $this->assertTrue($DB->record_exists('tool_mucertify_period',
-            ['certificationid' => $certification1->id, 'userid' => $user5->id]));
+        $this->assertTrue($DB->record_exists(
+            'tool_mucertify_period',
+            ['certificationid' => $certification1->id, 'userid' => $user5->id]
+        ));
     }
 }

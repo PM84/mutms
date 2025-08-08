@@ -23,7 +23,6 @@ use tool_mucertify\local\assignment;
 use tool_mucertify\navigation\views\certification_secondary;
 use tool_mucertify\local\notification_manager;
 use tool_mucertify\local\period;
-
 use stdClass;
 
 /**
@@ -116,7 +115,8 @@ abstract class base {
      * @return bool
      */
     public static function is_assignment_update_possible(stdClass $certification, stdClass $source, stdClass $assignment): bool {
-        if ($certification->id != $source->certificationid
+        if (
+            $certification->id != $source->certificationid
             || $certification->id != $assignment->certificationid
             || $source->id != $assignment->sourceid
         ) {
@@ -140,7 +140,8 @@ abstract class base {
      * @return bool
      */
     public static function is_assignment_archive_possible(stdClass $certification, stdClass $source, stdClass $assignment): bool {
-        if ($certification->id != $source->certificationid
+        if (
+            $certification->id != $source->certificationid
             || $certification->id != $assignment->certificationid
             || $source->id != $assignment->sourceid
         ) {
@@ -164,7 +165,8 @@ abstract class base {
      * @return bool
      */
     public static function is_assignment_restore_possible(stdClass $certification, stdClass $source, stdClass $assignment): bool {
-        if ($certification->id != $source->certificationid
+        if (
+            $certification->id != $source->certificationid
             || $certification->id != $assignment->certificationid
             || $source->id != $assignment->sourceid
         ) {
@@ -188,7 +190,8 @@ abstract class base {
      * @return bool
      */
     public static function is_assignment_delete_possible(stdClass $certification, stdClass $source, stdClass $assignment): bool {
-        if ($certification->id != $source->certificationid
+        if (
+            $certification->id != $source->certificationid
             || $certification->id != $assignment->certificationid
             || $source->id != $assignment->sourceid
         ) {
@@ -489,8 +492,10 @@ abstract class base {
             }
         }
 
-        $DB->delete_records('tool_mucertify_period',
-            ['certificationid' => $assignment->certificationid, 'userid' => $assignment->userid]);
+        $DB->delete_records(
+            'tool_mucertify_period',
+            ['certificationid' => $assignment->certificationid, 'userid' => $assignment->userid]
+        );
         $DB->delete_records('tool_mucertify_assignment', ['id' => $assignment->id]);
 
         \tool_mucertify\event\assignment_deleted::create_from_assignment($certification, $assignment)->trigger();
@@ -578,8 +583,8 @@ abstract class base {
         if (has_capability('tool/mucertify:edit', $context) && static::is_update_allowed($certification)) {
             $label = get_string('updatesource', 'tool_mucertify', static::get_name());
             $editurl = new \moodle_url('/admin/tool/mucertify/management/certification_source_edit.php', ['certificationid' => $certification->id, 'type' => $type]);
-            $editbutton = new \tool_mulib\output\dialog_form\icon($editurl, $label, 'i/settings');
-            $editbutton->set_dialog_name(static::get_name());
+            $editbutton = new \tool_mulib\output\ajax_form\icon($editurl, $label, 'i/settings');
+            $editbutton->set_modal_title(static::get_name());
             $result .= ' ' . $OUTPUT->render($editbutton);
         }
 
@@ -602,4 +607,3 @@ abstract class base {
         return get_admin();
     }
 }
-

@@ -39,7 +39,7 @@ Feature: Certification assignment management tests
     And I set the following fields in the ".modal-dialog" "css_element" to these values:
       | Certification name | Certification 001 |
       | Certification ID   | PR01              |
-    And I press dialog form button "Add certification"
+    And I click on "Add certification" "button" in the ".modal-dialog" "css_element"
     And I click on "Assignment settings" "link" in the ".secondary-navigation" "css_element"
     And I should see "Inactive" in the "Manual assignment" definition list item
     And I should see "Inactive" in the "Self assignment" definition list item
