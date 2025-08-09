@@ -128,7 +128,7 @@ final class source_cohort_edit_cohortids extends \tool_mulib\external\form_autoc
                 return get_string('error');
             }
         }
-        if (!self::is_cohort_visible($cohort, $context)) {
+        if (!self::is_cohort_visible($cohort)) {
             return get_string('error');
         }
         return null;

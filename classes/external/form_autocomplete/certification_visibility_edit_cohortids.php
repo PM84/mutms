@@ -125,7 +125,7 @@ final class certification_visibility_edit_cohortids extends \tool_mulib\external
                 return get_string('error');
             }
         }
-        if (!self::is_cohort_visible($cohort, $context)) {
+        if (!self::is_cohort_visible($cohort)) {
             return get_string('error');
         }
         return null;
