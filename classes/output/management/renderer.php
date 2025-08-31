@@ -98,7 +98,11 @@ class renderer extends \plugin_renderer_base {
 
         $handler = \tool_muprog\customfield\program_handler::create();
         foreach ($handler->get_instance_data($program->id) as $data) {
-            $details->add($data->get_field()->get('name'), $data->export_value());
+            $value = $data->export_value();
+            if ($value === null || $value === '') {
+                continue;
+            }
+            $details->add($data->get_field()->get('name'), $value);
         }
 
         $result = $this->output->render($details);
@@ -185,7 +189,7 @@ class renderer extends \plugin_renderer_base {
     public function render_program_visibility(stdClass $program): string {
         $details = new \tool_mulib\output\entity_details();
 
-        $details->add(get_string('public', 'tool_muprog'), ($program->public ? get_string('yes') : get_string('no')));
+        $details->add(get_string('publicaccess', 'tool_muprog'), ($program->publicaccess ? get_string('yes') : get_string('no')));
         $cohorts = management::fetch_current_cohorts_menu($program->id);
         if ($cohorts) {
             $cohrotsstr = implode(', ', array_map('format_string', $cohorts));

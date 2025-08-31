@@ -18,19 +18,16 @@
 
 namespace tool_muprog\local\form;
 
-use tool_muprog\local\source\cohort;
-use tool_muprog\external\form_autocomplete\source_cohort_edit_cohortids;
+use tool_muprog\external\form_autocomplete\source_program_edit_programid;
 
 /**
- * Edit cohort allocation settings.
+ * Edit completed program allocation settings.
  *
  * @package    tool_muprog
- * @copyright  2022 Open LMS (https://www.openlms.net/)
  * @copyright  2025 Petr Skoda
- * @author     Petr Skoda
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-final class source_cohort_edit extends \tool_mulib\local\ajax_form {
+final class source_program_edit extends \tool_mulib\local\ajax_form {
     #[\Override]
     protected function definition() {
         $mform = $this->_form;
@@ -44,18 +41,17 @@ final class source_cohort_edit extends \tool_mulib\local\ajax_form {
             $mform->hardFreeze('enable');
         }
 
-        source_cohort_edit_cohortids::add_element(
+        source_program_edit_programid::add_element(
             $mform,
             ['programid' => $program->id],
-            'cohortids',
-            get_string('source_cohort_cohortstoallocate', 'tool_muprog'),
+            'auxint1',
+            get_string('source_program_completedprogram', 'tool_muprog'),
             $context
         );
-        if (!empty($source->id)) {
-            $cohorts = cohort::fetch_allocation_cohorts_menu($source->id);
-            $mform->setDefault('cohortids', array_keys($cohorts));
+        if (!empty($source->auxint1)) {
+            $mform->setDefault('auxint1', $source->auxint1);
         }
-        $mform->hideIf('cohortids', 'enable', 'eq', 0);
+        $mform->hideIf('auxint1', 'enable', 'eq', 0);
 
         $mform->addElement('hidden', 'programid');
         $mform->setType('programid', PARAM_INT);
@@ -75,13 +71,10 @@ final class source_cohort_edit extends \tool_mulib\local\ajax_form {
         $context = $this->_customdata['context'];
 
         $args = ['programid' => $program->id];
-        if ($data['enable']) {
-            foreach ($data['cohortids'] as $cohortid) {
-                $error = source_cohort_edit_cohortids::validate_value($cohortid, $args, $context);
-                if ($error !== null) {
-                    $errors['cohortids'] = $error;
-                    break;
-                }
+        if ($data['enable'] && $data['auxint1']) {
+            $error = source_program_edit_programid::validate_value($data['auxint1'], $args, $context);
+            if ($error !== null) {
+                $errors['auxint1'] = $error;
             }
         }
 

@@ -19,21 +19,19 @@
 
 namespace tool_muprog\phpunit\external\form_autocomplete;
 
-use tool_muprog\external\form_autocomplete\program_allocation_import_fromprogram;
+use tool_muprog\external\form_autocomplete\source_program_edit_programid;
 
 /**
- * External API for form Import allocation settings
+ * Autocompletion support for completed program selection.
  *
  * @group      MuTMS
  * @package    tool_muprog
- * @copyright  2023 Open LMS (https://www.openlms.net/)
  * @copyright  2025 Petr Skoda
- * @author     Petr Skoda
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
- * @covers \tool_muprog\external\form_autocomplete\program_allocation_import_fromprogram
+ * @covers \tool_muprog\external\form_autocomplete\source_program_edit_programid
  */
-final class program_allocation_import_fromprogram_test extends \advanced_testcase {
+final class source_program_edit_programid_test extends \advanced_testcase {
     public function setUp(): void {
         parent::setUp();
         $this->resetAfterTest();
@@ -47,46 +45,28 @@ final class program_allocation_import_fromprogram_test extends \advanced_testcas
         $category1 = $this->getDataGenerator()->create_category([]);
         $catcontext1 = \context_coursecat::instance($category1->id);
 
-        $cohort1 = $this->getDataGenerator()->create_cohort();
-        $cohort2 = $this->getDataGenerator()->create_cohort();
-
         $program1 = $generator->create_program([
             'fullname' => 'hokus',
             'idnumber' => 'p1',
-            'description' => 'some desc 1',
-            'descriptionformat' => \FORMAT_MARKDOWN,
-            'publicaccess' => 1,
-            'archived' => 0,
             'contextid' => $syscontext->id,
-            'sources' => ['manual' => []],
-            'cohorts' => [$cohort1->id],
         ]);
         $program2 = $generator->create_program([
             'fullname' => 'pokus',
             'idnumber' => 'p2',
-            'description' => '<b>some desc 2</b>',
-            'descriptionformat' => \FORMAT_HTML,
-            'publicaccess' => 0,
-            'archived' => 0,
             'contextid' => $catcontext1->id,
-            'sources' => ['manual' => [], 'cohort' => []],
-            'cohorts' => [$cohort1->id, $cohort2->id],
         ]);
         $program3 = $generator->create_program([
             'fullname' => 'Prog3',
             'idnumber' => 'p3',
-            'publicaccess' => 1,
-            'archived' => 1,
             'contextid' => $syscontext->id,
-            'sources' => ['manual' => []],
         ]);
 
         $user1 = $this->getDataGenerator()->create_user();
 
         $this->setAdminUser();
-        $response = program_allocation_import_fromprogram::execute('', $program1->id);
-        $results = program_allocation_import_fromprogram::clean_returnvalue(
-            program_allocation_import_fromprogram::execute_returns(),
+        $response = source_program_edit_programid::execute('', $program1->id);
+        $results = source_program_edit_programid::clean_returnvalue(
+            source_program_edit_programid::execute_returns(),
             $response
         );
         $this->assertFalse($results['overflow']);
@@ -94,7 +74,7 @@ final class program_allocation_import_fromprogram_test extends \advanced_testcas
 
         $this->setUser($user1);
         try {
-            $response = program_allocation_import_fromprogram::execute('', $program1->id);
+            $response = source_program_edit_programid::execute('', $program1->id);
             $this->fail('Exception excepted');
         } catch (\moodle_exception $ex) {
             $this->assertInstanceOf(\required_capability_exception::class, $ex);
@@ -106,7 +86,6 @@ final class program_allocation_import_fromprogram_test extends \advanced_testcas
     }
 
     public function test_execute_tenant(): void {
-        global $DB, $CFG;
         if (!\tool_muprog\local\util::is_mutenancy_available()) {
             $this->markTestSkipped('tenant support not available');
         }
@@ -126,32 +105,37 @@ final class program_allocation_import_fromprogram_test extends \advanced_testcas
         $tenant2context = \context_tenant::instance($tenant2->id);
         $tenant2catcontext = \context_coursecat::instance($tenant2->categoryid);
 
-        $program0 = $generator->create_program(['fullname' => 'prg0', 'sources' => ['manual' => []]]);
-        $source0 = $DB->get_record('tool_muprog_source', ['programid' => $program0->id, 'type' => 'manual'], '*', MUST_EXIST);
-        $program1 = $generator->create_program(['idnumber' => 'prg2', 'contextid' => $tenant1catcontext->id, 'sources' => ['manual' => []]]);
-        $source1 = $DB->get_record('tool_muprog_source', ['programid' => $program1->id, 'type' => 'manual'], '*', MUST_EXIST);
-        $program2 = $generator->create_program(['idnumber' => 'prg3', 'contextid' => $tenant2catcontext->id, 'sources' => ['manual' => []]]);
-        $source2 = $DB->get_record('tool_muprog_source', ['programid' => $program2->id, 'type' => 'manual'], '*', MUST_EXIST);
-        $program3 = $generator->create_program(['idnumber' => 'prg4', 'contextid' => $tenant1catcontext->id, 'sources' => ['manual' => []]]);
+        $program1 = $generator->create_program([]);
+        $program2 = $generator->create_program([]);
+        $program3 = $generator->create_program(['contextid' => $tenant1catcontext->id]);
+        $program4 = $generator->create_program(['contextid' => $tenant1catcontext->id]);
+        $program5 = $generator->create_program(['contextid' => $tenant2catcontext->id]);
 
         $admin = get_admin();
-        $user0 = $this->getDataGenerator()->create_user(['lastname' => 'Prijmeni 1', 'tenantid' => 0]);
-        $user1 = $this->getDataGenerator()->create_user(['lastname' => 'Prijmeni 1', 'tenantid' => $tenant1->id]);
-        $user2 = $this->getDataGenerator()->create_user(['lastname' => 'Prijmeni 2', 'tenantid' => $tenant2->id]);
+        $user1 = $this->getDataGenerator()->create_user(['tenantid' => $tenant1->id]);
+        $user2 = $this->getDataGenerator()->create_user(['tenantid' => $tenant2->id]);
 
         $syscontext = \context_system::instance();
         $editorroleid = $this->getDataGenerator()->create_role();
         assign_capability('tool/muprog:edit', CAP_ALLOW, $editorroleid, $syscontext);
-        assign_capability('tool/muprog:clone', CAP_ALLOW, $editorroleid, $syscontext);
+        assign_capability('tool/muprog:allocate', CAP_ALLOW, $editorroleid, $syscontext);
         role_assign($editorroleid, $user1->id, $tenant1catcontext->id);
 
         $this->setAdminUser();
-        $response = program_allocation_import_fromprogram::execute('', $program0->id);
-        $this->assertCount(3, $response['list']);
+        $response = source_program_edit_programid::execute('', $program1->id);
+        $this->assertSame([['value' => $program2->id, 'label' => $program2->fullname]], $response['list']);
 
-        $this->setUser($user0);
+        $response = source_program_edit_programid::execute('', $program3->id);
+        $this->assertSame([['value' => $program4->id, 'label' => $program4->fullname]], $response['list']);
+
+        $response = source_program_edit_programid::execute('', $program5->id);
+        $this->assertSame([], $response['list']);
+
+        $this->setUser($user1);
+        $response = source_program_edit_programid::execute('', $program3->id);
+        $this->assertSame([['value' => $program4->id, 'label' => $program4->fullname]], $response['list']);
         try {
-            $response = program_allocation_import_fromprogram::execute('', $program1->id);
+            source_program_edit_programid::execute('', $program1->id);
             $this->fail('Exception excepted');
         } catch (\moodle_exception $ex) {
             $this->assertInstanceOf(\required_capability_exception::class, $ex);
@@ -160,12 +144,5 @@ final class program_allocation_import_fromprogram_test extends \advanced_testcas
                 $ex->getMessage()
             );
         }
-
-        $this->setUser($user1);
-        $response = program_allocation_import_fromprogram::execute('', $program1->id);
-        $this->assertCount(1, $response['list']);
-        $program3resp = array_pop($response['list']);
-        $this->assertSame($program3->id, $program3resp['value']);
-        $this->assertSame($program3->fullname, $program3resp['label']);
     }
 }

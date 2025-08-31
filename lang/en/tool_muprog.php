@@ -337,8 +337,8 @@ $string['programstatus_future'] = 'Not open yet';
 $string['programstatus_open'] = 'Open';
 $string['programstatus_overdue'] = 'Overdue';
 $string['programurl'] = 'Program URL';
-$string['public'] = 'Public';
-$string['public_help'] = 'Public programs are visible to all users.
+$string['publicaccess'] = 'Public';
+$string['publicaccess_help'] = 'Public programs are visible to all users.
 
 Visibility status does not affect already allocated programs.';
 $string['purchaseaccess'] = 'Purchase access';
@@ -410,6 +410,10 @@ $string['source_manual_userupload_invalidprogram'] = 'Cannot allocate to \'{$a}\
 $string['source_mucertify'] = 'Certifications';
 $string['source_mucertify_allownew'] = 'Allow certifications allocation';
 $string['source_mucertify_allownew_desc'] = 'Allow adding new _certification_ sources to programs';
+$string['source_program'] = 'Completed program';
+$string['source_program_allownew'] = 'Allow program completion allocation';
+$string['source_program_allownew_desc'] = 'Allow adding new _program completion_ sources to programs';
+$string['source_program_completedprogram'] = 'Program to complete';
 $string['source_selfallocation'] = 'Self allocation';
 $string['source_selfallocation_allocate'] = 'Sign up';
 $string['source_selfallocation_allownew'] = 'Allow self allocation';
