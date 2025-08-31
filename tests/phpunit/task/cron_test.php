@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 // phpcs:disable moodle.Files.BoilerplateComment.CommentEndedTooSoon
+// phpcs:disable moodle.Files.LineLength.TooLong
 
 namespace tool_mutrain\phpunit\task;
 
@@ -64,10 +65,10 @@ final class cron_test extends \advanced_testcase {
             ['categoryid' => $fielcategory->get('id'), 'type' => 'text', 'shortname' => 'field3']
         );
 
-        $course1 = $this->getDataGenerator()->create_course(['customfield_field1' => 10, 'customfield_field2' => 1]);
-        $course2 = $this->getDataGenerator()->create_course(['customfield_field1' => 20]);
-        $course3 = $this->getDataGenerator()->create_course(['customfield_field1' => 40]);
-        $course4 = $this->getDataGenerator()->create_course(['customfield_field3' => 'abc']);
+        $course1 = $this->getDataGenerator()->create_course(['customfield_field1' => 10, 'customfield_field2' => 1, 'enablecompletion' => 1]);
+        $course2 = $this->getDataGenerator()->create_course(['customfield_field1' => 20, 'enablecompletion' => 1]);
+        $course3 = $this->getDataGenerator()->create_course(['customfield_field1' => 40, 'enablecompletion' => 1]);
+        $course4 = $this->getDataGenerator()->create_course(['customfield_field3' => 'abc', 'enablecompletion' => 1]);
 
         $user1 = $this->getDataGenerator()->create_user();
         $user2 = $this->getDataGenerator()->create_user();

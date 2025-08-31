@@ -17,24 +17,35 @@
 // phpcs:disable moodle.Files.BoilerplateComment.CommentEndedTooSoon
 
 /**
- * Training settings.
+ * Training fields upgrade.
  *
  * @package    tool_mutrain
- * @copyright  2024 Open LMS (https://www.openlms.net/)
  * @copyright  2025 Petr Skoda
- * @author     Petr Skoda
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
+/**
+ * Upgrade certifications.
+ *
+ * @param mixed $oldversion
+ * @return true
+ */
+function xmldb_tool_mutrain_upgrade($oldversion) {
+    global $DB;
 
-/** @var admin_root $ADMIN */
+    $dbman = $DB->get_manager();
 
-$ADMIN->add('root', new admin_category('tool_mutrain', new lang_string('pluginname', 'tool_mutrain')));
+    if ($oldversion < 2025080945.01) {
+        // Rename field public on table tool_mutrain_framework to publicaccess.
+        $table = new xmldb_table('tool_mutrain_framework');
+        $field = new xmldb_field('public', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '0', 'descriptionformat');
 
-$ADMIN->add('tool_mutrain', new admin_externalpage(
-    'tool_mutrain_frameworks',
-    get_string('management_frameworks', 'tool_mutrain'),
-    new moodle_url('/admin/tool/mutrain/management/index.php'),
-    'tool/mutrain:viewframeworks'
-));
+        // Launch rename field public.
+        $dbman->rename_field($table, $field, 'publicaccess');
+
+        // Mutrain savepoint reached.
+        upgrade_plugin_savepoint(true, 2025080945.01, 'tool', 'mutrain');
+    }
+
+    return true;
+}

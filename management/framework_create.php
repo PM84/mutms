@@ -57,7 +57,7 @@ $framework->idnumber = '';
 $framework->description = '';
 $framework->descriptionformat = FORMAT_HTML;
 $framework->restrictedcompletion = 0;
-$framework->public = 0;
+$framework->publicaccess = 0;
 
 $editoroptions = framework::get_description_editor_options();
 
