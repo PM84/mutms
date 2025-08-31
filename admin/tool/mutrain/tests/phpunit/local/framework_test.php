@@ -56,7 +56,7 @@ final class framework_test extends \advanced_testcase {
         $this->assertSame(null, $framework->idnumber);
         $this->assertSame('', $framework->description);
         $this->assertSame('1', $framework->descriptionformat);
-        $this->assertSame('0', $framework->public);
+        $this->assertSame('0', $framework->publicaccess);
         $this->assertSame($data['requiredtraining'], $framework->requiredtraining);
         $this->assertSame('0', $framework->restrictedcompletion);
         $this->assertSame('0', $framework->archived);
@@ -70,7 +70,7 @@ final class framework_test extends \advanced_testcase {
             'idnumber' => 'f2',
             'requiredtraining' => '10',
             'description' => 'pokus',
-            'public' => '1',
+            'publicaccess' => '1',
             'restrictedcompletion' => '1',
             'archived' => '1',
         ];
@@ -82,7 +82,7 @@ final class framework_test extends \advanced_testcase {
         $this->assertSame($data['idnumber'], $framework->idnumber);
         $this->assertSame($data['description'], $framework->description);
         $this->assertSame('1', $framework->descriptionformat);
-        $this->assertSame($data['public'], $framework->public);
+        $this->assertSame($data['publicaccess'], $framework->publicaccess);
         $this->assertSame($data['requiredtraining'], $framework->requiredtraining);
         $this->assertSame($data['restrictedcompletion'], $framework->restrictedcompletion);
         $this->assertSame($data['archived'], $framework->archived);
@@ -147,7 +147,7 @@ final class framework_test extends \advanced_testcase {
             'idnumber' => 'f2',
             'requiredtraining' => '10',
             'description' => 'pokus',
-            'public' => '1',
+            'publicaccess' => '1',
             'restrictedcompletion' => '1',
         ];
         $framework = framework::update($data);
@@ -157,7 +157,7 @@ final class framework_test extends \advanced_testcase {
         $this->assertSame($data['idnumber'], $framework->idnumber);
         $this->assertSame($data['description'], $framework->description);
         $this->assertSame('1', $framework->descriptionformat);
-        $this->assertSame($data['public'], $framework->public);
+        $this->assertSame($data['publicaccess'], $framework->publicaccess);
         $this->assertSame($data['requiredtraining'], $framework->requiredtraining);
         $this->assertSame($data['restrictedcompletion'], $framework->restrictedcompletion);
         $this->assertSame('0', $framework->archived);
@@ -169,7 +169,7 @@ final class framework_test extends \advanced_testcase {
             'idnumber' => 'f2',
             'requiredtraining' => '10',
             'description' => 'pokus',
-            'public' => '1',
+            'publicaccess' => '1',
             'restrictedcompletion' => '0',
         ];
         $framework = framework::update($data);
@@ -179,7 +179,7 @@ final class framework_test extends \advanced_testcase {
         $this->assertSame($data['idnumber'], $framework->idnumber);
         $this->assertSame($data['description'], $framework->description);
         $this->assertSame('1', $framework->descriptionformat);
-        $this->assertSame($data['public'], $framework->public);
+        $this->assertSame($data['publicaccess'], $framework->publicaccess);
         $this->assertSame($data['requiredtraining'], $framework->requiredtraining);
         $this->assertSame($data['restrictedcompletion'], $framework->restrictedcompletion);
         $this->assertSame('0', $framework->archived);

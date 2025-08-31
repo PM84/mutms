@@ -83,7 +83,7 @@ final class frameworks extends system_report {
             'framework:fieldcount',
             'framework:requiredtraining',
             'framework:restrictedcompletion',
-            'framework:public',
+            'framework:publicaccess',
             'framework:archived',
         ];
         $this->add_columns_from_entities($columns);
@@ -98,7 +98,7 @@ final class frameworks extends system_report {
         $filters = [
             'framework:name',
             'framework:idnumber',
-            'framework:public',
+            'framework:publicaccess',
             'framework:archived',
         ];
         $this->add_filters_from_entities($filters);
