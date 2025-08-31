@@ -68,4 +68,9 @@ class block_muprog_my extends block_base {
     public function has_config() {
         return false;
     }
+
+    #[\Override]
+    public function can_block_be_added(moodle_page $page): bool {
+        return \tool_muprog\local\util::is_muprog_active();
+    }
 }
