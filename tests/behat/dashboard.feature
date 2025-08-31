@@ -7,8 +7,8 @@ Feature: My certifications block
       | username  | firstname | lastname | email                |
       | student1  | Student   | 1        | student1@example.com |
     And the following "tool_muprog > programs" exist:
-      | fullname    | idnumber | category | public | sources    |
-      | Program 000 | PR0      |          | 0      | mucertify  |
+      | fullname    | idnumber | category | publicaccess | sources    |
+      | Program 000 | PR0      |          | 0            | mucertify  |
     And the following "tool_mucertify > certifications" exist:
       | fullname          | idnumber | category | program1 |
       | Certification 001 | CT1      |          | PR0      |
