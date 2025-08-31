@@ -54,7 +54,7 @@ $PAGE->set_url($currenturl);
 
 $current = new stdClass();
 $current->id = $certification->id;
-$current->public = $certification->public;
+$current->publicaccess = $certification->publicaccess;
 $current->cohorts = array_keys(management::fetch_current_cohorts_menu($certification->id));
 
 $form = new \tool_mucertify\local\form\certification_visibility_edit(null, ['data' => $current, 'context' => $context]);

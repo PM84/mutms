@@ -60,7 +60,7 @@ final class generator_test extends \advanced_testcase {
         $this->assertSame('', $certification->description);
         $this->assertSame('1', $certification->descriptionformat);
         $this->assertSame('[]', $certification->presentationjson);
-        $this->assertSame('0', $certification->public);
+        $this->assertSame('0', $certification->publicaccess);
         $this->assertSame('0', $certification->archived);
         $this->assertSame(null, $certification->programid1);
         $this->assertSame(null, $certification->programid2);
@@ -87,7 +87,7 @@ final class generator_test extends \advanced_testcase {
             'description' => 'Some desc',
             'descriptionformat' => '2',
             'presentation' => ['some' => 'test'],
-            'public' => '1',
+            'publicaccess' => '1',
             'archived' => '1',
             'sources' => ['manual' => []],
             'cohorts' => [$cohort1->id, $cohort2->name],
@@ -105,7 +105,7 @@ final class generator_test extends \advanced_testcase {
         $this->assertSame($data->description, $certification->description);
         $this->assertSame($data->descriptionformat, $certification->descriptionformat);
         $this->assertSame('[]', $certification->presentationjson);
-        $this->assertSame($data->public, $certification->public);
+        $this->assertSame($data->publicaccess, $certification->publicaccess);
         $this->assertSame($data->archived, $certification->archived);
         $this->assertSame($program1->id, $certification->programid1);
         $this->assertSame($program2->id, $certification->programid2);

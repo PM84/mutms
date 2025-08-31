@@ -140,9 +140,9 @@ final class catalogue_test extends \advanced_testcase {
         /** @var \tool_mucertify_generator $generator */
         $generator = $this->getDataGenerator()->get_plugin_generator('tool_mucertify');
 
-        $certification1 = $generator->create_certification(['public' => 1]);
+        $certification1 = $generator->create_certification(['publicaccess' => 1]);
         $certification2 = $generator->create_certification(['idnumber' => 'pokus', 'cohorts' => [$cohort1->id, $cohort2->id]]);
-        $certification3 = $generator->create_certification(['public' => 1, 'archived' => 1, 'cohorts' => [$cohort1->id, $cohort2->id], 'sources' => ['manual' => []]]);
+        $certification3 = $generator->create_certification(['publicaccess' => 1, 'archived' => 1, 'cohorts' => [$cohort1->id, $cohort2->id], 'sources' => ['manual' => []]]);
         $source3 = $DB->get_record('tool_mucertify_source', ['certificationid' => $certification3->id, 'type' => 'manual'], '*', MUST_EXIST);
         $certification4 = $generator->create_certification(['contextid' => $catcontext1->id, 'cohorts' => [$cohort1->id]]);
         $certification5 = $generator->create_certification(['contextid' => $catcontext1->id, 'archived' => 1, 'cohorts' => [$cohort2->id]]);
@@ -208,9 +208,9 @@ final class catalogue_test extends \advanced_testcase {
         /** @var \tool_mucertify_generator $generator */
         $generator = $this->getDataGenerator()->get_plugin_generator('tool_mucertify');
 
-        $certification1 = $generator->create_certification(['public' => 1]);
+        $certification1 = $generator->create_certification(['publicaccess' => 1]);
         $certification2 = $generator->create_certification(['idnumber' => 'pokus', 'cohorts' => [$cohort1->id, $cohort2->id]]);
-        $certification3 = $generator->create_certification(['public' => 1, 'archived' => 1, 'cohorts' => [$cohort1->id, $cohort2->id], 'sources' => ['manual' => []]]);
+        $certification3 = $generator->create_certification(['publicaccess' => 1, 'archived' => 1, 'cohorts' => [$cohort1->id, $cohort2->id], 'sources' => ['manual' => []]]);
         $certification4 = $generator->create_certification(['cohorts' => [$cohort1->id]]);
         $certification5 = $generator->create_certification(['archived' => 1, 'cohorts' => [$cohort2->id]]);
         $certification6 = $generator->create_certification(['sources' => ['manual' => []]]);
@@ -370,9 +370,9 @@ final class catalogue_test extends \advanced_testcase {
         /** @var \tool_mucertify_generator $generator */
         $generator = $this->getDataGenerator()->get_plugin_generator('tool_mucertify');
 
-        $certification1 = $generator->create_certification(['fullname' => 'hokus', 'public' => 1]);
+        $certification1 = $generator->create_certification(['fullname' => 'hokus', 'publicaccess' => 1]);
         $certification2 = $generator->create_certification(['idnumber' => 'pokus', 'cohorts' => [$cohort1->id, $cohort2->id]]);
-        $certification3 = $generator->create_certification(['public' => 1, 'archived' => 1, 'cohorts' => [$cohort1->id, $cohort2->id], 'sources' => ['manual' => []]]);
+        $certification3 = $generator->create_certification(['publicaccess' => 1, 'archived' => 1, 'cohorts' => [$cohort1->id, $cohort2->id], 'sources' => ['manual' => []]]);
         $source3 = $DB->get_record('tool_mucertify_source', ['certificationid' => $certification3->id, 'type' => 'manual'], '*', MUST_EXIST);
         $certification4 = $generator->create_certification(['contextid' => $catcontext1->id, 'cohorts' => [$cohort1->id]]);
         $certification5 = $generator->create_certification(['contextid' => $catcontext1->id, 'archived' => 1, 'cohorts' => [$cohort2->id]]);
@@ -442,9 +442,9 @@ final class catalogue_test extends \advanced_testcase {
         /** @var \tool_mucertify_generator $generator */
         $generator = $this->getDataGenerator()->get_plugin_generator('tool_mucertify');
 
-        $certification1 = $generator->create_certification(['fullname' => 'hokus', 'public' => 1]);
+        $certification1 = $generator->create_certification(['fullname' => 'hokus', 'publicaccess' => 1]);
         $certification2 = $generator->create_certification(['idnumber' => 'pokus', 'cohorts' => [$cohort1->id, $cohort2->id]]);
-        $certification3 = $generator->create_certification(['public' => 1, 'archived' => 1, 'cohorts' => [$cohort1->id, $cohort2->id], 'sources' => ['manual' => []]]);
+        $certification3 = $generator->create_certification(['publicaccess' => 1, 'archived' => 1, 'cohorts' => [$cohort1->id, $cohort2->id], 'sources' => ['manual' => []]]);
         $certification4 = $generator->create_certification(['cohorts' => [$cohort1->id]]);
         $certification5 = $generator->create_certification(['archived' => 1, 'cohorts' => [$cohort2->id]]);
         $certification6 = $generator->create_certification(['sources' => ['manual' => []]]);
@@ -660,9 +660,9 @@ final class catalogue_test extends \advanced_testcase {
         /** @var \tool_mucertify_generator $generator */
         $generator = $this->getDataGenerator()->get_plugin_generator('tool_mucertify');
 
-        $certification1 = $generator->create_certification(['fullname' => 'hokus', 'public' => 1]);
+        $certification1 = $generator->create_certification(['fullname' => 'hokus', 'publicaccess' => 1]);
         $certification2 = $generator->create_certification(['idnumber' => 'pokus', 'cohorts' => [$cohort1->id, $cohort2->id]]);
-        $certification3 = $generator->create_certification(['public' => 1, 'archived' => 1, 'cohorts' => [$cohort1->id, $cohort2->id], 'sources' => ['manual' => []]]);
+        $certification3 = $generator->create_certification(['publicaccess' => 1, 'archived' => 1, 'cohorts' => [$cohort1->id, $cohort2->id], 'sources' => ['manual' => []]]);
         $source3 = $DB->get_record('tool_mucertify_source', ['certificationid' => $certification3->id, 'type' => 'manual'], '*', MUST_EXIST);
         $certification4 = $generator->create_certification(['contextid' => $catcontext1->id, 'cohorts' => [$cohort1->id]]);
         $certification5 = $generator->create_certification(['contextid' => $catcontext1->id, 'archived' => 1, 'cohorts' => [$cohort2->id]]);

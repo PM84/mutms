@@ -121,13 +121,13 @@ final class certification extends base {
             });
 
         $columns[] = (new column(
-            'public',
-            new lang_string('public', 'tool_mucertify'),
+            'publicaccess',
+            new lang_string('publicaccess', 'tool_mucertify'),
             $this->get_entity_name()
         ))
             ->add_joins($this->get_joins())
             ->set_type(column::TYPE_BOOLEAN)
-            ->add_fields("{$certificationalias}.public, {$certificationalias}.id, {$certificationalias}.contextid")
+            ->add_fields("{$certificationalias}.publicaccess, {$certificationalias}.id, {$certificationalias}.contextid")
             ->set_is_sortable(true)
             ->set_callback([format::class, 'boolean_as_text'])
             ->add_callback(static function (string $value, \stdClass $row): string {
@@ -231,10 +231,10 @@ final class certification extends base {
 
         $filters[] = (new filter(
             boolean_select::class,
-            'public',
-            new lang_string('public', 'tool_mucertify'),
+            'publicaccess',
+            new lang_string('publicaccess', 'tool_mucertify'),
             $this->get_entity_name(),
-            "{$certificationalias}.public"
+            "{$certificationalias}.publicaccess"
         ))
             ->add_joins($this->get_joins());
 

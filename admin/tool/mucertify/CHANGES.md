@@ -1,5 +1,15 @@
 # Changelog
 
+## mu-5.0.2-02
+
+Release date: 31/08/2025
+
+* Fixed automatic cohort assignment source form.
+* Empty custom fields are not displayed anymore.
+* Fixed validation of tenant restrictions when selecting users.
+* Fixed compatibility with unsupported MS SQL databases.
+* Fixed error when sending unassignment email and SMTP is down.
+
 ## mu-5.0.2-01
 
 Release date: 09/08/2025

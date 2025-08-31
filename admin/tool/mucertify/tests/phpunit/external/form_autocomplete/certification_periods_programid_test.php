@@ -58,7 +58,7 @@ final class certification_periods_programid_test extends \advanced_testcase {
             'idnumber' => 'p1',
             'description' => 'some desc 1',
             'descriptionformat' => \FORMAT_MARKDOWN,
-            'public' => 1,
+            'publicaccess' => 1,
             'archived' => 0,
             'contextid' => $syscontext->id,
             'sources' => ['mucertify' => []],
@@ -69,7 +69,7 @@ final class certification_periods_programid_test extends \advanced_testcase {
             'idnumber' => 'p2',
             'description' => '<b>some desc 2</b>',
             'descriptionformat' => \FORMAT_HTML,
-            'public' => 0,
+            'publicaccess' => 0,
             'archived' => 0,
             'contextid' => $catcontext1->id,
             'sources' => ['mucertify' => [], 'cohort' => []],
@@ -78,7 +78,7 @@ final class certification_periods_programid_test extends \advanced_testcase {
         $program3 = $programgenerator->create_program([
             'fullname' => 'Prog3',
             'idnumber' => 'p3',
-            'public' => 1,
+            'publicaccess' => 1,
             'archived' => 1,
             'contextid' => $syscontext->id,
             'sources' => ['mucertify' => []],
@@ -86,7 +86,7 @@ final class certification_periods_programid_test extends \advanced_testcase {
         $program4 = $programgenerator->create_program([
             'fullname' => 'Prog4',
             'idnumber' => 'p4',
-            'public' => 1,
+            'publicaccess' => 1,
             'archived' => 0,
             'contextid' => $syscontext->id,
             'sources' => ['manual' => []],
@@ -176,19 +176,19 @@ final class certification_periods_programid_test extends \advanced_testcase {
         $syscontext = \context_system::instance();
 
         $program0 = $programgenerator->create_program([
-            'public' => 1,
+            'publicaccess' => 1,
             'archived' => 0,
             'contextid' => $syscontext->id,
             'sources' => ['mucertify' => []],
         ]);
         $program1 = $programgenerator->create_program([
-            'public' => 1,
+            'publicaccess' => 1,
             'archived' => 0,
             'contextid' => $tenant1catcontext->id,
             'sources' => ['mucertify' => []],
         ]);
         $program2 = $programgenerator->create_program([
-            'public' => 1,
+            'publicaccess' => 1,
             'archived' => 0,
             'contextid' => $tenant2catcontext->id,
             'sources' => ['mucertify' => []],
