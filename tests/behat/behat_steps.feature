@@ -39,11 +39,11 @@ Feature: Programs navigation behat steps test
       | viewer1  | pviewer       | System       |           |
       | viewer2  | pviewer       | Category     | CAT1      |
     And the following "tool_muprog > programs" exist:
-      | fullname    | idnumber | category | public | archived |
-      | Program 000 | PR0      |          | 0      | 0        |
-      | Program 001 | PR1      | Cat 1    | 1      | 0        |
-      | Program 002 | PR2      | Cat 2    | 0      | 0        |
-      | Program 003 | PR3      |          | 1      | 1        |
+      | fullname    | idnumber | category | publicaccess | archived |
+      | Program 000 | PR0      |          | 0            | 0        |
+      | Program 001 | PR1      | Cat 1    | 1            | 0        |
+      | Program 002 | PR2      | Cat 2    | 0            | 0        |
+      | Program 003 | PR3      |          | 1            | 1        |
 
   @javascript
   Scenario: Admin navigates to programs via behat step
@@ -173,6 +173,18 @@ Feature: Programs navigation behat steps test
     Then I should see "Programs"
     And I should not see "Program 000"
     And I should see "Program 001"
+    And I should not see "Program 002"
+    And I should not see "Program 003"
+
+    When I am on the "Program 000" "tool_muprog > Program" page
+    Then I should see "Program 000"
+    And I should not see "Program 001"
+    And I should not see "Program 002"
+    And I should not see "Program 003"
+
+    When I am on the "PR0" "tool_muprog > Program" page
+    Then I should see "Program 000"
+    And I should not see "Program 001"
     And I should not see "Program 002"
     And I should not see "Program 003"
 
