@@ -1,5 +1,15 @@
 # Changelog
 
+## mu-5.0.2-02
+
+Release date: 31/08/2025
+
+* Added bulk tenant members allocation and deallocation in Browse list of users.
+* Added help icons to tenant forms.
+* Added checkbox to create Associated users cohort when creating or updating tenants.
+* Added Tenant management section to primary menu.
+* Fixed compatibility with unsupported MS SQL databases.
+
 ## mu-5.0.2-01
 
 Release date: 09/08/2025

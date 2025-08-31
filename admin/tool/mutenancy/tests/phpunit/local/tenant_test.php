@@ -91,7 +91,7 @@ final class tenant_test extends \advanced_testcase {
         $this->assertSame((int)$tenant1->id, $catcontext->tenantid);
         $cohort = $DB->get_record('cohort', ['id' => $tenant1->cohortid], '*', MUST_EXIST);
         $this->assertSame((string)$syscontext->id, $cohort->contextid);
-        $this->assertSame('Tenant: Some tenant 1', $cohort->name);
+        $this->assertSame('Tenant users: Some tenant 1', $cohort->name);
         $this->assertSame('', $cohort->idnumber);
         $this->assertSame('', $cohort->description);
         $this->assertSame('0', $cohort->visible);
@@ -149,6 +149,18 @@ final class tenant_test extends \advanced_testcase {
         $this->assertSame($category3->id, $tenant3->categoryid);
         $catcontext3 = \context_coursecat::instance($category3->id);
         $this->assertSame((int)$tenant3->id, $catcontext3->tenantid);
+
+        $data = (object)[
+            'name' => 'Some tenant 3b',
+            'idnumber' => 't3b',
+            'assoccohortcreate' => 1,
+        ];
+        $tenant3b = tenant::create($data);
+        $cohort = $DB->get_record('cohort', ['id' => $tenant3b->assoccohortid], '*', MUST_EXIST);
+        $this->assertSame((string)$syscontext->id, $cohort->contextid);
+        $this->assertSame('Associated users: Some tenant 3b', $cohort->name);
+        $this->assertSame('0', $cohort->visible);
+        $this->assertSame('', $cohort->component);
 
         $data = (object)[
             'name' => 'Some tenant 4',
@@ -337,6 +349,17 @@ final class tenant_test extends \advanced_testcase {
         $this->assertSame('', $cohort->description);
         $this->assertSame('0', $cohort->visible);
         $this->assertSame('tool_mutenancy', $cohort->component);
+
+        $data = (object)[
+            'id' => $tenant1->id,
+            'assoccohortcreate' => 1,
+        ];
+        $tenant1 = tenant::update($data);
+        $cohort = $DB->get_record('cohort', ['id' => $tenant1->assoccohortid], '*', MUST_EXIST);
+        $this->assertSame((string)$syscontext->id, $cohort->contextid);
+        $this->assertSame('Associated users: Some tenant 1', $cohort->name);
+        $this->assertSame('0', $cohort->visible);
+        $this->assertSame('', $cohort->component);
 
         $data = (object)[
             'name' => 'Some tenant 1',
