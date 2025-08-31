@@ -17,7 +17,7 @@
 // phpcs:disable moodle.Files.BoilerplateComment.CommentEndedTooSoon
 
 /**
- * Multi-tenancy plugin version.
+ * Multi-tenancy hook callbacks.
  *
  * @package     tool_mutenancy
  * @copyright   2025 Petr Skoda
@@ -26,15 +26,15 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-/** @var stdClass $plugin */
-$plugin->component = 'tool_mutenancy';
-$plugin->version = 2025083150;
-$plugin->requires = 2025041401;
-$plugin->maturity = MATURITY_ALPHA;
-$plugin->supported = [500, 500];
-
-$plugin->release = 'mu-5.0.2-02';
-
-$plugin->dependencies = [
-    'tool_mulib' => 2025083150,
+$callbacks = [
+    [
+        'hook' => \core\hook\navigation\primary_extend::class,
+        'callback' => [\tool_mutenancy\local\navigation::class, 'primary_extend'],
+        'priority' => 0,
+    ],
+    [
+        'hook' => \core_user\hook\extend_bulk_user_actions::class,
+        'callback' => [\tool_mutenancy\local\user::class, 'hook_extend_bulk_user_actions'],
+        'priority' => 0,
+    ],
 ];
