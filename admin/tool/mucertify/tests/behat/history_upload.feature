@@ -10,10 +10,10 @@ Feature: Import of historic certification periods
       | name     | idnumber | contextlevel | reference |
       | Cohort 1 | CH1      | Category     | CAT1      |
     And the following "tool_muprog > programs" exist:
-      | fullname    | idnumber | category | public | sources    |
-      | Program 000 | PR0      |          | 0      | mucertify  |
-      | Program 001 | PR1      | Cat 1    | 0      | mucertify  |
-      | Program 002 | PR2      | Cat 1    | 0      | mucertify  |
+      | fullname    | idnumber | category | publicaccess | sources    |
+      | Program 000 | PR0      |          | 0            | mucertify  |
+      | Program 001 | PR1      | Cat 1    | 0            | mucertify  |
+      | Program 002 | PR2      | Cat 1    | 0            | mucertify  |
     And the following "users" exist:
       | username | firstname | lastname | email                | idnumber |
       | manager  | Site      | Manager  | manager@example.com  |          |

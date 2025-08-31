@@ -238,7 +238,7 @@ final class certification_handler_test extends \advanced_testcase {
             'fullname' => 'Certifikace 1',
             'idnumber' => 'c1',
             'contextid' => $catcontext->id,
-            'public' => 0,
+            'publicaccess' => 0,
             'customfield_testfield1' => 'Test value 1',
             'customfield_testfield2' => 'Test value 2',
             'customfield_testfield3' => 'Test value 3',

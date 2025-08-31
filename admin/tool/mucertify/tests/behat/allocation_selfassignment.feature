@@ -56,11 +56,11 @@ Feature: Certification self-assignment tests
       | Program 002 | PR2      | Cat 2    | mucertify |
       | Program 003 | PR3      | Cat 3    | mucertify |
     And the following "tool_mucertify > certifications" exist:
-      | fullname          | idnumber | category | program1 | cohorts  | public |
-      | Certification 000 | CT0      |          | PR0      | Cohort 2 | 0      |
-      | Certification 001 | CT1      | Cat 1    | PR1      |          | 1      |
-      | Certification 002 | CT2      | Cat 2    | PR2      |          | 0      |
-      | Certification 003 | CT3      | Cat 3    | PR3      |          | 0      |
+      | fullname          | idnumber | category | program1 | cohorts  | publicaccess |
+      | Certification 000 | CT0      |          | PR0      | Cohort 2 | 0            |
+      | Certification 001 | CT1      | Cat 1    | PR1      |          | 1            |
+      | Certification 002 | CT2      | Cat 2    | PR2      |          | 0            |
+      | Certification 003 | CT3      | Cat 3    | PR3      |          | 0            |
 
   @javascript
   Scenario: Student may self assign to certification without a key

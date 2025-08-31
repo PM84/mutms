@@ -59,5 +59,17 @@ function xmldb_tool_mucertify_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2025052300, 'tool', 'mucertify');
     }
 
+    if ($oldversion < 2025080945.01) {
+        // Rename field public on table tool_mucertify_certification to publicaccess.
+        $table = new xmldb_table('tool_mucertify_certification');
+        $field = new xmldb_field('public', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, null, 'presentationjson');
+
+        // Launch rename field public.
+        $dbman->rename_field($table, $field, 'publicaccess');
+
+        // Mucertify savepoint reached.
+        upgrade_plugin_savepoint(true, 2025080945.01, 'tool', 'mucertify');
+    }
+
     return true;
 }

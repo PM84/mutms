@@ -480,11 +480,6 @@ abstract class base {
 
         $trans = $DB->start_delegated_transaction();
 
-        if ($user) {
-            \tool_mucertify\local\notification\unassignment::notify_now($user, $certification, $source, $assignment);
-        }
-        \tool_mucertify\local\notification_manager::delete_assignment_notifications($assignment);
-
         $periods = $DB->get_records('tool_mucertify_period', ['certificationid' => $assignment->certificationid, 'userid' => $assignment->userid]);
         foreach ($periods as $period) {
             if ($period->certificateissueid) {
@@ -501,6 +496,12 @@ abstract class base {
         \tool_mucertify\event\assignment_deleted::create_from_assignment($certification, $assignment)->trigger();
 
         $trans->allow_commit();
+
+        // Notification cannot be done in transaction due to MDL-86370.
+        if ($user) {
+            \tool_mucertify\local\notification\unassignment::notify_now($user, $certification, $source, $assignment);
+        }
+        \tool_mucertify\local\notification_manager::delete_assignment_notifications($assignment);
     }
 
     /**

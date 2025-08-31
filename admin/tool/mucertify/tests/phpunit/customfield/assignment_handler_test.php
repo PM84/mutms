@@ -281,7 +281,7 @@ final class assignment_handler_test extends \advanced_testcase {
             'fullname' => 'Certifikace 1',
             'idnumber' => 'c1',
             'contextid' => $catcontext->id,
-            'public' => 0,
+            'publicaccess' => 0,
         ];
         $certification1 = $generator->create_certification((object)$data);
         $assignment1 = $generator->create_certification_assignment([
