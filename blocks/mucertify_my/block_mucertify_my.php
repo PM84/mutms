@@ -68,4 +68,9 @@ class block_mucertify_my extends block_base {
     public function has_config() {
         return false;
     }
+
+    #[\Override]
+    public function can_block_be_added(moodle_page $page): bool {
+        return \tool_mucertify\local\util::is_mucertify_active();
+    }
 }
