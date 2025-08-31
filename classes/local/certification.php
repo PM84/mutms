@@ -113,7 +113,7 @@ final class certification {
         $data->presentationjson = util::json_encode([]);
         unset($data->presentation);
 
-        $data->public = isset($data->public) ? (int)(bool)$data->public : 0;
+        $data->publicaccess = isset($data->publicaccess) ? (int)(bool)$data->publicaccess : 0;
         $data->archived = isset($data->archived) ? (int)(bool)$data->archived : 0;
 
         $data->periodsjson = util::json_encode(self::get_periods_defaults());
@@ -397,7 +397,7 @@ final class certification {
 
         if (
             (isset($data->cohortids) && !is_array($data->cohortids))
-            || empty($data->id) || !isset($data->public)
+            || empty($data->id) || !isset($data->publicaccess)
         ) {
             throw new \coding_exception('Invalid data');
         }
@@ -410,8 +410,8 @@ final class certification {
 
         $oldcertification = $DB->get_record('tool_mucertify_certification', ['id' => $data->id], '*', MUST_EXIST);
 
-        if ($oldcertification->public != $data->public) {
-            $DB->set_field('tool_mucertify_certification', 'public', (int)(bool)$data->public, ['id' => $data->id]);
+        if ($oldcertification->publicaccess != $data->publicaccess) {
+            $DB->set_field('tool_mucertify_certification', 'publicaccess', (int)(bool)$data->publicaccess, ['id' => $data->id]);
         }
 
         if (isset($data->cohortids)) {

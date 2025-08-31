@@ -38,11 +38,11 @@ Feature: Certifications navigation behat steps test
       | viewer2  | pviewer       | Category     | CAT1      |
       | admin1   | cadmin        | System       |           |
     And the following "tool_mucertify > certifications" exist:
-      | fullname          | idnumber | category | public | archived |
-      | Certification 000 | PR0      |          | 0      | 0        |
-      | Certification 001 | PR1      | Cat 1    | 1      | 0        |
-      | Certification 002 | PR2      | Cat 2    | 0      | 0        |
-      | Certification 003 | PR3      |          | 1      | 1        |
+      | fullname          | idnumber | category | publicaccess | archived |
+      | Certification 000 | CR0      |          | 0            | 0        |
+      | Certification 001 | CR1      | Cat 1    | 1            | 0        |
+      | Certification 002 | CR2      | Cat 2    | 0            | 0        |
+      | Certification 003 | CR3      |          | 1            | 1        |
 
   Scenario: Admin navigates to certifications via behat step
     Given I log in as "admin"
@@ -149,6 +149,18 @@ Feature: Certifications navigation behat steps test
     When I am on the "Cat 1" "tool_mucertify > Certification management" page
     Then I should not see "Certification 000"
     And I should see "Certification 001"
+    And I should not see "Certification 002"
+    And I should not see "Certification 003"
+
+    When I am on the "Certification 000" "tool_mucertify > Certification" page
+    Then I should see "Certification 000"
+    And I should not see "Certification 001"
+    And I should not see "Certification 002"
+    And I should not see "Certification 003"
+
+    When I am on the "CR0" "tool_mucertify > Certification" page
+    Then I should see "Certification 000"
+    And I should not see "Certification 001"
     And I should not see "Certification 002"
     And I should not see "Certification 003"
 

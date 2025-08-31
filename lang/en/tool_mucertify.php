@@ -218,8 +218,8 @@ $string['privacy:metadata:table:tool_mucertify_period'] = 'Certification periods
 $string['privacy:metadata:table:tool_mucertify_request'] = 'Certification requests table';
 $string['program1'] = 'Certification program';
 $string['program2'] = 'Re-certification program';
-$string['public'] = 'Public';
-$string['public_help'] = 'Public certifications are visible to all users.
+$string['publicaccess'] = 'Public';
+$string['publicaccess_help'] = 'Public certifications are visible to all users.
 
 Visibility status does not affect already assigned certifications.';
 $string['purchaseaccess'] = 'Purchase access';

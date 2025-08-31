@@ -75,6 +75,15 @@ class behat_tool_mucertify extends behat_base {
                 }
                 $context = context_coursecat::instance($category->id);
                 return new moodle_url('/admin/tool/mucertify/management/index.php', ['contextid' => $context->id]);
+            case 'certification':
+                $certification = $DB->get_record('tool_mucertify_certification', ['fullname' => $identifier]);
+                if (!$certification) {
+                    $certification = $DB->get_record('tool_mucertify_certification', ['idnumber' => $identifier]);
+                }
+                if (!$certification) {
+                    throw new Exception('Invalid certification "' . $identifier . '."');
+                }
+                return new moodle_url('/admin/tool/mucertify/management/certification.php', ['id' => $certification->id]);
 
             default:
                 throw new Exception('Unrecognised tool_mucertify page type "' . $type . '."');

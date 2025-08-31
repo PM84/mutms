@@ -83,7 +83,7 @@ final class certification_test extends \advanced_testcase {
         $this->assertSame('', $certification->description);
         $this->assertSame('1', $certification->descriptionformat);
         $this->assertSame('[]', $certification->presentationjson);
-        $this->assertSame('0', $certification->public);
+        $this->assertSame('0', $certification->publicaccess);
         $this->assertSame('0', $certification->archived);
         $this->assertSame(null, $certification->programid1);
         $this->assertSame(null, $certification->programid2);
@@ -116,7 +116,7 @@ final class certification_test extends \advanced_testcase {
         $this->assertSame('some desc', $certification->description);
         $this->assertSame('4', $certification->descriptionformat);
         $this->assertSame('[]', $certification->presentationjson);
-        $this->assertSame('0', $certification->public);
+        $this->assertSame('0', $certification->publicaccess);
         $this->assertSame('0', $certification->archived);
         $this->assertSame($program1->id, $certification->programid1);
         $this->assertSame($program2->id, $certification->programid2);
@@ -164,7 +164,7 @@ final class certification_test extends \advanced_testcase {
             'id' => $certification->id,
             'fullname' => 'Certifikace 2',
             'idnumber' => 'c2',
-            'public' => '1',
+            'publicaccess' => '1',
             'description' => 'some desc',
             'descriptionformat' => \FORMAT_MARKDOWN,
             'contextid' => $catcontext->id,
@@ -180,7 +180,7 @@ final class certification_test extends \advanced_testcase {
         $this->assertSame('some desc', $certification2->description);
         $this->assertSame('4', $certification2->descriptionformat);
         $this->assertSame('[]', $certification2->presentationjson);
-        $this->assertSame('0', $certification2->public);
+        $this->assertSame('0', $certification2->publicaccess);
         $this->assertSame('0', $certification2->archived);
         $this->assertSame(null, $certification2->programid1);
         $this->assertSame(null, $certification2->programid2);
@@ -262,7 +262,7 @@ final class certification_test extends \advanced_testcase {
             'fullname' => 'Certifikace 1',
             'idnumber' => 'c1',
             'contextid' => $syscontext->id,
-            'public' => '0',
+            'publicaccess' => '0',
         ];
         $certification = certification::create((object)$data);
 
@@ -271,7 +271,7 @@ final class certification_test extends \advanced_testcase {
             'fullname' => 'Certifikace 2',
             'idnumber' => 'c2',
             'archived' => '1',
-            'public' => '1',
+            'publicaccess' => '1',
             'description' => 'some desc',
             'descriptionformat' => \FORMAT_MARKDOWN,
             'contextid' => $catcontext->id,
@@ -287,7 +287,7 @@ final class certification_test extends \advanced_testcase {
         $this->assertSame($certification->description, $certification2->description);
         $this->assertSame($certification->descriptionformat, $certification2->descriptionformat);
         $this->assertSame('[]', $certification2->presentationjson);
-        $this->assertSame('1', $certification2->public);
+        $this->assertSame('1', $certification2->publicaccess);
         $this->assertSame('0', $certification2->archived);
         $this->assertSame(null, $certification2->programid1);
         $this->assertSame(null, $certification2->programid2);
@@ -298,7 +298,7 @@ final class certification_test extends \advanced_testcase {
         $data = [
             'id' => $certification->id,
             'cohortids' => [$cohort2->id, $cohort1->id],
-            'public' => 0,
+            'publicaccess' => 0,
         ];
         $certification = certification::update_visibility((object)$data);
         $cs = $DB->get_records('tool_mucertify_cohort', ['certificationid' => $certification->id], 'cohortid ASC');
@@ -310,7 +310,7 @@ final class certification_test extends \advanced_testcase {
         $data = [
             'id' => $certification->id,
             'cohortids' => [$cohort2->id, $cohort3->id],
-            'public' => 0,
+            'publicaccess' => 0,
         ];
         $certification = certification::update_visibility((object)$data);
         $cs = $DB->get_records('tool_mucertify_cohort', ['certificationid' => $certification->id], 'cohortid ASC');
@@ -339,7 +339,7 @@ final class certification_test extends \advanced_testcase {
             'fullname' => 'Certifikace 1',
             'idnumber' => 'c1',
             'contextid' => $catcontext->id,
-            'public' => '0',
+            'publicaccess' => '0',
         ];
         $certification = certification::create((object)$data);
 
@@ -522,7 +522,7 @@ final class certification_test extends \advanced_testcase {
             'description' => 'Some desc',
             'descriptionformat' => '2',
             'presentation' => ['some' => 'test'],
-            'public' => '1',
+            'publicaccess' => '1',
             'archived' => '1',
             'sources' => ['manual' => []],
             'cohorts' => [$cohort1->id, $cohort2->name],

@@ -13,16 +13,16 @@ Feature: Certifications plugin English documentation image generator
       | IT staff      | itstaff   |
       | All employees | everybody |
     And the following "tool_muprog > programs" exist:
-      | fullname                             | idnumber | category | public | sources   |
-      | Health and safety - new employees    | HS1      | HS       | 1      | mucertify |
-      | Health and safety - recertification  | HS2      | HS       | 1      | mucertify |
-      | GDPR basics                          | GDPR1    | IT       | 1      | mucertify |
-      | Cybersecurity                        | CS1      | IT       | 1      | mucertify |
+      | fullname                             | idnumber | category | publicaccess | sources   |
+      | Health and safety - new employees    | HS1      | HS       | 1            | mucertify |
+      | Health and safety - recertification  | HS2      | HS       | 1            | mucertify |
+      | GDPR basics                          | GDPR1    | IT       | 1            | mucertify |
+      | Cybersecurity                        | CS1      | IT       | 1            | mucertify |
     And the following "tool_mucertify > certifications" exist:
-      | fullname          | idnumber | category | public | program1 | program2| recertify | sources  | image                                            | cohorts  | description                                                  |
-      | Health and safety | CFHS     | EC       | 1      | HS1      | HS2     | 2592000   | manual   | admin/tool/mucertify/tests/fixtures/docs/hs.jpeg |          | Mandatory Health and Safety certification for all employees. |
-      | Customer privacy  | CP       | EC       | 0      | GDPR1    | GDPR1   | 2592000   | manual   |                                                  |          |                                                              |
-      | Cybersecurity     | CS       | EC       | 0      | CS1      | CS1     | 2592000   | manual   | admin/tool/mucertify/tests/fixtures/docs/cs.jpeg | IT staff | IT security certification.                                                             |
+      | fullname          | idnumber | category | publicaccess | program1 | program2| recertify | sources  | image                                            | cohorts  | description                                                  |
+      | Health and safety | CFHS     | EC       | 1            | HS1      | HS2     | 2592000   | manual   | admin/tool/mucertify/tests/fixtures/docs/hs.jpeg |          | Mandatory Health and Safety certification for all employees. |
+      | Customer privacy  | CP       | EC       | 0            | GDPR1    | GDPR1   | 2592000   | manual   |                                                  |          |                                                              |
+      | Cybersecurity     | CS       | EC       | 0            | CS1      | CS1     | 2592000   | manual   | admin/tool/mucertify/tests/fixtures/docs/cs.jpeg | IT staff | IT security certification.                                                             |
     And the following "users" exist:
       | username | firstname | lastname | email                |
       | manager  | Site      | Manager  | manager@example.com  |

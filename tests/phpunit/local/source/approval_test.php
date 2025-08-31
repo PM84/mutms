@@ -58,7 +58,7 @@ final class approval_test extends \advanced_testcase {
         /** @var \tool_mucertify_generator $generator */
         $generator = $this->getDataGenerator()->get_plugin_generator('tool_mucertify');
 
-        $certification1 = $generator->create_certification(['sources' => ['manual' => [], 'approval' => []], 'public' => 1]);
+        $certification1 = $generator->create_certification(['sources' => ['manual' => [], 'approval' => []], 'publicaccess' => 1]);
         $source1m = $DB->get_record('tool_mucertify_source', ['certificationid' => $certification1->id, 'type' => 'manual'], '*', MUST_EXIST);
         $source1a = $DB->get_record('tool_mucertify_source', ['certificationid' => $certification1->id, 'type' => 'approval'], '*', MUST_EXIST);
 
@@ -97,19 +97,19 @@ final class approval_test extends \advanced_testcase {
         // Must be visible.
 
         $certification1 = certification::update_visibility((object)['id' => $certification1->id,
-            'public' => 1]);
+            'publicaccess' => 1]);
         $this->assertTrue(approval::can_user_request($certification1, $source1a, $user1->id));
 
         $certification1 = certification::update_visibility((object)['id' => $certification1->id,
-            'public' => 0, 'cohortids' => [$cohort1->id]]);
+            'publicaccess' => 0, 'cohortids' => [$cohort1->id]]);
         $this->assertTrue(approval::can_user_request($certification1, $source1a, $user1->id));
 
         $certification1 = certification::update_visibility((object)['id' => $certification1->id,
-            'public' => 0, 'cohortids' => []]);
+            'publicaccess' => 0, 'cohortids' => []]);
         $this->assertFalse(approval::can_user_request($certification1, $source1a, $user1->id));
 
         $certification1 = certification::update_visibility((object)['id' => $certification1->id,
-            'public' => 1, 'cohortids' => [$cohort1->id]]);
+            'publicaccess' => 1, 'cohortids' => [$cohort1->id]]);
         $this->assertTrue(approval::can_user_request($certification1, $source1a, $user1->id));
 
         // Assigned already.
@@ -148,7 +148,7 @@ final class approval_test extends \advanced_testcase {
         /** @var \tool_mucertify_generator $generator */
         $generator = $this->getDataGenerator()->get_plugin_generator('tool_mucertify');
 
-        $certification1 = $generator->create_certification(['sources' => ['manual' => [], 'approval' => []], 'public' => 1]);
+        $certification1 = $generator->create_certification(['sources' => ['manual' => [], 'approval' => []], 'publicaccess' => 1]);
         $source1m = $DB->get_record('tool_mucertify_source', ['certificationid' => $certification1->id, 'type' => 'manual'], '*', MUST_EXIST);
         $source1a = $DB->get_record('tool_mucertify_source', ['certificationid' => $certification1->id, 'type' => 'approval'], '*', MUST_EXIST);
 
@@ -174,7 +174,7 @@ final class approval_test extends \advanced_testcase {
         /** @var \tool_mucertify_generator $generator */
         $generator = $this->getDataGenerator()->get_plugin_generator('tool_mucertify');
 
-        $certification1 = $generator->create_certification(['sources' => ['manual' => [], 'approval' => []], 'public' => 1]);
+        $certification1 = $generator->create_certification(['sources' => ['manual' => [], 'approval' => []], 'publicaccess' => 1]);
         $source1m = $DB->get_record('tool_mucertify_source', ['certificationid' => $certification1->id, 'type' => 'manual'], '*', MUST_EXIST);
         $source1a = $DB->get_record('tool_mucertify_source', ['certificationid' => $certification1->id, 'type' => 'approval'], '*', MUST_EXIST);
 
@@ -201,7 +201,7 @@ final class approval_test extends \advanced_testcase {
         /** @var \tool_mucertify_generator $generator */
         $generator = $this->getDataGenerator()->get_plugin_generator('tool_mucertify');
 
-        $certification1 = $generator->create_certification(['sources' => ['manual' => [], 'approval' => []], 'public' => 1]);
+        $certification1 = $generator->create_certification(['sources' => ['manual' => [], 'approval' => []], 'publicaccess' => 1]);
         $source1m = $DB->get_record('tool_mucertify_source', ['certificationid' => $certification1->id, 'type' => 'manual'], '*', MUST_EXIST);
         $source1a = $DB->get_record('tool_mucertify_source', ['certificationid' => $certification1->id, 'type' => 'approval'], '*', MUST_EXIST);
 
@@ -230,7 +230,7 @@ final class approval_test extends \advanced_testcase {
         /** @var \tool_mucertify_generator $generator */
         $generator = $this->getDataGenerator()->get_plugin_generator('tool_mucertify');
 
-        $certification1 = $generator->create_certification(['sources' => ['manual' => [], 'approval' => []], 'public' => 1]);
+        $certification1 = $generator->create_certification(['sources' => ['manual' => [], 'approval' => []], 'publicaccess' => 1]);
         $source1m = $DB->get_record('tool_mucertify_source', ['certificationid' => $certification1->id, 'type' => 'manual'], '*', MUST_EXIST);
         $source1a = $DB->get_record('tool_mucertify_source', ['certificationid' => $certification1->id, 'type' => 'approval'], '*', MUST_EXIST);
 

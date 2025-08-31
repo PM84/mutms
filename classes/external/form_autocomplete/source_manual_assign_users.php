@@ -53,7 +53,7 @@ final class source_manual_assign_users extends \tool_mulib\external\form_autocom
      * @return array
      */
     public static function execute(string $query, int $certificationid): array {
-        global $DB, $CFG;
+        global $DB;
 
         [
             'query' => $query,
@@ -81,10 +81,7 @@ final class source_manual_assign_users extends \tool_mulib\external\form_autocom
         $params = array_merge($searchparams, $sortparams);
         $params['certificationid'] = $certificationid;
 
-        $tenantwhere = "";
-        if (\tool_mucertify\local\util::is_mutenancy_active()) {
-            $tenantwhere = \tool_mutenancy\local\tenancy::get_related_users_exists('usr.id', $context);
-        }
+        $tenantwhere = self::get_tenant_related_users_where('usr.id', $context);
 
         $sql = <<<SQL
             SELECT usr.*
@@ -112,13 +109,9 @@ SQL;
             return get_string('error');
         }
 
-        if (\tool_mucertify\local\util::is_mutenancy_active()) {
-            if ($context->tenantid) {
-                $usertenantid = \tool_mutenancy\local\tenancy::get_user_tenantid($user->id);
-                if ($usertenantid && $usertenantid != $context->tenantid) {
-                    return get_string('error');
-                }
-            }
+        $error = self::validate_tenant_relation($user, $context);
+        if ($error !== null) {
+            return $error;
         }
 
         return null;
