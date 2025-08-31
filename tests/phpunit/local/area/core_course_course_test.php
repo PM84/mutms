@@ -77,10 +77,10 @@ final class core_course_course_test extends \advanced_testcase {
             ['categoryid' => $fielcategory->get('id'), 'type' => 'text', 'shortname' => 'field3']
         );
 
-        $course1 = $this->getDataGenerator()->create_course(['customfield_field1' => 10, 'customfield_field2' => 1]);
-        $course2 = $this->getDataGenerator()->create_course(['customfield_field1' => 20]);
-        $course3 = $this->getDataGenerator()->create_course(['customfield_field1' => 40]);
-        $course4 = $this->getDataGenerator()->create_course(['customfield_field3' => 'abc']);
+        $course1 = $this->getDataGenerator()->create_course(['customfield_field1' => 10, 'customfield_field2' => 1, 'enablecompletion' => 1]);
+        $course2 = $this->getDataGenerator()->create_course(['customfield_field1' => 20, 'enablecompletion' => 1]);
+        $course3 = $this->getDataGenerator()->create_course(['customfield_field1' => 40, 'enablecompletion' => 1]);
+        $course4 = $this->getDataGenerator()->create_course(['customfield_field3' => 'abc', 'enablecompletion' => 1]);
 
         $user1 = $this->getDataGenerator()->create_user();
         $user2 = $this->getDataGenerator()->create_user();
@@ -189,10 +189,10 @@ final class core_course_course_test extends \advanced_testcase {
             ['categoryid' => $fielcategory->get('id'), 'type' => 'text', 'shortname' => 'field3']
         );
 
-        $course1 = $this->getDataGenerator()->create_course(['customfield_field1' => 10, 'customfield_field2' => 1]);
-        $course2 = $this->getDataGenerator()->create_course(['customfield_field1' => 20]);
-        $course3 = $this->getDataGenerator()->create_course(['customfield_field1' => 40]);
-        $course4 = $this->getDataGenerator()->create_course(['customfield_field3' => 'abc']);
+        $course1 = $this->getDataGenerator()->create_course(['customfield_field1' => 10, 'customfield_field2' => 1, 'enablecompletion' => 1]);
+        $course2 = $this->getDataGenerator()->create_course(['customfield_field1' => 20, 'enablecompletion' => 1]);
+        $course3 = $this->getDataGenerator()->create_course(['customfield_field1' => 40, 'enablecompletion' => 1]);
+        $course4 = $this->getDataGenerator()->create_course(['customfield_field3' => 'abc', 'enablecompletion' => 1]);
 
         $user1 = $this->getDataGenerator()->create_user();
         $user2 = $this->getDataGenerator()->create_user();
@@ -263,10 +263,10 @@ final class core_course_course_test extends \advanced_testcase {
             ['categoryid' => $fielcategory->get('id'), 'type' => 'text', 'shortname' => 'field3']
         );
 
-        $course1 = $this->getDataGenerator()->create_course(['customfield_field1' => 10, 'customfield_field2' => 1]);
-        $course2 = $this->getDataGenerator()->create_course(['customfield_field1' => 20]);
-        $course3 = $this->getDataGenerator()->create_course(['customfield_field1' => 40]);
-        $course4 = $this->getDataGenerator()->create_course(['customfield_field3' => 'abc']);
+        $course1 = $this->getDataGenerator()->create_course(['customfield_field1' => 10, 'customfield_field2' => 1, 'enablecompletion' => 1]);
+        $course2 = $this->getDataGenerator()->create_course(['customfield_field1' => 20, 'enablecompletion' => 1]);
+        $course3 = $this->getDataGenerator()->create_course(['customfield_field1' => 40, 'enablecompletion' => 1]);
+        $course4 = $this->getDataGenerator()->create_course(['customfield_field3' => 'abc', 'enablecompletion' => 1]);
 
         $user1 = $this->getDataGenerator()->create_user();
         $user2 = $this->getDataGenerator()->create_user();
@@ -292,7 +292,7 @@ final class core_course_course_test extends \advanced_testcase {
         $completions = $DB->get_records('tool_mutrain_completion', [], 'id ASC');
         $this->assertCount(5, $completions);
 
-        \delete_course($course1, false);
+        delete_course($course1, false);
         $this->assertFalse($DB->record_exists('course', ['id' => $course1->id]));
 
         $completions = $DB->get_records('tool_mutrain_completion', [], 'id ASC');
@@ -325,10 +325,10 @@ final class core_course_course_test extends \advanced_testcase {
             ['categoryid' => $fielcategory->get('id'), 'type' => 'text', 'shortname' => 'field3']
         );
 
-        $course1 = $this->getDataGenerator()->create_course(['customfield_field1' => 10, 'customfield_field2' => 1]);
-        $course2 = $this->getDataGenerator()->create_course(['customfield_field1' => 20]);
-        $course3 = $this->getDataGenerator()->create_course(['customfield_field1' => 40]);
-        $course4 = $this->getDataGenerator()->create_course(['customfield_field3' => 'abc']);
+        $course1 = $this->getDataGenerator()->create_course(['customfield_field1' => 10, 'customfield_field2' => 1, 'enablecompletion' => 1]);
+        $course2 = $this->getDataGenerator()->create_course(['customfield_field1' => 20, 'enablecompletion' => 1]);
+        $course3 = $this->getDataGenerator()->create_course(['customfield_field1' => 40, 'enablecompletion' => 1]);
+        $course4 = $this->getDataGenerator()->create_course(['customfield_field3' => 'abc', 'enablecompletion' => 1]);
 
         $program1 = $programgenerator->create_program();
         $record = [

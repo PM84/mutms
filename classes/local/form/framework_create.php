@@ -44,7 +44,7 @@ final class framework_create extends \tool_mulib\local\ajax_form {
         $mform->addElement('autocomplete', 'contextid', get_string('context', 'role'), $this->get_category_options());
         $mform->addRule('contextid', get_string('required'), 'required', null, 'client');
 
-        $mform->addElement('advcheckbox', 'public', get_string('public', 'tool_mutrain'), ' ');
+        $mform->addElement('advcheckbox', 'publicaccess', get_string('publicaccess', 'tool_mutrain'), ' ');
 
         $mform->addElement('editor', 'description_editor', get_string('description'), ['rows' => 3], $editoroptions);
         $mform->setType('description_editor', PARAM_RAW);

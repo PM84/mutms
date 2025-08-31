@@ -1,9 +1,9 @@
-# Training frameworks plugin for Moodle™ LMS
+# Training points plugin for Moodle™ LMS
 
 ![Moodle Plugin CI](https://github.com/mutms/moodle-tool_mutrain/actions/workflows/moodle-ci.yml/badge.svg)
 
-Training frameworks plugin is designed to allow teachers to assign training values
-to courses and other entities via Training value custom fields.
+Training points plugin is designed to allow teachers to assign training values
+to courses and programs via Training value custom fields.
 
 Programs completion may be set up to depend on training points users obtain
 by completing courses and other activities.

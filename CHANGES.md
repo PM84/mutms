@@ -1,5 +1,14 @@
 # Changelog
 
+## mu-5.0.2-02
+
+Release date: 31/08/2025
+
+* Improved naming to use "Training points".
+* Added support custom training fields in programs - programs may now depend indirectly on completion of other programs.
+* Courses with disabled completion tracking are now ignored.
+* Fixed compatibility with unsupported MS SQL databases.
+
 ## mu-5.0.2-01
 
 Release date: 09/08/2025

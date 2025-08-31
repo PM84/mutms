@@ -53,7 +53,7 @@ class renderer extends \plugin_renderer_base {
             $idnumber = s($framework->idnumber);
         }
         $details->add(get_string('framework_idnumber', 'tool_mutrain'), $idnumber);
-        $details->add(get_string('public', 'tool_mutrain'), ($framework->public ? get_string('yes') : get_string('no')));
+        $details->add(get_string('publicaccess', 'tool_mutrain'), ($framework->publicaccess ? get_string('yes') : get_string('no')));
         $details->add(get_string('context', 'role'), $context->get_context_name(false));
         $details->add(get_string('requiredtraining', 'tool_mutrain'), number_format($framework->requiredtraining, 0, '', ' '));
         $details->add(get_string('restrictedcompletion', 'tool_mutrain'), ($framework->restrictedcompletion ? get_string('yes') : get_string('no')));

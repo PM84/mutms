@@ -12,7 +12,7 @@
         <FIELD NAME="idnumber" TYPE="char" LENGTH="100" NOTNULL="false" SEQUENCE="false" COMMENT="External identifier - globally unique"/>
         <FIELD NAME="description" TYPE="text" NOTNULL="true" SEQUENCE="false" COMMENT="Description of the framework intended use"/>
         <FIELD NAME="descriptionformat" TYPE="int" LENGTH="2" NOTNULL="true" SEQUENCE="false"/>
-        <FIELD NAME="public" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="If not public then user has to have manage framework capability to use"/>
+        <FIELD NAME="publicaccess" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="If not public then user has to have manage framework capability to use"/>
         <FIELD NAME="requiredtraining" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Required training amount for completion"/>
         <FIELD NAME="restrictedcompletion" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="1 means completions before program start are ignored, 0 means all completions are considered"/>
         <FIELD NAME="archived" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Archived frameworks cannot be added to programs and completions are not updated"/>
