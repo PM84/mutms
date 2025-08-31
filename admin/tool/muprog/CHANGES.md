@@ -1,5 +1,18 @@
 # Changelog
 
+## mu-5.0.2-02
+
+Release date: 31/08/2025
+
+* Added Program completion allocation source - users may get allocated to a program when they complete another program.
+* Fixed automatic cohort allocation source form.
+* Empty custom fields are not displayed anymore.
+* Triggered missing even allocation_completed event when overriding program completion.
+* Fixed validation of tenant restrictions when selecting users.
+* Note that "public" program field was renamed to "publicaccess" which affects web services and exports; program uploads can handle both old and new field names. 
+* Fixed compatibility with unsupported MS SQL databases.
+* Fixed fatal errors when sending deallocation email and SMTP is down, you may need to wait for next cron run to resolve blocking errors for students.
+
 ## mu-5.0.2-01
 
 Release date: 09/08/2025
