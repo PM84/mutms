@@ -224,6 +224,11 @@ final class notification_manager extends \tool_mulib\local\notification\manager 
     public static function delete_assignment_notifications(\stdClass $assignment) {
         global $DB;
 
+        if (!property_exists($assignment, 'sourceid')) {
+            debugging('Invalid assignment parameter', DEBUG_DEVELOPER);
+            return;
+        }
+
         $notifications = $DB->get_records(
             'tool_mulib_notification',
             ['component' => 'tool_mucertify', 'instanceid' => $assignment->certificationid]
@@ -247,6 +252,11 @@ final class notification_manager extends \tool_mulib\local\notification\manager 
     public static function delete_period_notifications(\stdClass $period) {
         global $DB;
 
+        if (!property_exists($period, 'programid')) {
+            debugging('Invalid period parameter', DEBUG_DEVELOPER);
+            return;
+        }
+
         $notifications = $DB->get_records(
             'tool_mulib_notification',
             ['component' => 'tool_mucertify', 'instanceid' => $period->certificationid]
@@ -269,6 +279,11 @@ final class notification_manager extends \tool_mulib\local\notification\manager 
      */
     public static function delete_certification_notifications(\stdClass $certification) {
         global $DB;
+
+        if (!property_exists($certification, 'publicaccess')) {
+            debugging('Invalid certification parameter', DEBUG_DEVELOPER);
+            return;
+        }
 
         $notifications = $DB->get_records(
             'tool_mulib_notification',

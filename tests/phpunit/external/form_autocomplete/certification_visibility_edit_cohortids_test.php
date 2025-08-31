@@ -216,7 +216,7 @@ final class certification_visibility_edit_cohortids_test extends \advanced_testc
         $this->assertNull(certification_visibility_edit_cohortids::validate_value($cohort2->id, ['certificationid' => $certification2->id], $catcontext1));
         $this->assertNull(certification_visibility_edit_cohortids::validate_value($cohort3->id, ['certificationid' => $certification2->id], $catcontext1));
 
-        \tool_mucertify\local\certification::update_visibility((object)['id' => $certification1->id, 'public' => 0, 'cohortids' => [$cohort1->id]]);
+        \tool_mucertify\local\certification::update_visibility((object)['id' => $certification1->id, 'publicaccess' => 0, 'cohortids' => [$cohort1->id]]);
         $this->assertNull(certification_visibility_edit_cohortids::validate_value($cohort1->id, ['certificationid' => $certification1->id], $syscontext));
     }
 }

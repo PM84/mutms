@@ -98,7 +98,7 @@ final class certification_updated_test extends \advanced_testcase {
         $sink = $this->redirectEvents();
         $data = (object)[
             'id' => $certification->id,
-            'public' => '1',
+            'publicaccess' => '1',
         ];
         $certification = certification::update_visibility($data);
         $events = $sink->get_events();

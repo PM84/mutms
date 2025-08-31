@@ -13,7 +13,7 @@
         <FIELD NAME="description" TYPE="text" NOTNULL="true" SEQUENCE="false" COMMENT="Certification description text"/>
         <FIELD NAME="descriptionformat" TYPE="int" LENGTH="2" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="presentationjson" TYPE="text" NOTNULL="true" SEQUENCE="false" COMMENT="Visual presentation of certification, such as image files"/>
-        <FIELD NAME="public" TYPE="int" LENGTH="1" NOTNULL="true" SEQUENCE="false" COMMENT="1 means visible to everyone, 0 means use cohorts for visibility"/>
+        <FIELD NAME="publicaccess" TYPE="int" LENGTH="1" NOTNULL="true" SEQUENCE="false" COMMENT="1 means visible to everyone, 0 means use cohorts for visibility"/>
         <FIELD NAME="archived" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Archived certifications are hidden, non-mutable and mostly ignored, certification must be archived before deletion"/>
         <FIELD NAME="programid1" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="Program for initial certification"/>
         <FIELD NAME="programid2" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="Program for recertification, programid1 used if not set"/>

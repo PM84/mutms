@@ -87,7 +87,11 @@ class renderer extends \plugin_renderer_base {
 
         $handler = \tool_mucertify\customfield\certification_handler::create();
         foreach ($handler->get_instance_data($certification->id) as $data) {
-            $details->add($data->get_field()->get('name'), $data->export_value());
+            $value = $data->export_value();
+            if ($value === null || $value === '') {
+                continue;
+            }
+            $details->add($data->get_field()->get('name'), $value);
         }
 
         $details->add(get_string('certificationstatus', 'tool_mucertify'), assignment::get_status_html($certification, $assignment));

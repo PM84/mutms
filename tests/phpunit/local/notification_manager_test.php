@@ -502,15 +502,15 @@ final class notification_manager_test extends \advanced_testcase {
         $this->assertCount(2, $DB->get_records('tool_mulib_notification_user', ['userid' => $user1->id]));
         $this->assertCount(2, $DB->get_records('tool_mulib_notification_user', ['userid' => $user2->id]));
 
-        \tool_mucertify\local\notification_manager::delete_assignment_notifications($period1x2);
-        $this->assertCount(4, $DB->get_records('tool_mulib_notification_user', []));
-        $this->assertCount(2, $DB->get_records('tool_mulib_notification_user', ['userid' => $user1->id]));
+        \tool_mucertify\local\notification_manager::delete_assignment_notifications($assignment1);
+        $this->assertCount(3, $DB->get_records('tool_mulib_notification_user', []));
+        $this->assertCount(1, $DB->get_records('tool_mulib_notification_user', ['userid' => $user1->id]));
         $this->assertCount(2, $DB->get_records('tool_mulib_notification_user', ['userid' => $user2->id]));
 
-        \tool_mucertify\local\notification_manager::delete_assignment_notifications($period2x1);
-        $this->assertCount(4, $DB->get_records('tool_mulib_notification_user', []));
-        $this->assertCount(2, $DB->get_records('tool_mulib_notification_user', ['userid' => $user1->id]));
-        $this->assertCount(2, $DB->get_records('tool_mulib_notification_user', ['userid' => $user2->id]));
+        \tool_mucertify\local\notification_manager::delete_assignment_notifications($assignment2);
+        $this->assertCount(1, $DB->get_records('tool_mulib_notification_user', []));
+        $this->assertCount(1, $DB->get_records('tool_mulib_notification_user', ['userid' => $user1->id]));
+        $this->assertCount(0, $DB->get_records('tool_mulib_notification_user', ['userid' => $user2->id]));
     }
 
     public function test_delete_certification_notifications(): void {

@@ -15,10 +15,10 @@ Feature: Certifications behat generator tests
       | Cat 3 | 0        | CAT3     |
       | Cat 4 | CAT3     | CAT4     |
     And the following "tool_muprog > programs" exist:
-      | fullname    | idnumber | category | public | sources   |
-      | Program 000 | PR0      |          | 0      | mucertify |
-      | Program 001 | PR1      | Cat 1    | 0      | mucertify |
-      | Program 002 | PR2      | Cat 2    | 0      | mucertify |
+      | fullname    | idnumber | category | publicaccess | sources   |
+      | Program 000 | PR0      |          | 0            | mucertify |
+      | Program 001 | PR1      | Cat 1    | 0            | mucertify |
+      | Program 002 | PR2      | Cat 2    | 0            | mucertify |
     And the following "users" exist:
       | username | firstname | lastname | email                |
       | viewer1  | Viewer    | 1        | viewer1@example.com  |
@@ -36,10 +36,10 @@ Feature: Certifications behat generator tests
 
   Scenario: Certifications Behat generator creates certifications
     When the following "tool_mucertify > certifications" exist:
-      | fullname          | idnumber | category | public | cohorts            | program1 | sources          |
-      | Certification 000 | CT0      |          | 0      | Cohort 1, Cohort 2 | PR0      | manual, approval |
-      | Certification 001 | CT1      | Cat 1    | 1      |                    | PR1      |                  |
-      | Certification 002 | CT2      | Cat 2    | 0      |                    |          | manual           |
+      | fullname          | idnumber | category | publicaccess | cohorts            | program1 | sources          |
+      | Certification 000 | CT0      |          | 0            | Cohort 1, Cohort 2 | PR0      | manual, approval |
+      | Certification 001 | CT1      | Cat 1    | 1            |                    | PR1      |                  |
+      | Certification 002 | CT2      | Cat 2    | 0            |                    |          | manual           |
 
     And I log in as "viewer1"
     And I am on the "tool_mucertify > All certifications management" page

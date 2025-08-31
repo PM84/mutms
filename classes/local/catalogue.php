@@ -288,7 +288,7 @@ final class catalogue {
              LEFT JOIN {tool_mucertify_assignment} pa ON pa.certificationid = p.id AND pa.userid = :userid1 AND pa.archived = 0
                   $tenantjoin
                  WHERE p.archived = 0 $searchwhere
-                       AND (p.public = 1 OR pa.id IS NOT NULL OR EXISTS (
+                       AND (p.publicaccess = 1 OR pa.id IS NOT NULL OR EXISTS (
                             SELECT cm.id
                               FROM {cohort_members} cm
                               JOIN {tool_mucertify_cohort} pc ON pc.cohortid = cm.cohortid
@@ -329,7 +329,7 @@ final class catalogue {
             }
         }
 
-        if ($certification->public) {
+        if ($certification->publicaccess) {
             return true;
         }
         if ($DB->record_exists('tool_mucertify_assignment', ['certificationid' => $certification->id, 'userid' => $userid, 'archived' => 0])) {
@@ -389,7 +389,7 @@ final class catalogue {
                   JOIN {tool_mucertify_certification} p ON p.id = tt.itemid
              LEFT JOIN {tool_mucertify_assignment} pa ON pa.certificationid = p.id AND pa.userid = :userid1 AND pa.archived = 0
                  WHERE p.archived = 0
-                       AND (p.public = 1 OR pa.id IS NOT NULL OR EXISTS (
+                       AND (p.publicaccess = 1 OR pa.id IS NOT NULL OR EXISTS (
                             SELECT cm.id
                               FROM {cohort_members} cm
                               JOIN {tool_mucertify_cohort} pc ON pc.cohortid = cm.cohortid
@@ -404,7 +404,7 @@ final class catalogue {
     /**
      * Render certifications with a tag that current learner can see.
      *
-     * NOTE: this is using only certification.public flag and cohort visibility + allocated certifications
+     * NOTE: this is using only certification.publicaccess flag and cohort visibility + allocated certifications
      *
      * @param int $tagid
      * @param bool $exclusive
@@ -423,7 +423,7 @@ final class catalogue {
                   JOIN {tag_instance} tt ON tt.itemid = p.id AND tt.itemtype = 'certification' AND tt.tagid = :tagid AND tt.component = 'tool_mucertify'
              LEFT JOIN {tool_mucertify_assignment} pa ON pa.certificationid = p.id AND pa.userid = :userid1 AND pa.archived = 0
                  WHERE p.archived = 0
-                       AND (p.public = 1 OR pa.id IS NOT NULL OR EXISTS (
+                       AND (p.publicaccess = 1 OR pa.id IS NOT NULL OR EXISTS (
                              SELECT cm.id
                                FROM {cohort_members} cm
                                JOIN {tool_mucertify_cohort} pc ON pc.cohortid = cm.cohortid

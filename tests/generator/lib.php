@@ -156,7 +156,7 @@ class tool_mucertify_generator extends component_generator_base {
                     $cohortids[] = $record->id;
                 }
             }
-            certification::update_visibility((object)['id' => $certification->id, 'public' => $certification->public, 'cohortids' => $cohortids]);
+            certification::update_visibility((object)['id' => $certification->id, 'publicaccess' => $certification->publicaccess, 'cohortids' => $cohortids]);
         }
 
         if ($periods) {

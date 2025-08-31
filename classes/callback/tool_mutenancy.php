@@ -16,21 +16,33 @@
 
 // phpcs:disable moodle.Files.BoilerplateComment.CommentEndedTooSoon
 
+namespace tool_mucertify\callback;
+
 /**
- * Certifications hook callbacks.
+ * Hook callbacks from tool_mutenancy related code.
  *
  * @package    tool_mucertify
- * @copyright  2023 Open LMS
  * @copyright  2025 Petr Skoda
- * @author     Petr Skoda
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+final class tool_mutenancy {
+    /**
+     * Tenant management menu hook.
+     * @param \tool_mutenancy\hook\tenant_management_menu $hook
+     */
+    public static function tenant_management_menu(\tool_mutenancy\hook\tenant_management_menu $hook): void {
+        if (!\tool_mucertify\local\util::is_mucertify_active()) {
+            return;
+        }
 
-defined('MOODLE_INTERNAL') || die();
+        if (!has_capability('tool/mucertify:view', $hook->catcontext)) {
+            return;
+        }
 
-$callbacks = [
-    [
-        'hook' => \tool_mutenancy\hook\tenant_management_menu::class,
-        'callback' => [\tool_mucertify\callback\tool_mutenancy::class, 'tenant_management_menu'],
-    ],
-];
+        $url = new \moodle_url('/admin/tool/mucertify/management/index.php', ['contextid' => $hook->catcontext->id]);
+        $hook->tenantnode->add(
+            get_string('management', 'tool_mucertify'),
+            $url
+        );
+    }
+}
