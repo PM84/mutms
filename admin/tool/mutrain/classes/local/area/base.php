@@ -34,9 +34,9 @@ abstract class base {
      * @return array<string, class-string<base>>
      */
     final public static function get_area_classes(): array {
-        // NOTE: int the future we should use hooks here to discover all compatible custom field areas.
         return [
             'core_course_course' => \tool_mutrain\local\area\core_course_course::class,
+            'tool_muprog_program' => \tool_mutrain\local\area\tool_muprog_program::class,
         ];
     }
 

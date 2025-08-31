@@ -1,17 +1,18 @@
-@tool @tool_mutrain @javascript @MuTMS
-Feature: Managers can manage training custom course fields
+@tool @tool_mutrain @tool_muprog @javascript @MuTMS
+Feature: Managers can manage training custom program fields
 
   Background:
+    Given I skip tests if "tool_muprog" is not installed
     Given the following "custom field categories" exist:
-      | name              | component   | area   | itemid |
-      | Category for test | core_course | course | 0      |
-    And the following "courses" exist:
-      | fullname | shortname |
-      | Course 1 | C1        |
+      | name              | component   | area     | itemid |
+      | Category for test | tool_muprog | program | 0      |
+    And the following "tool_muprog > programs" exist:
+      | fullname  | shortname |
+      | Program 1 | C1        |
 
-  Scenario: Create a custom course training field
+  Scenario: Create a custom program training field
     Given I log in as "admin"
-    And I navigate to "Courses > Course custom fields" in site administration
+    And I navigate to "Programs > Program custom fields" in site administration
 
     When I click on "Add a new custom field" "link"
     And I click on "Training value" "link"
@@ -22,9 +23,9 @@ Feature: Managers can manage training custom course fields
     Then I should see "Test field"
     And I log out
 
-  Scenario: Edit a custom course training field
+  Scenario: Edit a custom program training field
     Given I log in as "admin"
-    And I navigate to "Courses > Course custom fields" in site administration
+    And I navigate to "Programs > Program custom fields" in site administration
 
     When I click on "Add a new custom field" "link"
     And I click on "Training value" "link"
@@ -37,13 +38,11 @@ Feature: Managers can manage training custom course fields
       | Name | Edited field |
     And I click on "Save changes" "button" in the "Updating Test field" "dialogue"
     Then I should see "Edited field"
-    And I navigate to "Reports > Logs" in site administration
-    And I press "Get these logs"
     And I log out
 
-  Scenario: Delete a custom course training field
+  Scenario: Delete a custom program training field
     Given I log in as "admin"
-    And I navigate to "Courses > Course custom fields" in site administration
+    And I navigate to "Programs > Program custom fields" in site administration
 
     When I click on "Add a new custom field" "link"
     And I click on "Training value" "link"
@@ -58,52 +57,49 @@ Feature: Managers can manage training custom course fields
     Then I should not see "Test field"
     And I log out
 
-  Scenario: Create custom training field via generator
+  Scenario: Create custom program training field via generator
     When the following "custom fields" exist:
       | name             | category           | type    | shortname | configdata            |
       | Training Field 1 | Category for test  | mutrain | training1 |                       |
       | Training Field 2 | Category for test  | mutrain | training2 |                       |
-    And the following "courses" exist:
-      | fullname | shortname | customfield_training1 |
-      | Course 2 | C2        | 27                    |
+    And the following "tool_muprog > programs" exist:
+      | fullname  | shortname | customfield_training1 |
+      | Program 2 | C2        | 27                    |
     And I log in as "admin"
-    And I navigate to "Courses > Course custom fields" in site administration
+    And I navigate to "Programs > Program custom fields" in site administration
     Then I should see "Training value" in the "training1" "table_row"
     And I should see "Training Field 1" in the "training1" "table_row"
     And I should see "Training value" in the "training2" "table_row"
     And I should see "Training Field 2" in the "training2" "table_row"
-    And I am on site homepage
-    And I should see "Training Field 1: 27"
+    And I am on the "Program 2" "tool_muprog > Program" page
+    Then I should see "27" in the "Training Field 1" definition list item
     And I should not see "Training Field 2"
 
-  Scenario: Set training value custom field for courses
+  Scenario: Set training value custom field for programs
     Given the following "custom fields" exist:
       | name               | category           | type    | shortname | configdata            |
       | Optional training  | Category for test  | mutrain | training1 |                       |
       | Mandatory training | Category for test  | mutrain | training2 |                       |
     And the following "users" exist:
       | username | firstname | lastname | email                |
-      | teacher1 | Teacher   | 1        | teacher1@example.com |
-    And the following "course enrolments" exist:
-      | user     | course | role           |
-      | teacher1 | C1     | editingteacher |
-    And I log in as "teacher1"
+      | manager1 | Manager   | 1        | manager1@example.com |
+    And the following "role assigns" exist:
+      | user      | role         | contextlevel | reference |
+      | manager1  | manager      | System       |           |
+    And I log in as "manager1"
+    And I am on the "Program 1" "tool_muprog > Program" page
 
-    When I am on "Course 1" course homepage
-    And I navigate to "Settings" in current page administration
+    When I press "Edit"
     And I set the following fields to these values:
       | Mandatory training | 7 |
-    And I press "Save and display"
-    And I am on site homepage
-    Then I should see "Mandatory training: 7"
+    And I press "Update program"
+    Then I should see "7" in the "Mandatory training" definition list item
     And I should not see "Optional training"
 
-    When I am on "Course 1" course homepage
-    And I navigate to "Settings" in current page administration
+    When I press "Edit"
     And I set the following fields to these values:
       | Mandatory training |   |
       | Optional training  | 3 |
-    And I press "Save and display"
-    And I am on site homepage
-    Then I should see "Optional training: 3"
+    And I press "Update program"
+    Then I should see "3" in the "Optional training" definition list item
     And I should not see "Mandatory training"

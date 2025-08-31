@@ -94,12 +94,18 @@ final class fields extends \table_sql {
 
         $frameworkid = (int)$this->framework->id;
 
-        // NOTE: for now only course custom fields.
+        // NOTE: for now only course and program custom fields.
         $sql = "SELECT cf.id, cf.name, cf.shortname, cc.component, cc.area
                   FROM {customfield_field} cf
-                  JOIN {customfield_category} cc ON cc.id = cf.categoryid AND (cc.component = 'core_course' AND cc.area = 'course')
+                  JOIN {customfield_category} cc ON cc.id = cf.categoryid
                   JOIN {tool_mutrain_field} tf ON tf.fieldid = cf.id
-                 WHERE cf.type = 'mutrain' AND tf.frameworkid = $frameworkid";
+                 WHERE cf.type = 'mutrain' AND tf.frameworkid = $frameworkid
+                       AND (
+                            (cc.component = 'core_course' AND cc.area = 'course')
+                                OR
+                            (cc.component = 'tool_muprog' AND cc.area = 'program')
+                           )
+                 ";
         $this->set_sql("*", "($sql) AS fields", "1=1", []);
     }
 

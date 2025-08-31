@@ -74,8 +74,8 @@ final class framework {
             throw new \invalid_parameter_exception('framework restrictedcompletion must be 1 or 0');
         }
 
-        $record->public = (int)($data->public ?? 0);
-        if ($record->public !== 0 && $record->public !== 1) {
+        $record->publicaccess = (int)($data->publicaccess ?? 0);
+        if ($record->publicaccess !== 0 && $record->publicaccess !== 1) {
             throw new \invalid_parameter_exception('framework public must be 1 or 0');
         }
 
@@ -167,9 +167,9 @@ final class framework {
                 throw new \invalid_parameter_exception('framework restrictedcompletion must be 1 or 0');
             }
         }
-        if (property_exists($data, 'public')) {
-            $record->public = (int)$data->public;
-            if ($record->public !== 0 && $record->public !== 1) {
+        if (property_exists($data, 'publicaccess')) {
+            $record->publicaccess = (int)$data->publicaccess;
+            if ($record->publicaccess !== 0 && $record->publicaccess !== 1) {
                 throw new \invalid_parameter_exception('framework public must be 1 or 0');
             }
         }

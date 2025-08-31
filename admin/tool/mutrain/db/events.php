@@ -37,4 +37,16 @@ $observers = [
         'eventname'   => \core\event\course_deleted::class,
         'callback'    => \tool_mutrain\local\area\core_course_course::class . '::observe_course_deleted',
     ],
+    [
+        'eventname'   => \tool_muprog\event\allocation_completed::class,
+        'callback'    => \tool_mutrain\local\area\tool_muprog_program::class . '::observe_allocation_completed',
+    ],
+    [
+        'eventname'   => \tool_muprog\event\program_deleted::class,
+        'callback'    => \tool_mutrain\local\area\tool_muprog_program::class . '::observe_program_deleted',
+    ],
+    [
+        'eventname'   => \tool_muprog\event\allocation_deleted::class,
+        'callback'    => \tool_mutrain\local\area\tool_muprog_program::class . '::observe_allocation_deleted',
+    ],
 ];

@@ -121,13 +121,13 @@ final class framework extends base {
             });
 
         $columns[] = (new column(
-            'public',
-            new lang_string('public', 'tool_mutrain'),
+            'publicaccess',
+            new lang_string('publicaccess', 'tool_mutrain'),
             $this->get_entity_name()
         ))
             ->add_joins($this->get_joins())
             ->set_type(column::TYPE_BOOLEAN)
-            ->add_fields("{$frameworkalias}.public")
+            ->add_fields("{$frameworkalias}.publicaccess")
             ->set_is_sortable(true)
             ->set_callback([format::class, 'boolean_as_text']);
 
@@ -232,10 +232,10 @@ final class framework extends base {
 
         $filters[] = (new filter(
             boolean_select::class,
-            'public',
-            new lang_string('public', 'tool_mutrain'),
+            'publicaccess',
+            new lang_string('publicaccess', 'tool_mutrain'),
             $this->get_entity_name(),
-            "{$frameworkalias}.public"
+            "{$frameworkalias}.publicaccess"
         ))
             ->add_joins($this->get_joins());
 

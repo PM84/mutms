@@ -53,7 +53,7 @@ final class generator_test extends \advanced_testcase {
         $this->assertSame(null, $framework->idnumber);
         $this->assertSame('', $framework->description);
         $this->assertSame('1', $framework->descriptionformat);
-        $this->assertSame('0', $framework->public);
+        $this->assertSame('0', $framework->publicaccess);
         $this->assertSame('100', $framework->requiredtraining);
         $this->assertSame('0', $framework->restrictedcompletion);
         $this->assertSame('0', $framework->archived);
@@ -86,7 +86,7 @@ final class generator_test extends \advanced_testcase {
             'contextid' => $catcontext->id,
             'description' => 'Some desc',
             'descriptionformat' => '2',
-            'public' => '1',
+            'publicaccess' => '1',
             'requiredtraining' => '50',
             'restrictedcompletion' => '1',
             'archived' => '1',
@@ -101,7 +101,7 @@ final class generator_test extends \advanced_testcase {
         $this->assertSame($data->idnumber, $framework->idnumber);
         $this->assertSame($data->description, $framework->description);
         $this->assertSame($data->descriptionformat, $framework->descriptionformat);
-        $this->assertSame($data->public, $framework->public);
+        $this->assertSame($data->publicaccess, $framework->publicaccess);
         $this->assertSame($data->requiredtraining, $framework->requiredtraining);
         $this->assertSame($data->restrictedcompletion, $framework->restrictedcompletion);
         $this->assertSame($data->archived, $framework->archived);
