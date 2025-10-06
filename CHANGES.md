@@ -1,5 +1,11 @@
 # Changelog
 
+## mu-4.5.7-01
+
+Release date: 06/10/2025
+
+* Fixed certification tags itemtype to match database table name.
+
 ## mu-4.5.6-03
 
 Release date: 24/09/2025
