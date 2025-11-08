@@ -1,5 +1,9 @@
 # Changelog
 
+## 4.5.7 - 2025-10-07
+### Changed
+- Only changes to automatic testing scripts
+
 ## 4.5.5 - 2025-06-10
 ### Added
 - Improved CI automation
