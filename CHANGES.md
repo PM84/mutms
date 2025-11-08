@@ -1,5 +1,13 @@
 # Changelog
 
+## mu-4.5.7-02
+
+Release date: 08/11/2025
+
+* Improved training item icon - grid icon is used instead of ellipsis.
+* Documentation was moved to https://github.com/mutms/moodle-tool_muprog/wiki
+* Improved table visuals.
+
 ## mu-4.5.7-01
 
 Release date: 06/10/2025
