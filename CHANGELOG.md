@@ -1,5 +1,9 @@
 # Changelog
 
+## 4.5.7 - 2025-10-07
+### Changed
+- Only changes to automatic testing scripts
+
 ## 4.5.6 - 2025-08-12
 ### Fixed
 - Fixed issue where bulk PDF generation could fill up local temporary directory
