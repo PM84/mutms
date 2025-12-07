@@ -1,5 +1,15 @@
 # Changelog
 
+## mu-4.5.8-01
+
+Release date: 08/12/2025
+
+* Updated use of sql fragments API.
+* Fixed timezones in notifications.
+* Added option to send copy of subordinate notifications to supervisors.
+* Added option for enabling of Manual and Certification allocations during program creation.
+* Added source for allocation from external database.
+
 ## mu-4.5.7-02
 
 Release date: 08/11/2025
