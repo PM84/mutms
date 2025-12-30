@@ -17,7 +17,7 @@
 // phpcs:disable moodle.Files.BoilerplateComment.CommentEndedTooSoon
 
 /**
- * My programs overview block.
+ * My programs external functions.
  *
  * @package     block_muprogmyoverview
  * @copyright   2025 Petr Skoda
@@ -26,15 +26,19 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-/** @var stdClass $plugin */
-$plugin->component = 'block_muprogmyoverview';
-$plugin->version = '2025123145';
-$plugin->requires = 2024100700;
-$plugin->maturity = MATURITY_BETA;
-$plugin->supported = [405, 405];
-$plugin->incompatible = 500;
-$plugin->release = 'mu-4.5.8-03';
-
-$plugin->dependencies = [
-    'tool_mulib' => '2025123145',
+$functions = [
+    'block_muprogmyoverview_get_active_programs' => [
+        'classname' => block_muprogmyoverview\external\get_active_programs::class,
+        'description' => 'Return list of allocated programs to current user.',
+        'type' => 'read',
+        'ajax' => true,
+        'loginrequired' => true,
+    ],
+    'block_muprogmyoverview_set_favourite_program' => [
+        'classname' => block_muprogmyoverview\external\set_favourite_program::class,
+        'description' => 'Set/unset program as favourite.',
+        'type' => 'write',
+        'ajax' => true,
+        'loginrequired' => true,
+    ],
 ];

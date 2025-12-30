@@ -17,24 +17,20 @@
 // phpcs:disable moodle.Files.BoilerplateComment.CommentEndedTooSoon
 
 /**
- * My programs overview block.
+ * This file keeps track of upgrades to My programs overview  block.
  *
- * @package     block_muprogmyoverview
- * @copyright   2025 Petr Skoda
- * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package block_muprogmyoverview
+ * @copyright 2019 Jake Dallimore <jrhdallimore@gmail.com>
+ * @copyright 2025 Petr Skoda
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
+/**
+ * Upgrade code for the muprogmyoverview block.
+ *
+ * @param int $oldversion
+ */
+function xmldb_block_muprogmyoverview_upgrade($oldversion) {
 
-/** @var stdClass $plugin */
-$plugin->component = 'block_muprogmyoverview';
-$plugin->version = '2025123145';
-$plugin->requires = 2024100700;
-$plugin->maturity = MATURITY_BETA;
-$plugin->supported = [405, 405];
-$plugin->incompatible = 500;
-$plugin->release = 'mu-4.5.8-03';
-
-$plugin->dependencies = [
-    'tool_mulib' => '2025123145',
-];
+    return true;
+}

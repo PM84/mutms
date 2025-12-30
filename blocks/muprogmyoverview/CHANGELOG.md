@@ -10,3 +10,13 @@ The format of this change log follows the advice given at [Keep a CHANGELOG](htt
 
 - Switched to new change log format
 - Reversed plugin dependency to simplify Programs installation and upgrades
+
+### Fixed
+
+- Fixed error when tool_mulib dependency is missing
+
+## [mu-4.5.8-00] - 2025-12-16
+
+### Added
+
+- Initial release

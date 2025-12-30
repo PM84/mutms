@@ -1,6 +1,6 @@
-# My programs block for Moodle™ LMS
+# My programs overview page for Moodle™ LMS
 
-![Moodle Plugin CI](https://github.com/mutms/moodle-block_muprog_my/actions/workflows/moodle-ci.yml/badge.svg)
+![Moodle Plugin CI](https://github.com/mutms/moodle-block_muprogmyoverview/actions/workflows/moodle-ci.yml/badge.svg)
 
 This plugin is required by [Programs plugin for Moodle™ LMS](https://github.com/mutms/moodle-tool_muprog).
 
@@ -8,7 +8,4 @@ See [online documentation](https://github.com/mutms/moodle-tool_muprog/wiki) for
 
 ## Acknowledgement
 
-This plugin is a fork of [My Programs block by Open LMS](https://github.com/open-lms-open-source/moodle-block_myprograms)
-and exists thanks to Open LMS's decision to release it to the public under the GPL 3.0 license.
-
-MuTMS suite of plugins is not associated with Moodle HQ or Open LMS in any way.
+This plugin is based on "My courses" block and main menu entry to replicate the same experience for MuTMS Programs.
