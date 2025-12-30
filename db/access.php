@@ -17,37 +17,14 @@
 // phpcs:disable moodle.Files.BoilerplateComment.CommentEndedTooSoon
 
 /**
- * Capabilities for My programs block.
+ * My programs capabilities.
  *
- * @package     block_muprog_my
- * @copyright   2022 Open LMS (https://www.openlms.net/)
+ * @package     block_muprogmyoverview
  * @copyright   2025 Petr Skoda
- * @author      Petr Skoda
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
 $capabilities = [
-
-    'block/muprog_my:myaddinstance' => [
-        'captype' => 'write',
-        'contextlevel' => CONTEXT_SYSTEM,
-        'archetypes' => [
-            'user' => CAP_ALLOW,
-        ],
-
-        'clonepermissionsfrom' => 'moodle/my:manageblocks',
-    ],
-
-    'block/muprog_my:addinstance' => [
-        'captype' => 'write',
-        'contextlevel' => CONTEXT_BLOCK,
-        'archetypes' => [
-            'manager' => CAP_ALLOW,
-        ],
-
-        'clonepermissionsfrom' => 'moodle/site:manageblocks',
-    ],
-
 ];

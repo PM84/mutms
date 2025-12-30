@@ -1,4 +1,3 @@
-<?php
 // This file is part of MuTMS suite of plugins for Moodle™ LMS.
 //
 // This program is free software: you can redistribute it and/or modify
@@ -14,27 +13,24 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-// phpcs:disable moodle.Files.BoilerplateComment.CommentEndedTooSoon
-
 /**
- * My programs overview block.
+ * Javascript to initialise the muprogmyoverview block.
  *
- * @package     block_muprogmyoverview
- * @copyright   2025 Petr Skoda
- * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @copyright  2018 Bas Brands <bas@moodle.com>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
+import * as View from 'block_muprogmyoverview/view';
+import * as ViewNav from 'block_muprogmyoverview/view_nav';
 
-/** @var stdClass $plugin */
-$plugin->component = 'block_muprogmyoverview';
-$plugin->version = '2025123145';
-$plugin->requires = 2024100700;
-$plugin->maturity = MATURITY_BETA;
-$plugin->supported = [405, 405];
-$plugin->incompatible = 500;
-$plugin->release = 'mu-4.5.8-03';
-
-$plugin->dependencies = [
-    'tool_mulib' => '2025123145',
-];
+/**
+ * Initialise all of the modules for the overview block.
+ *
+ * @param {object} root The root element for the overview block.
+ */
+export const init = (root) => {
+    // Initialise the program navigation elements.
+    ViewNav.init(root);
+    // Initialise the programs view modules.
+    View.init(root);
+};

@@ -17,17 +17,19 @@
 // phpcs:disable moodle.Files.BoilerplateComment.CommentEndedTooSoon
 
 /**
- * My programs block
+ * My programs hook callbacks.
  *
- * @package    block_muprog_my
- * @copyright  2022 Open LMS (https://www.openlms.net/)
- * @author     Petr Skoda
- * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package     block_muprogmyoverview
+ * @copyright   2025 Petr Skoda
+ * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$string['muprog_my:addinstance'] = 'Add a new My programs block to Dashboard';
-$string['muprog_my:myaddinstance'] = 'Add a new My programs block to Dashboard';
-$string['pluginname'] = 'My programs';
-$string['privacy:metadata'] = 'My programs block does not store data itself.';
+$callbacks = [
+    [
+        'hook' => \core\hook\navigation\primary_extend::class,
+        'callback' => [\block_muprogmyoverview\local\util::class, 'hook_primary_extend'],
+        'priority' => 10000,
+    ],
+];

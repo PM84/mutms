@@ -17,24 +17,18 @@
 // phpcs:disable moodle.Files.BoilerplateComment.CommentEndedTooSoon
 
 /**
- * My programs overview block.
+ * My programs page block installation.
  *
- * @package     block_muprogmyoverview
- * @copyright   2025 Petr Skoda
- * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package   block_muprogmyoverview
+ * @copyright 2025 Petr Skoda
+ * @license   https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
-
-/** @var stdClass $plugin */
-$plugin->component = 'block_muprogmyoverview';
-$plugin->version = '2025123145';
-$plugin->requires = 2024100700;
-$plugin->maturity = MATURITY_BETA;
-$plugin->supported = [405, 405];
-$plugin->incompatible = 500;
-$plugin->release = 'mu-4.5.8-03';
-
-$plugin->dependencies = [
-    'tool_mulib' => '2025123145',
-];
+/**
+ * Installation code for the muprogmyoverview block.
+ */
+function xmldb_block_muprogmyoverview_install(): void {
+    $page = new moodle_page();
+    $page->set_context(context_system::instance());
+    $page->blocks->add_blocks(['content' => ['muprogmyoverview']], 'block-muprogmyoverview-index');
+}
