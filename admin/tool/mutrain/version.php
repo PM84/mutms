@@ -17,7 +17,7 @@
 // phpcs:disable moodle.Files.BoilerplateComment.CommentEndedTooSoon
 
 /**
- * Training plugin.
+ * Training credits plugin.
  *
  * @package    tool_mutrain
  * @copyright  2025 Petr Skoda
@@ -28,14 +28,14 @@ defined('MOODLE_INTERNAL') || die();
 
 /** @var stdClass $plugin */
 $plugin->component = 'tool_mutrain';
-$plugin->version = 2025123145;
+$plugin->version = 2026012545;
 $plugin->requires = 2024100700;
 $plugin->maturity = MATURITY_BETA;
 $plugin->supported = [405, 405];
 $plugin->incompatible = 500;
-$plugin->release = 'mu-4.5.8-03';
+$plugin->release = 'mu-4.5.8-04';
 
 $plugin->dependencies = [
-    'tool_mulib' => 2025123145,
-    'customfield_mutrain' => 2025123145,
+    'tool_mulib' => 2026012545,
+    'customfield_mutrain' => 2026012545,
 ];
