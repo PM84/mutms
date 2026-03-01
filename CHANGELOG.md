@@ -4,27 +4,31 @@ Plugin versioning is derived from Moodle releases, it does not comply with the s
 
 The format of this change log follows the advice given at [Keep a CHANGELOG](https://keepachangelog.com).
 
-## [v4.5.10.01] - 2026-02-12
+## [v4.5.10.02](https://github.com/mutms/moodle-customfield_mutrain/compare/v4.5.10.01...v4.5.10.02) - 2026-03-01
+
+- No changes
+
+## [v4.5.10.01](https://github.com/mutms/moodle-customfield_mutrain/compare/mu-4.5.9-01...v4.5.10.01) - 2026-02-12
 
 ### Changed
 
 - Switched to new release number format to prepare for composer support
 
-## [mu-4.5.9-01] - 2026-02-08
+## [mu-4.5.9-01](https://github.com/mutms/moodle-customfield_mutrain/compare/mu-4.5.8-04...mu-4.5.9-01) - 2026-02-08
 
 - No changes
 
-## [mu-4.5.8-04] - 2026-01-25
+## [mu-4.5.8-04](https://github.com/mutms/moodle-customfield_mutrain/compare/mu-4.5.8-03...mu-4.5.8-04) - 2026-01-25
 
 - No changes
 
-## [mu-4.5.8-03] - 2025-12-31
+## [mu-4.5.8-03](https://github.com/mutms/moodle-customfield_mutrain/compare/mu-4.5.8-02...mu-4.5.8-03) - 2025-12-31
 
 ### Changed
 
 - Switched to new change log format
 
-## [mu-4.5.8-02] - 2025-12-16
+## [mu-4.5.8-02](https://github.com/mutms/moodle-customfield_mutrain/tree/mu-4.5.8-02) - 2025-12-16
 
 - Plugin name changed to _Training credits custom field_.
 - Decimals are used instead of integers to match industry standards.
