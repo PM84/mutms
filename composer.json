@@ -5,7 +5,9 @@
   "homepage": "https://github.com/mutms/moodle-tool_mutrain",
   "license": "GPL-3.0-or-later",
   "require": {
-    "composer/installers": "*"
+    "composer/installers": "*",
+    "mutms/moodle-tool_mulib": "4.5.*",
+    "mutms/moodle-customfield_mutrain": "4.5.*"
   },
   "extra": {
     "installer-name": "mutrain"
