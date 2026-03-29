@@ -6,6 +6,7 @@
   "license": "GPL-3.0-or-later",
   "require": {
     "composer/installers": "*",
+    "moodleworkplace/moodle-tool_certificate": "*",
     "mutms/moodle-tool_mucertify": "4.5.*"
   },
   "extra": {
