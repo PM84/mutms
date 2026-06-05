@@ -4,19 +4,56 @@ Plugin versioning is derived from Moodle releases, it does not comply with the s
 
 The format of this change log follows the advice given at [Keep a CHANGELOG](https://keepachangelog.com).
 
-## [v4.5.10.01] - 2026-02-12
+## [v4.5.12.01](https://github.com/mutms/moodle-tool_mucertify/compare/v4.5.11.01...v4.5.12.01) - 2026-06-05
+
+- No changes
+
+## [v4.5.11.01](https://github.com/mutms/moodle-tool_mucertify/compare/v4.5.10.06...v4.5.11.01) - 2026-04-18
+
+- No changes
+
+## [v4.5.10.06](https://github.com/mutms/moodle-tool_mucertify/compare/v4.5.10.05...v4.5.10.06) - 2026-03-29
+
+- No changes
+
+## [v4.5.10.05](https://github.com/mutms/moodle-tool_mucertify/compare/v4.5.10.04...v4.5.10.05) - 2026-03-28
+
+- No changes
+
+## [v4.5.10.04](https://github.com/mutms/moodle-tool_mucertify/compare/v4.5.10.03...v4.5.10.04) - 2026-03-27
+
+### Added
+
+- Added composer.json for Packagist distribution
+
+## [v4.5.10.03](https://github.com/mutms/moodle-tool_mucertify/compare/v4.5.10.02...v4.5.10.03) - 2026-03-26
+
+### Added
+
+- Added support for "Temporary certification until column" in CSV upload
+
+## [v4.5.10.02](https://github.com/mutms/moodle-tool_mucertify/compare/v4.5.10.01...v4.5.10.02) - 2026-03-01
+
+### Changes
+
+- Refactored certification image support
+- All images were moved to system context, certification context will be used only for management access control and tenant separation
+- All tags were moved to system context
+- Added all Programs dependencies to simplify installation from Plugins database
+
+## [v4.5.10.01](https://github.com/mutms/moodle-tool_mucertify/compare/mu-4.5.9-01...v4.5.10.01) - 2026-02-12
 
 ### Changed
 
 - Switched to new release number format to prepare for composer support
 
-## [mu-4.5.9-01] - 2026-02-08
+## [mu-4.5.9-01](https://github.com/mutms/moodle-tool_mucertify/compare/mu-4.5.8-04...mu-4.5.9-01) - 2026-02-08
 
 ### Fixed
 
 - Fixed certification history upload action to not be visible when manual assignment source is disabled
 
-## [mu-4.5.8-04] - 2026-01-25
+## [mu-4.5.8-04](https://github.com/mutms/moodle-tool_mucertify/compare/mu-4.5.8-03...mu-4.5.8-04) - 2026-01-25
 
 ### Added
 
@@ -38,7 +75,7 @@ The format of this change log follows the advice given at [Keep a CHANGELOG](htt
 - Fixed missing certification image when moving certification to a different context
 - Improved navigation to start with "Certifications" instead of "System"
 
-## [mu-4.5.8-03] - 2025-12-31
+## [mu-4.5.8-03](https://github.com/mutms/moodle-tool_mucertify/compare/mu-4.5.8-02...mu-4.5.8-03) - 2025-12-31
 
 ### Changed
 
@@ -49,11 +86,11 @@ The format of this change log follows the advice given at [Keep a CHANGELOG](htt
 - Fixed category selection autocomplete element in certification editing form
 - Standardised certification idnumber to be case-insensitively unique
 
-## [mu-4.5.8-02] - 2025-12-16
+## [mu-4.5.8-02](https://github.com/mutms/moodle-tool_mucertify/compare/mu-4.5.8-01...mu-4.5.8-02) - 2025-12-16
 
 - Fixed placement of custom fields in certification creation form.
 
-## [mu-4.5.8-01] - 2025-12-08
+## [mu-4.5.8-01](https://github.com/mutms/moodle-tool_mucertify/compare/mu-4.5.7-02...mu-4.5.8-01) - 2025-12-08
 
 - After creating new certification user is now redirected to Period settings page because they need to add program. 
 - Fixed timezones in notifications.
@@ -62,20 +99,20 @@ The format of this change log follows the advice given at [Keep a CHANGELOG](htt
 - Added Expiration to certification assignment form - this can be used to align employee re-certifications to fixed dates. 
 - Added option for enabling of Manual allocations during certification creation.
 
-## [mu-4.5.7-02] - 2025-11-08
+## [mu-4.5.7-02](https://github.com/mutms/moodle-tool_mucertify/compare/mu-4.5.7-01...mu-4.5.7-02) - 2025-11-08
 
 - Documentation was moved to https://github.com/mutms/moodle-tool_mucertify/wiki
 - Improved table visuals.
 
-## [mu-4.5.7-01] - 2025-10-06
+## [mu-4.5.7-01](https://github.com/mutms/moodle-tool_mucertify/compare/mu-4.5.6-03...mu-4.5.7-01) - 2025-10-06
 
 - Fixed certification tags itemtype to match database table name.
 
-## [mu-4.5.6-03] - 2025-09-24
+## [mu-4.5.6-03](https://github.com/mutms/moodle-tool_mucertify/compare/mu-4.5.6-02...mu-4.5.6-03) - 2025-09-24
 
 - Program allocation conflicts are now handled gracefully. However, mixing certification allocation sources with other types of allocations within a single program remains discouraged. 
 
-## [mu-4.5.6-02] - 2025-08-31
+## [mu-4.5.6-02](https://github.com/mutms/moodle-tool_mucertify/compare/mu-4.5.6-01...mu-4.5.6-02) - 2025-08-31
 
 - Fixed automatic cohort assignment source form.
 - Empty custom fields are not displayed anymore.
@@ -83,16 +120,16 @@ The format of this change log follows the advice given at [Keep a CHANGELOG](htt
 - Fixed compatibility with unsupported MS SQL databases.
 - Fixed error when sending unassignment email and SMTP is down.
 
-## [mu-4.5.6-01] - 2025-08-09
+## [mu-4.5.6-01](https://github.com/mutms/moodle-tool_mucertify/compare/mu-4.5.5-02...mu-4.5.6-01) - 2025-08-09
 
 - Internal refactoring.
 - Moodle 4.5.6 support.
 
-## [mu-4.5.5-02] - 2025-06-30
+## [mu-4.5.5-02](https://github.com/mutms/moodle-tool_mucertify/compare/mu-4.5.5-01...mu-4.5.5-02) - 2025-06-30
 
 - New plugin versioning.
 
-## [mu-4.5.5-01] - 2025-06-09
+## [mu-4.5.5-01](https://github.com/mutms/moodle-tool_mucertify/tree/mu-4.5.5-01) - 2025-06-09
 
 - Refactored WS for candidate users.
 - Improved docs and added acknowledgements.

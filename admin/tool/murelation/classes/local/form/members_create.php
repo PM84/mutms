@@ -113,7 +113,7 @@ final class members_create extends \tool_mulib\local\ajax_form {
         if ($supervisor->maxsubordinates) {
             $current = $DB->count_records('tool_murelation_subordinate', ['supervisorid' => $supervisor->id]);
             if ($current + count($data['subuserids']) > $supervisor->maxsubordinates) {
-                $errors['maxsubordinates'] = get_string('error');
+                $errors['maxsubordinates'] = get_string('error_maxsubordinates', 'tool_murelation');
             }
         }
 
