@@ -1,5 +1,27 @@
 # core (subsystem) Upgrade notes
 
+## 4.5.13
+
+### Changed
+
+- The `search` landmark role in the `core/search_input_auto` template is enclosed within a `searchrole` Mustache block so that templates that use this template can override and remove the `search` landmark role when deemed unnecessary.
+
+  For more information see [MDL-88833](https://tracker.moodle.org/browse/MDL-88833)
+
+## 4.5.11
+
+### Added
+
+- When creating upgrade notes, the issue number will be inferred from the current Git branch name by default
+
+  For more information see [MDL-87100](https://tracker.moodle.org/browse/MDL-87100)
+- There is a new Behat `toast_message` named selector to more easily assert the presence of Toast messages on the page
+
+  For more information see [MDL-87443](https://tracker.moodle.org/browse/MDL-87443)
+- The `core/toast` JS module now accepts a `visuallyHidden` configuration parameter to render visually hidden toast messages for screen reader users.
+
+  For more information see [MDL-87993](https://tracker.moodle.org/browse/MDL-87993)
+
 ## 4.5.9
 
 ### Changed

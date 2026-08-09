@@ -44,10 +44,15 @@ final class sql implements \ArrayAccess {
     /**
      * Create a SQL fragment.
      *
+     * NOTE: it is possible to use alternative "mdl_tablename" placeholders.
+     *
      * @param string $sql
      * @param array $params
      */
     public function __construct(string $sql, array $params = []) {
+        // Replace more standard "mdl_xyz" table names with Moodle {xyz} placeholders.
+        $sql = preg_replace('/"mdl_([a-z][a-z0-9_]*)"/', '{$1}', $sql);
+
         [$this->sql, $this->params] = self::normalise_params($sql, $params);
     }
 
@@ -326,6 +331,17 @@ final class sql implements \ArrayAccess {
         }
 
         return [implode($glue, $finalsqls), $finalparams];
+    }
+
+    /**
+     * Throw coding exception if any comments present in SQL.
+     *
+     * @return void
+     */
+    public function ensure_no_comments(): void {
+        if (str_contains($this->sql, '/*')) {
+            throw new coding_exception('Unexpected comment found');
+        }
     }
 
     /**

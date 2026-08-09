@@ -1,9 +1,21 @@
 # Program enrolment plugin for Moodle™ LMS
 
-![Moodle Plugin CI](https://github.com/mutms/moodle-enrol_muprog/actions/workflows/moodle-ci.yml/badge.svg)
+[![MDL Shield](https://img.shields.io/endpoint?url=https%3A%2F%2Fmdlshield.com%2Fapi%2Fbadge%2Fenrol_muprog)](https://mdlshield.com/plugins/enrol_muprog) ![Moodle Plugin CI](https://github.com/mutms/moodle-enrol_muprog/actions/workflows/moodle-ci.yml/badge.svg)
 
-This enrolment plugin is required by [Programs plugin for Moodle™ LMS](https://github.com/mutms/moodle-tool_muprog).
+Enrolment plugin required by the [Programs plugin](https://github.com/mutms/moodle-tool_muprog)
+— fully open source under GPL 3.0. Part of the [MuTMS suite](https://github.com/mutms).
 
-Please note that this plugin does not do anything useful by itself.
+This plugin does not provide any functionality by itself.
 
-See [online documentation](https://github.com/mutms/moodle-tool_muprog/wiki) for more information.
+## Requirements
+
+> This plugin is included in the [MuTMS distribution](https://github.com/mutms/mutms) —
+> no manual installation needed if you use the distribution.
+
+## Documentation
+
+See [online documentation](https://docs.mutms.org/muprog/) for more information.
+
+---
+
+> MuTMS is an independent open-source project, not affiliated with Moodle HQ.
